@@ -23,7 +23,7 @@ import decimal
 import re
 import warnings
 
-from couchdbkit.client.database import Database
+from couchdbkit.client import Database
 from couchdbkit.schema import properties as p
 from couchdbkit.schema.exceptions import *
 
@@ -48,9 +48,7 @@ MAP_TYPES_PROPERTIES = {
         bool: p.BooleanProperty,
         int: p.IntegerProperty,
         long: p.LongProperty,
-        float: p.FloatProperty,
-        dict: p.DictProperty,
-        list: p.ListProperty,
+        float: p.FloatProperty
 }
 
 _ALLOWED_PROPERTY_TYPES = set([
@@ -88,7 +86,7 @@ def convert_property(value):
         value = prop._to_json(value)
     return value
 
-class DocumentSchemaBase(type):
+class SchemaProperties(type):
 
     def __new__(cls, name, bases, attrs):
         # init properties
@@ -105,12 +103,14 @@ class DocumentSchemaBase(type):
                 properties.update(base._properties) 
 
         for attr_name, attr in attrs.items():
+            # map properties
             if isinstance(attr, p.Property):
                 check_reserved_words(attr_name)
                 if attr_name in defined:
                     raise DuplicatePropertyError('Duplicate property: %s' % attr_name)
                 properties[attr_name] = attr
                 attr.__property_config__(cls, attr_name)
+            # python types
             elif type(attr) in MAP_TYPES_PROPERTIES and \
                     not attr_name.startswith('_') and \
                     attr_name not in _NODOC_WORDS:
@@ -127,7 +127,7 @@ class DocumentSchemaBase(type):
 
 
 class DocumentSchema(object):
-    __metaclass__ = DocumentSchemaBase
+    __metaclass__ = SchemaProperties
     
     _dynamic_properties = None
     _allow_dynamic_properties = True
