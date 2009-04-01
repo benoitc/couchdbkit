@@ -64,6 +64,10 @@ class ClientServerTestCase(unittest.TestCase):
     def testGetUUIDS(self):
         uuid = self.Server.next_uuid()
         self.assert_(isinstance(uuid, basestring) == True)
+        self.assert_(len(self.Server.uuids) == 999)
+        uuid2 = self.Server.next_uuid()
+        self.assert_(uuid != uuid2)
+        self.assert_(len(self.Server.uuids) == 998)
         
 class ClientDatabaseTestCase(unittest.TestCase):
     def setUp(self):
