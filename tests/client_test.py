@@ -117,16 +117,8 @@ class ClientDatabaseTestCase(unittest.TestCase):
          db = self.Server.create_db('couchdbkit_test')
          doc = { '_id': "a/b"}
          db.save(doc)
+         self.assert_( "a/b" in db) 
          self.assert_( "a/b" in db)
-         doc = { '_id': "a%2Fb"}
-         db.save(doc)
-         self.assert_( "a/b" in db)
-         self.assert_( "a%2Fb" in db)
-         
-         doc = { '_id': '_design%2Fa' }
-         def failed():
-             db.save(doc)
-         self.assertRaises(RequestFailed, failed)
          
          doc = { '_id': '_design/a' }
          db.save(doc)

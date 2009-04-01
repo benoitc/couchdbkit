@@ -14,10 +14,8 @@
 # limitations under the License.
 #
 
-
+import cgi
 from mimetypes import guess_type
-
-
 
 from couchdbkit.resource import ResourceNotFound
 from couchdbkit.utils import validate_dbname
@@ -85,7 +83,7 @@ class Database(object):
         :return: dict, representation of CouchDB document as
          a dict.
         """
-        
+        self.escape_docid(docid)
         if rev is not None:
             doc = self.res.get(docid, rev=rev)
         else:
@@ -123,6 +121,7 @@ class Database(object):
         an additional field, _revs, the value being a list of 
         the available revision IDs. 
         """
+        self.escape_docid(docid)
         try:
             if with_doc:
                 doc_with_rev = self.res.get(docid, revs=True)
@@ -145,11 +144,15 @@ class Database(object):
         if doc_or_docs is None:
             doc_or_docs = {}
         if isinstance(doc_or_docs, (list, tuple,)):
+            for doc in doc_or_docs:
+                if '_id' in doc:
+                    self.escape_docid(doc['_id'])
             results = self.res.post('_bulk_docs', payload={ "docs": doc_or_docs })
             for i, res in enumerate(results):
                 doc_or_docs[i].update({ '_id': res['id'], '_rev': res['rev']})
         else: 
             if '_id' in doc_or_docs:
+                self.escape_docid(doc_or_docs['_id'])
                 res = self.res.put(doc_or_docs['_id'], payload=doc_or_docs)
             else:
                 res = self.res.post(payload=doc_or_docs)
@@ -174,11 +177,13 @@ class Database(object):
         if isinstance(doc_or_docs, (list, tuple,)):
             docs = []
             for doc in doc_or_docs:
+                self.escape_docid(doc['_id'])
                 doc.update({'_deleted': True})
                 docs.append(doc)
             result = self.res.post('_bulk_docs', payload={
                 "docs": docs })
         elif isinstance(doc_or_docs, dict) and '_id' in doc_or_docs:
+            self.escape_docid(doc_or_docs['_id'])
             result = self.res.delete(doc_or_docs['_id'], rev=doc_or_docs['_rev'])
         elif isinstance(doc_or_docs, basestring):
             data = self.res.head(doc_or_docs)
@@ -331,4 +336,8 @@ class Database(object):
         return self.iterdocuments()
         
     def __nonzero__(self):
-        return (len(self) > 0) 
+        return (len(self) > 0)
+        
+    def escape_docid(self, docid):
+        if docid.startswith('_design/'):
+            docid = "_design/%s" % (cgi.escape(docid[7:]))
