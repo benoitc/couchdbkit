@@ -20,6 +20,8 @@ from itertools import groupby
 from mimetypes import guess_type
 import re
 
+from restclient.rest import url_quote
+
 from couchdbkit.resource import ResourceNotFound
 from couchdbkit.utils import validate_dbname
 from couchdbkit.client.view import View, TempView
@@ -233,7 +235,10 @@ class Database(object):
         """
         result = { 'ok': False }
         
-        if isinstance(doc, dict) and '_id' in doc:
+        if isinstance(doc, dict):
+            if not '_id' or not '_rev' in doc:
+                raise KeyError('_id and _rev are required to delete a doc')
+                
             self.escape_docid(doc['_id'])
             result = self.res.delete(doc['_id'], rev=doc['_rev'])
         elif isinstance(doc, basestring): # we get a docid
@@ -242,7 +247,40 @@ class Database(object):
             result = self.res.delete(doc, 
                     rev=response['etag'].strip('"'))
         return result
-
+        
+    def copy_doc(self, doc, dest=None):
+        """ copy an existing document to a new id. If dest is None, a new uuid will be requested
+        :attr doc: dict or string, document or document id
+        :attr dest: basestring or dict. if _rev is specified in dict it will override the doc
+        """
+        if isinstance(doc, basestring):
+            docid = doc
+        else:
+            if not '_id' in doc:
+                raise KeyError('_id is required to copy a doc')
+            docid = doc['_id']
+        
+        if dest is None:
+            destinatrion = self.server.next_uuid(count=1)   
+        elif isinstance(dest, basestring):
+            if dest in self:
+                dest = self.get(dest)['_rev']
+                destination = "%s?rev=%s" % (dest['_id'], dest['_rev'])
+            else:
+                destination = dest
+        elif isinstance(dest, dict):
+            if '_id' in dest and '_rev' in dest and dest['_id'] in self:
+                rev = dest['_rev']
+                destination = "%s?rev=%s" % (dest['_id'], dest['_rev'])
+            else:
+                raise KeyError("dest doesn't exist or _rv or _id missing")
+    
+        if destination:
+            result = self.res.copy('/%s' % docid, headers={ "Destination": str(destination) } )
+            return result    
+        return { 'ok': False}
+            
+        
     def view(self, view_name, obj=None, wrapper=None, **params):
         if view_name.startswith('/'):
             view_name = view_name[1:]

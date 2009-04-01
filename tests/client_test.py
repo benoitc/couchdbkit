@@ -338,6 +338,36 @@ class ClientDatabaseTestCase(unittest.TestCase):
         self.assert_(db.info()['doc_del_count'] == 4)
 
         del self.Server['couchdbkit_test']
+        
+    def testCopy(self):
+        db = self.Server.create_db('couchdbkit_test')
+        doc = { "f": "a" }
+        db.save_doc(doc)
+        
+        db.copy_doc(doc['_id'], "test")
+        self.assert_("test" in db)
+        doc1 = db.get("test")
+        self.assert_('f' in doc1)
+        self.assert_(doc1['f'] == "a")
+        
+        db.copy_doc(doc, "test2")
+        self.assert_("test2" in db)
+        
+        doc2 = { "_id": "test3", "f": "c"}
+        db.save_doc(doc2)
+        
+        db.copy_doc(doc, doc2)
+        self.assert_("test3" in db)
+        doc3 = db.get("test3")
+        self.assert_(doc3['f'] == "a")
+        
+        doc4 = { "_id": "test5", "f": "c"}
+        db.save_doc(doc4)
+        db.copy_doc(doc, "test6")
+        doc6 = db.get("test6")
+        self.assert_(doc6['f'] == "a")
+        
+        del self.Server['couchdbkit_test']
 
 
 class ClientViewTestCase(unittest.TestCase):

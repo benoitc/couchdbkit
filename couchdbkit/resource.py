@@ -81,6 +81,8 @@ class CouchdbResource(restclient.Resource):
         restclient.Resource.__init__(self, uri=uri, transport=transport)
         self.client.safe = ":/"
 
+    def copy(self, path=None, headers=None, **params):
+        return self.request('COPY', path=path, headers=headers, **params)
         
     def request(self, method, path=None, payload=None, headers=None, **params):
         """ Perform HTTP call to the couchdb server and manage 
