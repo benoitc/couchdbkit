@@ -340,4 +340,4 @@ class Database(object):
         
     def escape_docid(self, docid):
         if docid.startswith('_design/'):
-            docid = "_design/%s" % (cgi.escape(docid[7:]))
+            docid = "_design/%s" % (cgi.escape(docid[8:]))
