@@ -1,0 +1,19 @@
+syntax: glob
+*.orig
+*.rej
+*~
+*.o
+*.pyc
+*.pyo
+tests/*.err
+*.swp
+store/*
+*.DS_Store
+*.beam
+.coverage
+couchdbkit.egg-info
+dist
+
+syntax: regexp
+.*\#.*\#$
+
