@@ -42,7 +42,7 @@ class Database(object):
         :param dbname: str, name of database
         """
 
-        if not hasattr(server, 'compact_db'):
+        if not hasattr(server, 'next_uuid'):
             raise TypeError('%s is not a couchdbkit.server instance' % 
                             server.__class__.__name__)
                             
@@ -59,6 +59,10 @@ class Database(object):
         """
         data = self.res.get()
         return data
+        
+    def compact(self):
+        """ compact database"""
+        res = self.res.post('/_compact')
         
     def doc_exist(self, docid):
         """Test if document exist in database
@@ -99,7 +103,7 @@ class Database(object):
             
         return doc
         
-    def revisions(self, docid, with_doc=True):
+    def doc_revisions(self, docid, with_doc=True):
         """ retrieve revisions of a doc
             
         :param docid: str, id of document
@@ -134,7 +138,7 @@ class Database(object):
             return None
         return doc_with_revs           
         
-    def save(self, doc):
+    def save_doc(self, doc):
         """ Save a document. It will use the `_id` member of the document 
         or request a new uuid from CouchDB. IDs are attached to
         documents on the client side because POST has the curious property of
@@ -217,7 +221,7 @@ class Database(object):
             doc['_deleted'] = True
         self.bulk_save(docs, use_uuids=False, all_or_nothing=all_or_nothing)
  
-    def delete(self, doc):
+    def delete_doc(self, doc):
         """ delete a document or a list of document
 
         :param doc: str or dict,  docyment id or full doc.
@@ -360,6 +364,7 @@ class Database(object):
         except ResourceNotFound:
             return None
         return data
+        
  
     def __len__(self):
         return self.info()['doc_count'] 

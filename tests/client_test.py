@@ -90,7 +90,7 @@ class ClientDatabaseTestCase(unittest.TestCase):
     def testCreateEmptyDoc(self):
         db = self.Server.create_db('couchdbkit_test')
         doc = {}
-        db.save(doc)
+        db.save_doc(doc)
         del self.Server['couchdbkit_test']
         self.assert_('_id' in doc)
         
@@ -99,11 +99,11 @@ class ClientDatabaseTestCase(unittest.TestCase):
         db = self.Server.create_db('couchdbkit_test')
         # create doc without id
         doc = { 'string': 'test', 'number': 4 }
-        db.save(doc)
+        db.save_doc(doc)
         self.assert_(db.doc_exist(doc['_id']))
         # create doc with id
         doc1 = { '_id': 'test', 'string': 'test', 'number': 4 }
-        db.save(doc1)
+        db.save_doc(doc1)
         self.assert_(db.doc_exist('test'))
         doc2 = { 'string': 'test', 'number': 4 }
         db['test2'] = doc2
@@ -114,9 +114,9 @@ class ClientDatabaseTestCase(unittest.TestCase):
     def testUpdateDoc(self):
         db = self.Server.create_db('couchdbkit_test')
         doc = { 'string': 'test', 'number': 4 }
-        db.save(doc)
+        db.save_doc(doc)
         doc.update({'number': 6})
-        db.save(doc)
+        db.save_doc(doc)
         doc = db.get(doc['_id'])
         self.assert_(doc['number'] == 6)
         del self.Server['couchdbkit_test']
@@ -124,21 +124,21 @@ class ClientDatabaseTestCase(unittest.TestCase):
     def testDocWithSlashes(self):
          db = self.Server.create_db('couchdbkit_test')
          doc = { '_id': "a/b"}
-         db.save(doc)
+         db.save_doc(doc)
          self.assert_( "a/b" in db) 
          self.assert_( "a/b" in db)
          
          doc = { '_id': '_design/a' }
-         db.save(doc)
+         db.save_doc(doc)
          self.assert_( "_design/a" in db)
          del self.Server['couchdbkit_test']
         
     def testDbLen(self):
         db = self.Server.create_db('couchdbkit_test')
         doc1 = { 'string': 'test', 'number': 4 }
-        db.save(doc1)
+        db.save_doc(doc1)
         doc2 = { 'string': 'test2', 'number': 4 }
-        db.save(doc2)
+        db.save_doc(doc2)
 
         self.assert_(len(db) == 2)
         del self.Server['couchdbkit_test']
@@ -146,14 +146,14 @@ class ClientDatabaseTestCase(unittest.TestCase):
     def testDeleteDoc(self):
         db = self.Server.create_db('couchdbkit_test')
         doc = { 'string': 'test', 'number': 4 }
-        db.save(doc)
+        db.save_doc(doc)
         docid=doc['_id']
-        db.delete(docid)
+        db.delete_doc(docid)
         self.assert_(db.doc_exist(docid) == False)
         doc = { 'string': 'test', 'number': 4 }
-        db.save(doc)
+        db.save_doc(doc)
         docid=doc['_id']
-        db.delete(doc)
+        db.delete_doc(doc)
         self.assert_(db.doc_exist(docid) == False)
         del self.Server['couchdbkit_test']
 
@@ -180,7 +180,7 @@ class ClientDatabaseTestCase(unittest.TestCase):
                 }
             }
         }
-        db.save(doc)
+        db.save_doc(doc)
         fetch_attachment = db.fetch_attachment(doc, "test.html")
         self.assert_(attachment == fetch_attachment)
         doc1 = db.get("docwithattachment")
@@ -210,7 +210,7 @@ class ClientDatabaseTestCase(unittest.TestCase):
             }
         }
         
-        db.save(doc)
+        db.save_doc(doc)
         fetch_attachment = db.fetch_attachment(doc, "test.html")
         self.assert_(attachment == fetch_attachment)
         fetch_attachment = db.fetch_attachment(doc, "test2.html")
@@ -237,7 +237,7 @@ class ClientDatabaseTestCase(unittest.TestCase):
                 }
             }
         }
-        db.save(doc)
+        db.save_doc(doc)
         doc1 = db.get("docwithattachment")
         doc1["_attachments"].update({
             "test2.html": {
@@ -245,7 +245,7 @@ class ClientDatabaseTestCase(unittest.TestCase):
                 "data": attachment2
             }
         })
-        db.save(doc1)
+        db.save_doc(doc1)
         
         fetch_attachment = db.fetch_attachment(doc1, "test2.html")
         self.assert_(attachment2 == fetch_attachment)
@@ -260,7 +260,7 @@ class ClientDatabaseTestCase(unittest.TestCase):
     def testAttachments(self):
         db = self.Server.create_db('couchdbkit_test')
         doc = { 'string': 'test', 'number': 4 }
-        db.save(doc)        
+        db.save_doc(doc)        
         text_attachment = u"un texte attaché"
         old_rev = doc['_rev']
         db.put_attachment(doc, text_attachment, "test", "text/plain")
@@ -272,7 +272,7 @@ class ClientDatabaseTestCase(unittest.TestCase):
     def testEmptyAttachment(self):
         db = self.Server.create_db('couchdbkit_test')
         doc = {}
-        db.save(doc)
+        db.save_doc(doc)
         db.put_attachment(doc, "", name="test")
         doc1 = db.get(doc['_id'])
         attachment = doc1['_attachments']['test']
@@ -282,7 +282,7 @@ class ClientDatabaseTestCase(unittest.TestCase):
     def testDeleteAttachment(self):
         db = self.Server.create_db('couchdbkit_test')
         doc = { 'string': 'test', 'number': 4 }
-        db.save(doc)
+        db.save_doc(doc)
         
         text_attachment = "un texte attaché"
         old_rev = doc['_rev']
@@ -361,10 +361,10 @@ class ClientViewTestCase(unittest.TestCase):
         # save 2 docs 
         doc1 = { '_id': 'test', 'string': 'test', 'number': 4, 
                 'docType': 'test' }
-        db.save(doc1)
+        db.save_doc(doc1)
         doc2 = { '_id': 'test2', 'string': 'test', 'number': 2,
                     'docType': 'test'}
-        db.save(doc2)
+        db.save_doc(doc2)
 
         design_doc = {
             '_id': '_design/test',
@@ -376,7 +376,7 @@ class ClientViewTestCase(unittest.TestCase):
                 }
             }
         }
-        db.save(design_doc)
+        db.save_doc(design_doc)
         
         doc3 = db.get('_design/test')
         self.assert_(doc3 is not None) 
@@ -389,10 +389,10 @@ class ClientViewTestCase(unittest.TestCase):
         # save 2 docs 
         doc1 = { '_id': 'test', 'string': 'test', 'number': 4, 
                 'docType': 'test' }
-        db.save(doc1)
+        db.save_doc(doc1)
         doc2 = { '_id': 'test2', 'string': 'test', 'number': 2,
                     'docType': 'test'}
-        db.save(doc2)
+        db.save_doc(doc2)
 
         design_doc = {
             '_id': '_design/test',
@@ -403,7 +403,7 @@ class ClientViewTestCase(unittest.TestCase):
                 }
             }
         }
-        db.save(design_doc)
+        db.save_doc(design_doc)
         count = db.view('/test/all').count()
         self.assert_(count == 2)
         del self.Server['couchdbkit_test']
@@ -413,10 +413,10 @@ class ClientViewTestCase(unittest.TestCase):
         # save 2 docs 
         doc1 = { '_id': 'test', 'string': 'test', 'number': 4, 
                 'docType': 'test' }
-        db.save(doc1)
+        db.save_doc(doc1)
         doc2 = { '_id': 'test2', 'string': 'test', 'number': 2,
                     'docType': 'test'}
-        db.save(doc2)
+        db.save_doc(doc2)
 
         design_doc = {
             "map": """function(doc) { if (doc.docType == "test") { emit(doc._id, doc);
@@ -433,13 +433,13 @@ class ClientViewTestCase(unittest.TestCase):
         # save 2 docs 
         doc1 = { '_id': 'test1', 'string': 'test', 'number': 4, 
                 'docType': 'test' }
-        db.save(doc1)
+        db.save_doc(doc1)
         doc2 = { '_id': 'test2', 'string': 'test', 'number': 2,
                     'docType': 'test'}
-        db.save(doc2)
+        db.save_doc(doc2)
         doc3 = { '_id': 'test3', 'string': 'test', 'number': 2,
                     'docType': 'test2'}
-        db.save(doc3)
+        db.save_doc(doc3)
         design_doc = {
             '_id': '_design/test',
             'language': 'javascript',
@@ -455,7 +455,7 @@ class ClientViewTestCase(unittest.TestCase):
 
             }
         }
-        db.save(design_doc)
+        db.save_doc(design_doc)
 
         # yo view is callable !
         results = db.view('test/with_test')
@@ -469,22 +469,22 @@ class ClientViewTestCase(unittest.TestCase):
         # save 2 docs 
         doc1 = { '_id': 'test1', 'string': 'test', 'number': 4, 
                 'docType': 'test', 'date': '20081107' }
-        db.save(doc1)
+        db.save_doc(doc1)
         doc2 = { '_id': 'test2', 'string': 'test', 'number': 2,
                 'docType': 'test', 'date': '20081107'}
-        db.save(doc2)
+        db.save_doc(doc2)
         doc3 = { '_id': 'test3', 'string': 'machin', 'number': 2,
                     'docType': 'test', 'date': '20081007'}
-        db.save(doc3)
+        db.save_doc(doc3)
         doc4 = { '_id': 'test4', 'string': 'test2', 'number': 2,
                 'docType': 'test', 'date': '20081108'}
-        db.save(doc4)
+        db.save_doc(doc4)
         doc5 = { '_id': 'test5', 'string': 'test2', 'number': 2,
                 'docType': 'test', 'date': '20081109'}
-        db.save(doc5)
+        db.save_doc(doc5)
         doc6 = { '_id': 'test6', 'string': 'test2', 'number': 2,
                 'docType': 'test', 'date': '20081109'}
-        db.save(doc6)
+        db.save_doc(doc6)
 
         design_doc = {
             '_id': '_design/test',
@@ -508,7 +508,7 @@ class ClientViewTestCase(unittest.TestCase):
 
             }
         }
-        db.save(design_doc)
+        db.save_doc(design_doc)
 
         results = db.view('test/test1')
         self.assert_(len(results) == 6)

@@ -76,12 +76,6 @@ class Server(object):
             return Database(self, dbname)
         return res['ok']
     
-    def compact_db(self, dbname):
-        if dbname in self:
-            res = self.res.post('/%s/_compact' % dbname)
-            return res['ok']
-        return False
-        
     def next_uuid(self, count=None):
         if count is not None:
             self._uuid_batch_count = count
