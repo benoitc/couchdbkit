@@ -61,6 +61,10 @@ class ClientServerTestCase(unittest.TestCase):
         del self.Server['couchdbkit_test']
         
         
+    def testGetUUIDS(self):
+        uuid = self.Server.next_uuid()
+        self.assert_(isinstance(uuid, basestring) == True)
+        
 class ClientDatabaseTestCase(unittest.TestCase):
     def setUp(self):
         self.couchdb = CouchdbResource()
@@ -123,6 +127,7 @@ class ClientDatabaseTestCase(unittest.TestCase):
          doc = { '_id': '_design/a' }
          db.save(doc)
          self.assert_( "_design/a" in db)
+         del self.Server['couchdbkit_test']
         
     def testDbLen(self):
         db = self.Server.create_db('couchdbkit_test')
@@ -201,7 +206,7 @@ class ClientDatabaseTestCase(unittest.TestCase):
                 { 'string': 'test', 'number': 4 },
                 { 'string': 'test', 'number': 6 }
         ]
-        db.save(docs)
+        db.bulk_save(docs)
         self.assert_(len(db) == 4)
         self.assert_('_id' in docs[0])
         self.assert_('_rev' in docs[0])
@@ -209,7 +214,7 @@ class ClientDatabaseTestCase(unittest.TestCase):
         self.assert_(doc['number'] == 4)
         docs[3]['number'] = 6
         old_rev = docs[3]['_rev']
-        db.save(docs)
+        db.bulk_save(docs)
         self.assert_(docs[3]['_rev'] != old_rev)
         doc = db.get(docs[3]['_id'])
         self.assert_(doc['number'] == 6)
@@ -219,7 +224,7 @@ class ClientDatabaseTestCase(unittest.TestCase):
                 { '_id': 'test2', 'string': 'test', 'number': 42 },
                 { 'string': 'test', 'number': 6 }
         ]
-        db.save(docs)
+        db.bulk_save(docs)
         doc = db.get('test2')
         self.assert_(doc['number'] == 42) 
         del self.Server['couchdbkit_test']
@@ -232,9 +237,9 @@ class ClientDatabaseTestCase(unittest.TestCase):
                 { 'string': 'test', 'number': 4 },
                 { 'string': 'test', 'number': 6 }
         ]
-        db.save(docs)
+        db.bulk_save(docs)
         self.assert_(len(db) == 4)
-        db.delete(docs)
+        db.bulk_delete(docs)
         self.assert_(len(db) == 0)
         self.assert_(db.info()['doc_del_count'] == 4)
 

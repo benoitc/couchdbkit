@@ -15,6 +15,7 @@
 #
 
 import cgi
+from itertools import groupby
 from mimetypes import guess_type
 
 from couchdbkit.resource import ResourceNotFound
@@ -32,20 +33,20 @@ class Database(object):
     A Database object could act as a Dict object.
     """
 
-    def __init__(self, node, dbname):
+    def __init__(self, server, dbname):
         """Constructor for Database
 
-        :param node: simplecouchdb.core.node instance
-        :param dbname: str, name of database on this node
+        :param server: Server instance
+        :param dbname: str, name of database
         """
 
-        if not hasattr(node, 'compact_db'):
-            raise TypeError('%s is not a couchdbkit.node instance' % 
-                            node.__class__.__name__)
+        if not hasattr(server, 'compact_db'):
+            raise TypeError('%s is not a couchdbkit.server instance' % 
+                            server.__class__.__name__)
                             
         self.dbname = validate_dbname(dbname)
-        self.node = node
-        self.res = node.res.clone()
+        self.server = server
+        self.res = server.res.clone()
         self.res.update_uri('/%s' % dbname)
 
     def info(self):
@@ -131,42 +132,91 @@ class Database(object):
             return None
         return doc_with_revs           
         
-    def save(self, doc_or_docs):
-        """ Save one documents or multiple documents.
+    def save(self, doc):
+        """ Save a document. It will use the `_id` member of the document 
+        or request a new uuid from CouchDB. IDs are attached to
+        documents on the client side because POST has the curious property of
+        being automatically retried by proxies in the event of network
+        segmentation and lost responses. (Idee from `Couchrest <http://github.com/jchris/couchrest/>`)
 
-        :param doc: dict or list/tuple of dict.
+        :param doc: dict 
 
         :return: dict or list of dict: dict or list are updated 
         with doc '_id' and '_rev' properties returned 
-        by CouchDB node.
+        by CouchDB server.
 
         """
-        if doc_or_docs is None:
-            doc_or_docs = {}
-        if isinstance(doc_or_docs, (list, tuple,)):
-            for doc in doc_or_docs:
-                if '_id' in doc:
-                    self.escape_docid(doc['_id'])
-            results = self.res.post('_bulk_docs', payload={ "docs": doc_or_docs })
-            for i, res in enumerate(results):
-                doc_or_docs[i].update({ '_id': res['id'], '_rev': res['rev']})
-        else: 
-            if '_id' in doc_or_docs:
-                self.escape_docid(doc_or_docs['_id'])
-                res = self.res.put(doc_or_docs['_id'], payload=doc_or_docs)
-            else:
-                res = self.res.post(payload=doc_or_docs)
-            doc_or_docs.update({ '_id': res['id'], '_rev': res['rev']})
+        if doc is None:
+            doc = {}
+       
+        if '_id' in doc:
+            self.escape_docid(doc['_id'])
+            res = self.res.put(doc['_id'], payload=doc)
+        else:
+            try:
+                doc['_id'] = self.server.next_uuid()
+                res = self.res.put(doc['_id'], payload=doc)
+            except:
+                res = self.res.post(payload=doc)
+        doc.update({ '_id': res['id'], '_rev': res['rev']})
+        
+    def bulk_save(self, docs, use_uuids=True, all_or_nothing=False):
+        """ bulk save. Modify Multiple Documents With a Single Request
+        
+        :attr docs: list of docs
+        :attr use_uuids: add _id in doc who don't have it already set.
+        :attr all_or_nothing: In the case of a power failure, when the database 
+        restarts either all the changes will have been saved or none of them. 
+        However, it does not do conflict checking, so the documents will 
+        be committed even if this creates conflicts.
+        
+        .. seealso:: `HTTP Bulk Document API <http://wiki.apache.org/couchdb/HTTP_Bulk_Document_API>`
+        
+        """
+        def is_id(doc):
+            return '_id' in doc
+            
+        if use_uuids:
+            ids = []
+            noids = []
+            for k, g in groupby(docs, is_id):
+                if not k:
+                    noids = list(g)
+                else:
+                    ids = list(g)
+            
+            uuid_count = max(len(noids), self.server.uuid_batch_count)
+            for doc in noids:
+                nextid = self.server.next_uuid(count=uuid_count)
+                print doc
+                if nextid:
+                    doc['_id'] = nextid
+                    
+            # make sure we have a corret id
+            for doc in ids:
+                self.escape_docid(doc['_id'])
+                    
+        payload = { "docs": docs }
+        if all_or_nothing:
+            payload["all-or-nothing"] = True
+            
+        # update docs
+        results = self.res.post('/_bulk_docs', payload=payload)
+        for i, res in enumerate(results):
+            docs[i].update({'_id': res['id'], '_rev': res['rev']})
+    
+    def bulk_delete(self, docs, all_or_nothing=False):
+        """ bulk delete. 
+        It add '_deleted' member to doc then use bulk_save to save them."""
+        for doc in docs:
+            doc['_deleted'] = True
+        self.bulk_save(docs, use_uuids=False, all_or_nothing=all_or_nothing)
  
-    def delete(self, doc_or_docs):
+    def delete(self, doc):
         """ delete a document or a list of document
 
-        :param doc_or_docs: list or str: doment id or list
-        of documents or list with _id and _rev, optionnaly 
-        _deleted member set to true. See _bulk_docs document
-        on couchdb wiki.
-        
-        :return: list of doc or dict like:
+        :param doc: str or dict,  docyment id or full doc.
+        :return: dict like:
        
         .. code-block:: python
 
@@ -174,21 +224,13 @@ class Database(object):
         """
         result = { 'ok': False }
         
-        if isinstance(doc_or_docs, (list, tuple,)):
-            docs = []
-            for doc in doc_or_docs:
-                self.escape_docid(doc['_id'])
-                doc.update({'_deleted': True})
-                docs.append(doc)
-            result = self.res.post('_bulk_docs', payload={
-                "docs": docs })
-        elif isinstance(doc_or_docs, dict) and '_id' in doc_or_docs:
-            self.escape_docid(doc_or_docs['_id'])
-            result = self.res.delete(doc_or_docs['_id'], rev=doc_or_docs['_rev'])
-        elif isinstance(doc_or_docs, basestring):
-            data = self.res.head(doc_or_docs)
+        if isinstance(doc, dict) and '_id' in doc:
+            self.escape_docid(doc['_id'])
+            result = self.res.delete(doc['_id'], rev=doc['_rev'])
+        elif isinstance(doc, basestring): # we get a docid
+            data = self.res.head(doc)
             response = self.res.get_response()
-            result = self.res.delete(doc_or_docs, 
+            result = self.res.delete(doc, 
                     rev=response['etag'].strip('"'))
         return result
 
@@ -216,8 +258,8 @@ class Database(object):
             wrapper = obj.wrap
         return TempView(self, design, wrapper=wrapper)(**params)
 
-    def documents(self, **params):
-        return view.View(self, '_all_docs', wrapper=wrapper, **params)
+    def documents(self, wrapper=None, **params):
+        return View(self, '_all_docs', wrapper=wrapper, **params)
     iter_documents = documents    
 
     def put_attachment(self, doc, content, name=None, 
@@ -236,9 +278,9 @@ class Database(object):
 
         Example:
             
-            >>> from simplecouchdb import node
-            >>> node = node()
-            >>> db = node.create_db('couchdbkit_test')
+            >>> from simplecouchdb import server
+            >>> server = server()
+            >>> db = server.create_db('couchdbkit_test')
             >>> doc = { 'string': 'test', 'number': 4 }
             >>> db.save(doc)
             >>> text_attachment = u'un texte attaché'
@@ -249,7 +291,7 @@ class Database(object):
             >>> result['ok']
             True
             >>> db.fetch_attachment(doc, 'test')
-            >>> del node['couchdbkit_test']
+            >>> del server['couchdbkit_test']
             {u'ok': True}
         """
 

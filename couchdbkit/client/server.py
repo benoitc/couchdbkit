@@ -20,24 +20,35 @@ from couchdbkit.resource import CouchdbResource
 from couchdbkit.client.database import Database
 from couchdbkit.utils import validate_dbname
 
+UUIDS_COUNT = 1000
+
 class Server(object):
     """ Server object that allow you to access and manage a couchdb node. 
     A Server object could be use like any `dict` object.
     """
     
-    def __init__(self, uri='http://127.0.0.1:5984', transport=None):
-        """
-        Args: 
-            uri: uri of CouchDb host
-            transport: an transport instance from :mod:`restclient.transport`. Could be used
+    def __init__(self, uri='http://127.0.0.1:5984', uuid_batch_count=UUIDS_COUNT, 
+            transport=None):
+        """ constructor for Server object
+        
+        :attr uri: uri of CouchDb host
+        :attr uuid_batch_count: max of uuids to get in one time
+        :attr transport: an transport instance from :mod:`restclient.transport`. Could be used
                 to manage authentification to your server or proxy.
+                     d
         """
         
         if not uri or uri is None:
             raise ValueError("Server uri is missing")
 
         self.uri = uri
+        self.transport = transport
+        self.uuid_batch_count = uuid_batch_count
+        self._uuid_batch_count = uuid_batch_count
+        
         self.res = CouchdbResource(uri, transport=transport)
+        self.uuids = []
+        
         
     def info(self):
         """ info of server 
@@ -70,7 +81,18 @@ class Server(object):
             res = self.res.post('/%s/_compact' % dbname)
             return res['ok']
         return False
-            
+        
+    def next_uuid(self, count=None):
+        if count is not None:
+            self._uuid_batch_count = count
+        else:
+            self._uuid_batch_count = self.uuid_batch_count
+        
+        self.uuids = self.uuids or []
+        if not self.uuids:
+            self.uuids = self.res.get('/_uuids', count=self._uuid_batch_count)["uuids"]
+        return self.uuids.pop()
+          
     def __getitem__(self, dbname):
         if dbname in self:
             return Database(self, dbname)
