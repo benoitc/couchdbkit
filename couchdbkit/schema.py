@@ -24,15 +24,13 @@ import re
 import warnings
 
 from couchdbkit.client import Database
-from couchdbkit.schema import properties as p
-from couchdbkit.schema.exceptions import *
+from couchdbkit import properties as p
+from couchdbkit.exceptions import *
 
 __all__ = ['ReservedWordError', 'MAP_TYPES_PROPERTIES',
         'Document', 'DocumentSchema']
 
-class ReservedWordError(Exception):
-    """ exception raised when a reserved word
-    is used in Document schema """
+
 
 _RESERVED_WORDS = ['_id', '_rev', '$schema']
 

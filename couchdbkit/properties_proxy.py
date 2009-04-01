@@ -16,11 +16,10 @@
 
 
 import couchdbkit
-from couchdbkit.schema.properties import Property
-from couchdbkit.schema.base import DocumentSchema
-from couchdbkit.schema.exceptions import *
+from couchdbkit.properties import Property
+from couchdbkit.schema import DocumentSchema
+from couchdbkit.exceptions import *
 
-__all__ = ['SchemaProperty']
 
 class SchemaProperty(Property):
     """ Schema property. It allow you add a DocumentSchema instance 
@@ -182,5 +181,3 @@ def ListProperty(Property):
                 value = kwargs
             value = self.prop._to_json(value)
             super(Proxy, self).append(value)
-
-

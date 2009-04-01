@@ -18,7 +18,7 @@
 import threading
 
 
-from couchdbkit.client.database import Database
+from couchdbkit.database import Database
 
 
 def create_session(server, db_name, scoped_func=None):

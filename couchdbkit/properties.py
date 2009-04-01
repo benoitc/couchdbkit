@@ -20,7 +20,7 @@ import decimal
 import datetime
 import time
 
-from couchdbkit.schema.exceptions import *
+from couchdbkit.exceptions import *
 
 
 __all__ = ['Property', 'StringProperty', 'IntegerProperty',
@@ -338,4 +338,3 @@ class TimeProperty(DateTimeProperty):
 
     def _to_json(self, value):
         return value.replace(microsecond=0).isoformat()
-

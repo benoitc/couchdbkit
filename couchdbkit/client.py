@@ -22,14 +22,11 @@ import re
 
 from restclient.rest import url_quote
 
+from couchdbkit.exceptions import InvalidAttachment
 from couchdbkit.resource import CouchdbResource, ResourceNotFound
 from couchdbkit.utils import validate_dbname
 
 UUIDS_COUNT = 1000
-
-
-class InvalidAttachment(Exception):
-    """ raised when an attachment is invalid """
 
 class Server(object):
     """ Server object that allow you to access and manage a couchdb node. 

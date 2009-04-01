@@ -14,6 +14,11 @@
 # limitations under the License.
 #
 
+
+
+class InvalidAttachment(Exception):
+    """ raised when an attachment is invalid """
+
 class DuplicatePropertyError(Exception):
     """ exception raised when there is a duplicate 
     property in a model """
@@ -25,3 +30,7 @@ class BadValueError(Exception):
 class MultipleObjectsReturned(Exception):
     """ exception raised when more than one object is
     returned by the get_by method"""
+    
+class ReservedWordError(Exception):
+    """ exception raised when a reserved word
+    is used in Document schema """
