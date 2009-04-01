@@ -20,8 +20,6 @@ from itertools import groupby
 from mimetypes import guess_type
 import re
 
-from restclient.rest import url_quote
-
 from couchdbkit.resource import ResourceNotFound
 from couchdbkit.utils import validate_dbname
 from couchdbkit.client.view import View, TempView
@@ -273,7 +271,7 @@ class Database(object):
                 rev = dest['_rev']
                 destination = "%s?rev=%s" % (dest['_id'], dest['_rev'])
             else:
-                raise KeyError("dest doesn't exist or _rv or _id missing")
+                raise KeyError("dest doesn't exist or this not a document ('_id' or '_rev' missig).")
     
         if destination:
             result = self.res.copy('/%s' % docid, headers={ "Destination": str(destination) } )
