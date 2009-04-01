@@ -14,9 +14,11 @@
 # limitations under the License.
 #
 
+import base64
 import cgi
 from itertools import groupby
 from mimetypes import guess_type
+import re
 
 from couchdbkit.resource import ResourceNotFound
 from couchdbkit.utils import validate_dbname
@@ -48,7 +50,7 @@ class Database(object):
         self.server = server
         self.res = server.res.clone()
         self.res.update_uri('/%s' % dbname)
-
+        
     def info(self):
         """
         Get infos of database
@@ -148,7 +150,10 @@ class Database(object):
         """
         if doc is None:
             doc = {}
-       
+            
+        if '_attachments' in doc:
+            doc['_attachments'] = self.encode_attachments(doc['_attachments'])
+            
         if '_id' in doc:
             self.escape_docid(doc['_id'])
             res = self.res.put(doc['_id'], payload=doc)
@@ -383,3 +388,12 @@ class Database(object):
     def escape_docid(self, docid):
         if docid.startswith('_design/'):
             docid = "_design/%s" % (cgi.escape(docid[8:]))
+            
+    def encode_attachments(self, attachments):
+        for k, v in attachments.iteritems():
+            if v.get('stub', False):
+                continue
+            else:
+                re_sp = re.compile('\s')
+                v['data'] = re_sp.sub('', base64.b64encode(v['data']))
+        return attachments         

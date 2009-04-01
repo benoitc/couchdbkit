@@ -167,6 +167,96 @@ class ClientDatabaseTestCase(unittest.TestCase):
         
         del self.Server['couchdbkit_test']
         
+    def testInlineAttachments(self):
+        db = self.Server.create_db('couchdbkit_test')
+        attachment = "<html><head><title>test attachment</title></head><body><p>Some words</p></body></html>"
+        doc = { 
+            '_id': "docwithattachment", 
+            "f": "value", 
+            "_attachments": {
+                "test.html": {
+                    "type": "text/html",
+                    "data": attachment
+                }
+            }
+        }
+        db.save(doc)
+        fetch_attachment = db.fetch_attachment(doc, "test.html")
+        self.assert_(attachment == fetch_attachment)
+        doc1 = db.get("docwithattachment")
+        self.assert_('_attachments' in doc1)
+        self.assert_('test.html' in doc1['_attachments'])
+        self.assert_('stub' in doc1['_attachments']['test.html'])
+        self.assert_(doc1['_attachments']['test.html']['stub'] == True)
+        self.assert_(len(attachment) == doc1['_attachments']['test.html']['length'])
+        del self.Server['couchdbkit_test']
+    
+    def testMultipleInlineAttachments(self):
+        db = self.Server.create_db('couchdbkit_test')
+        attachment = "<html><head><title>test attachment</title></head><body><p>Some words</p></body></html>"
+        attachment2 = "<html><head><title>test attachment</title></head><body><p>More words</p></body></html>"
+        doc = { 
+            '_id': "docwithattachment", 
+            "f": "value", 
+            "_attachments": {
+                "test.html": {
+                    "type": "text/html",
+                    "data": attachment
+                },
+                "test2.html": {
+                    "type": "text/html",
+                    "data": attachment2
+                }
+            }
+        }
+        
+        db.save(doc)
+        fetch_attachment = db.fetch_attachment(doc, "test.html")
+        self.assert_(attachment == fetch_attachment)
+        fetch_attachment = db.fetch_attachment(doc, "test2.html")
+        self.assert_(attachment2 == fetch_attachment)
+        
+        doc1 = db.get("docwithattachment")
+        self.assert_('test.html' in doc1['_attachments'])
+        self.assert_('test2.html' in doc1['_attachments'])
+        self.assert_(len(attachment) == doc1['_attachments']['test.html']['length'])
+        self.assert_(len(attachment2) == doc1['_attachments']['test2.html']['length'])
+        del self.Server['couchdbkit_test']
+        
+    def testInlineAttachmentWithStub(self):
+        db = self.Server.create_db('couchdbkit_test')
+        attachment = "<html><head><title>test attachment</title></head><body><p>Some words</p></body></html>"
+        attachment2 = "<html><head><title>test attachment</title></head><body><p>More words</p></body></html>"
+        doc = { 
+            '_id': "docwithattachment", 
+            "f": "value", 
+            "_attachments": {
+                "test.html": {
+                    "type": "text/html",
+                    "data": attachment
+                }
+            }
+        }
+        db.save(doc)
+        doc1 = db.get("docwithattachment")
+        doc1["_attachments"].update({
+            "test2.html": {
+                "type": "text/html",
+                "data": attachment2
+            }
+        })
+        db.save(doc1)
+        
+        fetch_attachment = db.fetch_attachment(doc1, "test2.html")
+        self.assert_(attachment2 == fetch_attachment)
+        
+        doc2 = db.get("docwithattachment")
+        self.assert_('test.html' in doc2['_attachments'])
+        self.assert_('test2.html' in doc2['_attachments'])
+        self.assert_(len(attachment) == doc2['_attachments']['test.html']['length'])
+        self.assert_(len(attachment2) == doc2['_attachments']['test2.html']['length'])
+        del self.Server['couchdbkit_test']
+        
     def testAttachments(self):
         db = self.Server.create_db('couchdbkit_test')
         doc = { 'string': 'test', 'number': 4 }
