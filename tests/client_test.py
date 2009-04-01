@@ -18,7 +18,7 @@ __author__ = 'benoitc@e-engura.com (Benoît Chesneau)'
 
 import unittest
 
-from restclient import ResourceNotFound
+from restclient import ResourceNotFound, RequestFailed
 
 from couchdbkit.client.resource import CouchdbResource
 from couchdbkit.client import Server, Database
@@ -112,6 +112,25 @@ class ClientDatabaseTestCase(unittest.TestCase):
         doc = db.get(doc['_id'])
         self.assert_(doc['number'] == 6)
         del self.Server['couchdbkit_test']
+        
+    def testDocWithSlashes(self):
+         db = self.Server.create_db('couchdbkit_test')
+         doc = { '_id': "a/b"}
+         db.save(doc)
+         self.assert_( "a/b" in db)
+         doc = { '_id': "a%2Fb"}
+         db.save(doc)
+         self.assert_( "a/b" in db)
+         self.assert_( "a%2Fb" in db)
+         
+         doc = { '_id': '_design%2Fa' }
+         def failed():
+             db.save(doc)
+         self.assertRaises(RequestFailed, failed)
+         
+         doc = { '_id': '_design/a' }
+         db.save(doc)
+         self.assert_( "_design/a" in db)
         
     def testDbLen(self):
         db = self.Server.create_db('couchdbkit_test')
