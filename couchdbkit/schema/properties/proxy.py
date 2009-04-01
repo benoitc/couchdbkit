@@ -124,3 +124,63 @@ class SchemaProperty(Property):
                 raise BadValueError("%s is not a dict" % str(value))
             value = schema(**value)
         return value._doc
+
+def ListProperty(Property):
+    def __init__(self, prop, verbose_name=None, name=None, 
+            required=False, validators=None, default=None):
+            
+        Property.__init__(self, verbose_name=None,
+            name=None, required=False, validators=None)
+            
+        if type(prop) is type:
+            if issubclass(prop, Property):
+                prop = prop()
+            elif issubclass(prop, DocumentSchema):
+                prop = SchemaProperty(prop)
+        self.prop = prop
+        
+        
+    def validate(self, value, required=True):
+        for item in value:
+            item.validate()
+            
+        value = super(ListProperty, self).validate(value)
+        if value is None:
+            return Value
+            
+        if not isinstance(value, self.prop.__class__):
+            raise BadValueError(
+                'Property %s must be %s instance, not a %s' % (self.name, self.prop.__class__.__name__
+                type(value).__name__))
+        
+        return value
+        
+    def to_python(self, value):
+        return self.ProxyList(value, self.prop)
+        
+    def _to_json(self, value):
+        return [self.prop.to_json(item) for item in value]
+        
+        
+    class ProxyList(list):
+
+        def __init__(self, l, prop):
+            self.prop = prop
+            list.__init__(self, l)
+
+        def __getitem__(self, index):
+            return self.prop._to_python(self[index])
+
+        def __setitem__(self, index, value):
+            self[index] = self.prop._to_json(value)
+
+        def append(self, *args, **kwargs):
+            if args:
+                assert len(args) == 1
+                value = args[0]
+            else:
+                value = kwargs
+            value = self.prop._to_json(value)
+            super(Proxy, self).append(value)
+
+
