@@ -26,8 +26,6 @@ import warnings
 from couchdbkit.client.database import Database
 from couchdbkit.schema import properties as p
 from couchdbkit.schema.exceptions import *
-from couchdbkit.schema.design_doc import DesignDoc
-from couchdbkit.client import document
 
 __all__ = ['ReservedWordError', 'MAP_TYPES_PROPERTIES',
         'Document', 'DocumentSchema']
@@ -402,7 +400,7 @@ class DocumentSchema(object):
 
 class DocumentBase(DocumentSchemaBase):
     def __init__(cls, name, bases, attrs):
-        for attr_name, attr in attrs.items():
+        """for attr_name, attr in attrs.items():
             if isinstance(attr, DesignDoc):
                 check_reserved_words(attr_name)
                 attr.__design_config__(cls, attr_name)
@@ -413,7 +411,7 @@ class DocumentBase(DocumentSchemaBase):
             default.__design_config__(cls, 'objects')
         else:
             attrs['default_objects'] = default
-            default.__design_config__(cls, 'default_objects')
+            default.__design_config__(cls, 'default_objects')"""
 
         return DocumentSchemaBase.__init__(cls, name, bases, attrs)      
 

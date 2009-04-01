@@ -16,9 +16,9 @@
 
 from restclient.rest import url_quote
 
-from couchdbkit.client.resource import CouchdbResource
+from couchdbkit.resource import CouchdbResource
 from couchdbkit.client.database import Database
-from couchdbkit.client.utils import validate_dbname
+from couchdbkit.utils import validate_dbname
 
 class Server(object):
     """ Server object that allow you to access and manage a couchdb node. 

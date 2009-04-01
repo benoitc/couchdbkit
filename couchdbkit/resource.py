@@ -47,7 +47,7 @@ except ImportError:
     import json
         
 from couchdbkit import __version__
-from couchdbkit.client.utils import SimplecouchdbJSONEncoder
+from couchdbkit.utils import SimplecouchdbJSONEncoder
 
 USER_AGENT = 'couchdbkit/%s' % __version__
 
