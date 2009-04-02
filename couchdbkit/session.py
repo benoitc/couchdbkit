@@ -17,9 +17,7 @@
 
 import threading
 
-
-from couchdbkit.database import Database
-
+from couchdbkit.client import Database
 
 def create_session(server, db_name, scoped_func=None):
     return Session(server, db_name, scoped_func)
@@ -51,6 +49,43 @@ class Session(object):
         db = self.registry()
         document._db = db
         document.save()
+        
+    def get(self, document, docid):
+        """ get document with docid"""
+        if not isinstance(document, type):
+            raise TypeError('only document class could be used')
+
+        db = self.registry()
+        document._db = db
+        return document.get(docid)
+
+    def get_or_create(self, document, docid=None):
+        """ get or create a new document with docid """
+        
+        if not isinstance(document, type):
+            raise TypeError('only document class could be used')
+
+        db = self.registry()
+        document._db = db
+        return document.get_or_create(docid=docid)
+        
+    def view(self, document, view_name, wrapper=None, **params):
+        """ query db and try to wrap results to this document object"""
+        if not isinstance(document, type):
+            raise TypeError('only document class could be used')
+
+        db = self.registry()
+        document._db = db
+        return document.view(view_name, wrapper=wrapper, **params)
+
+    def temp_view(self, document, design, wrapper=None, **params):
+        """ temeporary query on db and try to wrap results to this document object"""
+        if not isinstance(document, type):
+            raise TypeError('only document class could be used')
+
+        db = self.registry()
+        document._db = db
+        return document.temp_view(design, wrapper=wrapper, **params)
     
     def session_factory(self):
         return Database(self.server, self.dbname)

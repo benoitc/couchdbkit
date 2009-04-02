@@ -26,6 +26,8 @@ import warnings
 from couchdbkit.client import Database
 from couchdbkit import properties as p
 from couchdbkit.exceptions import *
+from couchdbkit.resource import ResourceNotFound
+
 
 __all__ = ['ReservedWordError', 'MAP_TYPES_PROPERTIES',
         'Document', 'DocumentSchema']
@@ -394,25 +396,14 @@ class DocumentSchema(object):
                 attrs[attr_name] = prop
         return type('AnonymousSchema', (cls,), properties)
 
-class DocumentBase(DocumentSchemaBase):
+class DocumentProperties(SchemaProperties):
     def __init__(cls, name, bases, attrs):
-        """for attr_name, attr in attrs.items():
-            if isinstance(attr, DesignDoc):
-                check_reserved_words(attr_name)
-                attr.__design_config__(cls, attr_name)
-
-        default = DesignDoc()
-        if not 'view_by' in attrs:
-            attrs['objects'] = default
-            default.__design_config__(cls, 'objects')
-        else:
-            attrs['default_objects'] = default
-            default.__design_config__(cls, 'default_objects')"""
+        # TODO
 
         return DocumentSchemaBase.__init__(cls, name, bases, attrs)      
 
-class Document(DocumentSchema):
-    """ Document object that map a CouchDB Document.
+class DocumentBase(DocumentSchema):
+    """ Base Document object that map a CouchDB Document.
     It allow you to map statically a document by 
     providing fields like you do with any ORM or
     dynamically. Ie unknown fields are loaded as
@@ -436,7 +427,7 @@ class Document(DocumentSchema):
     To delete a property simply do ``del instance[key'] or delattr(instance, key)``
     """
 
-    __metaclass__ = DocumentBase
+    #__metaclass__ = DocumentProperties
 
     _db = None
 
@@ -470,13 +461,47 @@ class Document(DocumentSchema):
             raise TypeError("doc database required to save document")
         
         doc = self.to_json()
-        self._db.save(doc)
+        self._db.save_doc(doc)
         self._doc.update({'_id': doc['_id'], '_rev': doc['_rev']})
         
     store = save
     
+    @classmethod
+    def get(cls, docid, db=None):
+        if db is not None:
+            cls._db = db
+        if cls._db is None:
+            raise TypeError("doc database required to save document")
+        return cls._db.get(docid, wrapper=cls.wrap)
+        
+    @classmethod
+    def get_or_create(cls, docid=None, db=None):
+        if db is not None:
+            cls._db = db
+                
+        if cls._db is None:    
+            raise TypeError("doc database required to save document")
+            
+        if docid is None:
+            obj = cls()
+            obj.save()
+            return obj
+        
+        try:
+            return cls._db.get(docid, wrapper=cls.wrap)
+        except ResourceNotFound:
+            obj = cls()
+            obj.id = docid
+            obj.save()
+            return obj
   
     new_document = property(lambda self: self._doc.get('_rev') is None) 
+    
+class AttachmentMixin(object):
+    """
+    mixin to manage attachments of a doc.
+    
+    """
     
     def put_attachment(self, content, name=None,
         content_type=None, content_length=None):
@@ -516,3 +541,74 @@ class Document(DocumentSchema):
         if not hasattr(self, '_db'):
             raise TypeError("doc database required to save document")
         return self.__class__._db.fetch_attachment(self, name)
+        
+        
+class QueryMixin(object):
+    
+    @classmethod
+    def view(cls, view_name, wrapper=None, **params):
+        """ Get documents associated to a view.
+        Results of view are automatically wrapped
+        to Document object.
+
+        :params view_name: str, name of view
+        :params params:  params of view
+
+        :return: :class:`simplecouchdb.core.ViewResults` instance. All
+        results are wrapped to current document instance.
+        """
+        def default_wrapper(row):
+            if not 'id' in row:
+                return row
+            data = row['value']
+            data['_id'] = row.get('id')
+            obj = cls.wrap(data)
+            return obj
+        wrapper = wrapper or default_wrapper
+        if not callable(wrapper):
+            raise TypeError("wrapper is not a callable")
+            
+        db = getattr(cls, '_db', None)
+        if db is None:
+            raise TypeError("doc database required to save document")
+            
+        return db.view(view_name, wrapper=wrapper, **params)
+        
+    @classmethod
+    def temp_view(cls, design, wrapper=None, **params):
+        """ Slow view. Like in view method,
+        results are automatically wrapped to 
+        Document object.
+
+        :params design: design object, See `simplecouchd.client.Database`
+        :params params:  params of view
+
+        :return: Like view, return a :class:`simplecouchdb.core.ViewResults` instance. All
+        results are wrapped to current document instance.
+        """
+        def default_wrapper(row):
+            if not 'id' in row:
+                return row
+            data = row['value']
+            data['_id'] = row.get('id')
+            obj = cls.wrap(data)
+            return obj
+        wrapper = wrapper or default_wrapper
+        if not callable(wrapper):
+            raise TypeError("wrapper is not a callable")
+            
+        db = getattr(cls, '_db', None)
+        if db is None:
+            raise TypeError("doc database required to save document")
+            
+        return db.temp_view(design, wrapper=wrapper, **params)    
+        
+        
+class Document(DocumentBase, QueryMixin, AttachmentMixin):
+    """
+    Full featured document object implementing the following :
+    
+    :class:`QueryMixin` for view & temp_view that wrap results to this object
+    :class `AttachmentMixin` for attachments function
+    """     
+        

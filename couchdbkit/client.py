@@ -81,6 +81,11 @@ class Server(object):
         if res['ok']:
             return Database(self, dbname)
         return res['ok']
+        
+    def delete_db(self, dbname):
+        if "/" in dbname:
+            dbname = url_quote(dbname, safe=":")
+        del self[dbname]
     
     def next_uuid(self, count=None):
         if count is not None:

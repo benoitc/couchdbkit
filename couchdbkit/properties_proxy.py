@@ -65,7 +65,7 @@ class SchemaProperty(Property):
             name=None, required=False, validators=None)
        
         use_instance = True
-        if type(schema) == simplecouchdb.schema.base.DocumentSchemaBase:
+        if type(schema) == couchdbkit.schema.SchemaProperties:
             use_instance = False    
 
         elif not isinstance(schema, DocumentSchema):
@@ -149,7 +149,7 @@ def ListProperty(Property):
             
         if not isinstance(value, self.prop.__class__):
             raise BadValueError(
-                'Property %s must be %s instance, not a %s' % (self.name, self.prop.__class__.__name__
+                'Property %s must be %s instance, not a %s' % (self.name, self.prop.__class__.__name__,
                 type(value).__name__))
         
         return value

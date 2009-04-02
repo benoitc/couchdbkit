@@ -25,8 +25,7 @@ from couchdbkit.exceptions import *
 
 __all__ = ['Property', 'StringProperty', 'IntegerProperty',
         'DecimalProperty', 'BooleanProperty', 'FloatProperty',
-        'DateTimeProperty', 'DateProperty', 'TimeProperty',
-        'ListProperty', 'DictProperty']
+        'DateTimeProperty', 'DateProperty', 'TimeProperty']
 
 class Property(object):
     """ Propertu base which all other properties
