@@ -87,7 +87,6 @@ def convert_property(value):
 class SchemaProperties(type):
 
     def __new__(cls, name, bases, attrs):
-        
         # init properties
         properties = {}
         defined = set()

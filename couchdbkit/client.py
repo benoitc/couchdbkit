@@ -101,7 +101,7 @@ class Server(object):
     def __getitem__(self, dbname):
         if dbname in self:
             return Database(self, dbname)
-        raise KeyError("%s not in %s" % (dbname, self.uri))
+        raise ResourceNotFound
         
     def __delitem__(self, dbname):
         return self.res.delete('/%s/' % validate_dbname(dbname))
