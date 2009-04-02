@@ -41,7 +41,6 @@ class Server(object):
         :attr uuid_batch_count: max of uuids to get in one time
         :attr transport: an transport instance from :mod:`restclient.transport`. Could be used
                 to manage authentification to your server or proxy.
-                     d
         """
         
         if not uri or uri is None:
@@ -121,8 +120,6 @@ class Server(object):
     def __nonzero__(self):
         return (len(self) > 0)
         
-
-
 class Database(object):
     """ Object that abstract access to a CouchDB database
     A Database object could act as a Dict object.

@@ -84,7 +84,7 @@ class BaseDocsLoader(object):
                         new_doc['couchapp'] ['signatures'] = _app_meta.get('signatures', {})
 
                         new_doc.update({
-                            '_rev': design['_rev'],
+                            '_rev': current['_rev'],
                             '_attachments': current.get('_attachments', {})
                         })
                     else:

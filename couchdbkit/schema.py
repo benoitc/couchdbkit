@@ -77,7 +77,6 @@ def check_reserved_words(attr_name):
             "Cannot define property using reserved word '%(attr_name)s'." % 
             locals())
 
-
 def convert_property(value):
     if type(value) in MAP_TYPES_PROPERTIES:
         prop = MAP_TYPES_PROPERTIES[type(value)]()
