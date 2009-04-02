@@ -2,3 +2,4 @@ include LICENSE
 include README.txt
 include ez_setup.py
 recursive-include docs *
+recursive-include tests/data *

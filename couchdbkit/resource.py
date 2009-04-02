@@ -131,7 +131,7 @@ class CouchdbResource(restclient.Resource):
                     body = payload.read()
             elif not isinstance(payload, basestring):
                 body = json.dumps(payload, allow_nan=False,
-                        ensure_ascii=False, cls=SimplecouchdbJSONEncoder).encode('utf-8')
+                        ensure_ascii=False).encode('utf-8')
                 headers.setdefault('Content-Type', 'application/json')
             else:
                 body = payload

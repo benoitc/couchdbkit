@@ -15,13 +15,17 @@
 # limitations under the License.
 
 
-__all__ = ['validate_dbname', 'SimplecouchdbJSONEncoder']
-
+import codecs
+import string
 from calendar import timegm
 import datetime
 import decimal
-import time
+from hashlib import md5
+import os
 import re
+import sys
+import time
+
 
 # python 2.6
 try: 
@@ -36,6 +40,81 @@ def validate_dbname(name):
         raise ValueError('Invalid database name')
     return name
     
+def to_bytestring(s):
+    """ convert to bytestring an unicode """
+    if not isinstance(s, basestring):
+        return s
+    if isinstance(s, unicode):
+        return s.encode('utf-8')
+    else:
+        return s
+    
+def read_file(fname):
+    """ read file content"""
+    f = codecs.open(fname, 'rb', "utf-8")
+    data = f.read()
+    f.close()
+    return data
+
+def sign_file(file_path):
+    """ return md5 hash from file content
+    
+    :attr file_path: string, path of file
+    
+    :return: string, md5 hexdigest
+    """
+    if os.path.isfile(file_path):
+        f = open(file_path, 'rb')
+        content = f.read()
+        f.close()
+        return md5(content).hexdigest()
+    return ''
+
+def write_content(fname, content):
+    """ write content in a file
+    
+    :attr fname: string,filename
+    :attr content: string
+    """
+    f = open(fname, 'wb')
+    f.write(to_bytestring(content))
+    f.close()
+
+def write_json(filename, content):
+    """ serialize content in json and save it
+    
+    :attr filename: string
+    :attr content: string
+    
+    """
+    write_content(filename, json.dumps(content))
+
+def read_json(filename, use_environment=False):
+    """ read a json file and deserialize
+    
+    :attr filename: string
+    :attr use_environment: boolean, default is False. If
+    True, replace environment variable by their value in file
+    content
+    
+    :return: dict or list
+    """
+    try:
+        data = read_file(filename)
+    except IOError, e:
+        if e[0] == 2:
+            return {}
+        raise
+
+    if use_environment:
+        data = string.Template(data).substitute(os.environ)
+
+    try:
+        data = json.loads(data)
+    except ValueError:
+        print >>sys.stderr, "Json is invalid, can't load %s" % filename
+        return {}
+    return data
 
 class SimplecouchdbJSONEncoder(simplejson.JSONEncoder):
     """
