@@ -184,32 +184,43 @@ class DocumentTestCase(unittest.TestCase):
         
         class Test2(Document):
             string = StringProperty(default="test")
-
+            
+        class Test3(Document):
+            doc_type = "test_type"
+            string = StringProperty(default="test")
 
         doc1 = Test() 
         doc2 = Test2()
         doc3 = Test2()
+        doc4 = Test3()
 
-        self.assert_(doc1.doc_type == 'Test')
-        self.assert_(doc3.doc_type == 'Test2')
-
-
+        self.assert_(doc1._doc_type == 'Test')
+        self.assert_(doc1._doc['doc_type'] == 'Test')
+        
+        self.assert_(doc3._doc_type == 'Test2')
+        self.assert_(doc4._doc_type == 'test_type')
+        self.assert_(doc4._doc['doc_type'] == 'test_type')
+        
+        
         db = self.server.create_db('simplecouchdb_test')
-        Test2._db = Test._db = db
+        Test3._db = Test2._db = Test._db = db
 
         doc1.save()
         doc2.save()
         doc3.save()
+        doc4.save()
      
         get1 = Test.get(doc1.id)
         get2 = Test2.get(doc2.id)
         get3 = Test2.get(doc3.id)
+        get4 = Test3.get(doc4.id)
 
 
         self.server.delete_db('simplecouchdb_test')
-        self.assert_(get1.doc_type == 'Test')
-        self.assert_(get2.doc_type == 'Test2')
-        self.assert_(get3.doc_type == 'Test2')
+        self.assert_(get1._doc['doc_type'] == 'Test')
+        self.assert_(get2._doc['doc_type']== 'Test2')
+        self.assert_(get3._doc['doc_type'] == 'Test2')
+        self.assert_(get4._doc['doc_type'] == 'test_type')
         
     def testInheriting(self):
         class TestDoc(Document):
@@ -601,7 +612,7 @@ class PropertyTestCase(unittest.TestCase):
         self.assert_(isinstance(C.i, IntegerProperty))
 
         c = C()
-        self.assert_(c.doc_type == 'AnonymousSchema')
+        self.assert_(c._doc_type == 'AnonymousSchema')
         self.assert_(c._doc == {'doc_type': 'AnonymousSchema', 'i':
             None})
 

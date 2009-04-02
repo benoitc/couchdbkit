@@ -87,6 +87,7 @@ def convert_property(value):
 class SchemaProperties(type):
 
     def __new__(cls, name, bases, attrs):
+        
         # init properties
         properties = {}
         defined = set()
@@ -99,7 +100,15 @@ class SchemaProperties(type):
                         'Duplicate properties in base class %s already defined: %s' % (base.__name__, list(duplicate_properties)))
                 defined.update(property_keys)
                 properties.update(base._properties) 
-
+                
+        doc_type = attrs.get('doc_type', False)
+        if not doc_type:
+            doc_type = name
+        else:
+            del attrs['doc_type']
+            
+        attrs['_doc_type'] = doc_type
+                
         for attr_name, attr in attrs.items():
             # map properties
             if isinstance(attr, p.Property):
@@ -140,9 +149,9 @@ class DocumentSchema(object):
             if not isinstance(d, dict):
                 raise TypeError('d should be a dict')
             properties.update(d)
-
-        
-        self._doc['doc_type'] = self.__class__.__name__
+            
+        doc_type = getattr(self, '_doc_type', self.__class__.__name__)
+        self._doc['doc_type'] = doc_type
            
         for prop in self._properties.values():
             if prop.name in properties:
@@ -187,18 +196,11 @@ class DocumentSchema(object):
 
     def to_json(self):
         if self._doc.get('doc_type') is None:
-            self._doc['doc_type'] = self.__class__.__name__
-       
+            doc_type = getattr(self, '_doc_type', self.__class__.__name__)
+            self._doc['doc_type'] = doc_type
         return self._doc
 
-    def _doc_type(self):
-        if self._doc.get('doc_type') is None:
-            self._doc['doc_type'] = self.__class__.__name__
-        return self.__class__.__name__
-    doc_type = property(_doc_type)
-
-
-
+    
     def __setattr__(self, key, value):
         check_reserved_words(key)
         if not hasattr( self, key ) and not self._allow_dynamic_properties:
@@ -396,12 +398,6 @@ class DocumentSchema(object):
                 attrs[attr_name] = prop
         return type('AnonymousSchema', (cls,), properties)
 
-class DocumentProperties(SchemaProperties):
-    def __init__(cls, name, bases, attrs):
-        # TODO
-
-        return DocumentSchemaBase.__init__(cls, name, bases, attrs)      
-
 class DocumentBase(DocumentSchema):
     """ Base Document object that map a CouchDB Document.
     It allow you to map statically a document by 
@@ -426,9 +422,6 @@ class DocumentBase(DocumentSchema):
 
     To delete a property simply do ``del instance[key'] or delattr(instance, key)``
     """
-
-    #__metaclass__ = DocumentProperties
-
     _db = None
 
     def __init__(self, d=None, **kwargs):
