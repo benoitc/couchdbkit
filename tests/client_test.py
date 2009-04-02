@@ -85,6 +85,16 @@ class ClientDatabaseTestCase(unittest.TestCase):
         info = db.info()
         self.assert_(info['db_name'] == 'couchdbkit_test')
         del self.Server['couchdbkit_test']
+        
+    def testDbFromUri(self):
+        db = self.Server.create_db('couchdbkit_test')
+        
+        db1 = Database.from_uri("http://127.0.0.1:5984/couchdbkit_test", "couchdbkit_test")
+        self.assert_(hasattr(db1, "dbname") == True)
+        self.assert_(db1.dbname == "couchdbkit_test")
+        info = db1.info()
+        self.assert_(info['db_name'] == "couchdbkit_test")
+        
 
     def testCreateEmptyDoc(self):
         db = self.Server.create_db('couchdbkit_test')

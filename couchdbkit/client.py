@@ -26,14 +26,14 @@ from couchdbkit.exceptions import InvalidAttachment
 from couchdbkit.resource import CouchdbResource, ResourceNotFound
 from couchdbkit.utils import validate_dbname
 
-UUIDS_COUNT = 1000
+DEFAULT_UUID_BATCH_COUNT = 1000
 
 class Server(object):
     """ Server object that allow you to access and manage a couchdb node. 
     A Server object could be use like any `dict` object.
     """
     
-    def __init__(self, uri='http://127.0.0.1:5984', uuid_batch_count=UUIDS_COUNT, 
+    def __init__(self, uri='http://127.0.0.1:5984', uuid_batch_count=DEFAULT_UUID_BATCH_COUNT, 
             transport=None):
         """ constructor for Server object
         
@@ -138,6 +138,15 @@ class Database(object):
         self.server = server
         self.res = server.res.clone()
         self.res.update_uri('/%s' % dbname)
+        
+    @classmethod
+    def from_uri(cls, uri, dbname, uuid_batch_count=DEFAULT_UUID_BATCH_COUNT, 
+                transport=None):
+        """ Create a database from its url. """
+        server_uri = uri.split(dbname)[0][:-1]
+        server = Server(server_uri, uuid_batch_count=uuid_batch_count, 
+            transport=transport)
+        return cls(server, dbname)
         
     def info(self):
         """

@@ -30,8 +30,6 @@ from couchdbkit.exceptions import *
 __all__ = ['ReservedWordError', 'MAP_TYPES_PROPERTIES',
         'Document', 'DocumentSchema']
 
-
-
 _RESERVED_WORDS = ['_id', '_rev', '$schema']
 
 _NODOC_WORDS = ['doc_type','id', 'rev']
