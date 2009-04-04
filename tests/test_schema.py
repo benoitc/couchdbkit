@@ -350,7 +350,7 @@ class DocumentTestCase(unittest.TestCase):
 
         self.assert_(b.s == "test")
         
-        c = dbsession.get(A, a.id)
+        c = A.get(a.id)
         self.assert_(c.s == "test")
         
         self.server.delete_db('simplecouchdb_test')

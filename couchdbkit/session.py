@@ -23,6 +23,30 @@ def create_session(server, db_name, scoped_func=None):
     return Session(server, db_name, scoped_func)
 
 class Session(object):
+    """ Provide a thread local management of db.
+    
+    Usage:
+    
+        Create a session with `create_session`
+        
+            session = create_session(server, dbname)
+            
+        Then use it like db object. You can also use Session
+        with `Document`objects :
+            
+            MyDocument = session(MyDocument)
+            MyDocument.save()
+            
+            or :
+            
+            session(Mydocument).save()
+            
+        instead of doing :
+        
+            MyDocument.set_db(session) 
+            MyDocument.save()
+        
+    """
 
     def __init__(self, server, dbname, scoped_func=None):
         self.server = server
@@ -38,55 +62,41 @@ class Session(object):
         document._db = db
         return document
 
-    def save(self, document):
-        """ save document in database.
-
-        : paramms document: `schema.Document` instance
-        """
-        if isinstance(document, type):
-            raise TypeError('only document instance could be saved')
-
+    def __getattr__(self, key):
         db = self.registry()
-        document._db = db
-        document.save()
+        if not key.startswith('_') and key not in dir(self) \
+                and hasattr(db, key):
+            return getattr(db, key)
+        return getattr(super(Session, self), key)
         
-    def get(self, document, docid):
-        """ get document with docid"""
-        if not isinstance(document, type):
-            raise TypeError('only document class could be used')
-
+    def __len__(self):
         db = self.registry()
-        document._db = db
-        return document.get(docid)
-
-    def get_or_create(self, document, docid=None):
-        """ get or create a new document with docid """
+        return db.__len__()
         
-        if not isinstance(document, type):
-            raise TypeError('only document class could be used')
-
+    def __contains__(self, docid):
         db = self.registry()
-        document._db = db
-        return document.get_or_create(docid=docid)
+        return db.__contains__(docid)
         
-    def view(self, document, view_name, wrapper=None, **params):
-        """ query db and try to wrap results to this document object"""
-        if not isinstance(document, type):
-            raise TypeError('only document class could be used')
-
+    def __getitem__(self, id):
         db = self.registry()
-        document._db = db
-        return document.view(view_name, wrapper=wrapper, **params)
-
-    def temp_view(self, document, design, wrapper=None, **params):
-        """ temeporary query on db and try to wrap results to this document object"""
-        if not isinstance(document, type):
-            raise TypeError('only document class could be used')
-
+        return db.get(id)
+        
+    def __setitem__(self, docid, doc):
         db = self.registry()
-        document._db = db
-        return document.temp_view(design, wrapper=wrapper, **params)
-    
+        return db.__setitem__(docid, doc)
+        
+    def __delitem__(self, docid):
+        db = self.registry()
+        return db.__delitem__(docid, doc)
+
+    def __iter__(self):
+        db = self.registry()
+        return db.iterdocuments()
+        
+    def __nonzero__(self):
+        db = self.registry()
+        return (len(db) > 0)
+
     def session_factory(self):
         return Database(self.server, self.dbname)
 
