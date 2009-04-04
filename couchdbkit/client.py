@@ -526,8 +526,8 @@ class Database(object):
         return (len(self) > 0)
         
     def escape_docid(self, docid):
-        if docid.startswith('_design/'):
-            docid = "_design/%s" % (cgi.escape(docid[8:]))
+        docid = url_quote(docid, safe="")    
+        
             
     def encode_attachments(self, attachments):
         for k, v in attachments.iteritems():

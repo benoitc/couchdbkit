@@ -36,7 +36,7 @@ to keep its simplicity when you manage it in python""",
     author = 'Benoit Chesneau',
     author_email = 'benoitc@e-engura.com',
     license = 'Apache License 2',
-    url = 'http://code.google.com/p/py-simplecouchdb/',
+    url = 'http://hg.e-engura.org/couchdbkit',
 
     classifiers = [
         'Development Status :: 4 - Beta',
