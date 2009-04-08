@@ -114,7 +114,7 @@ def read_json(filename, use_environment=False):
         data = json.loads(data)
     except ValueError:
         print >>sys.stderr, "Json is invalid, can't load %s" % filename
-        return {}
+        raise
     return data
 
 class SimplecouchdbJSONEncoder(simplejson.JSONEncoder):

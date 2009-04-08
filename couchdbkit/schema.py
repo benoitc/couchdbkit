@@ -595,7 +595,6 @@ class QueryMixin(object):
             
         return db.temp_view(design, wrapper=wrapper, **params)    
         
-        
 class Document(DocumentBase, QueryMixin, AttachmentMixin):
     """
     Full featured document object implementing the following :

@@ -189,52 +189,75 @@ class FileSystemDocsLoader(BaseDocsLoader):
             if not os.path.isdir(docpath):
                 raise DocsPathNotFound("%s doesn't exist" % docpath)
             for name in os.listdir(docpath):
-                doc = { '_id': name }
-                manifest = []
-                app_dir = os.path.join(docpath, name)
-                doc.update(dir_to_fields(app_dir, app_dir, 
-                    manifest=manifest, verbose=verbose))
-                if not 'couchapp' in doc:
-                    doc['couchapp'] = {}
-                doc['couchapp'].update({ 'manifest': manifest })
-                docs.append(doc)
+                if name.startswith('.'):
+                    continue
+                elif os.path.isfile(name):
+                    fpath = os.path.join(docpath, name)
+                    try:
+                        doc = read_file(fpath)
+                    except UnicodeDecodeError, e:
+                        print >>sys.stderr, str(e)
+                        raise
+                        
+                    if name.endswith('.json'):
+                        try:
+                            doc = read_json(fpath)
+                        except ValueError:
+                            pass
+                    doc.update({ '_id': name })
+                    docs.append(doc)
+                else:
+                    doc = { '_id': name }
+                    manifest = []
+                    app_dir = os.path.join(docpath, name)
+                    doc.update(self.dir_to_fields(app_dir, app_dir, 
+                        manifest=manifest, verbose=verbose))
+                    if not 'couchapp' in doc:
+                        doc['couchapp'] = {}
+                    doc['couchapp'].update({ 'manifest': manifest })
+                    docs.append(doc)
                     
         for designpath in self.designpath:
             if not os.path.isdir(designpath):
                 raise DocsPathNotFound("%s doesn't exist" % designpath)
             for name in os.listdir(designpath):
-                design_doc = {}
-                manifest = []
-                objects = {}
-                docid = design_doc['_id'] = "_design/%s" % name
-                app_dir = os.path.join(designpath, name)
-                attach_dir = os.path.join(app_dir, '_attachments')
+                if name.startswith('.'):
+                    continue
+                elif os.path.isfile(name):
+                    continue
+                else:
+                    design_doc = {}
+                    manifest = []
+                    objects = {}
+                    docid = design_doc['_id'] = "_design/%s" % name
+                    app_dir = os.path.join(designpath, name)
+                    attach_dir = os.path.join(app_dir, '_attachments')
 
-                design_doc.update(self.dir_to_fields(app_dir, manifest=manifest,
-                        verbose=verbose))
+                    design_doc.update(self.dir_to_fields(app_dir, manifest=manifest,
+                            verbose=verbose))
 
-                if not 'couchapp' in design_doc:
-                    design_doc['couchapp'] = {}
+                    if not 'couchapp' in design_doc:
+                        design_doc['couchapp'] = {}
 
-                if 'shows' in design_doc:
-                    package_shows(design_doc, design_doc['shows'], app_dir, objects, verbose=verbose)
+                    if 'shows' in design_doc:
+                        package_shows(design_doc, design_doc['shows'], app_dir, objects, verbose=verbose)
 
-                if 'lists' in design_doc:
-                    package_shows(design_doc, design_doc['lists'], app_dir, objects, verbose=verbose)
+                    if 'lists' in design_doc:
+                        package_shows(design_doc, design_doc['lists'], app_dir, objects, verbose=verbose)
 
-                if 'views' in design_doc:
-                    package_views(design_doc, design_doc["views"], app_dir, objects, verbose=verbose)
+                    if 'views' in design_doc:
+                        package_views(design_doc, design_doc["views"], app_dir, objects, verbose=verbose)
 
-                couchapp = design_doc.get('couchapp', False)
-                design_doc.update({
-                    'couchapp': {
-                        'manifest': manifest,
-                        'objects': objects
-                    }
-                })
-                self.attach(design_doc, attach_dir, docid, verbose=verbose)
-                self.attach_vendors(design_doc, app_dir, docid, verbose=verbose)
-                docs.append(design_doc)
+                    couchapp = design_doc.get('couchapp', False)
+                    design_doc.update({
+                        'couchapp': {
+                            'manifest': manifest,
+                            'objects': objects
+                        }
+                    })
+                    self.attach(design_doc, attach_dir, docid, verbose=verbose)
+                    self.attach_vendors(design_doc, app_dir, docid, verbose=verbose)
+                    docs.append(design_doc)
         return docs
                 
             
