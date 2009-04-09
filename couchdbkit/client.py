@@ -620,7 +620,7 @@ class ViewResults(object):
         return self.count()
 
     def __nonzero__(self):
-        bool(len(self))
+        return bool(len(self))
         
         
 class ViewInterface(object):
