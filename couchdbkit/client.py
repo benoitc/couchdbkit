@@ -298,7 +298,6 @@ class Database(object):
             uuid_count = max(len(noids), self.server.uuid_batch_count)
             for doc in noids:
                 nextid = self.server.next_uuid(count=uuid_count)
-                print doc
                 if nextid:
                     doc['_id'] = nextid
                     
