@@ -516,9 +516,7 @@ class Database(object):
         doc.update({ '_id': res['id'], '_rev': res['rev']})
         
     def __delitem__(self, docid):
-       data = self.res.head(docid)
-       result = self.res.delete(docid, 
-               rev=self.res.get_response()['etag'].strip('"'))
+       self.delete_doc(docid)
 
     def __iter__(self):
         return self.iterdocuments()

@@ -96,7 +96,7 @@ class Session(object):
         
     def __delitem__(self, docid):
         db = self.registry()
-        return db.__delitem__(docid, doc)
+        return db.__delitem__(docid)
 
     def __iter__(self):
         db = self.registry()
