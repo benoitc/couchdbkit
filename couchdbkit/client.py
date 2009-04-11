@@ -23,7 +23,7 @@ import re
 from restclient.rest import url_quote
 
 from couchdbkit.exceptions import InvalidAttachment
-from couchdbkit.resource import CouchdbResource, ResourceNotFound
+from couchdbkit.resource import CouchdbResource, ResourceNotFound, ResourceConflict
 from couchdbkit.utils import validate_dbname
 
 DEFAULT_UUID_BATCH_COUNT = 1000
@@ -512,7 +512,17 @@ class Database(object):
         return self.get(id)
         
     def __setitem__(self, docid, doc):
-        res = self.res.put(docid, payload=doc)
+        try:
+            res = self.res.put(docid, payload=doc)
+        except ResourceConflict:
+            data = self.res.head(docid)
+            response = self.res.get_response()
+            doc['_id'] = docid
+            doc['_rev'] = response['etag'].strip('"')
+            res = self.res.put(docid, payload=doc)
+        except:
+            raise
+            
         doc.update({ '_id': res['id'], '_rev': res['rev']})
         
     def __delitem__(self, docid):
