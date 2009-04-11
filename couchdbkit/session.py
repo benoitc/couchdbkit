@@ -53,6 +53,9 @@ class Session(object):
         self.dbname = dbname
         self.registry = ScopedRegistry(self.session_factory,
                 scoped_func)
+                
+    def __repr__(self):
+        return "<%s %s>" % (self.__class__.__name__, self.dbname)
     
     def __call__(self, document):
         if not hasattr(document, '_db'):
@@ -61,7 +64,13 @@ class Session(object):
         db = self.registry()
         document._db = db
         return document
-
+        
+    def contain(self, *docs):
+        """ add db session to all DocumentBase instance """
+        for doc in docs:
+            if hasattr(doc, '_db'):
+                doc._db = self
+        
     def __getattr__(self, key):
         db = self.registry()
         if not key.startswith('_') and key not in dir(self) \

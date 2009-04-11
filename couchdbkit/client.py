@@ -54,6 +54,8 @@ class Server(object):
         self.res = CouchdbResource(uri, transport=transport)
         self.uuids = []
         
+    def __repr__(self):
+        return "<%s %s>" % (self.__class__.__name__, self.dbname)
         
     def info(self):
         """ info of server 
