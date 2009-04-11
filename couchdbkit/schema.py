@@ -458,12 +458,12 @@ class DocumentBase(DocumentSchema):
     store = save
     
     @classmethod
-    def get(cls, docid, db=None):
+    def get(cls, docid, rev=None, db=None):
         if db is not None:
             cls._db = db
         if cls._db is None:
             raise TypeError("doc database required to save document")
-        return cls._db.get(docid, wrapper=cls.wrap)
+        return cls._db.get(docid, rev=rev, wrapper=cls.wrap)
         
     @classmethod
     def get_or_create(cls, docid=None, db=None):
