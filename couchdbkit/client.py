@@ -508,21 +508,11 @@ class Database(object):
     def __contains__(self, docid):
         return self.doc_exist(docid)
         
-    def __getitem__(self, id):
-        return self.get(id)
+    def __getitem__(self, docid):
+        return self.get(docid)
         
     def __setitem__(self, docid, doc):
-        try:
-            res = self.res.put(docid, payload=doc)
-        except ResourceConflict:
-            data = self.res.head(docid)
-            response = self.res.get_response()
-            doc['_id'] = docid
-            doc['_rev'] = response['etag'].strip('"')
-            res = self.res.put(docid, payload=doc)
-        except:
-            raise
-            
+        res = self.res.put(docid, payload=doc)
         doc.update({ '_id': res['id'], '_rev': res['rev']})
         
     def __delitem__(self, docid):
@@ -535,7 +525,7 @@ class Database(object):
         return (len(self) > 0)
         
     def escape_docid(self, docid):
-        docid = url_quote(docid, safe="")    
+        docid = url_quote(docid, safe=":")    
         
             
     def encode_attachments(self, attachments):

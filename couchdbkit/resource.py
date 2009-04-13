@@ -161,23 +161,27 @@ class CouchdbResource(restclient.Resource):
         try:
             data = _make_request()
         except restclient.RequestFailed, e:
-            if e.message and e.response.get('content-type') == 'application/json':
+            if getattr(e, 'msg', False) and e.response.get('content-type') == 'application/json':
                 try:
-                    e.message = json.loads(e.message)
+                    msg = json.loads(str(e))
                 except ValueError:
                     pass
+                    
+            if type(msg) is dict:
+                error = (msg.get('error'), msg.get('reason'))
+            else:
+                error = msg
 
             if e.status_code == 409:
-                raise ResourceConflict(e.message, http_code=409,
+                raise ResourceConflict(error[1], http_code=409,
                         response=e.response)
             elif e.status_code == 412:
-                raise PreconditionFailed(e.message, http_code=412,
+                raise PreconditionFailed(error, http_code=412,
                         response=e.response)
             else:
                 raise 
         except:
             raise
-
         response = self.get_response()
         
         if data and response.get('content-type') == 'application/json':

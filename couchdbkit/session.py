@@ -88,9 +88,9 @@ class Session(object):
         db = self.registry()
         return db.__contains__(docid)
         
-    def __getitem__(self, id):
+    def __getitem__(self, docid):
         db = self.registry()
-        return db.get(id)
+        return db.__getitem__(docid)
         
     def __setitem__(self, docid, doc):
         db = self.registry()

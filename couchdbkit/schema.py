@@ -409,7 +409,16 @@ class DocumentBase(DocumentSchema):
 
     @classmethod
     def set_db(cls, db):
+        """ Set document db"""
         cls._db = db
+        
+    @classmethod
+    def get_db(cls):
+        """ get document db"""
+        db = getattr(cls, '_db', None)
+        if db is None:
+            raise TypeError("doc database required to save document")
+        return db
     
     def save(self):
         """ Save document in database.
