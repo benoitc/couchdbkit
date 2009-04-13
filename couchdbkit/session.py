@@ -17,9 +17,11 @@
 
 import threading
 
-from couchdbkit.client import Database
+from couchdbkit.client import Server, Database
 
 def create_session(server, db_name, scoped_func=None):
+    if isinstance(server, basestring):
+        server = Server(server)
     return Session(server, db_name, scoped_func)
 
 class Session(object):

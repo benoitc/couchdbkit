@@ -21,6 +21,7 @@ except:
     __version__ = '?'
 
 
+from couchdbkit.resource import ResourceNotFound, ResourceConflict
 from couchdbkit.client import Server, Database
 from couchdbkit.schema import Document
 from couchdbkit.properties import *
