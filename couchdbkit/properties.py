@@ -63,7 +63,7 @@ class Property(object):
         """ method used to set value of the property when
         we create the document. Don't check required. """
         if value is not None:
-            value = self._to_json(self.validate(value, required=False))
+            value = self.to_json(self.validate(value, required=False))
         document_instance._doc[self.name] = value
 
     def __get__(self, document_instance, document_class):
@@ -72,13 +72,13 @@ class Property(object):
 
         value = document_instance._doc.get(self.name)
         if value is not None:
-            value = self._to_python(value)
+            value = self.to_python(value)
         
         return value
 
     def __set__(self, document_instance, value):
         value = self.validate(value, required=False)
-        document_instance._doc[self.name] = self._to_json(value)
+        document_instance._doc[self.name] = self.to_json(value)
 
     def __delete__(self, document_instance):
         pass
@@ -118,14 +118,13 @@ class Property(object):
         """ test if value is empty """
         return not value or value is None
 
-    def _to_python(self, value):
+    def to_python(self, value):
         """ convert to python type """
         return unicode(value)
 
-    def _to_json(self, value):
+    def to_json(self, value):
         """ convert to json, These converetd value is saved in couchdb. """
-
-        return self._to_python(value)
+        return self.to_python(value)
 
     data_type = None
 
@@ -135,7 +134,7 @@ class StringProperty(Property):
     *Value type*: unicode
     """
 
-    _to_python = unicode 
+    to_python = unicode 
 
     def validate(self, value, required=True):
         value = super(StringProperty, self).validate(value,
@@ -156,13 +155,12 @@ class IntegerProperty(Property):
     
     *Value type*: int
     """
-    _to_python = int
+    to_python = int
 
     def empty(self, value):
         return value is None
 
     def validate(self, value, required=True):
-
         value = super(IntegerProperty, self).validate(value,
                 required=required)
 
@@ -185,7 +183,7 @@ class FloatProperty(Property):
     
     *Value type*: float
     """
-    _to_python = float
+    to_python = float
     data_type = float
 
     def validate(self, value, required=True):
@@ -208,7 +206,7 @@ class BooleanProperty(Property):
     
     *ValueType*: bool
     """
-    _to_python = bool
+    to_python = bool
     data_type = bool
 
     def validate(self, value, required=True):
@@ -232,10 +230,10 @@ class DecimalProperty(Property):
     """
     data_type = decimal.Decimal
 
-    def _to_python(self, value):
+    def to_python(self, value):
         return decimal.Decimal(value)
 
-    def _to_json(self, value):
+    def to_json(self, value):
         return unicode(value)
 
 class DateTimeProperty(Property):
@@ -268,7 +266,7 @@ class DateTimeProperty(Property):
             return self.now()
         return Property.default_value(self)
 
-    def _to_python(self, value):
+    def to_python(self, value):
         if isinstance(value, basestring):
             try:
                 value = value.split('.', 1)[0] # strip out microseconds
@@ -279,7 +277,7 @@ class DateTimeProperty(Property):
                 raise ValueError('Invalid ISO date/time %r' % value)
         return value
 
-    def _to_json(self, value):
+    def to_json(self, value):
         if self.auto_now:
             value = self.now()
         return value.replace(microsecond=0).isoformat() + 'Z'
@@ -302,7 +300,7 @@ class DateProperty(DateTimeProperty):
     def now():
         return datetime.datetime.now().date()
 
-    def _to_python(self, value):
+    def to_python(self, value):
         if isinstance(value, basestring):
             try:
                 value = datetime.date(*time.strptime(value, '%Y-%m-%d')[:3])
@@ -310,7 +308,7 @@ class DateProperty(DateTimeProperty):
                 raise ValueError('Invalid ISO date %r' % value)
         return value
 
-    def _to_json(self, value):
+    def to_json(self, value):
         return value.isoformat()
 
 class TimeProperty(DateTimeProperty):
@@ -326,7 +324,7 @@ class TimeProperty(DateTimeProperty):
     def now(self):
         return datetime.datetime.now().time()
 
-    def _to_python(self, value):
+    def to_python(self, value):
         if isinstance(value, basestring):
             try:
                 value = value.split('.', 1)[0] # strip out microseconds
@@ -335,5 +333,5 @@ class TimeProperty(DateTimeProperty):
                 raise ValueError('Invalid ISO time %r' % value)
         return value
 
-    def _to_json(self, value):
+    def to_json(self, value):
         return value.replace(microsecond=0).isoformat()

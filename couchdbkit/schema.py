@@ -25,31 +25,21 @@ import warnings
 
 from couchdbkit.client import Database
 from couchdbkit import properties as p
+from couchdbkit.properties_map import value_to_json, value_to_python, convert_property, MAP_TYPES_PROPERTIES
 from couchdbkit.exceptions import *
 from couchdbkit.resource import ResourceNotFound
 
 
-__all__ = ['ReservedWordError', 'MAP_TYPES_PROPERTIES',
-        'Document', 'DocumentSchema']
+__all__ = ['ReservedWordError', 'ALLOWED_PROPERTY_TYPES', 'DocumentSchema', 
+        'SchemaProperties', 'DocumentBase', 'QueryMixin', 'AttachmentMixin', 
+        'Document']
 
 _RESERVED_WORDS = ['_id', '_rev', '$schema']
 
 _NODOC_WORDS = ['doc_type','id', 'rev']
 
-MAP_TYPES_PROPERTIES = {
-        decimal.Decimal: p.DecimalProperty,
-        datetime.datetime: p.DateTimeProperty,
-        datetime.date: p.DateProperty,
-        datetime.time: p.TimeProperty,
-        str: p.StringProperty,
-        unicode: p.StringProperty,
-        bool: p.BooleanProperty,
-        int: p.IntegerProperty,
-        long: p.LongProperty,
-        float: p.FloatProperty
-}
 
-_ALLOWED_PROPERTY_TYPES = set([
+ALLOWED_PROPERTY_TYPES = set([
     basestring,
     str,
     unicode,
@@ -66,10 +56,7 @@ _ALLOWED_PROPERTY_TYPES = set([
     type(None)
 ])
 
-re_date = re.compile('^(\d{4})\D?(0[1-9]|1[0-2])\D?([12]\d|0[1-9]|3[01])$')
-re_time = re.compile('^([01]\d|2[0-3])\D?([0-5]\d)\D?([0-5]\d)?\D?(\d{3})?$')
-re_datetime = re.compile('^(\d{4})\D?(0[1-9]|1[0-2])\D?([12]\d|0[1-9]|3[01])(\D?([01]\d|2[0-3])\D?([0-5]\d)\D?([0-5]\d)?\D?(\d{3})?([zZ]|([\+-])([01]\d|2[0-3])\D?([0-5]\d)?)?)?$')
-re_decimal = re.compile('^(\d+).(\d+)$')
+
 
 def check_reserved_words(attr_name):
     if attr_name in _RESERVED_WORDS:
@@ -77,11 +64,7 @@ def check_reserved_words(attr_name):
             "Cannot define property using reserved word '%(attr_name)s'." % 
             locals())
 
-def convert_property(value):
-    if type(value) in MAP_TYPES_PROPERTIES:
-        prop = MAP_TYPES_PROPERTIES[type(value)]()
-        value = prop._to_json(value)
-    return value
+
 
 class SchemaProperties(type):
 
@@ -207,7 +190,7 @@ class DocumentSchema(object):
         if not key.startswith('_') and \
                 key not in self._properties and \
                 key not in dir(self): 
-            if type(value) not in _ALLOWED_PROPERTY_TYPES and \
+            if type(value) not in ALLOWED_PROPERTY_TYPES and \
                     not isinstance(value, (p.Property,)):
                 raise TypeError("Document Schema cannot accept values of type '%s'." %
                         type(value).__name__)
@@ -319,7 +302,7 @@ class DocumentSchema(object):
             if prop.name in data:
                 value = data[prop.name]
                 if value is not None:
-                    value = prop._to_python(value)
+                    value = prop.to_python(value)
                 else:
                     value = prop.default_value()
             else:
@@ -338,21 +321,7 @@ class DocumentSchema(object):
                         not attr_name.startswith('_') and \
                         attr_name not in _NODOC_WORDS:
                 
-                    data_type = None
-                    if isinstance(value, basestring):
-                        if re_date.match(value):
-                            data_type = datetime.date
-                        elif re_time.match(value):
-                            data_type = datetime.time
-                        elif re_datetime.match(value):
-                            data_type = datetime.datetime
-                        elif re_decimal.match(value):
-                            data_type = decimal.Decimal
-                
-                    if data_type is not None:
-                        prop = MAP_TYPES_PROPERTIES[data_type]()
-                        value = prop._to_python(value)
-
+                    value = value_to_python(value)
                     setattr(instance, attr_name, value)
         
         return instance
@@ -602,5 +571,4 @@ class Document(DocumentBase, QueryMixin, AttachmentMixin):
     
     :class:`QueryMixin` for view & temp_view that wrap results to this object
     :class `AttachmentMixin` for attachments function
-    """     
-        
+    """ 

@@ -13,13 +13,19 @@
 # WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
+from calendar import timegm
+import datetime
+import decimal
+import time
 
 import couchdbkit
 from couchdbkit.properties import Property
-from couchdbkit.schema import DocumentSchema
+from couchdbkit.properties_map import value_to_json, value_to_python
+from couchdbkit.schema import DocumentSchema, ALLOWED_PROPERTY_TYPES
 from couchdbkit.exceptions import *
 
+
+__all__ = ['SchemaProperty', 'ListProperty', 'StringListProperty']
 
 class SchemaProperty(Property):
     """ Schema property. It allow you add a DocumentSchema instance 
@@ -105,14 +111,14 @@ class SchemaProperty(Property):
         
         return value
 
-    def _to_python(self, value):
+    def to_python(self, value):
         if not self._use_instance: 
             schema = self._schema()
         else:
             schema = self._schema.clone()
         return schema.wrap(value)
 
-    def _to_json(self, value):
+    def to_json(self, value):
         if not isinstance(value, DocumentSchema):
             if not self._use_instance:
                 schema = self._schema()
@@ -123,55 +129,149 @@ class SchemaProperty(Property):
                 raise BadValueError("%s is not a dict" % str(value))
             value = schema(**value)
         return value._doc
-
-def ListProperty(Property):
-    def __init__(self, prop, verbose_name=None, name=None, 
-            required=False, validators=None, default=None):
-            
-        Property.__init__(self, verbose_name=None,
-            name=None, required=False, validators=None)
-            
-        if type(prop) is type:
-            if issubclass(prop, Property):
-                prop = prop()
-            elif issubclass(prop, DocumentSchema):
-                prop = SchemaProperty(prop)
-        self.prop = prop
         
+       
+class ListProperty(Property):
+    """A property that stores a list of things.
+
+      This is a parameterized property; the parameter must be a valid
+      non-list data type, and all items must conform to this type.
+      """
+    def __init__(self, item_type, verbose_name=None, default=None, **kwds):
+        """Construct ListProperty.
+
+        :args item_type: Type for the list items; must be one of the allowed property
+            types.
+         :args verbose_name: Optional verbose name.
+         :args default: Optional default value; if omitted, an empty list is used.
+         :args**kwds: Optional additional keyword arguments, passed to base class.
+
+        Note that the only permissible value for 'required' is True.
+        
+        """
+        if item_type is str:
+            item_type = basestring
+        if not isinstance(item_type, type):
+            raise TypeError('Item type should be a type object')
+        if item_type not in ALLOWED_PROPERTY_TYPES:
+            raise ValueError('Item type %s is not acceptable' % item_type.__name__)
+        if 'required' in kwds and kwds['required'] is not True:
+             raise ValueError('List values must be required')
+        if default is None:
+            default = []
+        self.item_type = item_type
+
+        Property.__init__(self, verbose_name, default=default,
+            required=True, **kwds)
+        
+    data_type = list
         
     def validate(self, value, required=True):
-        for item in value:
-            item.validate()
-            
         value = super(ListProperty, self).validate(value)
-        if value is None:
-            return Value
-            
-        if not isinstance(value, self.prop.__class__):
-            raise BadValueError(
-                'Property %s must be %s instance, not a %s' % (self.name, self.prop.__class__.__name__,
-                type(value).__name__))
-        
+        if value is not None:
+            if not isinstance(value, list):
+                raise BadValueError('Property %s must be a list' % self.name)
+            value = self.validate_list_contents(value)
         return value
         
-    def to_python(self, value):
-        return self.ProxyList(value, self.prop)
+    def validate_list_contents(self, value):
+        if self.item_type in (int, long):
+            item_type = (int, long)
+        else:
+            item_type = self.item_type
         
-    def _to_json(self, value):
-        return [self.prop.to_json(item) for item in value]
+        for item in value:
+            if not isinstance(item, item_type):
+                if item_type == (int, long):
+                    raise BadValueError('Items in the %s list must all be integers.' %
+                                  self.name)
+                else:
+                    raise BadValueError(
+                        'Items in the %s list must all be %s instances' %
+                        (self.name, self.item_type.__name__))
+        return value
         
-        
-    class ProxyList(list):
+    def empty(self, value):
+        """Is list property empty.
 
-        def __init__(self, l, prop):
-            self.prop = prop
-            list.__init__(self, l)
+        [] is not an empty value.
+
+        Returns:
+          True if value is None, else false.
+        """
+        return value is None
+        
+    def default_value(self):
+        """Default value for list.
+
+        Because the property supplied to 'default' is a static value,
+        that value must be shallow copied to prevent all fields with
+        default values from sharing the same instance.
+
+        Returns:
+          Copy of the default value.
+        """
+        value = super(ListProperty, self).default_value()
+        if value is None:
+            value = []
+        return list(value)
+        
+    def to_python(self, value):
+        return self.ListProxy(value)
+        
+    def to_json(self, value):
+        return [value_to_json(item) for item in value]
+
+    class ListProxy(list):
+        """ ProxyList. Idee taken from couchdb-python."""
+        def __init__(self, l):
+            self._list = l
+
+        def __lt__(self, other):
+            return self._list < other
+
+        def __le__(self, other):
+            return self._list <= other
+
+        def __eq__(self, other):
+            return self._list == other
+
+        def __ne__(self, other):
+            return self._list != other
+
+        def __gt__(self, other):
+            return self._list > other
+
+        def __ge__(self, other):
+            return self._list >= other
+
+        def __repr__(self):
+            return repr(list(self._list))
+
+        def __str__(self):
+            return str(self._list)
+
+        def __unicode__(self):
+            return unicode(self._list)
+
+        def __delitem__(self, index):
+            del self._list[index]
 
         def __getitem__(self, index):
-            return self.prop._to_python(self[index])
+            return value_to_python(self._list[index])
 
         def __setitem__(self, index, value):
-            self[index] = self.prop._to_json(value)
+            self._list[index] = value_to_json(item)
+
+        def __iter__(self):
+            for index in range(len(self)):
+                yield self[index]
+
+        def __len__(self):
+            return len(self._list)
+
+        def __nonzero__(self):
+            return bool(self._list)
 
         def append(self, *args, **kwargs):
             if args:
@@ -179,5 +279,28 @@ def ListProperty(Property):
                 value = args[0]
             else:
                 value = kwargs
-            value = self.prop._to_json(value)
-            super(Proxy, self).append(value)
+            value = value_to_json(value)
+            self._list.append(value)
+
+        def extend(self, list):
+            for item in list:
+                self.append(item)
+                
+                
+class StringListProperty(ListProperty):
+    """A property that stores a list of strings.
+
+    A shorthand for the most common type of ListProperty.
+    """
+    
+    def __init__(self, verbose_name=None, default=None, **kwds):
+        """Construct StringListProperty.
+
+        :args verbose_name: Optional verbose name.
+        :args default: Optional default value; if omitted, an empty list is used.
+        :args **kwds: Optional additional keyword arguments, passed to ListProperty().
+        """
+        super(StringListProperty, self).__init__(unicode,
+                                                 verbose_name=verbose_name,
+                                                 default=default,
+                                                 **kwds)

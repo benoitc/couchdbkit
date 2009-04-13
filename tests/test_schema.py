@@ -719,8 +719,31 @@ class PropertyTestCase(unittest.TestCase):
 
         self.assert_(b2.sm.s != b.sm.s)
 
-    
+    def testListProperty(self):
+        from datetime import datetime
+        class A(Document):
+            l = ListProperty(datetime)
+            
+        a = A()
+        self.assert_(a._doc == {'doc_type': 'A', 'l': []})
+        
+        d = datetime(2009, 4, 13, 22, 56, 10, 967388)
+        a.l.append(d)
+        self.assert_(len(a.l) == 1)
+        self.assert_(a.l[0] == datetime(2009, 4, 13, 22, 56, 10))
+        self.assert_(a._doc == {'doc_type': 'A', 'l': ['2009-04-13T22:56:10Z']})
+        
+        db = self.server.create_db('simplecouchdb_test')
+        A.set_db(db) 
+        a.save()
+        
 
+        b = A.get(a.id)
+        self.assert_(len(b.l) == 1)
+        self.assert_(b.l[0] == datetime(2009, 4, 13, 22, 56, 10))
+        self.assert_(b._doc['l'] == ['2009-04-13T22:56:10Z'])
+        self.server.delete_db('simplecouchdb_test')
+        
 
 if __name__ == '__main__':
     unittest.main()
