@@ -50,7 +50,7 @@ def convert_property(value):
     return value
 
 def dict_to_json(value):
-    re = {}
+    ret = {}
     for k, v in value.iteritems():
         if isinstance(v, dict):
             v = dict_to_json(v)

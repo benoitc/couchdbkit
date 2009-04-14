@@ -25,7 +25,7 @@ from couchdbkit.schema import DocumentSchema, ALLOWED_PROPERTY_TYPES
 from couchdbkit.exceptions import *
 
 
-__all__ = ['SchemaProperty', 'ListProperty', 'StringListProperty']
+__all__ = ['SchemaProperty', 'ListProperty']
 
 class SchemaProperty(Property):
     """ Schema property. It allow you add a DocumentSchema instance 
@@ -134,14 +134,11 @@ class SchemaProperty(Property):
 class ListProperty(Property):
     """A property that stores a list of things.
 
-      This is a parameterized property; the parameter must be a valid
-      non-list data type, and all items must conform to this type.
       """
-    def __init__(self, item_type, verbose_name=None, default=None, **kwds):
+    def __init__(self, verbose_name=None, default=None, **kwds):
         """Construct ListProperty.
 
-        :args item_type: Type for the list items; must be one of the allowed property
-            types.
+    
          :args verbose_name: Optional verbose name.
          :args default: Optional default value; if omitted, an empty list is used.
          :args**kwds: Optional additional keyword arguments, passed to base class.
@@ -149,17 +146,10 @@ class ListProperty(Property):
         Note that the only permissible value for 'required' is True.
         
         """
-        if item_type is str:
-            item_type = basestring
-        if not isinstance(item_type, type):
-            raise TypeError('Item type should be a type object')
-        if item_type not in ALLOWED_PROPERTY_TYPES:
-            raise ValueError('Item type %s is not acceptable' % item_type.__name__)
         if 'required' in kwds and kwds['required'] is not True:
              raise ValueError('List values must be required')
         if default is None:
             default = []
-        self.item_type = item_type
 
         Property.__init__(self, verbose_name, default=default,
             required=True, **kwds)
@@ -175,20 +165,11 @@ class ListProperty(Property):
         return value
         
     def validate_list_contents(self, value):
-        if self.item_type in (int, long):
-            item_type = (int, long)
-        else:
-            item_type = self.item_type
-        
         for item in value:
-            if not isinstance(item, item_type):
-                if item_type == (int, long):
-                    raise BadValueError('Items in the %s list must all be integers.' %
-                                  self.name)
-                else:
-                    raise BadValueError(
-                        'Items in the %s list must all be %s instances' %
-                        (self.name, self.item_type.__name__))
+            if type(item) not in ALLOWED_PROPERTY_TYPES:
+                raise BadValueError(
+                    'Items in the %s list must all be in ' %
+                        (self.name, ALLOWED_PROPERTY_TYPES))
         return value
         
     def empty(self, value):
@@ -285,22 +266,3 @@ class ListProperty(Property):
         def extend(self, list):
             for item in list:
                 self.append(item)
-                
-                
-class StringListProperty(ListProperty):
-    """A property that stores a list of strings.
-
-    A shorthand for the most common type of ListProperty.
-    """
-    
-    def __init__(self, verbose_name=None, default=None, **kwds):
-        """Construct StringListProperty.
-
-        :args verbose_name: Optional verbose name.
-        :args default: Optional default value; if omitted, an empty list is used.
-        :args **kwds: Optional additional keyword arguments, passed to ListProperty().
-        """
-        super(StringListProperty, self).__init__(unicode,
-                                                 verbose_name=verbose_name,
-                                                 default=default,
-                                                 **kwds)
