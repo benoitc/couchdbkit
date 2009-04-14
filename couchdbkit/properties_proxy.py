@@ -235,6 +235,15 @@ class ListProperty(Property):
         def __unicode__(self):
             return unicode(self._list)
 
+        def __getslice__(self, i, j):
+            return self.__getitem__(slice(i, j))
+            
+        def __setslice__(self, i, j, seq):
+            return self.__setitem__(slice(i, j), seq)
+            
+        def __delslice__(self, i, j):
+            return self.__delitem__(slice(i, j))
+        
         def __delitem__(self, index):
             del self._list[index]
 
@@ -242,7 +251,7 @@ class ListProperty(Property):
             return value_to_python(self._list[index])
 
         def __setitem__(self, index, value):
-            self._list[index] = value_to_json(item)
+            self._list[index] = value_to_json(value)
 
         def __iter__(self):
             for index in range(len(self)):
