@@ -18,6 +18,7 @@ import copy
 import os
 import sys
 
+from couchdbkit.resource import ResourceNotFound
 from couchdbkit.utils import *
 from couchdbkit.macros import *
 
@@ -75,20 +76,19 @@ class BaseDocsLoader(object):
                 
             for db in dbs: 
                 if docid in db:
-                    current = db.get(docid)
+                    try:
+                        current = db.get(docid)
+                    except ResourceNotFound:
+                        current = {}
                     _app_meta = current.get('couchapp', {})
 
                     if docid.startswith('_design'):
                         new_doc['couchapp'] ['signatures'] = _app_meta.get('signatures', {})
-
-                        new_doc.update({
-                            '_rev': current['_rev'],
-                            '_attachments': current.get('_attachments', {})
-                        })
-                    else:
-                        new_doc.update({
-                            '_rev': current['_rev'],
-                        })
+                        new_doc['_attachments'] = current.get('_attachments', {})
+                    
+                    if '_rev' in current:
+                        new_doc['_rev'] = current.get('_rev')
+                        
                 db[docid] = new_doc
                 if docid.startswith('_design/'):
                     self.send_attachments(db, doc, verbose=verbose)

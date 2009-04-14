@@ -161,14 +161,16 @@ class CouchdbResource(restclient.Resource):
         try:
             data = _make_request()
         except restclient.RequestFailed, e:
-            if getattr(e, 'msg', False) and e.response.get('content-type') == 'application/json':
+            msg = getattr(e, 'msg', '')
+            if msg and e.response.get('content-type') == 'application/json':
+                
                 try:
-                    msg = json.loads(str(e))
+                    msg = json.loads(msg)
                 except ValueError:
                     pass
                     
             if type(msg) is dict:
-                error = (msg.get('error'), msg.get('reason'))
+                error = msg.get('reason')
             else:
                 error = msg
 

@@ -191,7 +191,7 @@ class Database(object):
         :return: dict, representation of CouchDB document as
          a dict.
         """
-        self.escape_docid(docid)
+        docid = self.escape_docid(docid)
         if rev is not None:
             doc = self.res.get(docid, rev=rev)
         else:
@@ -229,7 +229,7 @@ class Database(object):
         an additional field, _revs, the value being a list of 
         the available revision IDs. 
         """
-        self.escape_docid(docid)
+        docid = self.escape_docid(docid)
         try:
             if with_doc:
                 doc_with_rev = self.res.get(docid, revs=True)
@@ -260,7 +260,8 @@ class Database(object):
             doc['_attachments'] = self.encode_attachments(doc['_attachments'])
             
         if '_id' in doc:
-            self.escape_docid(doc['_id'])
+            doc['_id'] = self.escape_docid(doc['_id'])
+            print doc['_id']
             res = self.res.put(doc['_id'], payload=doc)
         else:
             try:
@@ -303,7 +304,7 @@ class Database(object):
                     
             # make sure we have a corret id
             for doc in ids:
-                self.escape_docid(doc['_id'])
+                doc['_id'] = self.escape_docid(doc['_id'])
                     
         payload = { "docs": docs }
         if all_or_nothing:
@@ -337,7 +338,7 @@ class Database(object):
             if not '_id' or not '_rev' in doc:
                 raise KeyError('_id and _rev are required to delete a doc')
                 
-            self.escape_docid(doc['_id'])
+            doc['_id'] = self.escape_docid(doc['_id'])
             result = self.res.delete(doc['_id'], rev=doc['_rev'])
         elif isinstance(doc, basestring): # we get a docid
             data = self.res.head(doc)
@@ -512,8 +513,9 @@ class Database(object):
         return self.get(docid)
         
     def __setitem__(self, docid, doc):
-        res = self.res.put(docid, payload=doc)
-        doc.update({ '_id': res['id'], '_rev': res['rev']})
+        doc['_id'] = docid
+        self.save_doc(doc)
+        
         
     def __delitem__(self, docid):
        self.delete_doc(docid)
@@ -525,9 +527,9 @@ class Database(object):
         return (len(self) > 0)
         
     def escape_docid(self, docid):
-        docid = url_quote(docid, safe=":")    
-        
-            
+        docid = url_quote(docid, safe=":/")
+        return docid  
+
     def encode_attachments(self, attachments):
         for k, v in attachments.iteritems():
             if v.get('stub', False):
@@ -558,15 +560,13 @@ class ViewResults(object):
 
     def iterator(self):
         self._fetch_if_needed()
-        rows = self._result_cache.get('rows')
-        if not rows:
-            yield {}
-        else:
-            for row in rows:
-                if self.view._wrapper is not None:
-                    yield self.view._wrapper(row)
-                else:
-                    yield row
+        rows = self._result_cache.get('rows', [])
+        wrapper = self.view._wrapper
+        for row in rows:
+            if  wrapper is not None:
+                yield self.view._wrapper(row)
+            else:
+                yield row
                     
     def one(self):
         return list(self)[0]
@@ -631,6 +631,9 @@ class ViewInterface(object):
     def __call__(self, **params):
         return ViewResults(self, **params)
         
+    def __iter__(self):
+        return self()
+        
     def _exec(self, **params):
         raise NotImplementedError
         
@@ -639,6 +642,7 @@ class View(ViewInterface):
     def __init__(self, db, view_path, wrapper=None):
         ViewInterface.__init__(self, db, wrapper=wrapper)
         self.view_path = view_path
+        
         
     def _exec(self, **params):
         if 'keys' in params:

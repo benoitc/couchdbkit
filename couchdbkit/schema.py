@@ -528,20 +528,17 @@ class QueryMixin(object):
         results are wrapped to current document instance.
         """
         def default_wrapper(row):
-            if not 'id' in row:
-                return row
             data = row['value']
             data['_id'] = row.get('id')
             obj = cls.wrap(data)
             return obj
-        wrapper = wrapper or default_wrapper
+        
+        if wrapper is None:
+            wrapper = default_wrapper
         if not callable(wrapper):
             raise TypeError("wrapper is not a callable")
             
-        db = getattr(cls, '_db', None)
-        if db is None:
-            raise TypeError("doc database required to save document")
-            
+        db = cls.get_db()
         return db.view(view_name, wrapper=wrapper, **params)
         
     @classmethod
@@ -557,21 +554,16 @@ class QueryMixin(object):
         results are wrapped to current document instance.
         """
         def default_wrapper(row):
-            if not 'id' in row:
-                return row
-
             data = row['value']
             data['_id'] = row.get('id')
             obj = cls.wrap(data)
             return obj
-        wrapper = wrapper or default_wrapper
+        if wrapper is None:
+            wrapper = default_wrapper
         if not callable(wrapper):
             raise TypeError("wrapper is not a callable")
             
-        db = getattr(cls, '_db', None)
-        if db is None:
-            raise TypeError("doc database required to save document")
-            
+        db = cls.get_db()
         return db.temp_view(design, wrapper=wrapper, **params)    
         
 class Document(DocumentBase, QueryMixin, AttachmentMixin):
