@@ -267,7 +267,37 @@ class DocumentTestCase(unittest.TestCase):
         self.assert_(hasattr(doc3, "field1"))
         self.server.delete_db('simplecouchdb_test')
     
+    def testViewNoneValue(self):
+        class TestDoc(Document):
+            field1 = StringProperty()
+            field2 = StringProperty()
 
+        design_doc = {
+            '_id': '_design/test',
+            'language': 'javascript',
+            'views': {
+                'all': {
+                    "map": """function(doc) { if (doc.doc_type == "TestDoc") { emit(doc._id, null);
+}}"""
+                }
+            }
+        }
+        doc = TestDoc(field1="a", field2="b")
+        doc1 = TestDoc(field1="c", field2="d")
+
+        db = self.server.create_db('simplecouchdb_test')
+        TestDoc._db = db
+        
+        doc.save()
+        doc1.save()
+        db.save_doc(design_doc)
+        results = TestDoc.view('test/all')
+        self.assert_(len(results) == 2)
+        self.assert_(isinstance(results.one(), dict) == True)
+        results2 = TestDoc.view('test/all', feed=True)
+        self.assert_(len(results2) == 2)
+        self.assert_(isinstance(results2.one(), TestDoc) == True)       
+        self.server.delete_db('simplecouchdb_test')
 
     def testTempView(self):
         class TestDoc(Document):

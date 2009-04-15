@@ -516,7 +516,7 @@ class QueryMixin(object):
     """ Mixin that add query methods """
     
     @classmethod
-    def view(cls, view_name, wrapper=None, **params):
+    def view(cls, view_name, wrapper=None, feed=False, **params):
         """ Get documents associated to a view.
         Results of view are automatically wrapped
         to Document object.
@@ -528,16 +528,24 @@ class QueryMixin(object):
         results are wrapped to current document instance.
         """
         def default_wrapper(row):
-            data = row['value']
+            data = row.get('value')
+            docid = row.get('id')
+            if not data or data is None:
+                if docid and feed:
+                    return cls.get(docid)
+                return row
             data['_id'] = row.get('id')
             obj = cls.wrap(data)
             return obj
         
         if wrapper is None:
             wrapper = default_wrapper
-        if not callable(wrapper):
-            raise TypeError("wrapper is not a callable")
             
+        if not wrapper:
+            wrapper = None
+        elif not callable(wrapper):
+            raise TypeError("wrapper is not a callable")
+        
         db = cls.get_db()
         return db.view(view_name, wrapper=wrapper, **params)
         
