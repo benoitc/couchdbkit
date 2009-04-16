@@ -589,8 +589,10 @@ class ViewResults(object):
 
         This results in an execution of the underlying query.
         """
+        
+        length = len(self)
         if len(self) > 1:
-            raise MultipleResultsFound
+            raise MultipleResultsFound("%s results found." % length)
 
         result = self.first()
         if result is None:
