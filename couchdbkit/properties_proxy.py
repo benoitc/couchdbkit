@@ -151,9 +151,6 @@ def validate_content(value):
     elif isinstance(value, dict):
         value = validate_dict_content(value)
     return value
-    
-
-
 
 class DictProperty(Property):
     """ A property that stores a dict of things"""
@@ -309,8 +306,6 @@ class DictProperty(Property):
             
         def clear(self):
             self._dict.clear()
-            
-
             
 class ListProperty(Property):
     """A property that stores a list of things.

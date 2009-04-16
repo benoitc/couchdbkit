@@ -593,7 +593,7 @@ class ViewResults(object):
         """
         
         length = len(self)
-        if len(self) > 1:
+        if length > 1:
             raise MultipleResultsFound("%s results found." % length)
 
         result = self.first()
