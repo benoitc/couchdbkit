@@ -294,7 +294,7 @@ class DocumentTestCase(unittest.TestCase):
         results = TestDoc.view('test/all')
         self.assert_(len(results) == 2)
         self.assert_(isinstance(results.one(), dict) == True)
-        results2 = TestDoc.view('test/all', feed=True)
+        results2 = TestDoc.view('test/all', include_docs=True)
         self.assert_(len(results2) == 2)
         self.assert_(isinstance(results2.one(), TestDoc) == True)       
         self.server.delete_db('simplecouchdb_test')

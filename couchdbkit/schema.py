@@ -516,7 +516,7 @@ class QueryMixin(object):
     """ Mixin that add query methods """
     
     @classmethod
-    def view(cls, view_name, wrapper=None, feed=False, **params):
+    def view(cls, view_name, wrapper=None, **params):
         """ Get documents associated to a view.
         Results of view are automatically wrapped
         to Document object.
@@ -531,8 +531,9 @@ class QueryMixin(object):
             data = row.get('value')
             docid = row.get('id')
             if not data or data is None:
-                if docid and feed:
-                    return cls.get(docid)
+                doc = row.get('doc', False)
+                if doc:
+                    return cls.wrap(doc)
                 return row
             data['_id'] = row.get('id')
             obj = cls.wrap(data)
