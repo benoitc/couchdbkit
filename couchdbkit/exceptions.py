@@ -26,9 +26,12 @@ class BadValueError(Exception):
     """ exception raised when a value can't be validated 
     or is required """
 
-class MultipleObjectsReturned(Exception):
+class MultipleResultsFound(Exception):
     """ exception raised when more than one object is
     returned by the get_by method"""
+    
+class NoResultFound(Exception):
+    """ exception returned when no results are found """
     
 class ReservedWordError(Exception):
     """ exception raised when a reserved word

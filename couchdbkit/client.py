@@ -22,7 +22,7 @@ import re
 
 from restclient.rest import url_quote
 
-from couchdbkit.exceptions import InvalidAttachment
+from couchdbkit.exceptions import *
 from couchdbkit.resource import CouchdbResource, ResourceNotFound, ResourceConflict
 from couchdbkit.utils import validate_dbname
 
@@ -568,8 +568,34 @@ class ViewResults(object):
             else:
                 yield row
                     
+    def first(self):
+        """
+        Return the first result of this query or None if the result doesn’t contain any row.
+
+        This results in an execution of the underlying query.
+        """
+        
+        try:
+            return list(self)[0]
+        except IndexError:
+            return None
+    
     def one(self):
-        return list(self)[0]
+        """
+        Return exactly one result or raise an exception.
+        
+        Raises `couchdbkit.exceptions.NoResultFound` if the query selects no rows. 
+        Raises `couchdbkit.exceptions.MultipleResultsFound` if multiple rows are returned.
+
+        This results in an execution of the underlying query.
+        """
+        if len(self) > 1:
+            raise MultipleResultsFound
+
+        result = self.first()
+        if result is None:
+            raise NoResultFound
+        return result
 
     def all(self):
         return list(self)

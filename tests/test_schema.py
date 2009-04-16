@@ -293,10 +293,54 @@ class DocumentTestCase(unittest.TestCase):
         db.save_doc(design_doc)
         results = TestDoc.view('test/all')
         self.assert_(len(results) == 2)
-        self.assert_(isinstance(results.one(), dict) == True)
+        self.assert_(isinstance(results.first(), dict) == True)
         results2 = TestDoc.view('test/all', include_docs=True)
         self.assert_(len(results2) == 2)
-        self.assert_(isinstance(results2.one(), TestDoc) == True)       
+        self.assert_(isinstance(results2.first(), TestDoc) == True)       
+        self.server.delete_db('simplecouchdb_test')
+        
+        
+    def testOne(self):
+        class TestDoc(Document):
+            field1 = StringProperty()
+            field2 = StringProperty()
+
+        design_doc = {
+            '_id': '_design/test',
+            'language': 'javascript',
+            'views': {
+                'all': {
+                    "map": """function(doc) { if (doc.doc_type == "TestDoc") { emit(doc._id, doc);
+}}"""
+                }
+            }
+        }
+        doc = TestDoc(field1="a", field2="b")
+        doc1 = TestDoc(field1="c", field2="d")
+
+        db = self.server.create_db('simplecouchdb_test')
+        TestDoc._db = db
+
+       
+        db.save_doc(design_doc)
+        results = TestDoc.view('test/all')
+        self.assert_(len(results) == 0)
+        self.assertRaises(NoResultFound, results.one)    
+        
+        
+        results = TestDoc.view('test/all')
+        doc.save()
+        self.assert_(len(results) == 1)
+        
+        one = results.one()
+        self.assert_(isinstance(one, TestDoc) == True)
+        
+        doc1.save()
+        results = TestDoc.view('test/all')
+        self.assert_(len(results) == 2)
+        self.assertRaises(MultipleResultsFound, results.one)    
+        
+       
         self.server.delete_db('simplecouchdb_test')
 
     def testTempView(self):
