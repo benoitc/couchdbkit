@@ -129,6 +129,32 @@ class SchemaProperty(Property):
                 raise BadValueError("%s is not a dict" % str(value))
             value = schema(**value)
         return value._doc
+        
+        
+def validate_list_contents(value):
+    for item in value:
+        item = validate_content(item)
+    return value
+    
+def validate_dict_contents(value):
+    for k, v in value.iteritems():
+        value[k] = validate_content(v)
+    return value
+           
+def validate_content(value):
+    print value
+    if type(value) not in ALLOWED_PROPERTY_TYPES:
+        raise BadValueError(
+            'Items  must all be in %s' %
+                (ALLOWED_PROPERTY_TYPES))
+    if isinstance(value, list):
+        value = validate_list_content(value)
+    elif isinstance(value, dict):
+        value = validate_dict_content(value)
+    return value
+    
+
+
 
 class DictProperty(Property):
     """ A property that stores a dict of things"""
@@ -161,12 +187,12 @@ class DictProperty(Property):
         return value
         
     def validate_dict_contents(self, value):
-        for value in value.itervalues():
-            if type(value) not in ALLOWED_PROPERTY_TYPES:
-                raise BadValueError(
-                    'Items in the %s list must all be in ' %
-                        (self.name, ALLOWED_PROPERTY_TYPES))
-
+        try:
+            value = validate_dict_contents(value)
+        except BadValueError:
+            raise BadValueError(
+                'Items of %s dict must all be in %s' %
+                    (self.name, ALLOWED_PROPERTY_TYPES))
         return value
         
     def empty(self, value):
@@ -321,11 +347,12 @@ class ListProperty(Property):
         return value
         
     def validate_list_contents(self, value):
-        for item in value:
-            if type(item) not in ALLOWED_PROPERTY_TYPES:
-                raise BadValueError(
-                    'Items in the %s list must all be in ' %
-                        (self.name, ALLOWED_PROPERTY_TYPES))
+        try:
+            value = validate_list_contents(value)
+        except BadValueError:
+            raise BadValueError(
+                'Items of %s list must all be in %s' %
+                    (self.name, ALLOWED_PROPERTY_TYPES))
         return value
         
     def empty(self, value):
