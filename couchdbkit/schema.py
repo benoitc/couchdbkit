@@ -564,6 +564,11 @@ class QueryMixin(object):
         """
         def default_wrapper(row):
             data = row['value']
+            if not data or data is None:
+                doc = row.get('doc', False)
+                if doc:
+                    return cls.wrap(doc)
+                return row
             data['_id'] = row.get('id')
             obj = cls.wrap(data)
             return obj
