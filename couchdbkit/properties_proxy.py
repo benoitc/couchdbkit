@@ -25,7 +25,7 @@ from couchdbkit.schema import DocumentSchema, ALLOWED_PROPERTY_TYPES
 from couchdbkit.exceptions import *
 
 
-__all__ = ['SchemaProperty', 'ListProperty']
+__all__ = ['SchemaProperty', 'ListProperty', 'DictProperty']
 
 class SchemaProperty(Property):
     """ Schema property. It allow you add a DocumentSchema instance 
@@ -129,7 +129,164 @@ class SchemaProperty(Property):
                 raise BadValueError("%s is not a dict" % str(value))
             value = schema(**value)
         return value._doc
-               
+
+class DictProperty(Property):
+    """ A property that stores a dict of things"""
+    
+    def __init__(self, verbose_name=None, default=None, **kwds):
+        """
+        :args verbose_name: Optional verbose name.
+        :args default: Optional default value; if omitted, an empty list is used.
+        :args**kwds: Optional additional keyword arguments, passed to base class.
+
+        Note that the only permissible value for 'required' is True.
+        """
+        if 'required' in kwds and kwds['required'] is not True:
+             raise ValueError('dict values must be required')
+           
+        if default is None:
+            default = {}
+            
+        Property.__init__(self, verbose_name, default=default,
+            required=True, **kwds)
+            
+    data_type = dict
+    
+    def validate(self, value, required=True):
+        value = super(DictProperty, self).validate(value)
+        if value is not None:
+            if not isinstance(value, dict):
+                raise BadValueError('Property %s must be a dict' % self.name)
+            value = self.validate_dict_contents(value)
+        return value
+        
+    def validate_dict_contents(self, value):
+        for value in value.itervalues():
+            if type(value) not in ALLOWED_PROPERTY_TYPES:
+                raise BadValueError(
+                    'Items in the %s list must all be in ' %
+                        (self.name, ALLOWED_PROPERTY_TYPES))
+
+        return value
+        
+    def empty(self, value):
+        """Is list property empty.
+
+        {} is not an empty value.
+
+        Returns:
+          True if value is None, else false.
+        """
+        return value is None
+        
+    def default_value(self):
+        """Default value for list.
+
+        Because the property supplied to 'default' is a static value,
+        that value must be shallow copied to prevent all fields with
+        default values from sharing the same instance.
+
+        Returns:
+          Copy of the default value.
+        """
+        value = super(DictProperty, self).default_value()
+        if value is None:
+            value = {}
+        return dict(value)
+        
+    def to_python(self, value):
+        return self.DictProxy(value)
+        
+    def to_json(self, value):
+        return value_to_json(value)
+        
+        
+    class DictProxy(dict):
+        
+        def __init__(self, d):
+            self._dict = d
+            
+        def __eq__(self, other):
+            return self._dict is other
+            
+        def __getitem__(self, key):
+            return value_to_python(self._dict[key])
+            
+        def __setitem__(self, key, value):
+            self._dict[key] = value_to_json(value)
+            
+        def __delitem__(self, key):
+            del self._dict[key]
+            
+        def get(self, key, default=None, type=None):
+            if key in self._dict:
+                if type is not None:
+                    try:
+                        return type(self._dict[key])
+                    except ValueError:
+                        pass 
+                return self._dict[key]
+            return default
+            
+        def iteritems(self):
+            for key, value in self._dict.iteritems():
+                yield key, value_to_python(value)
+                
+        def itervalues(self):
+            for value in self._dict.itervalues():
+                yield value_to_python(value)
+                
+        def values(self):
+            return list(self.itervalues())
+            
+        def items():
+            return list(self.iteritems())
+            
+        def keys(self):
+            return self._dict.keys()
+            
+        def iterkeys(self):
+            return iter(self.keys())
+            
+        def copy(self):
+            return self.__class__(self._dict)
+    
+        def pop(self, key, default=None):
+            return self._dict.pop(key, default=default)
+            
+        def __len__(self):
+            return len(self.keys())
+            
+        def __contains__(self, key):
+            if key in self._dict:
+                return True
+            return False
+            
+        __iter__ = iteritems
+        
+        def setdefault(self, key, default):
+            if key in self._dict:
+                return value_to_python(self._dict[key])
+
+            self._dict.setdefault(key, value_to_json(default))
+            return default
+
+        def update(self, value):
+            for k, v in value.items():
+                value[k] = value_to_json(v)
+            self._dict.update(value)
+            
+        def popitem(self, value):
+            value[0] = value_to_json(value[0])
+            value = self._dic.popitem(value)
+            value[0] = value_to_python(value[0])
+            return value
+            
+        def clear(self):
+            self._dict.clear()
+            
+
+            
 class ListProperty(Property):
     """A property that stores a list of things.
 

@@ -822,6 +822,26 @@ class PropertyTestCase(unittest.TestCase):
         self.assert_(b._doc['l'] == ['2009-04-13T22:56:10Z'])
         self.server.delete_db('simplecouchdb_test')
         
+    def testDictProperty(self):
+        from datetime import datetime
+        class A(Document):
+            d = DictProperty()
+            
+        a = A()
+        self.assert_(a._doc == {'d': {}, 'doc_type': 'A'})
+        a.d['s'] = 'test'
+        self.assert_(a._doc == {'d': {'s': 'test'}, 'doc_type': 'A'})
+        a.d['created'] = datetime(2009, 4, 16, 16, 5, 41)
+        self.assert_(a._doc == {'d': {'created': '2009-04-16T16:05:41Z', 's': 'test'}, 'doc_type': 'A'})
+        self.assert_(isinstance(a.d['created'], datetime) == True)
+        a.d.update({'s2': 'test'})
+        self.assert_(a.d['s2'] == 'test')
+        a.d.update({'d2': datetime(2009, 4, 16, 16, 5, 41)})
+        self.assert_(a._doc['d']['d2'] == '2009-04-16T16:05:41Z')
+        self.assert_(a.d['d2'] == datetime(2009, 4, 16, 16, 5, 41))
+        
+        
+        
 
 if __name__ == '__main__':
     unittest.main()
