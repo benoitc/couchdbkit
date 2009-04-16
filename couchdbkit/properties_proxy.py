@@ -129,8 +129,7 @@ class SchemaProperty(Property):
                 raise BadValueError("%s is not a dict" % str(value))
             value = schema(**value)
         return value._doc
-        
-       
+               
 class ListProperty(Property):
     """A property that stores a list of things.
 

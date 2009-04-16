@@ -325,7 +325,9 @@ class DocumentTestCase(unittest.TestCase):
         db.save_doc(design_doc)
         results = TestDoc.view('test/all')
         self.assert_(len(results) == 0)
-        self.assertRaises(NoResultFound, results.one)    
+        self.assertRaises(NoResultFound, results.one, except_all=True)
+        rst = results.one()
+        self.assert_(rst is None)
         
         
         results = TestDoc.view('test/all')
@@ -338,7 +340,9 @@ class DocumentTestCase(unittest.TestCase):
         doc1.save()
         results = TestDoc.view('test/all')
         self.assert_(len(results) == 2)
-        self.assertRaises(MultipleResultsFound, results.one)    
+        
+        self.assertRaises(MultipleResultsFound, results.one)
+        
         
        
         self.server.delete_db('simplecouchdb_test')

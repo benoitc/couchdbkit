@@ -580,12 +580,14 @@ class ViewResults(object):
         except IndexError:
             return None
     
-    def one(self):
+    def one(self, except_all=False):
         """
         Return exactly one result or raise an exception.
         
-        Raises `couchdbkit.exceptions.NoResultFound` if the query selects no rows. 
+        
         Raises `couchdbkit.exceptions.MultipleResultsFound` if multiple rows are returned.
+        If except_all is True, raises `couchdbkit.exceptions.NoResultFound` 
+        if the query selects no rows. 
 
         This results in an execution of the underlying query.
         """
@@ -595,7 +597,7 @@ class ViewResults(object):
             raise MultipleResultsFound("%s results found." % length)
 
         result = self.first()
-        if result is None:
+        if result is None and except_all:
             raise NoResultFound
         return result
 
