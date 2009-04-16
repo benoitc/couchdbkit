@@ -142,7 +142,6 @@ def validate_dict_contents(value):
     return value
            
 def validate_content(value):
-    print value
     if type(value) not in ALLOWED_PROPERTY_TYPES:
         raise BadValueError(
             'Items  must all be in %s' %
