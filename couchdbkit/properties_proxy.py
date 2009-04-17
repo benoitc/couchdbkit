@@ -147,9 +147,9 @@ def validate_content(value):
             'Items  must all be in %s' %
                 (ALLOWED_PROPERTY_TYPES))
     if isinstance(value, list):
-        value = validate_list_content(value)
+        value = validate_list_contents(value)
     elif isinstance(value, dict):
-        value = validate_dict_content(value)
+        value = validate_dict_contents(value)
     return value
 
 class DictProperty(Property):
