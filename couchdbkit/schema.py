@@ -535,7 +535,9 @@ class QueryMixin(object):
                 if doc:
                     return cls.wrap(doc)
                 return row
-            data['_id'] = row.get('id')
+            if not docid:
+                return row
+            data['_id'] = docid
             obj = cls.wrap(data)
             return obj
         
@@ -564,12 +566,15 @@ class QueryMixin(object):
         """
         def default_wrapper(row):
             data = row['value']
+            docid = row.get('id', False)
             if not data or data is None:
                 doc = row.get('doc', False)
                 if doc:
                     return cls.wrap(doc)
                 return row
-            data['_id'] = row.get('id')
+            if not docid:
+                return row      
+            data['_id'] = docid
             obj = cls.wrap(data)
             return obj
         if wrapper is None:
