@@ -603,3 +603,9 @@ class Document(DocumentBase, QueryMixin, AttachmentMixin):
     :class:`QueryMixin` for view & temp_view that wrap results to this object
     :class `AttachmentMixin` for attachments function
     """ 
+    
+class StaticDocument(Document):
+    """
+    Shorthand for a document that disallow dynamic properties.
+    """
+    _allow_dynamic_poroperties = False
