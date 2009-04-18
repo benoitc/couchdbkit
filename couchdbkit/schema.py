@@ -439,7 +439,7 @@ class DocumentBase(DocumentSchema):
     def get(cls, docid, rev=None, db=None, dynamic_properties=True):
         if db is not None:
             cls._db = db
-        cls._dynamic_properties = dynamic_properties
+        cls._allow_dynamic_poroperties = dynamic_properties
         if cls._db is None:
             raise TypeError("doc database required to save document")
         return cls._db.get(docid, rev=rev, wrapper=cls.wrap)
@@ -449,7 +449,7 @@ class DocumentBase(DocumentSchema):
         if db is not None:
             cls._db = db
                
-        cls._dynamic_properties = dynamic_properties
+        cls._allow_dynamic_poroperties = dynamic_properties
         
         if cls._db is None:    
             raise TypeError("doc database required to save document")
@@ -544,7 +544,7 @@ class QueryMixin(object):
                 return row
                 
             data['_id'] = docid
-            cls._dynamic_properties = dynamic_properties
+            cls._allow_dynamic_poroperties = dynamic_properties
             obj = cls.wrap(data)
             return obj
         
@@ -585,7 +585,7 @@ class QueryMixin(object):
                 return row
                     
             data['_id'] = docid
-            cls._dynamic_properties = dynamic_properties
+            cls._allow_dynamic_poroperties = dynamic_properties
             obj = cls.wrap(data)
             return obj
         if wrapper is None:
