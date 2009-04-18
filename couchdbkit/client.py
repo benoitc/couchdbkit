@@ -87,7 +87,7 @@ class Server(object):
         if "/" in dbname:
             dbname = url_quote(dbname, safe=":")
         del self[dbname]
-    
+        
     def next_uuid(self, count=None):
         if count is not None:
             self._uuid_batch_count = count
@@ -680,7 +680,8 @@ class View(ViewInterface):
         
     def _exec(self, **params):
         if 'keys' in params:
-            return self._db.res.post(self.view_path, **params)
+            keys = params.pop('keys')
+            return self._db.res.post(self.view_path, payload={ 'keys': keys }, **params)
         else:
             return self._db.res.get(self.view_path, **params)
             

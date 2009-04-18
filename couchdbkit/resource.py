@@ -198,7 +198,7 @@ class CouchdbResource(restclient.Resource):
         _params = {}
         if params:
             for name, value in params.items():
-                if name in ('key', 'startkey', 'endkey', 'keys') \
+                if name in ('key', 'startkey', 'endkey') \
                         or not isinstance(value, basestring):
                     value = json.dumps(value, allow_nan=False,
                             ensure_ascii=False)
