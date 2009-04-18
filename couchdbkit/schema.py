@@ -567,6 +567,8 @@ class QueryMixin(object):
         def default_wrapper(row):
             data = row['value']
             docid = row.get('id', False)
+            if not isinstance(data, dict):
+                return row
             if not data or data is None:
                 doc = row.get('doc', False)
                 if doc:

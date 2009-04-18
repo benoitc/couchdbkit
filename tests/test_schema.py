@@ -35,12 +35,12 @@ class DocumentTestCase(unittest.TestCase):
 
     def tearDown(self):
         try:
-            self.server.delete_db('simplecouchdb_test')
+            self.server.delete_db('couchdbkit_test')
         except:
             pass
 
         try:
-            self.server.delete_db('simplecouchdb_test2')
+            self.server.delete_db('couchdbkit_test2')
         except:
             pass
 
@@ -113,7 +113,7 @@ class DocumentTestCase(unittest.TestCase):
         self.assert_(len(doc) == 4) 
         
     def testStore(self):
-        db = self.server.create_db('simplecouchdb_test')
+        db = self.server.create_db('couchdbkit_test')
         class Test(Document):
             string = StringProperty(default="test")
             string2 = StringProperty()
@@ -132,10 +132,10 @@ class DocumentTestCase(unittest.TestCase):
         doc3 = db.get(doc2.id)
         self.assert_(doc3['string3'] == "test")
 
-        self.server.delete_db('simplecouchdb_test')
+        self.server.delete_db('couchdbkit_test')
 
     def testGet(self):
-        db = self.server.create_db('simplecouchdb_test')
+        db = self.server.create_db('couchdbkit_test')
         class Test(Document):
             string = StringProperty(default="test")
             string2 = StringProperty()
@@ -153,10 +153,10 @@ class DocumentTestCase(unittest.TestCase):
         doc3 = db.get(doc2.id)
         self.assert_(doc3)
 
-        self.server.delete_db('simplecouchdb_test')
+        self.server.delete_db('couchdbkit_test')
 
     def testLoadDynamicProperties(self):
-        db = self.server.create_db('simplecouchdb_test')
+        db = self.server.create_db('couchdbkit_test')
         class Test(Document):
             pass
         Test._db = db
@@ -169,7 +169,7 @@ class DocumentTestCase(unittest.TestCase):
                 field5=4.4)
         doc.save()
         doc1 = Test.get(doc.id)
-        self.server.delete_db('simplecouchdb_test')
+        self.server.delete_db('couchdbkit_test')
 
         self.assert_(isinstance(doc1.field, basestring))
         self.assert_(isinstance(doc1.field1, datetime.datetime))
@@ -202,7 +202,7 @@ class DocumentTestCase(unittest.TestCase):
         self.assert_(doc4._doc['doc_type'] == 'test_type')
         
         
-        db = self.server.create_db('simplecouchdb_test')
+        db = self.server.create_db('couchdbkit_test')
         Test3._db = Test2._db = Test._db = db
 
         doc1.save()
@@ -216,7 +216,7 @@ class DocumentTestCase(unittest.TestCase):
         get4 = Test3.get(doc4.id)
 
 
-        self.server.delete_db('simplecouchdb_test')
+        self.server.delete_db('couchdbkit_test')
         self.assert_(get1._doc['doc_type'] == 'Test')
         self.assert_(get2._doc['doc_type']== 'Test2')
         self.assert_(get3._doc['doc_type'] == 'Test2')
@@ -255,7 +255,7 @@ class DocumentTestCase(unittest.TestCase):
         doc = TestDoc(field1="a", field2="b")
         doc1 = TestDoc(field1="c", field2="d")
 
-        db = self.server.create_db('simplecouchdb_test')
+        db = self.server.create_db('couchdbkit_test')
         TestDoc._db = db
 
         doc.save()
@@ -265,7 +265,7 @@ class DocumentTestCase(unittest.TestCase):
         self.assert_(len(results) == 2)
         doc3 = list(results)[0]
         self.assert_(hasattr(doc3, "field1"))
-        self.server.delete_db('simplecouchdb_test')
+        self.server.delete_db('couchdbkit_test')
     
     def testViewNoneValue(self):
         class TestDoc(Document):
@@ -285,7 +285,7 @@ class DocumentTestCase(unittest.TestCase):
         doc = TestDoc(field1="a", field2="b")
         doc1 = TestDoc(field1="c", field2="d")
 
-        db = self.server.create_db('simplecouchdb_test')
+        db = self.server.create_db('couchdbkit_test')
         TestDoc._db = db
         
         doc.save()
@@ -297,7 +297,7 @@ class DocumentTestCase(unittest.TestCase):
         results2 = TestDoc.view('test/all', include_docs=True)
         self.assert_(len(results2) == 2)
         self.assert_(isinstance(results2.first(), TestDoc) == True)       
-        self.server.delete_db('simplecouchdb_test')
+        self.server.delete_db('couchdbkit_test')
         
         
     def testOne(self):
@@ -318,7 +318,7 @@ class DocumentTestCase(unittest.TestCase):
         doc = TestDoc(field1="a", field2="b")
         doc1 = TestDoc(field1="c", field2="d")
 
-        db = self.server.create_db('simplecouchdb_test')
+        db = self.server.create_db('couchdbkit_test')
         TestDoc._db = db
 
        
@@ -342,10 +342,37 @@ class DocumentTestCase(unittest.TestCase):
         self.assert_(len(results) == 2)
         
         self.assertRaises(MultipleResultsFound, results.one)
+
+        self.server.delete_db('couchdbkit_test')
         
+    def testViewStringValue(self):
+        class TestDoc(Document):
+            field1 = StringProperty()
+            field2 = StringProperty()
         
-       
-        self.server.delete_db('simplecouchdb_test')
+        design_doc = {
+            '_id': '_design/test',
+            'language': 'javascript',
+            'views': {
+                'all': {
+                    "map": """function(doc) { if (doc.doc_type == "TestDoc") { emit(doc._id, doc.field1);}}"""
+                }
+            }
+        }
+        doc = TestDoc(field1="a", field2="b")
+        doc1 = TestDoc(field1="c", field2="d")
+        
+        db = self.server.create_db('couchdbkit_test')
+        TestDoc._db = db
+
+        doc.save()
+        doc1.save()
+        db.save_doc(design_doc)
+        results = TestDoc.view('test/all')
+        print results
+        self.assert_(len(results) == 2)
+        self.server.delete_db('couchdbkit_test')
+        
 
     def testTempView(self):
         class TestDoc(Document):
@@ -360,7 +387,7 @@ class DocumentTestCase(unittest.TestCase):
         doc = TestDoc(field1="a", field2="b")
         doc1 = TestDoc(field1="c", field2="d")
 
-        db = self.server.create_db('simplecouchdb_test')
+        db = self.server.create_db('couchdbkit_test')
         TestDoc._db = db
         
         doc.save()
@@ -369,10 +396,10 @@ class DocumentTestCase(unittest.TestCase):
         self.assert_(len(results) == 2)
         doc3 = list(results)[0]
         self.assert_(hasattr(doc3, "field1"))
-        self.server.delete_db('simplecouchdb_test')
+        self.server.delete_db('couchdbkit_test')
     
     def testDocumentAttachments(self):
-        db = self.server.create_db('simplecouchdb_test')
+        db = self.server.create_db('couchdbkit_test')
         
         class A(Document):
             s = StringProperty(default='test')
@@ -389,11 +416,11 @@ class DocumentTestCase(unittest.TestCase):
         self.assert_(old_rev != a.rev)
         fetch_attachment = a.fetch_attachment("test")
         self.assert_(text_attachment == fetch_attachment)
-        self.server.delete_db('simplecouchdb_test')
+        self.server.delete_db('couchdbkit_test')
    
 
     def testDocumentDeleteAttachment(self):
-        db = self.server.create_db('simplecouchdb_test')
+        db = self.server.create_db('couchdbkit_test')
         class A(Document):
             s = StringProperty(default='test')
             i = IntegerProperty(default=4)
@@ -410,12 +437,12 @@ class DocumentTestCase(unittest.TestCase):
         attachment = a.fetch_attachment('test')
         self.assert_(attachment == None)
         
-        self.server.delete_db('simplecouchdb_test')
+        self.server.delete_db('couchdbkit_test')
 
     def testScopedSession(self):
-        db = self.server.create_db('simplecouchdb_test')
+        db = self.server.create_db('couchdbkit_test')
         dbsession = create_session(self.server,
-                'simplecouchdb_test')
+                'couchdbkit_test')
 
         class A(Document):
             s = StringProperty()
@@ -431,17 +458,17 @@ class DocumentTestCase(unittest.TestCase):
         c = A.get(a.id)
         self.assert_(c.s == "test")
         
-        self.server.delete_db('simplecouchdb_test')
+        self.server.delete_db('couchdbkit_test')
 
     def testSccopedSesion2(self):
-        db = self.server.create_db('simplecouchdb_test')
-        db2 = self.server.create_db('simplecouchdb_test2')
+        db = self.server.create_db('couchdbkit_test')
+        db2 = self.server.create_db('couchdbkit_test2')
 
         session = dbsession = create_session(self.server,
-                'simplecouchdb_test')
+                'couchdbkit_test')
 
         session2 = dbsession = create_session(self.server,
-                'simplecouchdb_test')
+                'couchdbkit_test')
 
         class A(Document):
             s = StringProperty()
@@ -460,12 +487,12 @@ class DocumentTestCase(unittest.TestCase):
         b2 = session2(A).get(a2.id)
         self.assert_(b2.s == "test2")
 
-        self.server.delete_db('simplecouchdb_test')
-        self.server.delete_db('simplecouchdb_test2')
+        self.server.delete_db('couchdbkit_test')
+        self.server.delete_db('couchdbkit_test2')
 
     def testGetOrCreate(self):
-        self.server.create_db('simplecouchdb_test')
-        db = create_session(self.server, 'simplecouchdb_test')
+        self.server.create_db('couchdbkit_test')
+        db = create_session(self.server, 'couchdbkit_test')
 
         class A(Document):
             s = StringProperty()
@@ -481,7 +508,7 @@ class DocumentTestCase(unittest.TestCase):
         
         b = A.get_or_create()
         self.assert_(a.id is not None)
-        self.server.delete_db('simplecouchdb_test')
+        self.server.delete_db('couchdbkit_test')
 
 
 class PropertyTestCase(unittest.TestCase):
@@ -490,7 +517,7 @@ class PropertyTestCase(unittest.TestCase):
         self.server = Server()
 
     def testRequired(self):
-        db = self.server.create_db('simplecouchdb_test')
+        db = self.server.create_db('couchdbkit_test')
         class Test(Document):
             string = StringProperty(required=True)
         Test._db =db
@@ -499,7 +526,7 @@ class PropertyTestCase(unittest.TestCase):
         def ftest():
             test.string = ""
         self.assertRaises(BadValueError, test.save)
-        self.server.delete_db('simplecouchdb_test')
+        self.server.delete_db('couchdbkit_test')
 
     def testValidator(self):
         def test_validator(value):
@@ -583,13 +610,13 @@ class PropertyTestCase(unittest.TestCase):
        
         self.assert_(isinstance(test.field, basestring))
         self.assert_(isinstance(test.field1, datetime.datetime))
-        db = self.server.create_db('simplecouchdb_test')
+        db = self.server.create_db('couchdbkit_test')
         Test._db = db
         
         test.save()
 
         doc2 = Test.get(test.id)
-        self.server.delete_db('simplecouchdb_test')
+        self.server.delete_db('couchdbkit_test')
         
         v = doc2.field
         v1 = doc2.field1
@@ -605,13 +632,13 @@ class PropertyTestCase(unittest.TestCase):
                 field1 = datetime.datetime(2008, 11, 10, 8, 0, 0),
                 dynamic_field = 'test')
 
-        db = self.server.create_db('simplecouchdb_test')
+        db = self.server.create_db('couchdbkit_test')
         Test._db =db
 
         test.save()
 
         doc2 = Test.get(test.id)
-        self.server.delete_db('simplecouchdb_test')
+        self.server.delete_db('couchdbkit_test')
 
         v1 = doc2.field1
         vd = doc2.dynamic_field
@@ -633,13 +660,13 @@ class PropertyTestCase(unittest.TestCase):
         doc.schema.astring = u"test"
         self.assert_(doc.schema.astring == u"test")
         self.assert_(doc._doc['schema']['astring'] == u"test")
-        db = self.server.create_db('simplecouchdb_test')
+        db = self.server.create_db('couchdbkit_test')
         
         MyDoc._db = db
 
         doc.save()
         doc2 = MyDoc.get(doc.id)
-        self.server.delete_db('simplecouchdb_test')
+        self.server.delete_db('couchdbkit_test')
         
         self.assert_(isinstance(doc2.schema, MySchema) == True)
         self.assert_(doc2.schema.astring == u"test")
@@ -652,7 +679,7 @@ class PropertyTestCase(unittest.TestCase):
                 name = StringProperty(  required = True, default = "name" )
             b = SchemaProperty( b_schema )
 
-        db = self.server.create_db('simplecouchdb_test')
+        db = self.server.create_db('couchdbkit_test')
         B._db = db
         
         b = B()
@@ -669,7 +696,7 @@ class PropertyTestCase(unittest.TestCase):
         except BadValueError:
             pass
         b1.b.name = u"test"
-        del self.server['simplecouchdb_test']
+        del self.server['couchdbkit_test']
 
 
     def testSchemaWithPythonTypes(self):
@@ -811,7 +838,7 @@ class PropertyTestCase(unittest.TestCase):
         self.assert_(a.l[0] == datetime(2009, 4, 13, 22, 56, 10))
         self.assert_(a._doc == {'doc_type': 'A', 'l': ['2009-04-13T22:56:10Z']})
         
-        db = self.server.create_db('simplecouchdb_test')
+        db = self.server.create_db('couchdbkit_test')
         A.set_db(db) 
         a.save()
         
@@ -820,7 +847,7 @@ class PropertyTestCase(unittest.TestCase):
         self.assert_(len(b.l) == 1)
         self.assert_(b.l[0] == datetime(2009, 4, 13, 22, 56, 10))
         self.assert_(b._doc['l'] == ['2009-04-13T22:56:10Z'])
-        self.server.delete_db('simplecouchdb_test')
+        self.server.delete_db('couchdbkit_test')
         
     def testDictProperty(self):
         from datetime import datetime
