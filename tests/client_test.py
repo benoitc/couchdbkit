@@ -567,6 +567,9 @@ class ClientViewTestCase(unittest.TestCase):
                 endkey="20081108")
         self.assert_(len(results) == 3)
 
+        results = db.view('test/test1', keys=['test', 'machin'] )
+        self.assert_(len(results) == 3)
+
         del self.Server['couchdbkit_test']
 
         
