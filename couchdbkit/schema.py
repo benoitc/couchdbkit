@@ -436,18 +436,21 @@ class DocumentBase(DocumentSchema):
     store = save
     
     @classmethod
-    def get(cls, docid, rev=None, db=None):
+    def get(cls, docid, rev=None, db=None, dynamic_properties=True):
         if db is not None:
             cls._db = db
+        cls._dynamic_properties = dynamic_properties
         if cls._db is None:
             raise TypeError("doc database required to save document")
         return cls._db.get(docid, rev=rev, wrapper=cls.wrap)
         
     @classmethod
-    def get_or_create(cls, docid=None, db=None):
+    def get_or_create(cls, docid=None, db=None, dynamic_properties=True):
         if db is not None:
             cls._db = db
-                
+               
+        cls._dynamic_properties = dynamic_properties
+        
         if cls._db is None:    
             raise TypeError("doc database required to save document")
             
@@ -516,7 +519,7 @@ class QueryMixin(object):
     """ Mixin that add query methods """
     
     @classmethod
-    def view(cls, view_name, wrapper=None, **params):
+    def view(cls, view_name, wrapper=None, dynamic_properties=True, **params):
         """ Get documents associated to a view.
         Results of view are automatically wrapped
         to Document object.
@@ -530,14 +533,18 @@ class QueryMixin(object):
         def default_wrapper(row):
             data = row.get('value')
             docid = row.get('id')
+
             if not data or data is None:
                 doc = row.get('doc', False)
                 if doc:
                     return cls.wrap(doc)
                 return row
-            if not docid:
+                
+            if not isinstance(data, dict) or not docid:
                 return row
+                
             data['_id'] = docid
+            cls._dynamic_properties = dynamic_properties
             obj = cls.wrap(data)
             return obj
         
@@ -553,7 +560,7 @@ class QueryMixin(object):
         return db.view(view_name, wrapper=wrapper, **params)
         
     @classmethod
-    def temp_view(cls, design, wrapper=None, **params):
+    def temp_view(cls, design, wrapper=None, dynamic_properties=True, **params):
         """ Slow view. Like in view method,
         results are automatically wrapped to 
         Document object.
@@ -567,16 +574,18 @@ class QueryMixin(object):
         def default_wrapper(row):
             data = row['value']
             docid = row.get('id', False)
-            if not isinstance(data, dict):
-                return row
+            
             if not data or data is None:
                 doc = row.get('doc', False)
                 if doc:
                     return cls.wrap(doc)
                 return row
-            if not docid:
-                return row      
+                
+            if not isinstance(data, dict) or not docid:        
+                return row
+                    
             data['_id'] = docid
+            cls._dynamic_properties = dynamic_properties
             obj = cls.wrap(data)
             return obj
         if wrapper is None:
