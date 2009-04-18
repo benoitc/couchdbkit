@@ -526,7 +526,10 @@ class Database(object):
         return (len(self) > 0)
         
     def escape_docid(self, docid):
-        docid = url_quote(docid, safe=":/")
+        if docid.startswith('/'):
+            docid = docid[1:]
+        if docid.startswith('_design'):
+            docid = '_design/%s' % url_quote(docid[8:], safe=':/')
         return docid  
 
     def encode_attachments(self, attachments):
