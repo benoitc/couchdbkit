@@ -439,7 +439,7 @@ class DocumentBase(DocumentSchema):
     def get(cls, docid, rev=None, db=None, dynamic_properties=True):
         if db is not None:
             cls._db = db
-        cls._allow_dynamic_poroperties = dynamic_properties
+        cls._allow_dynamic_properties = dynamic_properties
         if cls._db is None:
             raise TypeError("doc database required to save document")
         return cls._db.get(docid, rev=rev, wrapper=cls.wrap)
@@ -449,7 +449,7 @@ class DocumentBase(DocumentSchema):
         if db is not None:
             cls._db = db
                
-        cls._allow_dynamic_poroperties = dynamic_properties
+        cls._allow_dynamic_properties = dynamic_properties
         
         if cls._db is None:    
             raise TypeError("doc database required to save document")
@@ -519,17 +519,7 @@ class QueryMixin(object):
     """ Mixin that add query methods """
     
     @classmethod
-    def view(cls, view_name, wrapper=None, dynamic_properties=True, **params):
-        """ Get documents associated to a view.
-        Results of view are automatically wrapped
-        to Document object.
-
-        :params view_name: str, name of view
-        :params params:  params of view
-
-        :return: :class:`simplecouchdb.core.ViewResults` instance. All
-        results are wrapped to current document instance.
-        """
+    def __view(cls, view_type=None, data=None, wrapper=None, dynamic_properties=True, **params):
         def default_wrapper(row):
             data = row.get('value')
             docid = row.get('id')
@@ -544,7 +534,7 @@ class QueryMixin(object):
                 return row
                 
             data['_id'] = docid
-            cls._allow_dynamic_poroperties = dynamic_properties
+            cls._allow_dynamic_properties = dynamic_properties
             obj = cls.wrap(data)
             return obj
         
@@ -557,7 +547,26 @@ class QueryMixin(object):
             raise TypeError("wrapper is not a callable")
         
         db = cls.get_db()
-        return db.view(view_name, wrapper=wrapper, **params)
+        if view_type == 'view':
+            return db.view(data, wrapper=wrapper, **params)
+        elif view_type == 'temp_view':
+            return db.temp_view(data, wrapper=wrapper, **params)    
+        else:
+            raise RuntimeError("bad view_type : %s" % view_type )
+            
+    @classmethod
+    def view(cls, view_name, wrapper=None, dynamic_properties=True, **params):
+        """ Get documents associated to a view.
+        Results of view are automatically wrapped
+        to Document object.
+
+        :params view_name: str, name of view
+        :params params:  params of view
+
+        :return: :class:`simplecouchdb.core.ViewResults` instance. All
+        results are wrapped to current document instance.
+        """
+        return cls.__view(view_type="view", data=view_name, wrapper=wrapper, dynamic_properties=dynamic_properties, **params) 
         
     @classmethod
     def temp_view(cls, design, wrapper=None, dynamic_properties=True, **params):
@@ -571,30 +580,7 @@ class QueryMixin(object):
         :return: Like view, return a :class:`simplecouchdb.core.ViewResults` instance. All
         results are wrapped to current document instance.
         """
-        def default_wrapper(row):
-            data = row['value']
-            docid = row.get('id', False)
-            
-            if not data or data is None:
-                doc = row.get('doc', False)
-                if doc:
-                    return cls.wrap(doc)
-                return row
-                
-            if not isinstance(data, dict) or not docid:        
-                return row
-                    
-            data['_id'] = docid
-            cls._allow_dynamic_poroperties = dynamic_properties
-            obj = cls.wrap(data)
-            return obj
-        if wrapper is None:
-            wrapper = default_wrapper
-        if not callable(wrapper):
-            raise TypeError("wrapper is not a callable")
-            
-        db = cls.get_db()
-        return db.temp_view(design, wrapper=wrapper, **params)    
+        return cls.__view(view_type="temp_view", data=design, wrapper=wrapper, dynamic_properties=dynamic_properties, **params) 
         
 class Document(DocumentBase, QueryMixin, AttachmentMixin):
     """
@@ -603,9 +589,3 @@ class Document(DocumentBase, QueryMixin, AttachmentMixin):
     :class:`QueryMixin` for view & temp_view that wrap results to this object
     :class `AttachmentMixin` for attachments function
     """ 
-    
-class StaticDocument(Document):
-    """
-    Shorthand for a document that disallow dynamic properties.
-    """
-    _allow_dynamic_poroperties = False
