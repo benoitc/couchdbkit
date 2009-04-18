@@ -519,7 +519,8 @@ class QueryMixin(object):
     """ Mixin that add query methods """
     
     @classmethod
-    def __view(cls, view_type=None, data=None, wrapper=None, dynamic_properties=True, **params):
+    def __view(cls, view_type=None, data=None, wrapper=None, 
+    dynamic_properties=True, **params):
         def default_wrapper(row):
             data = row.get('value')
             docid = row.get('id')
@@ -555,7 +556,8 @@ class QueryMixin(object):
             raise RuntimeError("bad view_type : %s" % view_type )
             
     @classmethod
-    def view(cls, view_name, wrapper=None, dynamic_properties=True, **params):
+    def view(cls, view_name, wrapper=None, dynamic_properties=True, 
+    **params):
         """ Get documents associated to a view.
         Results of view are automatically wrapped
         to Document object.
@@ -566,10 +568,12 @@ class QueryMixin(object):
         :return: :class:`simplecouchdb.core.ViewResults` instance. All
         results are wrapped to current document instance.
         """
-        return cls.__view(view_type="view", data=view_name, wrapper=wrapper, dynamic_properties=dynamic_properties, **params) 
+        return cls.__view(view_type="view", data=view_name, wrapper=wrapper, 
+            dynamic_properties=dynamic_properties, **params) 
         
     @classmethod
-    def temp_view(cls, design, wrapper=None, dynamic_properties=True, **params):
+    def temp_view(cls, design, wrapper=None, dynamic_properties=True, 
+    **params):
         """ Slow view. Like in view method,
         results are automatically wrapped to 
         Document object.
@@ -577,10 +581,11 @@ class QueryMixin(object):
         :params design: design object, See `simplecouchd.client.Database`
         :params params:  params of view
 
-        :return: Like view, return a :class:`simplecouchdb.core.ViewResults` instance. All
-        results are wrapped to current document instance.
+        :return: Like view, return a :class:`simplecouchdb.core.ViewResults` 
+        instance. All results are wrapped to current document instance.
         """
-        return cls.__view(view_type="temp_view", data=design, wrapper=wrapper, dynamic_properties=dynamic_properties, **params) 
+        return cls.__view(view_type="temp_view", data=design, wrapper=wrapper, 
+            dynamic_properties=dynamic_properties, **params) 
         
 class Document(DocumentBase, QueryMixin, AttachmentMixin):
     """
