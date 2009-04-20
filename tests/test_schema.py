@@ -45,16 +45,41 @@ class DocumentTestCase(unittest.TestCase):
             pass
 
     def testStaticDocumentCreation(self):
+        db = self.server.create_db('couchdbkit_test')
+
+        # with _allow_dynamic_properties
         class Test(Document):
-            string = StringProperty(default="test")
+            _allow_dynamic_properties = False
+            foo = StringProperty()
+        Test._db = db
 
         doc = Test()
-        self.assert_(doc.string == "test")
-        self.assert_(doc._doc['string'] == "test")
+        doc.foo="test"
+        try:
+            doc.bar="bla"
+        except AttributeError, e:
+            assert e.message == "bar is not defined in schema (not a valid property)"
+        doc.save()
+        assert not hasattr(doc, "bar")
+        assert doc._doc['foo'] == "test"
 
-        doc.string = "essai"
-        self.assert_(doc._doc['string'] == "essai")
-        self.assert_(doc["string"] == "essai")
+        # With StaticDocument
+        class Test(StaticDocument):
+            foo = StringProperty()
+        Test._db = db
+
+        doc = Test()
+        doc.foo="test"
+        try:
+            doc.bar="bla"
+        except AttributeError, e:
+            assert e.message == "bar is not defined in schema (not a valid property)"
+        doc.save()
+        assert not hasattr(doc, "bar")
+        assert doc._doc['foo'] == "test"
+
+        self.server.delete_db('couchdbkit_test')
+
 
     def testDynamicDocumentCreation(self):
         class Test(Document):
