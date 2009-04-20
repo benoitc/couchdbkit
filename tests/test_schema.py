@@ -177,14 +177,14 @@ class DocumentTestCase(unittest.TestCase):
         try:
             Test.bulk_save( [doc1, doc2, doc3] )
         except TypeError, e:
-            self.assert_(e.message == "doc database required to save document" )
+            self.assert_(str(e)== "doc database required to save document" )
 
         Test.set_db( db )
         bad_doc = Test2(string="bad_doc")
         try:
             Test.bulk_save( [doc1, doc2, doc3, bad_doc] )
         except ValueError, e:
-            self.assert_(e.message == "one of your documents does not have the correct type" )
+            self.assert_(str(e) == "one of your documents does not have the correct type" )
 
         Test.bulk_save( [doc1, doc2, doc3] )
         self.assert_(doc1.id is not None)
