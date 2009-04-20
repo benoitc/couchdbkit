@@ -159,6 +159,48 @@ class DocumentTestCase(unittest.TestCase):
 
         self.server.delete_db('couchdbkit_test')
 
+    def testBulkSave(self):
+        db = self.server.create_db('couchdbkit_test')
+        class Test(Document):
+            string = StringProperty()
+        #Test._db = db
+        class Test2(Document):
+            string = StringProperty()
+
+        doc1 = Test(string="test")
+        self.assert_(doc1.id is None)
+        doc2 = Test(string="test2")
+        self.assert_(doc2.id is None)
+        doc3 = Test(string="test3")
+        self.assert_(doc3.id is None)
+
+        try:
+            Test.bulk_save( [doc1, doc2, doc3] )
+        except TypeError, e:
+            self.assert_(e.message == "doc database required to save document" )
+
+        Test.set_db( db )
+        bad_doc = Test2(string="bad_doc")
+        try:
+            Test.bulk_save( [doc1, doc2, doc3, bad_doc] )
+        except ValueError, e:
+            self.assert_(e.message == "one of your documents does not have the correct type" )
+
+        Test.bulk_save( [doc1, doc2, doc3] )
+        self.assert_(doc1.id is not None)
+        self.assert_(doc1.rev is not None)
+        self.assert_(doc2.id is not None)
+        self.assert_(doc2.rev is not None)
+        self.assert_(doc3.id is not None)
+        self.assert_(doc3.rev is not None)
+        self.assert_(doc1.string == "test")
+        self.assert_(doc2.string == "test2")
+        self.assert_(doc3.string == "test3")
+
+        self.server.delete_db('couchdbkit_test')
+
+ 
+
     def testGet(self):
         db = self.server.create_db('couchdbkit_test')
         class Test(Document):

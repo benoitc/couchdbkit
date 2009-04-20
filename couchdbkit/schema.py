@@ -434,6 +434,19 @@ class DocumentBase(DocumentSchema):
         self._doc.update({'_id': doc['_id'], '_rev': doc['_rev']})
         
     store = save
+
+    @classmethod
+    def bulk_save(cls, docs):
+        """ Save multiple documents in database.
+            
+        :params docs: list of couchdbkit.schema.Document instance
+        """
+        if cls._db is None:
+            raise TypeError("doc database required to save document")
+        docs_to_save= [doc._doc for doc in docs if doc._doc_type == cls._doc_type]
+        if not len(docs_to_save) == len(docs):
+            raise ValueError("one of your documents does not have the correct type")
+        cls._db.bulk_save(docs_to_save)
     
     @classmethod
     def get(cls, docid, rev=None, db=None, dynamic_properties=True):
