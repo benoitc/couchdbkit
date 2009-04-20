@@ -300,7 +300,26 @@ class ClientDatabaseTestCase(unittest.TestCase):
         attachment = db.fetch_attachment(doc, 'test')
         self.assert_(attachment == None)
         del self.Server['couchdbkit_test']
-
+        
+    def testAttachmentsWithSlashes(self):
+        db = self.Server.create_db('couchdbkit_test')
+        doc = { '_id': 'test/slashes', 'string': 'test', 'number': 4 }
+        db.save_doc(doc)        
+        text_attachment = u"un texte attaché"
+        old_rev = doc['_rev']
+        db.put_attachment(doc, text_attachment, "test", "text/plain")
+        self.assert_(old_rev != doc['_rev'])
+        fetch_attachment = db.fetch_attachment(doc, "test")
+        self.assert_(text_attachment == fetch_attachment)
+        
+        db.put_attachment(doc, text_attachment, "test/test.txt", "text/plain")
+        self.assert_(old_rev != doc['_rev'])
+        fetch_attachment = db.fetch_attachment(doc, "test/test.txt")
+        self.assert_(text_attachment == fetch_attachment)
+        
+        del self.Server['couchdbkit_test']
+        
+        
     def testSaveMultipleDocs(self):
         db = self.Server.create_db('couchdbkit_test')
         docs = [

@@ -464,7 +464,8 @@ class Database(object):
         else:
             doc_ = doc
 
-        res = self.res(doc_['_id']).put(name, payload=content, 
+        docid = self.escape_docid(doc_['_id'])
+        res = self.res(docid).put(name, payload=content, 
                 headers=headers, rev=doc_['_rev'])
 
         if res['ok']:
@@ -479,8 +480,8 @@ class Database(object):
     
         :return: dict, withm member ok setto True if delete was ok.
         """
-
-        return self.res(doc['_id']).delete(name, rev=doc['_rev'])
+        docid = self.escape_docid(doc['_id'])
+        return self.res(docid).delete(name, rev=doc['_rev'])
 
     def fetch_attachment(self, id_or_doc, name):
         """ get attachment in document
@@ -496,6 +497,7 @@ class Database(object):
         else:
             docid = id_or_doc['_id']
       
+        docid = self.escape_docid(docid)
         try:
             data = self.res(docid).get(name)
         except ResourceNotFound:
