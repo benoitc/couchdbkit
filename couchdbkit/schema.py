@@ -34,9 +34,9 @@ __all__ = ['ReservedWordError', 'ALLOWED_PROPERTY_TYPES', 'DocumentSchema',
         'SchemaProperties', 'DocumentBase', 'QueryMixin', 'AttachmentMixin', 
         'Document', 'StaticDocument']
 
-_RESERVED_WORDS = ['_id', '_rev', '$schema']
+_RESERVED_WORDS = ['_id', '_rev', '$schema', 'type']
 
-_NODOC_WORDS = ['doc_type','id', 'rev']
+_NODOC_WORDS = ['doc_type','id', 'rev', 'type']
 
 
 ALLOWED_PROPERTY_TYPES = set([
