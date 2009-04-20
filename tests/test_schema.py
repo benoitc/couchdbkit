@@ -58,9 +58,9 @@ class DocumentTestCase(unittest.TestCase):
         try:
             doc.bar="bla"
         except AttributeError, e:
-            assert e.message == "bar is not defined in schema (not a valid property)"
+            self.assert_(str(e) == "bar is not defined in schema (not a valid property)")
         doc.save()
-        assert not hasattr(doc, "bar")
+        self.assert_(not hasattr(doc, "bar"))
         assert doc._doc['foo'] == "test"
 
         # With StaticDocument
@@ -73,10 +73,10 @@ class DocumentTestCase(unittest.TestCase):
         try:
             doc.bar="bla"
         except AttributeError, e:
-            assert e.message == "bar is not defined in schema (not a valid property)"
+            self.assert_(str(e) == "bar is not defined in schema (not a valid property)")
         doc.save()
-        assert not hasattr(doc, "bar")
-        assert doc._doc['foo'] == "test"
+        self.assert_(not hasattr(doc, "bar"))
+        self.assert_(doc._doc['foo'] == "test")
 
         self.server.delete_db('couchdbkit_test')
 

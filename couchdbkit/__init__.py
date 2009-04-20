@@ -26,4 +26,5 @@ from couchdbkit.client import Server, Database
 from couchdbkit.schema import *
 from couchdbkit.properties import *
 from couchdbkit.properties_proxy import *
+from couchdbkit.properties_map import *
 from couchdbkit.session import create_session
