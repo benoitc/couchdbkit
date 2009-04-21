@@ -52,9 +52,15 @@ def to_bytestring(s):
     
 def read_file(fname):
     """ read file content"""
-    f = codecs.open(fname, 'rb', "utf-8")
-    data = f.read()
-    f.close()
+    
+    try:
+        f = codecs.open(fname, 'rb', "utf-8")
+        data = f.read()
+    except UnicodeDecodeError, e:
+        f = open(fname, 'rb')
+        data = f.read()
+    finally:
+        f.close()
     return data
 
 def sign_file(file_path):
@@ -65,10 +71,8 @@ def sign_file(file_path):
     :return: string, md5 hexdigest
     """
     if os.path.isfile(file_path):
-        f = open(file_path, 'rb')
-        content = f.read()
-        f.close()
-        return md5(content).hexdigest()
+        content = read_file(file_path)
+        return md5(to_bytestring(content)).hexdigest()
     return ''
 
 def write_content(fname, content):
