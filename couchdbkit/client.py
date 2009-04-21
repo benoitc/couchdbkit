@@ -221,10 +221,9 @@ class Database(object):
 
         :return: list, results of the view
         """
-        if not by_seq:
-            return self.view('_all_docs', **params)
-        else:
+        if by_seq:
             return self.view('_all_docs_by_seq', **params)
+        return self.view('_all_docs', **params)
         
     def doc_revisions(self, docid, with_doc=True):
         """ retrieve revisions of a doc
