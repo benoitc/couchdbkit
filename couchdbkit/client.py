@@ -173,7 +173,7 @@ class Database(object):
         """
 
         try:
-            data = self.res.head(docid)
+            data = self.res.head(self.escape_docid(docid))
         except ResourceNotFound:
             return False
         return True
@@ -260,9 +260,8 @@ class Database(object):
             doc['_attachments'] = self.encode_attachments(doc['_attachments'])
             
         if '_id' in doc:
-            doc['_id'] = self.escape_docid(doc['_id'])
-            print doc['_id']
-            res = self.res.put(doc['_id'], payload=doc)
+            docid = self.escape_docid(doc['_id'])
+            res = self.res.put(docid, payload=doc)
         else:
             try:
                 doc['_id'] = self.server.next_uuid()
@@ -338,8 +337,8 @@ class Database(object):
             if not '_id' or not '_rev' in doc:
                 raise KeyError('_id and _rev are required to delete a doc')
                 
-            doc['_id'] = self.escape_docid(doc['_id'])
-            result = self.res.delete(doc['_id'], rev=doc['_rev'])
+            docid = self.escape_docid(doc['_id'])
+            result = self.res.delete(docid, rev=doc['_rev'])
         elif isinstance(doc, basestring): # we get a docid
             data = self.res.head(doc)
             response = self.res.get_response()
@@ -464,8 +463,7 @@ class Database(object):
         else:
             doc_ = doc
 
-        docid = self.escape_docid(doc_['_id'])
-        res = self.res(docid).put(name, payload=content, 
+        res = self.res(doc_['_id']).put(name, payload=content, 
                 headers=headers, rev=doc_['_rev'])
 
         if res['ok']:
@@ -480,8 +478,7 @@ class Database(object):
     
         :return: dict, withm member ok setto True if delete was ok.
         """
-        docid = self.escape_docid(doc['_id'])
-        return self.res(docid).delete(name, rev=doc['_rev'])
+        return self.res(doc['_id']).delete(name, rev=doc['_rev'])
 
     def fetch_attachment(self, id_or_doc, name):
         """ get attachment in document
@@ -497,7 +494,6 @@ class Database(object):
         else:
             docid = id_or_doc['_id']
       
-        docid = self.escape_docid(docid)
         try:
             data = self.res(docid).get(name)
         except ResourceNotFound:
@@ -532,6 +528,8 @@ class Database(object):
             docid = docid[1:]
         if docid.startswith('_design'):
             docid = '_design/%s' % url_quote(docid[8:], safe='')
+        else:
+            docid = url_quote(docid, safe='')
         return docid  
 
     def encode_attachments(self, attachments):

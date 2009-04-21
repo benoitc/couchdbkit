@@ -137,6 +137,14 @@ class ClientDatabaseTestCase(unittest.TestCase):
          self.assert_( "a/b" in db) 
          self.assert_( "a/b" in db)
          
+         doc = { '_id': "http://a"}
+         db.save_doc(doc)
+         self.assert_( "http://a" in db) 
+         
+         doc = { '_id': "http://b"}
+         db.save_doc(doc)
+         self.assert_( "http://b" in db)
+         
          doc = { '_id': '_design/a' }
          db.save_doc(doc)
          self.assert_( "_design/a" in db)
@@ -319,6 +327,18 @@ class ClientDatabaseTestCase(unittest.TestCase):
         
         del self.Server['couchdbkit_test']
         
+        
+    def testAttachmentUnicode8URI(self):
+        db = self.Server.create_db('couchdbkit_test')
+        doc = { '_id': u"éàù/slashes", 'string': 'test', 'number': 4 }
+        db.save_doc(doc)        
+        text_attachment = u"un texte attaché"
+        old_rev = doc['_rev']
+        db.put_attachment(doc, text_attachment, "test", "text/plain")
+        self.assert_(old_rev != doc['_rev'])
+        fetch_attachment = db.fetch_attachment(doc, "test")
+        self.assert_(text_attachment == fetch_attachment)
+        del self.Server['couchdbkit_test']
         
     def testSaveMultipleDocs(self):
         db = self.Server.create_db('couchdbkit_test')
