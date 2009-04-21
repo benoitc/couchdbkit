@@ -121,7 +121,7 @@ class CouchdbResource(restclient.Resource):
         self.client.safe=":/"
         if path is not None  and "%" in path: 
             # we already encode some parts of url
-            self.client_safe = ":/%"
+            self.client.safe = ":/%"
 
         body = None
         if payload is not None:
@@ -194,7 +194,7 @@ class CouchdbResource(restclient.Resource):
                 data = json.loads(data)
             except ValueError:
                 pass
-        
+                
         return data
 
     def encode_params(self, params):

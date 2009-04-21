@@ -201,7 +201,7 @@ class Database(object):
             if not callable(wrapper):
                 raise TypeError("wrapper isn't a callable")
             return wrapper(doc)
-            
+        
         return doc
         
     def doc_revisions(self, docid, with_doc=True):
@@ -300,10 +300,6 @@ class Database(object):
                 nextid = self.server.next_uuid(count=uuid_count)
                 if nextid:
                     doc['_id'] = nextid
-                    
-            # make sure we have a corret id
-            for doc in ids:
-                doc['_id'] = self.escape_docid(doc['_id'])
                     
         payload = { "docs": docs }
         if all_or_nothing:
@@ -463,7 +459,10 @@ class Database(object):
         else:
             doc_ = doc
 
-        res = self.res(doc_['_id']).put(name, payload=content, 
+        docid = self.escape_docid(doc_['_id'])
+        name = url_quote(name, safe="")
+            
+        res = self.res(docid).put(name, payload=content, 
                 headers=headers, rev=doc_['_rev'])
 
         if res['ok']:
@@ -478,7 +477,10 @@ class Database(object):
     
         :return: dict, withm member ok setto True if delete was ok.
         """
-        return self.res(doc['_id']).delete(name, rev=doc['_rev'])
+        docid = self.escape_docid(doc['_id'])
+        name = url_quote(name, safe="")
+        
+        return self.res(docid).delete(name, rev=doc['_rev'])
 
     def fetch_attachment(self, id_or_doc, name):
         """ get attachment in document
@@ -494,6 +496,8 @@ class Database(object):
         else:
             docid = id_or_doc['_id']
       
+        docid = self.escape_docid(docid)
+        name = url_quote(name, safe="")
         try:
             data = self.res(docid).get(name)
         except ResourceNotFound:

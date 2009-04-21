@@ -131,27 +131,47 @@ class ClientDatabaseTestCase(unittest.TestCase):
         del self.Server['couchdbkit_test']
         
     def testDocWithSlashes(self):
-         db = self.Server.create_db('couchdbkit_test')
-         doc = { '_id': "a/b"}
-         db.save_doc(doc)
-         self.assert_( "a/b" in db) 
-         self.assert_( "a/b" in db)
-         
-         doc = { '_id': "http://a"}
-         db.save_doc(doc)
-         self.assert_( "http://a" in db)
-         doc = db.get("http://a")
-         self.assert_(doc is not None)
+        db = self.Server.create_db('couchdbkit_test')
+        doc = { '_id': "a/b"}
+        db.save_doc(doc)
+        self.assert_( "a/b" in db) 
+ 
+        doc = { '_id': "http://a"}
+        db.save_doc(doc)
+        self.assert_( "http://a" in db)
+        doc = db.get("http://a")
+        self.assert_(doc is not None)
+ 
+        def not_found():
+            doc = db.get('http:%2F%2Fa')
+        self.assertRaises(ResourceNotFound, not_found)
+ 
+        self.assert_(doc.get('_id') == "http://a")
+        doc.get('_id')
 
-         doc = { '_id': "http://b"}
-         db.save_doc(doc)
-         self.assert_( "http://b" in db)
-         
-         doc = { '_id': '_design/a' }
-         db.save_doc(doc)
-         self.assert_( "_design/a" in db)
-         del self.Server['couchdbkit_test']
-        
+        doc = { '_id': "http://b"}
+        db.save_doc(doc)
+        self.assert_( "http://b" in db)
+ 
+        doc = { '_id': '_design/a' }
+        db.save_doc(doc)
+        self.assert_( "_design/a" in db)
+        del self.Server['couchdbkit_test']
+    
+    def testMultipleDocWithSlashes(self):
+        db = self.Server.create_db('couchdbkit_test')
+        doc = { '_id': "a/b"}
+        doc1 = { '_id': "http://a"}
+        doc3 = { '_id': '_design/a' }
+        db.bulk_save([doc, doc1, doc3])
+        self.assert_( "a/b" in db) 
+        self.assert_( "http://a" in db)
+        self.assert_( "_design/a" in db)
+        def not_found():
+            doc = db.get('http:%2F%2Fa')
+        self.assertRaises(ResourceNotFound, not_found)
+        del self.Server['couchdbkit_test']
+    
     def testDbLen(self):
         db = self.Server.create_db('couchdbkit_test')
         doc1 = { 'string': 'test', 'number': 4 }
