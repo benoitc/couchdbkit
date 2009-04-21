@@ -203,6 +203,28 @@ class Database(object):
             return wrapper(doc)
         
         return doc
+
+    def all_docs(self, by_seq=False, **params):
+        """Get all documents from database
+
+        This method has the same behavior than view.
+
+        `all_docs( **params )` is the same as `view('_all_docs', **params)`
+         and `all_docs( by_seq=True, **params)` is the same as
+        `view('_all_docs_by_seq', **params)`
+
+        You can use all(), one(), first() just like views
+
+        Args:
+        :param by_seq: bool, if True the "_all_docs_by_seq" is passed to
+        couchdb. It will return all updated list.
+
+        :return: list, results of the view
+        """
+        if not by_seq:
+            return self.view('_all_docs', **params)
+        else:
+            return self.view('_all_docs_by_seq', **params)
         
     def doc_revisions(self, docid, with_doc=True):
         """ retrieve revisions of a doc
@@ -379,6 +401,8 @@ class Database(object):
         if view_name.startswith('/'):
             view_name = view_name[1:]
         if view_name == '_all_docs':
+            view_path = view_name
+        elif view_name == '_all_docs_by_seq':
             view_path = view_name
         else:
             view_name = view_name.split('/')

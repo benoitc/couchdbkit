@@ -484,6 +484,42 @@ class ClientViewTestCase(unittest.TestCase):
         self.assert_(len(results) == 2)
         del self.Server['couchdbkit_test']
 
+    def testAllDocs(self):
+        db = self.Server.create_db('couchdbkit_test')
+        # save 2 docs 
+        doc1 = { '_id': 'test', 'string': 'test', 'number': 4, 
+                'docType': 'test' }
+        db.save_doc(doc1)
+        doc2 = { '_id': 'test2', 'string': 'test', 'number': 2,
+                    'docType': 'test'}
+        db.save_doc(doc2)
+        
+        self.assert_(db.view('_all_docs').count() == 2 )
+        self.assert_(db.view('_all_docs').all() == db.all_docs().all())
+
+        del self.Server['couchdbkit_test']
+
+    def testAllDocsBySeq(self):
+        db = self.Server.create_db('couchdbkit_test')
+        # save 2 docs 
+        doc1 = { '_id': 'test', 'string': 'test', 'number': 4, 
+                'docType': 'test' }
+        db.save_doc(doc1)
+        doc2 = { '_id': 'test2', 'string': 'test', 'number': 2,
+                    'docType': 'test'}
+        db.save_doc(doc2)
+        
+        self.assert_(db.view('_all_docs_by_seq').count() == 2 )
+        self.assert_(db.view('_all_docs_by_seq').all() == db.all_docs(by_seq=True).all())
+        results = db.all_docs(by_seq=True).all()
+        self.assert_(sorted([i["id"] for i in results]) == ["test", "test2"])
+        self.assert_(sorted([i["key"] for i in results]) == [1,2])
+
+        del self.Server['couchdbkit_test']
+
+
+
+
     def testCount(self):
         db = self.Server.create_db('couchdbkit_test')
         # save 2 docs 
