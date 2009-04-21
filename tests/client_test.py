@@ -139,8 +139,10 @@ class ClientDatabaseTestCase(unittest.TestCase):
          
          doc = { '_id': "http://a"}
          db.save_doc(doc)
-         self.assert_( "http://a" in db) 
-         
+         self.assert_( "http://a" in db)
+         doc = db.get("http://a")
+         self.assert_(doc is not None)
+
          doc = { '_id': "http://b"}
          db.save_doc(doc)
          self.assert_( "http://b" in db)

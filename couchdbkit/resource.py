@@ -119,6 +119,9 @@ class CouchdbResource(restclient.Resource):
 
         # always init url safe chars
         self.client.safe=":/"
+        if path is not None  and "%" in path: 
+            # we already encode some parts of url
+            self.client_safe = ":/%"
 
         body = None
         if payload is not None:
