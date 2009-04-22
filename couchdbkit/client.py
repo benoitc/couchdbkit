@@ -79,6 +79,11 @@ class Server(object):
         if res['ok']:
             return Database(self, dbname)
         return res['ok']
+
+    def get_or_create_db(self, dbname):
+        if not dbname in self:
+            return self.create_db(dbname)
+        return self[dbname]
         
     def delete_db(self, dbname):
         if "/" in dbname:

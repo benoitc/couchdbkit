@@ -44,6 +44,21 @@ class ClientServerTestCase(unittest.TestCase):
         all_dbs = self.Server.all_dbs()
         self.assert_('couchdbkit_test' in all_dbs)
         del self.Server['couchdbkit_test']
+
+    def testGetOrCreateDb(self):
+        # create the database
+        self.assertFalse("get_or_create_db" in self.Server)
+        gocdb = self.Server.get_or_create_db("get_or_create_db")
+        self.assert_(gocdb.dbname == "get_or_create_db")
+        self.assert_("get_or_create_db" in self.Server)
+        self.Server.delete_db("get_or_create_db")
+        # get the database (already created)
+        self.assertFalse("get_or_create_db" in self.Server)
+        db = self.Server.create_db("get_or_create_db")
+        self.assert_("get_or_create_db" in self.Server)
+        gocdb = self.Server.get_or_create_db("get_or_create_db")
+        self.assert_(db.dbname == gocdb.dbname)
+        self.Server.delete_db("get_or_create_db")
         
     def testBadResourceClassType(self):
         self.assertRaises(TypeError, Server, resource_class=None)
