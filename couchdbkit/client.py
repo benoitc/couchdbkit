@@ -54,9 +54,6 @@ class Server(object):
         self.res = CouchdbResource(uri, transport=transport)
         self.uuids = []
         
-    def __repr__(self):
-        return "<%s %s>" % (self.__class__.__name__, self.dbname)
-        
     def info(self):
         """ info of server 
         :return: dict
@@ -142,6 +139,9 @@ class Database(object):
         self.server = server
         self.res = server.res.clone()
         self.res.update_uri('/%s' % dbname)
+    
+    def __repr__(self):
+        return "<%s %s>" % (self.__class__.__name__, self.dbname)
         
     @classmethod
     def from_uri(cls, uri, dbname, uuid_batch_count=DEFAULT_UUID_BATCH_COUNT, 
