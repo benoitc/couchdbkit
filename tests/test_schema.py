@@ -933,8 +933,7 @@ class PropertyTestCase(unittest.TestCase):
         a.d.update({'d2': datetime(2009, 4, 16, 16, 5, 41)})
         self.assert_(a._doc['d']['d2'] == '2009-04-16T16:05:41Z')
         self.assert_(a.d['d2'] == datetime(2009, 4, 16, 16, 5, 41))
-        
-        
+        self.assert_(a.d == {'s2': 'test', 's': 'test', 'd2': datetime(2009, 4, 16, 16, 5, 41), 'created': datetime(2009, 4, 16, 16, 5, 41)})
         
 
 if __name__ == '__main__':

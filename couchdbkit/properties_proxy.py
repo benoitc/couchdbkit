@@ -20,7 +20,8 @@ import time
 
 import couchdbkit
 from couchdbkit.properties import Property
-from couchdbkit.properties_map import value_to_json, value_to_python
+from couchdbkit.properties_map import value_to_json, value_to_python, \
+dict_to_python, list_to_python
 from couchdbkit.schema import DocumentSchema, ALLOWED_PROPERTY_TYPES
 from couchdbkit.exceptions import *
 
@@ -228,8 +229,17 @@ class DictProperty(Property):
         def __init__(self, d):
             self._dict = d
             
+        def __repr__(self):
+            return repr(dict_to_python(self._dict))
+
+        def __str__(self):
+            return str(dict_to_python(self._dict))
+              
         def __eq__(self, other):
-            return self._dict is other
+            return dict_to_python(self._dict) == other
+        
+        def __ne__(self, other):
+            return dict_to_python(self._dict) != other
             
         def __getitem__(self, key):
             return value_to_python(self._dict[key])
@@ -386,28 +396,28 @@ class ListProperty(Property):
             self._list = l
 
         def __lt__(self, other):
-            return self._list < other
+            return list_to_python(self._list) < other
 
         def __le__(self, other):
-            return self._list <= other
+            return list_to_python(self._list) <= other
 
         def __eq__(self, other):
-            return self._list == other
+            return list_to_python(self._list) == other
 
         def __ne__(self, other):
-            return self._list != other
+            return list_to_python(self._list) != other
 
         def __gt__(self, other):
-            return self._list > other
+            return list_to_python(self._list) > other
 
         def __ge__(self, other):
-            return self._list >= other
+            return list_to_python(self._list) >= other
 
         def __repr__(self):
-            return repr(list(self._list))
+            return repr(list_to_python(self._list))
 
         def __str__(self):
-            return str(self._list)
+            return str(list_to_python(self._list))
 
         def __unicode__(self):
             return unicode(self._list)
