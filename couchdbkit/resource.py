@@ -152,12 +152,12 @@ class CouchdbResource(restclient.Resource):
                 if retry > 0:
                     time.sleep(0.4)
                     return _make_request(retry - 1)
-                raise restclient.RequestFailed(e, http_code=0,
+                raise restclient.RequestFailed(str(e), http_code=0,
                         response=HTTPResponse({}))
             except restclient.RequestError, e: 
                 # until py-restclient will be patched to only 
                 # return RequestFailed, do our own raise
-                raise restclient.RequestFailed(e, http_code=0,
+                raise restclient.RequestFailed(str(e), http_code=0,
                         response=HTTPResponse({}))
             except:
                 raise
