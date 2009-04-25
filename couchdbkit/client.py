@@ -170,6 +170,13 @@ class Database(object):
     def compact(self):
         """ compact database"""
         res = self.res.post('/_compact')
+
+    def flush(self):
+        _design_docs = [self[i["id"]] for i in self.all_docs(startkey="_design", endkey="_design/"+u"\u9999")]
+        self.server.delete_db(self.dbname)
+        self.server.create_db(self.dbname)
+        [i.pop("_rev") for i in _design_docs]
+        self.bulk_save( _design_docs )
         
     def doc_exist(self, docid):
         """Test if document exist in database
