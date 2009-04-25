@@ -52,24 +52,14 @@ def convert_property(value):
 def dict_to_json(value):
     ret = {}
     for k, v in value.iteritems():
-        if isinstance(v, dict):
-            v = dict_to_json(v)
-        elif isinstance(v, list):
-            v = list_to_json(v)
-        else:
-            v = value_to_json(v)
+        v = value_to_json(v)
         ret[k] = v
     return ret
     
 def list_to_json(value):
     ret = []
     for item in value:
-        if isinstance(item, list):
-            item = list_to_json(item)
-        elif isinstance(item, dict):
-            item = dict_to_json(item)
-        else:
-            item = value_to_json(item)
+        item = value_to_json(item)
         ret.append(item)
     return ret
     
@@ -114,23 +104,13 @@ def value_to_python(value):
 def list_to_python(value):
     ret = []
     for item in value:
-        if isinstance(item, list):
-            item = list_to_python(item)
-        elif isinstance(item, dict):
-            item = dict_to_python(item)
-        else:
-            item = value_to_python(item)   
+        item = value_to_python(item)   
         ret.append(item)       
     return ret
     
 def dict_to_python(value):
     ret = {}
     for k, v in value.iteritems():
-        if isinstance(v, dict):
-            v = dict_to_python(v)
-        elif isinstance(v, list):
-            v = list_to_python(v)
-        else:
-            v = value_to_python(v)
+        v = value_to_python(v)
         ret[k] = v
     return ret
