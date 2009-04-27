@@ -476,7 +476,7 @@ class Database(object):
         headers.setdefault('Content-Type', 'text/plain')
 
         if name is None:
-            if hasattr('content', name):
+            if hasattr(content, "name"):
                 name = content.name
             else:
                 raise InvalidAttachment('You should provid a valid attachment name')
