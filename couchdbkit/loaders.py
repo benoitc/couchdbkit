@@ -15,7 +15,9 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 import copy
+import httplib
 import os
+import socket
 import sys
 
 from couchdbkit.resource import ResourceNotFound

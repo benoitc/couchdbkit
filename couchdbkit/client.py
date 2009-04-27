@@ -473,7 +473,6 @@ class Database(object):
         """
 
         headers = {}
-        headers.setdefault('Content-Type', 'text/plain')
         
         content = content or ''
         if content and chunked:

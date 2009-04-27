@@ -125,22 +125,13 @@ class CouchdbResource(restclient.Resource):
 
         body = None
         if payload is not None:
-            if hasattr(payload, 'read'):
-                # don't read the body now 
-                # if content length is given
-                if headers.get('Content-Length') is not None:
-                    body = payload
-                else:
-                    body = payload.read()
-            elif not isinstance(payload, basestring):
+            #TODO: handl case we wan to put in payload json file.
+            if not hasattr(payload, 'read') and not isinstance(payload, basestring):
                 body = json.dumps(payload, allow_nan=False,
                         ensure_ascii=False).encode('utf-8')
                 headers.setdefault('Content-Type', 'application/json')
             else:
                 body = payload
-
-        if isinstance(body, basestring):
-            headers.setdefault('Content-Length', str(len(body)))
 
         params = self.encode_params(params)
 

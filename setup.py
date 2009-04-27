@@ -54,7 +54,7 @@ to keep its simplicity when you manage it in python""",
     zip_safe = False,
 
     install_requires = [
-        'py-restclient>=1.2',
+        'py-restclient>=1.3',
         'simplejson'
     ]
 
