@@ -475,7 +475,8 @@ class Database(object):
         headers = {}
         headers.setdefault('Content-Type', 'text/plain')
         
-        if chunked:
+        content = content or ''
+        if content and chunked:
             headers.setdefault("Transfer-Encoding", "chunked")
 
         if name is None:
