@@ -440,7 +440,7 @@ class Database(object):
     iter_documents = documents    
 
     def put_attachment(self, doc, content, name=None, 
-            content_type=None, content_length=None):
+            content_type=None, content_length=None, chunked=True):
         """ Add attachement to a document.
 
         :param doc: dict, document object
@@ -474,6 +474,9 @@ class Database(object):
 
         headers = {}
         headers.setdefault('Content-Type', 'text/plain')
+        
+        if chunked:
+            headers.setdefault("Transfer-Encoding", "chunked")
 
         if name is None:
             if hasattr(content, "name"):
