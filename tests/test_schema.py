@@ -951,7 +951,23 @@ class PropertyTestCase(unittest.TestCase):
         self.assertTrue(a2.validate)
         self.server.delete_db('couchdbkit_test')
     
+    def testListPropertyWithType(self):
+        from datetime import datetime
+        class A(Document):
+            l = ListProperty(item_type=datetime)
+        a = A()    
+        a.l.append("test")
+        self.assertRaises(BadValueError, a.validate)
         
+        class B(Document):
+            ls = StringListProperty()
+        b = B()
+        b.ls.append("test")
+        self.assertTrue(b.validate)
+        b.ls.append(datetime.utcnow())
+        self.assertRaises(BadValueError, b.validate)
+        
+         
     def testDictProperty(self):
         from datetime import datetime
         class A(Document):

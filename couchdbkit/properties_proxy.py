@@ -26,7 +26,7 @@ from couchdbkit.schema import DocumentSchema, ALLOWED_PROPERTY_TYPES
 from couchdbkit.exceptions import *
 
 
-__all__ = ['SchemaProperty', 'ListProperty', 'DictProperty']
+__all__ = ['SchemaProperty', 'ListProperty', 'DictProperty', 'StringListProperty']
 
 class SchemaProperty(Property):
     """ Schema property. It allow you add a DocumentSchema instance 
@@ -132,25 +132,28 @@ class SchemaProperty(Property):
         return value._doc
         
         
-def validate_list_contents(value):
+def validate_list_contents(value, item_type=None):
     for item in value:
-        item = validate_content(item)
+        item = validate_content(item, item_type=item_type)
     return value
     
-def validate_dict_contents(value):
+def validate_dict_contents(value, item_type=None):
     for k, v in value.iteritems():
         value[k] = validate_content(v)
     return value
            
-def validate_content(value):
-    if type(value) not in ALLOWED_PROPERTY_TYPES:
-        raise BadValueError(
-            'Items  must all be in %s' %
-                (ALLOWED_PROPERTY_TYPES))
+def validate_content(value, item_type=None):
     if isinstance(value, list):
-        value = validate_list_contents(value)
+        value = validate_list_contents(value, item_type=item_type)
     elif isinstance(value, dict):
-        value = validate_dict_contents(value)
+        value = validate_dict_contents(value, item_type=item_type)
+    elif item_type is not None and type(value) != item_type:
+        raise BadValueError(
+            'Items  must all be in %s' % item_type)
+    elif type(value) not in ALLOWED_PROPERTY_TYPES:
+            raise BadValueError(
+                'Items  must all be in %s' %
+                    (ALLOWED_PROPERTY_TYPES))
     return value
 
 class DictProperty(Property):
@@ -311,7 +314,7 @@ class ListProperty(Property):
 
       """
     def __init__(self, verbose_name=None, default=None, 
-            required=False, **kwds):
+            required=False, item_type=None, **kwds):
         """Construct ListProperty.
 
     
@@ -324,6 +327,10 @@ class ListProperty(Property):
         """
         if default is None:
             default = []
+            
+        if item_type is not None and item_type not in ALLOWED_PROPERTY_TYPES:
+            raise ValueError('item_type %s not in %s' % (item_type, ALLOWED_PROPERTY_TYPES))
+        self.item_type = item_type
 
         Property.__init__(self, verbose_name, default=default,
             required=required, **kwds)
@@ -340,7 +347,7 @@ class ListProperty(Property):
         
     def validate_list_contents(self, value):
         try:
-            value = validate_list_contents(value)
+            value = validate_list_contents(value, item_type=self.item_type)
         except BadValueError:
             raise BadValueError(
                 'Items of %s list must all be in %s' %
@@ -440,3 +447,12 @@ class ListProperty(Property):
         def extend(self, list):
             for item in list:
                 self.append(item)
+
+class StringListProperty(ListProperty):
+    """ shorthand for list that should containe only str"""
+    
+    def __init__(self, verbose_name=None, default=None, 
+            required=False, **kwds):
+        super(StringListProperty, self).__init__(verbose_name=verbose_name, 
+            default=default, required=required, item_type=basestring,**kwds)
+    
