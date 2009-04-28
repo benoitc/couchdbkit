@@ -893,20 +893,25 @@ class PropertyTestCase(unittest.TestCase):
 
     def testListProperty(self):
         from datetime import datetime
+        db = self.server.create_db('couchdbkit_test')
         class A(Document):
             l = ListProperty(datetime)
+        A.set_db(db) 
             
+        # we can save an empty list
         a = A()
         self.assert_(a._doc == {'doc_type': 'A', 'l': []})
+        a.save()
+        self.assert_(a['_id'])
+        self.assert_(a['l']==[])
         
+        a = A()
         d = datetime(2009, 4, 13, 22, 56, 10, 967388)
         a.l.append(d)
         self.assert_(len(a.l) == 1)
         self.assert_(a.l[0] == datetime(2009, 4, 13, 22, 56, 10))
         self.assert_(a._doc == {'doc_type': 'A', 'l': ['2009-04-13T22:56:10Z']})
         
-        db = self.server.create_db('couchdbkit_test')
-        A.set_db(db) 
         a.save()
         
 
@@ -915,6 +920,37 @@ class PropertyTestCase(unittest.TestCase):
         self.assert_(b.l[0] == datetime(2009, 4, 13, 22, 56, 10))
         self.assert_(b._doc['l'] == ['2009-04-13T22:56:10Z'])
         self.server.delete_db('couchdbkit_test')
+
+    def testListPropertyNotEmpty(self):
+        from datetime import datetime
+        db = self.server.create_db('couchdbkit_test')
+        class A(Document):
+            l = ListProperty(datetime, required=True)
+        A.set_db(db) 
+
+        a = A()
+        self.assert_(a._doc == {'doc_type': 'A', 'l': []})
+        self.assertRaises(BadValueError, a.save)
+        try:
+            a.save()
+        except BadValueError, e:
+            pass
+        self.assert_(str(e) == 'Property l is required.')
+        
+        d = datetime(2009, 4, 13, 22, 56, 10, 967388)
+        a.l.append(d)
+        self.assert_(len(a.l) == 1)
+        self.assert_(a.l[0] == datetime(2009, 4, 13, 22, 56, 10))
+        self.assert_(a._doc == {'doc_type': 'A', 'l': ['2009-04-13T22:56:10Z']})
+        a.save()
+        
+        class A2(Document):
+            l = ListProperty()
+            
+        a2 = A2()            
+        self.assertTrue(a2.validate)
+        self.server.delete_db('couchdbkit_test')
+    
         
     def testDictProperty(self):
         from datetime import datetime
@@ -934,7 +970,35 @@ class PropertyTestCase(unittest.TestCase):
         self.assert_(a._doc['d']['d2'] == '2009-04-16T16:05:41Z')
         self.assert_(a.d['d2'] == datetime(2009, 4, 16, 16, 5, 41))
         self.assert_(a.d == {'s2': 'test', 's': 'test', 'd2': datetime(2009, 4, 16, 16, 5, 41), 'created': datetime(2009, 4, 16, 16, 5, 41)})
-        
 
+    def testDictPropertyNotEmpty(self):
+        from datetime import datetime
+        db = self.server.create_db('couchdbkit_test')
+        class A(Document):
+            d = DictProperty(required=True)
+        A.set_db(db) 
+
+        a = A()
+        self.assert_(a._doc == {'doc_type': 'A', 'd': {}})
+        self.assertRaises(BadValueError, a.save)
+        try:
+            a.save()
+        except BadValueError, e:
+            pass
+        self.assert_(str(e) == 'Property d is required.')
+        
+        d = datetime(2009, 4, 13, 22, 56, 10, 967388)
+        a.d['date'] = d
+        self.assert_(a.d['date'] == datetime(2009, 4, 13, 22, 56, 10))
+        self.assert_(a._doc == {'doc_type': 'A', 'd': { 'date': '2009-04-13T22:56:10Z' }})
+        a.save()
+        
+        class A2(Document):
+            d = DictProperty()
+            
+        a2 = A2()            
+        self.assertTrue(a2.validate)
+
+        self.server.delete_db('couchdbkit_test')
 if __name__ == '__main__':
     unittest.main()

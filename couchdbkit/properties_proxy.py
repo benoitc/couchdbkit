@@ -156,7 +156,8 @@ def validate_content(value):
 class DictProperty(Property):
     """ A property that stores a dict of things"""
     
-    def __init__(self, verbose_name=None, default=None, **kwds):
+    def __init__(self, verbose_name=None, default=None, 
+        required=True, **kwds):
         """
         :args verbose_name: Optional verbose name.
         :args default: Optional default value; if omitted, an empty list is used.
@@ -164,8 +165,6 @@ class DictProperty(Property):
 
         Note that the only permissible value for 'required' is True.
         """
-        if 'required' in kwds and kwds['required'] is not True:
-             raise ValueError('dict values must be required')
            
         if default is None:
             default = {}
@@ -176,7 +175,7 @@ class DictProperty(Property):
     data_type = dict
     
     def validate(self, value, required=True):
-        value = super(DictProperty, self).validate(value)
+        value = super(DictProperty, self).validate(value, required=required)
         if value is not None:
             if not isinstance(value, dict):
                 raise BadValueError('Property %s must be a dict' % self.name)
@@ -191,16 +190,6 @@ class DictProperty(Property):
                 'Items of %s dict must all be in %s' %
                     (self.name, ALLOWED_PROPERTY_TYPES))
         return value
-        
-    def empty(self, value):
-        """Is list property empty.
-
-        {} is not an empty value.
-
-        Returns:
-          True if value is None, else false.
-        """
-        return value is None
         
     def default_value(self):
         """Default value for list.
@@ -321,7 +310,8 @@ class ListProperty(Property):
     """A property that stores a list of things.
 
       """
-    def __init__(self, verbose_name=None, default=None, **kwds):
+    def __init__(self, verbose_name=None, default=None, 
+            required=False, **kwds):
         """Construct ListProperty.
 
     
@@ -332,18 +322,16 @@ class ListProperty(Property):
         Note that the only permissible value for 'required' is True.
         
         """
-        if 'required' in kwds and kwds['required'] is not True:
-             raise ValueError('List values must be required')
         if default is None:
             default = []
 
         Property.__init__(self, verbose_name, default=default,
-            required=True, **kwds)
+            required=required, **kwds)
         
     data_type = list
         
     def validate(self, value, required=True):
-        value = super(ListProperty, self).validate(value)
+        value = super(ListProperty, self).validate(value, required=required)
         if value is not None:
             if not isinstance(value, list):
                 raise BadValueError('Property %s must be a list' % self.name)
@@ -358,16 +346,6 @@ class ListProperty(Property):
                 'Items of %s list must all be in %s' %
                     (self.name, ALLOWED_PROPERTY_TYPES))
         return value
-        
-    def empty(self, value):
-        """Is list property empty.
-
-        [] is not an empty value.
-
-        Returns:
-          True if value is None, else false.
-        """
-        return value is None
         
     def default_value(self):
         """Default value for list.
