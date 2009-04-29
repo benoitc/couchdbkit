@@ -20,13 +20,10 @@ import os
 import socket
 import sys
 
+from couchdbkit.exceptions import DocsPathNotFound
 from couchdbkit.resource import ResourceNotFound
 from couchdbkit.utils import *
 from couchdbkit.macros import *
-
-
-class DocsPathNotFound(Exception):
-    """ exception raised when path given for docs isn't found """
 
 class BaseDocsLoader(object):
     """Baseclass for all doc loaders.  Subclass this and override `get_docs` to

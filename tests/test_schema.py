@@ -20,14 +20,7 @@ import datetime
 import decimal
 import unittest
 
-from couchdbkit.resource import ResourceNotFound
-from couchdbkit.client import Server, Database
-from couchdbkit.schema import *
-from couchdbkit.properties import *
-from couchdbkit.properties_proxy import *
-
-from couchdbkit.session import create_session
-from couchdbkit.exceptions import *
+from couchdbkit import *
 
 class DocumentTestCase(unittest.TestCase):
     def setUp(self):

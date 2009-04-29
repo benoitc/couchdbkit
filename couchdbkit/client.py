@@ -28,6 +28,7 @@ from couchdbkit.utils import validate_dbname
 
 DEFAULT_UUID_BATCH_COUNT = 1000
 
+
 class Server(object):
     """ Server object that allow you to access and manage a couchdb node. 
     A Server object could be use like any `dict` object.

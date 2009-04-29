@@ -20,8 +20,7 @@ import unittest
 
 from restclient import ResourceNotFound, RequestFailed
 
-from couchdbkit.resource import CouchdbResource
-from couchdbkit.client import Server, Database, View
+from couchdbkit import *
 
 class ClientServerTestCase(unittest.TestCase):
     def setUp(self):

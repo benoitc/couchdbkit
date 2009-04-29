@@ -36,3 +36,6 @@ class NoResultFound(Exception):
 class ReservedWordError(Exception):
     """ exception raised when a reserved word
     is used in Document schema """
+    
+class DocsPathNotFound(Exception):
+    """ exception raised when path given for docs isn't found """

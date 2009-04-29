@@ -23,9 +23,7 @@ import unittest
 
 from restclient import ResourceNotFound, RequestFailed
 
-from couchdbkit.resource import CouchdbResource
-from couchdbkit.client import Server, Database, View
-from couchdbkit.loaders import FileSystemDocsLoader
+from couchdbkit import *
 from couchdbkit.utils import *
 
 
