@@ -172,7 +172,7 @@ class DictProperty(Property):
             default = {}
             
         Property.__init__(self, verbose_name, default=default,
-            required=True, **kwds)
+            required=required, **kwds)
             
     data_type = dict
     

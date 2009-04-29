@@ -946,6 +946,7 @@ class PropertyTestCase(unittest.TestCase):
             
         a2 = A2()            
         self.assertTrue(a2.validate(required=False))
+        self.assertTrue(a2.validate())
     
     def testListPropertyWithType(self):
         from datetime import datetime
@@ -1009,7 +1010,7 @@ class PropertyTestCase(unittest.TestCase):
             d = DictProperty()
         a2 = A2()            
         self.assertTrue(a2.validate(required=False))
-
+        self.assertTrue(a2.validate())
         self.server.delete_db('couchdbkit_test')
 if __name__ == '__main__':
     unittest.main()
