@@ -159,7 +159,7 @@ class DictProperty(Property):
     """ A property that stores a dict of things"""
     
     def __init__(self, verbose_name=None, default=None, 
-        required=True, **kwds):
+        required=False, **kwds):
         """
         :args verbose_name: Optional verbose name.
         :args default: Optional default value; if omitted, an empty list is used.

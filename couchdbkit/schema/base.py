@@ -333,6 +333,7 @@ class DocumentSchema(object):
             if attr_name in self._properties:
                 self._properties[attr_name].validate(
                         getattr(self, attr_name), required=required)
+        return True
    
     def clone(self, **kwargs):
         for prop_name in self._properties.keys():
