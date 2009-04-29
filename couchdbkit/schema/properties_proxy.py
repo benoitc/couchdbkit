@@ -131,21 +131,21 @@ class SchemaProperty(Property):
         return value._doc
         
         
-def validate_list_contents(value, item_type=None):
+def validate_list_content(value, item_type=None):
     for item in value:
         item = validate_content(item, item_type=item_type)
     return value
     
-def validate_dict_contents(value, item_type=None):
+def validate_dict_content(value, item_type=None):
     for k, v in value.iteritems():
         value[k] = validate_content(v)
     return value
            
 def validate_content(value, item_type=None):
     if isinstance(value, list):
-        value = validate_list_contents(value, item_type=item_type)
+        value = validate_list_content(value, item_type=item_type)
     elif isinstance(value, dict):
-        value = validate_dict_contents(value, item_type=item_type)
+        value = validate_dict_content(value, item_type=item_type)
     elif item_type is not None and type(value) != item_type:
         raise BadValueError(
             'Items  must all be in %s' % item_type)
@@ -178,7 +178,7 @@ class DictProperty(Property):
     
     def validate(self, value, required=True):
         value = super(DictProperty, self).validate(value, required=required)
-        if value is not None:
+        if value and value is not None:
             if not isinstance(value, dict):
                 raise BadValueError('Property %s must be a dict' % self.name)
             value = self.validate_dict_contents(value)
@@ -186,7 +186,7 @@ class DictProperty(Property):
         
     def validate_dict_contents(self, value):
         try:
-            value = validate_dict_contents(value)
+            value = validate_dict_content(value)
         except BadValueError:
             raise BadValueError(
                 'Items of %s dict must all be in %s' %
@@ -338,15 +338,16 @@ class ListProperty(Property):
         
     def validate(self, value, required=True):
         value = super(ListProperty, self).validate(value, required=required)
-        if value is not None:
+        if value and value is not None:
             if not isinstance(value, list):
                 raise BadValueError('Property %s must be a list' % self.name)
             value = self.validate_list_contents(value)
         return value
         
     def validate_list_contents(self, value):
+        value = validate_list_content(value, item_type=self.item_type)
         try:
-            value = validate_list_contents(value, item_type=self.item_type)
+            value = validate_list_content(value, item_type=self.item_type)
         except BadValueError:
             raise BadValueError(
                 'Items of %s list must all be in %s' %
@@ -453,4 +454,4 @@ class StringListProperty(ListProperty):
     def __init__(self, verbose_name=None, default=None, 
             required=False, **kwds):
         super(StringListProperty, self).__init__(verbose_name=verbose_name, 
-            default=default, required=required, item_type=basestring,**kwds)
+            default=default, required=required, item_type=str,**kwds)

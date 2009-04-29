@@ -575,6 +575,12 @@ class PropertyTestCase(unittest.TestCase):
 
     def setUp(self):
         self.server = Server()
+        
+    def tearDown(self):
+        try:
+            self.server.delete_db('couchdbkit_test')
+        except:
+            pass
 
     def testRequired(self):
         db = self.server.create_db('couchdbkit_test')
@@ -916,16 +922,14 @@ class PropertyTestCase(unittest.TestCase):
 
     def testListPropertyNotEmpty(self):
         from datetime import datetime
-        db = self.server.create_db('couchdbkit_test')
         class A(Document):
             l = ListProperty(datetime, required=True)
-        A.set_db(db) 
 
         a = A()
         self.assert_(a._doc == {'doc_type': 'A', 'l': []})
         self.assertRaises(BadValueError, a.save)
         try:
-            a.save()
+            a.validate()
         except BadValueError, e:
             pass
         self.assert_(str(e) == 'Property l is required.')
@@ -935,14 +939,13 @@ class PropertyTestCase(unittest.TestCase):
         self.assert_(len(a.l) == 1)
         self.assert_(a.l[0] == datetime(2009, 4, 13, 22, 56, 10))
         self.assert_(a._doc == {'doc_type': 'A', 'l': ['2009-04-13T22:56:10Z']})
-        a.save()
+        a.validate()
         
         class A2(Document):
             l = ListProperty()
             
         a2 = A2()            
-        self.assertTrue(a2.validate)
-        self.server.delete_db('couchdbkit_test')
+        self.assertTrue(a2.validate(required=False))
     
     def testListPropertyWithType(self):
         from datetime import datetime
@@ -956,7 +959,7 @@ class PropertyTestCase(unittest.TestCase):
             ls = StringListProperty()
         b = B()
         b.ls.append("test")
-        self.assertTrue(b.validate)
+        self.assertTrue(b.validate())
         b.ls.append(datetime.utcnow())
         self.assertRaises(BadValueError, b.validate)
         
@@ -1004,9 +1007,8 @@ class PropertyTestCase(unittest.TestCase):
         
         class A2(Document):
             d = DictProperty()
-            
         a2 = A2()            
-        self.assertTrue(a2.validate)
+        self.assertTrue(a2.validate(required=False))
 
         self.server.delete_db('couchdbkit_test')
 if __name__ == '__main__':
