@@ -39,7 +39,6 @@ _RESERVED_WORDS = ['_id', '_rev', '$schema', 'type']
 
 _NODOC_WORDS = ['doc_type','id', 'rev', 'type']
 
-
 ALLOWED_PROPERTY_TYPES = set([
     basestring,
     str,
@@ -57,15 +56,11 @@ ALLOWED_PROPERTY_TYPES = set([
     type(None)
 ])
 
-
-
 def check_reserved_words(attr_name):
     if attr_name in _RESERVED_WORDS:
         raise ReservedWordError(
             "Cannot define property using reserved word '%(attr_name)s'." % 
             locals())
-
-
 
 class SchemaProperties(type):
 

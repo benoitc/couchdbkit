@@ -28,7 +28,6 @@ from couchdbkit.utils import validate_dbname
 
 DEFAULT_UUID_BATCH_COUNT = 1000
 
-
 class Server(object):
     """ Server object that allow you to access and manage a couchdb node. 
     A Server object could be use like any `dict` object.
@@ -723,8 +722,7 @@ class View(ViewInterface):
     def __init__(self, db, view_path, wrapper=None):
         ViewInterface.__init__(self, db, wrapper=wrapper)
         self.view_path = view_path
-        
-        
+              
     def _exec(self, **params):
         if 'keys' in params:
             keys = params.pop('keys')
@@ -732,7 +730,6 @@ class View(ViewInterface):
         else:
             return self._db.res.get(self.view_path, **params)
             
-
 class TempView(ViewInterface):
     def __init__(self, db, design, wrapper=None):
         ViewInterface.__init__(self, db, wrapper=wrapper)

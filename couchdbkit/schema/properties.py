@@ -28,7 +28,7 @@ __all__ = ['Property', 'StringProperty', 'IntegerProperty',
         'DateTimeProperty', 'DateProperty', 'TimeProperty']
 
 class Property(object):
-    """ Propertu base which all other properties
+    """ Property base which all other properties
     inherit."""
     creation_counter = 0
 
@@ -45,7 +45,6 @@ class Property(object):
         :param validators: list of callable or callable, field validators 
         function that are executed when document is saved.
         """
-
         self.verbose_name = verbose_name
         self.name = name
         self.default = default
