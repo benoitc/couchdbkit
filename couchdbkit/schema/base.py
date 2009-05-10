@@ -57,7 +57,6 @@ class LazyDict(dict):
         if isinstance(value, dict):
             value = LazyDict(value, self.doc, key)
         elif isinstance(value, list):
-            print "là"
             value = LazyList(value, self.doc, key)
         else:
             self.doc.update({key: value_to_json(value) })
