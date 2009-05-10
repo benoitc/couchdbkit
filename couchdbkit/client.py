@@ -389,7 +389,7 @@ class Database(object):
             docid = doc['_id']
         
         if dest is None:
-            destinatrion = self.server.next_uuid(count=1)   
+            destination = self.server.next_uuid(count=1)   
         elif isinstance(dest, basestring):
             if dest in self:
                 dest = self.get(dest)['_rev']
