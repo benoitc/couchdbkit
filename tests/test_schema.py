@@ -1012,5 +1012,50 @@ class PropertyTestCase(unittest.TestCase):
         self.assertTrue(a2.validate(required=False))
         self.assertTrue(a2.validate())
         self.server.delete_db('couchdbkit_test')
+        
+    def testDynamicDictProperty(self):
+        from datetime import datetime
+        class A(Document):
+            pass
+            
+        a = A()
+        a.d = {}
+        
+        a.d['test'] = { 'a': datetime(2009, 5, 10, 21, 19, 21, 127380) }
+        self.assert_(a.d == {'test': {'a': datetime(2009, 5, 10, 21, 19, 21, 127380)}})
+        self.assert_(a._doc == {'d': {'test': {'a': '2009-05-10T21:19:21Z'}}, 'doc_type': 'A'} )
+        
+        a.d['test']['b'] = "essai"
+        self.assert_(a._doc == {'d': {'test': {'a': '2009-05-10T21:19:21Z', 'b': 'essai'}}, 'doc_type': 'A'})
+        
+        a.d['essai'] = "test"
+        self.assert_(a.d == {'essai': 'test',
+         'test': {'a': datetime(2009, 5, 10, 21, 19, 21, 127380),
+                  'b': 'essai'}}
+        )
+        self.assert_(a._doc == {'d': {'essai': 'test', 'test': {'a': '2009-05-10T21:19:21Z', 'b': 'essai'}},
+         'doc_type': 'A'})
+         
+        del a.d['test']['a']
+        self.assert_(a.d == {'essai': 'test', 'test': {'b': 'essai'}})
+        self.assert_(a._doc ==  {'d': {'essai': 'test', 'test': {'b': 'essai'}}, 'doc_type': 'A'})
+        
+        a.d['test']['essai'] = { "a": datetime(2009, 5, 10, 21, 21, 11, 425782) }
+        self.assert_(a.d == {'essai': 'test',
+         'test': {'b': 'essai',
+                  'essai': {'a': datetime(2009, 5, 10, 21, 21, 11, 425782)}}}
+        )
+        self.assert_(a._doc == {'d': {'essai': 'test',
+               'test': {'b': 'essai', 'essai': {'a': '2009-05-10T21:21:11Z'}}},
+         'doc_type': 'A'}
+        )
+        
+        del a.d['test']['essai']
+        self.assert_(a._doc == {'d': {'essai': 'test', 'test': {'b': 'essai'}}, 'doc_type': 'A'})
+        
+        
+        
+        
+        
 if __name__ == '__main__':
     unittest.main()

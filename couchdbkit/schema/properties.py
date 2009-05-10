@@ -29,7 +29,8 @@ __all__ = ['ALLOWED_PROPERTY_TYPES', 'Property', 'StringProperty',
         'TimeProperty','DictProperty', 'ListProperty', 
         'StringListProperty', 'dict_to_json', 'list_to_json', 
         'value_to_json', 'MAP_TYPES_PROPERTIES', 'value_to_python', 
-        'dict_to_python', 'list_to_python', 'convert_property']
+        'dict_to_python', 'list_to_python', 'convert_property',
+        'value_to_property']
         
 ALLOWED_PROPERTY_TYPES = set([
     basestring,
@@ -687,6 +688,14 @@ def convert_property(value):
         value = prop.to_json(value)
     return value
 
+
+def value_to_property(value):
+    if type(value) in MAP_TYPES_PROPERTIES:
+        prop = MAP_TYPES_PROPERTIES[type(value)]()
+
+        return prop
+    else:
+        return value
 
 # utilities functions
 

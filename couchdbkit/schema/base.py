@@ -26,7 +26,7 @@ import warnings
 from couchdbkit.client import Database
 from couchdbkit.schema import properties as p
 from couchdbkit.schema.properties import value_to_json, value_to_python, \
-convert_property, MAP_TYPES_PROPERTIES, ALLOWED_PROPERTY_TYPES
+convert_property, MAP_TYPES_PROPERTIES, ALLOWED_PROPERTY_TYPES, value_to_property
 from couchdbkit.exceptions import *
 from couchdbkit.resource import ResourceNotFound
 
@@ -91,8 +91,28 @@ class SchemaProperties(type):
 
         attrs['_properties'] = properties
         return type.__new__(cls, name, bases, attrs)        
-
-
+        
+        
+class LazyDict(dict):
+    
+    def __init__(self, d, doc, name):
+        d = d or {}
+        dict.__init__(self, d)
+        doc[name] = dict(value_to_json(self))
+        self.doc = doc[name]
+        
+    def __setitem__(self, key, value):
+        if isinstance(value, dict):
+            value = LazyDict(value, self.doc, key)
+        else:
+            self.doc.update({key: value_to_json(value) })
+        super(LazyDict, self).__setitem__(key, value)
+        
+    def __delitem__(self, key):
+        del self.doc[key]
+        super(LazyDict, self).__delitem__(key)
+        
+        
 class DocumentSchema(object):
     __metaclass__ = SchemaProperties
     
@@ -140,7 +160,6 @@ class DocumentSchema(object):
                 # remove the kwargs to speed stuff
                 del properties[attr_name]
 
-
     def dynamic_properties(self):
         if self._dynamic_properties is None:
             return {}
@@ -160,7 +179,6 @@ class DocumentSchema(object):
             self._doc['doc_type'] = doc_type
         return self._doc
 
-    
     def __setattr__(self, key, value):
         check_reserved_words(key)
         if not hasattr( self, key ) and not self._allow_dynamic_properties:
@@ -177,9 +195,12 @@ class DocumentSchema(object):
             if self._dynamic_properties is None:
                 self._dynamic_properties = {}
                 
+            if isinstance(value, dict):
+                value = LazyDict(value, self._doc, key)
             self._dynamic_properties[key] = value
-            
-            if not isinstance(value, (p.Property,)):
+
+            if not isinstance(value, (p.Property,)) and not isinstance(value, dict):
+                print "ici"
                 if callable(value):
                     value = value()
                 self._doc[key] = convert_property(value)
