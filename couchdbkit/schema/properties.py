@@ -18,14 +18,40 @@
 from calendar import timegm
 import decimal
 import datetime
+import re
 import time
 
 from couchdbkit.exceptions import *
 
+__all__ = ['ALLOWED_PROPERTY_TYPES', 'Property', 'StringProperty', 
+        'IntegerProperty','DecimalProperty', 'BooleanProperty', 
+        'FloatProperty','DateTimeProperty', 'DateProperty', 
+        'TimeProperty','DictProperty', 'ListProperty', 
+        'StringListProperty', 'dict_to_json', 'list_to_json', 
+        'value_to_json', 'MAP_TYPES_PROPERTIES', 'value_to_python', 
+        'dict_to_python', 'list_to_python', 'convert_property']
+        
+ALLOWED_PROPERTY_TYPES = set([
+    basestring,
+    str,
+    unicode,
+    bool,
+    int,
+    long,
+    float,
+    datetime.datetime,
+    datetime.date,
+    datetime.time,
+    decimal.Decimal,
+    dict,
+    list,
+    type(None)
+])
 
-__all__ = ['Property', 'StringProperty', 'IntegerProperty',
-        'DecimalProperty', 'BooleanProperty', 'FloatProperty',
-        'DateTimeProperty', 'DateProperty', 'TimeProperty']
+re_date = re.compile('^(\d{4})\D?(0[1-9]|1[0-2])\D?([12]\d|0[1-9]|3[01])$')
+re_time = re.compile('^([01]\d|2[0-3])\D?([0-5]\d)\D?([0-5]\d)?\D?(\d{3})?$')
+re_datetime = re.compile('^(\d{4})\D?(0[1-9]|1[0-2])\D?([12]\d|0[1-9]|3[01])(\D?([01]\d|2[0-3])\D?([0-5]\d)\D?([0-5]\d)?\D?(\d{3})?([zZ]|([\+-])([01]\d|2[0-3])\D?([0-5]\d)?)?)?$')
+re_decimal = re.compile('^(\d+).(\d+)$')
 
 class Property(object):
     """ Property base which all other properties
@@ -334,3 +360,424 @@ class TimeProperty(DateTimeProperty):
 
     def to_json(self, value):
         return value.replace(microsecond=0).isoformat()
+        
+
+class DictProperty(Property):
+    """ A property that stores a dict of things"""
+    
+    def __init__(self, verbose_name=None, default=None, 
+        required=False, **kwds):
+        """
+        :args verbose_name: Optional verbose name.
+        :args default: Optional default value; if omitted, an empty list is used.
+        :args**kwds: Optional additional keyword arguments, passed to base class.
+
+        Note that the only permissible value for 'required' is True.
+        """
+           
+        if default is None:
+            default = {}
+            
+        Property.__init__(self, verbose_name, default=default,
+            required=required, **kwds)
+            
+    data_type = dict
+    
+    def validate(self, value, required=True):
+        value = super(DictProperty, self).validate(value, required=required)
+        if value and value is not None:
+            if not isinstance(value, dict):
+                raise BadValueError('Property %s must be a dict' % self.name)
+            value = self.validate_dict_contents(value)
+        return value
+        
+    def validate_dict_contents(self, value):
+        try:
+            value = validate_dict_content(value)
+        except BadValueError:
+            raise BadValueError(
+                'Items of %s dict must all be in %s' %
+                    (self.name, ALLOWED_PROPERTY_TYPES))
+        return value
+        
+    def default_value(self):
+        """Default value for list.
+
+        Because the property supplied to 'default' is a static value,
+        that value must be shallow copied to prevent all fields with
+        default values from sharing the same instance.
+
+        Returns:
+          Copy of the default value.
+        """
+        value = super(DictProperty, self).default_value()
+        if value is None:
+            value = {}
+        return dict(value)
+        
+    def to_python(self, value):
+        return self.DictProxy(value)
+        
+    def to_json(self, value):
+        return value_to_json(value)
+        
+        
+    class DictProxy(dict):
+        
+        def __init__(self, d):
+            self._dict = d
+            
+        def __repr__(self):
+            return repr(dict_to_python(self._dict))
+
+        def __str__(self):
+            return str(dict_to_python(self._dict))
+              
+        def __eq__(self, other):
+            return dict_to_python(self._dict) == other
+        
+        def __ne__(self, other):
+            return dict_to_python(self._dict) != other
+            
+        def __getitem__(self, key):
+            return value_to_python(self._dict[key])
+            
+        def __setitem__(self, key, value):
+            self._dict[key] = value_to_json(value)
+            
+        def __delitem__(self, key):
+            del self._dict[key]
+            
+        def get(self, key, default=None, type=None):
+            if key in self._dict:
+                if type is not None:
+                    try:
+                        return type(self._dict[key])
+                    except ValueError:
+                        pass 
+                return self._dict[key]
+            return default
+            
+        def iteritems(self):
+            for key, value in self._dict.iteritems():
+                yield key, value_to_python(value)
+                
+        def itervalues(self):
+            for value in self._dict.itervalues():
+                yield value_to_python(value)
+                
+        def values(self):
+            return list(self.itervalues())
+            
+        def items():
+            return list(self.iteritems())
+            
+        def keys(self):
+            return self._dict.keys()
+            
+        def iterkeys(self):
+            return iter(self.keys())
+            
+        def copy(self):
+            return self.__class__(self._dict)
+    
+        def pop(self, key, default=None):
+            return self._dict.pop(key, default=default)
+            
+        def __len__(self):
+            return len(self.keys())
+            
+        def __contains__(self, key):
+            if key in self._dict:
+                return True
+            return False
+            
+        __iter__ = iteritems
+        
+        def setdefault(self, key, default):
+            if key in self._dict:
+                return value_to_python(self._dict[key])
+
+            self._dict.setdefault(key, value_to_json(default))
+            return default
+
+        def update(self, value):
+            for k, v in value.items():
+                value[k] = value_to_json(v)
+            self._dict.update(value)
+            
+        def popitem(self, value):
+            value[0] = value_to_json(value[0])
+            value = self._dic.popitem(value)
+            value[0] = value_to_python(value[0])
+            return value
+            
+        def clear(self):
+            self._dict.clear()
+            
+class ListProperty(Property):
+    """A property that stores a list of things.
+
+      """
+    def __init__(self, verbose_name=None, default=None, 
+            required=False, item_type=None, **kwds):
+        """Construct ListProperty.
+
+    
+         :args verbose_name: Optional verbose name.
+         :args default: Optional default value; if omitted, an empty list is used.
+         :args**kwds: Optional additional keyword arguments, passed to base class.
+
+        Note that the only permissible value for 'required' is True.
+        
+        """
+        if default is None:
+            default = []
+            
+        if item_type is not None and item_type not in ALLOWED_PROPERTY_TYPES:
+            raise ValueError('item_type %s not in %s' % (item_type, ALLOWED_PROPERTY_TYPES))
+        self.item_type = item_type
+
+        Property.__init__(self, verbose_name, default=default,
+            required=required, **kwds)
+        
+    data_type = list
+        
+    def validate(self, value, required=True):
+        value = super(ListProperty, self).validate(value, required=required)
+        if value and value is not None:
+            if not isinstance(value, list):
+                raise BadValueError('Property %s must be a list' % self.name)
+            value = self.validate_list_contents(value)
+        return value
+        
+    def validate_list_contents(self, value):
+        value = validate_list_content(value, item_type=self.item_type)
+        try:
+            value = validate_list_content(value, item_type=self.item_type)
+        except BadValueError:
+            raise BadValueError(
+                'Items of %s list must all be in %s' %
+                    (self.name, ALLOWED_PROPERTY_TYPES))
+        return value
+        
+    def default_value(self):
+        """Default value for list.
+
+        Because the property supplied to 'default' is a static value,
+        that value must be shallow copied to prevent all fields with
+        default values from sharing the same instance.
+
+        Returns:
+          Copy of the default value.
+        """
+        value = super(ListProperty, self).default_value()
+        if value is None:
+            value = []
+        return list(value)
+        
+    def to_python(self, value):
+        return self.ListProxy(value)
+        
+    def to_json(self, value):
+        return [value_to_json(item) for item in value]
+
+    class ListProxy(list):
+        """ ProxyList. Idee taken from couchdb-python."""
+        def __init__(self, l):
+            self._list = l
+
+        def __lt__(self, other):
+            return list_to_python(self._list) < other
+
+        def __le__(self, other):
+            return list_to_python(self._list) <= other
+
+        def __eq__(self, other):
+            return list_to_python(self._list) == other
+
+        def __ne__(self, other):
+            return list_to_python(self._list) != other
+
+        def __gt__(self, other):
+            return list_to_python(self._list) > other
+
+        def __ge__(self, other):
+            return list_to_python(self._list) >= other
+
+        def __repr__(self):
+            return repr(list_to_python(self._list))
+
+        def __str__(self):
+            return str(list_to_python(self._list))
+
+        def __unicode__(self):
+            return unicode(self._list)
+
+        def __getslice__(self, i, j):
+            return self.__getitem__(slice(i, j))
+            
+        def __setslice__(self, i, j, seq):
+            return self.__setitem__(slice(i, j), seq)
+            
+        def __delslice__(self, i, j):
+            return self.__delitem__(slice(i, j))
+        
+        def __delitem__(self, index):
+            del self._list[index]
+
+        def __getitem__(self, index):
+            return value_to_python(self._list[index])
+
+        def __setitem__(self, index, value):
+            self._list[index] = value_to_json(value)
+
+        def __iter__(self):
+            for index in range(len(self)):
+                yield self[index]
+
+        def __len__(self):
+            return len(self._list)
+
+        def __nonzero__(self):
+            return bool(self._list)
+
+        def append(self, *args, **kwargs):
+            if args:
+                assert len(args) == 1
+                value = args[0]
+            else:
+                value = kwargs
+            value = value_to_json(value)
+            self._list.append(value)
+
+        def extend(self, list):
+            for item in list:
+                self.append(item)
+
+class StringListProperty(ListProperty):
+    """ shorthand for list that should containe only str"""
+    
+    def __init__(self, verbose_name=None, default=None, 
+            required=False, **kwds):
+        super(StringListProperty, self).__init__(verbose_name=verbose_name, 
+            default=default, required=required, item_type=str,**kwds)
+
+
+# some mapping
+ 
+MAP_TYPES_PROPERTIES = {
+        decimal.Decimal: DecimalProperty,
+        datetime.datetime: DateTimeProperty,
+        datetime.date: DateProperty,
+        datetime.time: TimeProperty,
+        str: StringProperty,
+        unicode: StringProperty,
+        bool: BooleanProperty,
+        int: IntegerProperty,
+        long: LongProperty,
+        float: FloatProperty,
+        list: ListProperty,
+        dict: DictProperty
+}           
+            
+def convert_property(value):
+    if type(value) in MAP_TYPES_PROPERTIES:
+        prop = MAP_TYPES_PROPERTIES[type(value)]()
+        value = prop.to_json(value)
+    return value
+
+
+# utilities functions
+
+def validate_list_content(value, item_type=None):
+    for item in value:
+        item = validate_content(item, item_type=item_type)
+    return value
+    
+def validate_dict_content(value, item_type=None):
+    for k, v in value.iteritems():
+        value[k] = validate_content(v)
+    return value
+           
+def validate_content(value, item_type=None):
+    if isinstance(value, list):
+        value = validate_list_content(value, item_type=item_type)
+    elif isinstance(value, dict):
+        value = validate_dict_content(value, item_type=item_type)
+    elif item_type is not None and type(value) != item_type:
+        raise BadValueError(
+            'Items  must all be in %s' % item_type)
+    elif type(value) not in ALLOWED_PROPERTY_TYPES:
+            raise BadValueError(
+                'Items  must all be in %s' %
+                    (ALLOWED_PROPERTY_TYPES))
+    return value
+
+def dict_to_json(value):
+    ret = {}
+    for k, v in value.iteritems():
+        v = value_to_json(v)
+        ret[k] = v
+    return ret
+    
+def list_to_json(value):
+    ret = []
+    for item in value:
+        item = value_to_json(item)
+        ret.append(item)
+    return ret
+    
+def value_to_json(value):
+    if isinstance(value, datetime.datetime):
+        value = value.replace(microsecond=0).isoformat() + 'Z'
+    elif isinstance(value, datetime.date):
+        value = value.isoformat()
+    elif isinstance(value, datetime.time):
+        value = value.replace(microsecond=0).isoformat()
+    elif isinstance(value, decimal.Decimal):
+        value = unicode(value) 
+    elif isinstance(value, list):
+        value = list_to_json(value)
+    elif isinstance(value, dict):
+        value = dict_to_json(value)
+    return value
+    
+    
+def value_to_python(value):
+    data_type = None
+    if isinstance(value, basestring):
+        if re_date.match(value):
+            data_type = datetime.date
+        elif re_time.match(value):
+            data_type = datetime.time
+        elif re_datetime.match(value):
+            data_type = datetime.datetime
+        elif re_decimal.match(value):
+            data_type = decimal.Decimal
+        if data_type is not None:
+            prop = MAP_TYPES_PROPERTIES[data_type]()
+            try: 
+                #sometimes regex fail so return value
+                value = prop.to_python(value)
+            except:
+                pass           
+    elif isinstance(value, list):
+        value = list_to_python(value)
+    elif isinstance(value, dict):
+        value = dict_to_python(value)
+    return value
+    
+def list_to_python(value):
+    ret = []
+    for item in value:
+        item = value_to_python(item)   
+        ret.append(item)       
+    return ret
+    
+def dict_to_python(value):
+    ret = {}
+    for k, v in value.iteritems():
+        v = value_to_python(v)
+        ret[k] = v
+    return ret

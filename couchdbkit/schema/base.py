@@ -25,8 +25,8 @@ import warnings
 
 from couchdbkit.client import Database
 from couchdbkit.schema import properties as p
-from couchdbkit.schema.properties_map import value_to_json, value_to_python, \
-convert_property, MAP_TYPES_PROPERTIES
+from couchdbkit.schema.properties import value_to_json, value_to_python, \
+convert_property, MAP_TYPES_PROPERTIES, ALLOWED_PROPERTY_TYPES
 from couchdbkit.exceptions import *
 from couchdbkit.resource import ResourceNotFound
 
@@ -38,23 +38,6 @@ __all__ = ['ReservedWordError', 'ALLOWED_PROPERTY_TYPES', 'DocumentSchema',
 _RESERVED_WORDS = ['_id', '_rev', '$schema', 'type']
 
 _NODOC_WORDS = ['doc_type','id', 'rev', 'type']
-
-ALLOWED_PROPERTY_TYPES = set([
-    basestring,
-    str,
-    unicode,
-    bool,
-    int,
-    long,
-    float,
-    datetime.datetime,
-    datetime.date,
-    datetime.time,
-    decimal.Decimal,
-    dict,
-    list,
-    type(None)
-])
 
 def check_reserved_words(attr_name):
     if attr_name in _RESERVED_WORDS:
@@ -184,18 +167,18 @@ class DocumentSchema(object):
             raise AttributeError("%s is not defined in schema (not a valid property)" % key)
             
         if not key.startswith('_') and \
-                key not in self._properties and \
+                key not in self.properties() and \
                 key not in dir(self): 
             if type(value) not in ALLOWED_PROPERTY_TYPES and \
                     not isinstance(value, (p.Property,)):
                 raise TypeError("Document Schema cannot accept values of type '%s'." %
                         type(value).__name__)
-            
+                        
             if self._dynamic_properties is None:
                 self._dynamic_properties = {}
-
+                
             self._dynamic_properties[key] = value
-
+            
             if not isinstance(value, (p.Property,)):
                 if callable(value):
                     value = value()
@@ -393,14 +376,14 @@ class DocumentBase(DocumentSchema):
             self._doc['_id'] = kwargs.pop('_id')
         DocumentSchema.__init__(self, d, **kwargs) 
     
-    def get_id(self):
+    def _get_id(self):
         return self._doc.get('_id', None)
 
-    def set_id(self, docid):
+    def _set_id(self, docid):
         if not isinstance(docid, basestring):
             raise TypeError('doc id should be a string')
         self._doc['_id'] = docid
-    id = property(get_id, set_id)
+    id = property(_get_id, _set_id)
 
     rev = property(lambda self: self._doc.get('_rev'))
 
