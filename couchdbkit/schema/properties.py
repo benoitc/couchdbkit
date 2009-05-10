@@ -509,7 +509,7 @@ class DictProperty(Property):
             
         def popitem(self, value):
             value[0] = value_to_json(value[0])
-            value = self._dic.popitem(value)
+            value = self._dict.popitem(value)
             value[0] = value_to_python(value[0])
             return value
             

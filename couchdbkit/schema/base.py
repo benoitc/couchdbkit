@@ -45,6 +45,91 @@ def check_reserved_words(attr_name):
             "Cannot define property using reserved word '%(attr_name)s'." % 
             locals())
 
+class LazyDict(dict):
+
+    def __init__(self, d, doc, name):
+        d = d or {}
+        dict.__init__(self, d)
+        doc[name] = dict(value_to_json(self))
+        self.doc = doc[name]
+
+    def __setitem__(self, key, value):
+        if isinstance(value, dict):
+            value = LazyDict(value, self.doc, key)
+        elif isinstance(value, list):
+            print "là"
+            value = LazyList(value, self.doc, key)
+        else:
+            self.doc.update({key: value_to_json(value) })
+        super(LazyDict, self).__setitem__(key, value)
+
+    def __delitem__(self, key):
+        del self.doc[key]
+        super(LazyDict, self).__delitem__(key)
+
+    def pop(self, key, default=None):
+        del self.doc[key]
+        return super(LazyDict, self).pop(key, default=default)
+
+    def setdefault(self, key, default):
+        if key in self:
+            return self[key]  
+        self.doc.setdefault(key, value_to_json(default))
+        super(LazyDict, self).setdefault(key, default)
+        return default
+
+    def update(self, value):
+        for k, v in value.items():
+            self[k] = v
+
+    def popitem(self, value):
+        new_value = super(LazyDict, self).popitem(value)
+        self.doc.popitem(value_to_json(value))
+        return new_value
+
+    def clear(self):
+        self.doc.clear()
+        super(LazyDict, self).clear()
+
+class LazyList(list):
+
+    def __init__(self, l, doc, name):
+        l = l or []
+        list.__init__(self, l)
+        doc[name] = list(value_to_json(self))
+        self.doc = doc[name]
+
+    def __delitem__(self, index):
+        del self.doc[index]
+        del self[index]
+
+    def __setitem__(self, index, value):
+        if isinstance(value, dict):
+            value = LazyDict(value, self.doc, index)
+        elif isinstance(value, list):
+            value = LazyList(value, self.doc, index)
+        else:
+            self.doc[index] = value_to_json(value)
+        self._list[index] = value_to_json(value)
+
+    def append(self, *args, **kwargs):
+        if args:
+            assert len(args) == 1
+            value = args[0]
+        else:
+            value = kwargs
+
+        index = len(self)
+        if isinstance(value, dict):
+            self.doc.append({})
+            value = LazyDict(value, self.doc, index)
+        elif isinstance(value, list):
+            self.doc.append([])
+            value = LazyList(value, self.doc, index)
+        else:
+            self.doc.append(value_to_json(value))
+        super(LazyList, self).append(value)
+
 class SchemaProperties(type):
 
     def __new__(cls, name, bases, attrs):
@@ -92,27 +177,7 @@ class SchemaProperties(type):
         attrs['_properties'] = properties
         return type.__new__(cls, name, bases, attrs)        
         
-        
-class LazyDict(dict):
-    
-    def __init__(self, d, doc, name):
-        d = d or {}
-        dict.__init__(self, d)
-        doc[name] = dict(value_to_json(self))
-        self.doc = doc[name]
-        
-    def __setitem__(self, key, value):
-        if isinstance(value, dict):
-            value = LazyDict(value, self.doc, key)
-        else:
-            self.doc.update({key: value_to_json(value) })
-        super(LazyDict, self).__setitem__(key, value)
-        
-    def __delitem__(self, key):
-        del self.doc[key]
-        super(LazyDict, self).__delitem__(key)
-        
-        
+
 class DocumentSchema(object):
     __metaclass__ = SchemaProperties
     
@@ -197,10 +262,13 @@ class DocumentSchema(object):
                 
             if isinstance(value, dict):
                 value = LazyDict(value, self._doc, key)
+            elif isinstance(value, list):
+                value = LazyList(value, self._doc, key)
             self._dynamic_properties[key] = value
 
-            if not isinstance(value, (p.Property,)) and not isinstance(value, dict):
-                print "ici"
+            if not isinstance(value, (p.Property,)) and \
+                    not isinstance(value, dict) and \
+                    not isinstance(value, list):
                 if callable(value):
                     value = value()
                 self._doc[key] = convert_property(value)
