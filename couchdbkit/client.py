@@ -317,6 +317,9 @@ class Database(object):
         .. seealso:: `HTTP Bulk Document API <http://wiki.apache.org/couchdb/HTTP_Bulk_Document_API>`
         
         """
+        # we definitely need a list here, not any iterable, or groupby will fail
+        docs = list(docs)
+                
         def is_id(doc):
             return '_id' in doc
             
