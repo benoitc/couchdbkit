@@ -575,7 +575,12 @@ class PropertyTestCase(unittest.TestCase):
 
     def setUp(self):
         self.server = Server()
-        
+        try:
+            self.db = self.server.create_db('couchdbkit_test')
+        except: 
+            # waiting we fix all tests use created db
+            self.db = self.server['couchdbkit_test']
+            
     def tearDown(self):
         try:
             self.server.delete_db('couchdbkit_test')
@@ -583,16 +588,14 @@ class PropertyTestCase(unittest.TestCase):
             pass
 
     def testRequired(self):
-        db = self.server.create_db('couchdbkit_test')
         class Test(Document):
             string = StringProperty(required=True)
-        Test._db =db
+        Test._db = self.db
 
         test = Test()
         def ftest():
             test.string = ""
         self.assertRaises(BadValueError, test.save)
-        self.server.delete_db('couchdbkit_test')
 
     def testValidator(self):
         def test_validator(value):
@@ -676,13 +679,9 @@ class PropertyTestCase(unittest.TestCase):
        
         self.assert_(isinstance(test.field, basestring))
         self.assert_(isinstance(test.field1, datetime.datetime))
-        db = self.server.create_db('couchdbkit_test')
-        Test._db = db
-        
+        Test._db = self.db
         test.save()
-
         doc2 = Test.get(test.id)
-        self.server.delete_db('couchdbkit_test')
         
         v = doc2.field
         v1 = doc2.field1
@@ -698,13 +697,11 @@ class PropertyTestCase(unittest.TestCase):
                 field1 = datetime.datetime(2008, 11, 10, 8, 0, 0),
                 dynamic_field = 'test')
 
-        db = self.server.create_db('couchdbkit_test')
-        Test._db =db
+        Test._db = self.db
 
         test.save()
 
         doc2 = Test.get(test.id)
-        self.server.delete_db('couchdbkit_test')
 
         v1 = doc2.field1
         vd = doc2.dynamic_field
@@ -726,13 +723,11 @@ class PropertyTestCase(unittest.TestCase):
         doc.schema.astring = u"test"
         self.assert_(doc.schema.astring == u"test")
         self.assert_(doc._doc['schema']['astring'] == u"test")
-        db = self.server.create_db('couchdbkit_test')
         
-        MyDoc._db = db
+        MyDoc._db = self.db
 
         doc.save()
         doc2 = MyDoc.get(doc.id)
-        self.server.delete_db('couchdbkit_test')
         
         self.assert_(isinstance(doc2.schema, MySchema) == True)
         self.assert_(doc2.schema.astring == u"test")
@@ -744,9 +739,8 @@ class PropertyTestCase(unittest.TestCase):
             class b_schema(DocumentSchema):
                 name = StringProperty(  required = True, default = "name" )
             b = SchemaProperty( b_schema )
-
-        db = self.server.create_db('couchdbkit_test')
-        B._db = db
+            
+        B._db = self.db
         
         b = B()
         self.assertEquals(b.b.name, "name" )
@@ -762,7 +756,6 @@ class PropertyTestCase(unittest.TestCase):
         except BadValueError:
             pass
         b1.b.name = u"test"
-        del self.server['couchdbkit_test']
 
 
     def testSchemaWithPythonTypes(self):
@@ -892,10 +885,9 @@ class PropertyTestCase(unittest.TestCase):
 
     def testListProperty(self):
         from datetime import datetime
-        db = self.server.create_db('couchdbkit_test')
         class A(Document):
             l = ListProperty(datetime)
-        A.set_db(db) 
+        A.set_db(self.db) 
             
         # we can save an empty list
         a = A()
@@ -918,7 +910,6 @@ class PropertyTestCase(unittest.TestCase):
         self.assert_(len(b.l) == 1)
         self.assert_(b.l[0] == datetime(2009, 4, 13, 22, 56, 10))
         self.assert_(b._doc['l'] == ['2009-04-13T22:56:10Z'])
-        self.server.delete_db('couchdbkit_test')
 
     def testListPropertyNotEmpty(self):
         from datetime import datetime
@@ -986,10 +977,9 @@ class PropertyTestCase(unittest.TestCase):
 
     def testDictPropertyNotEmpty(self):
         from datetime import datetime
-        db = self.server.create_db('couchdbkit_test')
         class A(Document):
             d = DictProperty(required=True)
-        A.set_db(db) 
+        A.set_db(self.db) 
 
         a = A()
         self.assert_(a._doc == {'doc_type': 'A', 'd': {}})
@@ -1011,7 +1001,6 @@ class PropertyTestCase(unittest.TestCase):
         a2 = A2()            
         self.assertTrue(a2.validate(required=False))
         self.assertTrue(a2.validate())
-        self.server.delete_db('couchdbkit_test')
         
     def testDynamicDictProperty(self):
         from datetime import datetime
@@ -1053,9 +1042,67 @@ class PropertyTestCase(unittest.TestCase):
         del a.d['test']['essai']
         self.assert_(a._doc == {'d': {'essai': 'test', 'test': {'b': 'essai'}}, 'doc_type': 'A'})
         
+    def testDynamicDictProperty2(self):
+        from datetime import datetime
+        class A(Document):
+            pass
         
+        A.set_db(self.db)
         
+        a = A()
+        a.s = "test"
+        a.d = {}
+        a.d['s'] = "level1"
+        a.d['d'] = {}
+        a.d['d']['s'] = "level2"
+        self.assert_(a._doc == {'d': {'d': {'s': 'level2'}, 's': 'level1'}, 'doc_type': 'A', 's': u'test'})
+        a.save()
         
+        a1 = A.get(a.id)
+        a1.d['d']['s'] = "level2 edited"
+        self.assert_(a1.d['d']['s'] == "level2 edited")
+
+        self.assert_(a1._doc['d']['d']['s'] == "level2 edited")
+        
+    def testDynamicListProperty(self):
+        from datetime import datetime
+        class A(Document):
+            pass
+        
+        A.set_db(self.db)
+        
+        a = A()
+        a.l = []
+        a.l.append(1)
+        a.l.append(datetime(2009, 5, 12, 13, 35, 9, 425701))
+        a.l.append({ 's': "test"})
+        self.assert_(a.l == [1, datetime(2009, 5, 12, 13, 35, 9, 425701), {'s': 'test'}])
+        self.assert_(a._doc == {'doc_type': 'A', 'l': [1, '2009-05-12T13:35:09Z', {'s': 'test'}]}
+        )
+        a.l[2]['date'] = datetime(2009, 5, 12, 13, 35, 9, 425701)
+        self.assert_(a._doc == {'doc_type': 'A',
+         'l': [1,
+               '2009-05-12T13:35:09Z',
+               {'date': '2009-05-12T13:35:09Z', 's': 'test'}]}
+        )
+        a.save()
+        
+        a1 = A.get(a.id)
+        self.assert_(a1.l == [1,
+         datetime(2009, 5, 12, 13, 35, 9),
+         {u'date': datetime(2009, 5, 12, 13, 35, 9), u's': u'test'}]
+        )
+        
+        a.l[2]['s'] = 'test edited'
+        self.assert_(a.l == [1,
+         datetime(2009, 5, 12, 13, 35, 9, 425701),
+         {'date': datetime(2009, 5, 12, 13, 35, 9, 425701),
+          's': 'test edited'}]
+        )
+        self.assert_(a._doc['l'] == [1,
+         '2009-05-12T13:35:09Z',
+         {'date': '2009-05-12T13:35:09Z', 's': 'test edited'}]
+        )
         
 if __name__ == '__main__':
     unittest.main()

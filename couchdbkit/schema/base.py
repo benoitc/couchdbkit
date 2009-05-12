@@ -48,10 +48,12 @@ def check_reserved_words(attr_name):
 class LazyDict(dict):
 
     def __init__(self, d, doc, name):
+        dict.__init__(self)
         d = d or {}
-        dict.__init__(self, d)
-        doc[name] = dict(value_to_json(self))
+        doc[name] = {}
         self.doc = doc[name]
+        for key, value in d.items():
+            self[key] = value
 
     def __setitem__(self, key, value):
         if isinstance(value, dict):
@@ -93,11 +95,14 @@ class LazyDict(dict):
 class LazyList(list):
 
     def __init__(self, l, doc, name):
+        list.__init__(self)
         l = l or []
-        list.__init__(self, l)
-        doc[name] = list(value_to_json(self))
+        if name not in doc:
+            doc[name] = []
         self.doc = doc[name]
-
+        for item in l:
+            self.append(item)
+        
     def __delitem__(self, index):
         del self.doc[index]
         del self[index]
@@ -362,9 +367,7 @@ class DocumentSchema(object):
     @classmethod
     def wrap(cls, data):
         instance = cls()
-        
-        instance._doc = data
-
+        instance._doc = data        
         for prop in instance._properties.values():
             if prop.name in data:
                 value = data[prop.name]
@@ -378,19 +381,17 @@ class DocumentSchema(object):
             
         if cls._allow_dynamic_properties:
             for attr_name, value in data.iteritems():
-                if attr_name in instance._properties:
+                if attr_name in instance.properties():
                     continue
                 if value is None:
                     continue
-                elif attr_name in ('_rev', '_id', 'doc_type'):
+                elif attr_name.startswith('_'):
                     continue
-                elif type(value) in MAP_TYPES_PROPERTIES and \
-                        not attr_name.startswith('_') and \
-                        attr_name not in _NODOC_WORDS:
-                
+                elif attr_name == 'doc_type':
+                    continue
+                else:
                     value = value_to_python(value)
                     setattr(instance, attr_name, value)
-        
         return instance
 
     def validate(self, required=True):
