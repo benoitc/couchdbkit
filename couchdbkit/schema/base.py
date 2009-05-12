@@ -45,7 +45,7 @@ def check_reserved_words(attr_name):
             "Cannot define property using reserved word '%(attr_name)s'." % 
             locals())
 
-class LazyDict(dict):
+class _LazyDict(dict):
 
     def __init__(self, d, doc, name):
         dict.__init__(self)
@@ -57,26 +57,26 @@ class LazyDict(dict):
 
     def __setitem__(self, key, value):
         if isinstance(value, dict):
-            value = LazyDict(value, self.doc, key)
+            value = _LazyDict(value, self.doc, key)
         elif isinstance(value, list):
-            value = LazyList(value, self.doc, key)
+            value = _LazyList(value, self.doc, key)
         else:
             self.doc.update({key: value_to_json(value) })
-        super(LazyDict, self).__setitem__(key, value)
+        super(_LazyDict, self).__setitem__(key, value)
 
     def __delitem__(self, key):
         del self.doc[key]
-        super(LazyDict, self).__delitem__(key)
+        super(_LazyDict, self).__delitem__(key)
 
     def pop(self, key, default=None):
         del self.doc[key]
-        return super(LazyDict, self).pop(key, default=default)
+        return super(_LazyDict, self).pop(key, default=default)
 
     def setdefault(self, key, default):
         if key in self:
             return self[key]  
         self.doc.setdefault(key, value_to_json(default))
-        super(LazyDict, self).setdefault(key, default)
+        super(_LazyDict, self).setdefault(key, default)
         return default
 
     def update(self, value):
@@ -84,15 +84,15 @@ class LazyDict(dict):
             self[k] = v
 
     def popitem(self, value):
-        new_value = super(LazyDict, self).popitem(value)
+        new_value = super(_LazyDict, self).popitem(value)
         self.doc.popitem(value_to_json(value))
         return new_value
 
     def clear(self):
         self.doc.clear()
-        super(LazyDict, self).clear()
+        super(_LazyDict, self).clear()
 
-class LazyList(list):
+class _LazyList(list):
 
     def __init__(self, l, doc, name):
         list.__init__(self)
@@ -108,9 +108,9 @@ class LazyList(list):
 
     def __setitem__(self, index, value):
         if isinstance(value, dict):
-            value = LazyDict(value, self.doc, index)
+            value = _LazyDict(value, self.doc, index)
         elif isinstance(value, list):
-            value = LazyList(value, self.doc, index)
+            value = _LazyList(value, self.doc, index)
         else:
             self.doc[index] = value_to_json(value)
         self._list[index] = value_to_json(value)
@@ -125,13 +125,13 @@ class LazyList(list):
         index = len(self)
         if isinstance(value, dict):
             self.doc.append({})
-            value = LazyDict(value, self.doc, index)
+            value = _LazyDict(value, self.doc, index)
         elif isinstance(value, list):
             self.doc.append([])
-            value = LazyList(value, self.doc, index)
+            value = _LazyList(value, self.doc, index)
         else:
             self.doc.append(value_to_json(value))
-        super(LazyList, self).append(value)
+        super(_LazyList, self).append(value)
 
 class SchemaProperties(type):
 
@@ -264,9 +264,9 @@ class DocumentSchema(object):
                 self._dynamic_properties = {}
                 
             if isinstance(value, dict):
-                value = LazyDict(value, self._doc, key)
+                value = _LazyDict(value, self._doc, key)
             elif isinstance(value, list):
-                value = LazyList(value, self._doc, key)
+                value = _LazyList(value, self._doc, key)
             self._dynamic_properties[key] = value
 
             if not isinstance(value, (p.Property,)) and \
