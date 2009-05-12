@@ -692,7 +692,6 @@ def convert_property(value):
 def value_to_property(value):
     if type(value) in MAP_TYPES_PROPERTIES:
         prop = MAP_TYPES_PROPERTIES[type(value)]()
-
         return prop
     else:
         return value
@@ -700,14 +699,11 @@ def value_to_property(value):
 # utilities functions
 
 def validate_list_content(value, item_type=None):
-    for item in value:
-        item = validate_content(item, item_type=item_type)
-    return value
+    return [validate_content(item, item_type=item_type) for item in value]
     
 def validate_dict_content(value, item_type=None):
-    for k, v in value.iteritems():
-        value[k] = validate_content(v)
-    return value
+    return dict([(k, validate_content(v, 
+                item_type=item_type)) for k, v in value.iteritems()])
            
 def validate_content(value, item_type=None):
     if isinstance(value, list):
@@ -724,18 +720,10 @@ def validate_content(value, item_type=None):
     return value
 
 def dict_to_json(value):
-    ret = {}
-    for k, v in value.iteritems():
-        v = value_to_json(v)
-        ret[k] = v
-    return ret
+    return dict([(k, value_to_json(v)) for k, v in value.iteritems()])
     
 def list_to_json(value):
-    ret = []
-    for item in value:
-        item = value_to_json(item)
-        ret.append(item)
-    return ret
+    return [value_to_json(item) for item in value]
     
 def value_to_json(value):
     if isinstance(value, datetime.datetime):
@@ -778,15 +766,7 @@ def value_to_python(value):
     return value
     
 def list_to_python(value):
-    ret = []
-    for item in value:
-        item = value_to_python(item)   
-        ret.append(item)       
-    return ret
+    return [value_to_python(item) for item in value]
     
 def dict_to_python(value):
-    ret = {}
-    for k, v in value.iteritems():
-        v = value_to_python(v)
-        ret[k] = v
-    return ret
+    return dict([(k, value_to_python(v)) for k, v in value.iteritems()])
