@@ -97,8 +97,7 @@ class LazyList(list):
     def __init__(self, l, doc, name):
         list.__init__(self)
         l = l or []
-        if name not in doc:
-            doc[name] = []
+        doc[name] = []
         self.doc = doc[name]
         for item in l:
             self.append(item)
