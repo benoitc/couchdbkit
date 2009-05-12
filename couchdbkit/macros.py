@@ -40,18 +40,17 @@ def package_views(doc, views, app_dir, objs, verbose=False):
 
 def apply_lib(doc, funcs, app_dir, objs, verbose=False):
     for k, v in funcs.iteritems():
-        if not isinstance(v, basestring):
-            continue
-        old_v = v
-        try:
-            funcs[k] = run_json_macros(doc, 
-                run_code_macros(v, app_dir, verbose=verbose), 
-                app_dir, verbose=verbose)
-        except ValueError, e:
-            print >>sys.stderr, "Error running !code or !json on function \"%s\": %s" % (k, e)
-            sys.exit(-1)
-        if old_v != funcs[k]:
-            objs[md5(to_bytestring(funcs[k])).hexdigest()] = old_v
+        if isinstance(v, basestring):
+            old_v = v
+            try:
+                funcs[k] = run_json_macros(doc, 
+                    run_code_macros(v, app_dir, verbose=verbose), 
+                    app_dir, verbose=verbose)
+            except ValueError, e:
+                print >>sys.stderr, "Error running !code or !json on function \"%s\": %s" % (k, e)
+                sys.exit(-1)
+            if old_v != funcs[k]:
+                objs[md5(to_bytestring(funcs[k])).hexdigest()] = old_v
            
 
 def run_code_macros(f_string, app_dir, verbose=False):
