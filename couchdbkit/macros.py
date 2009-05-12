@@ -32,12 +32,20 @@ from hashlib import md5
 from couchdbkit.utils import read_file, read_json, to_bytestring
 
 def package_shows(doc, funcs, app_dir, objs, verbose=False):
-   apply_lib(doc, funcs, app_dir, objs, verbose=verbose)
+    apply_lib(doc, funcs, app_dir, objs, verbose=verbose)
          
 def package_views(doc, views, app_dir, objs, verbose=False):
-   for view, funcs in views.iteritems():
-       apply_lib(doc, funcs, app_dir, objs, verbose=verbose)
-
+    for view, funcs in views.iteritems():
+        try:
+            apply_lib(doc, funcs, app_dir, objs, verbose=verbose)
+        except AttributeError, e:
+            # malformated views
+            msg = """View %s is invalid. Folder structure is: 
+designpathg/designname/views/viewname/{map,reduce}.js""" % view
+            print >>sys.stderr, msg
+            sys.exit(-1)
+                
+        
 def apply_lib(doc, funcs, app_dir, objs, verbose=False):
     for k, v in funcs.iteritems():
         if isinstance(v, basestring):
