@@ -429,7 +429,6 @@ class DocumentTestCase(unittest.TestCase):
         doc1.save()
         db.save_doc(design_doc)
         results = TestDoc.view('test/all')
-        print results
         self.assert_(len(results) == 2)
         self.server.delete_db('couchdbkit_test')
         
@@ -981,11 +980,7 @@ class PropertyTestCase(unittest.TestCase):
         
         a = A()
         a.d['test'] = { 'a': datetime(2009, 5, 10, 21, 19, 21, 127380) }
-        
-        import sys
-        print >>sys.stderr, a.d
         self.assert_(a.d == { 'test': {'a': datetime(2009, 5, 10, 21, 19, 21)}})
-        
         self.assert_(a._doc == {'d': {'test': {'a': '2009-05-10T21:19:21Z'}}, 'doc_type': 'A'} )
         
         a.d['test']['b'] = "essai"

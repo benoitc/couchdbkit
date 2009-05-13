@@ -27,7 +27,7 @@ import sys
 
 setup(
     name = 'couchdbkit',
-    version = '0.1.5',
+    version = '0.1.6',
 
     description = 'Python couchdb kit',
     long_description = \
