@@ -963,6 +963,7 @@ class PropertyTestCase(unittest.TestCase):
         from datetime import datetime
         class A(Document):
             d = DictProperty()
+        A.set_db(self.db)
             
         a = A()
         self.assert_(a._doc == {'d': {}, 'doc_type': 'A'})
@@ -977,7 +978,55 @@ class PropertyTestCase(unittest.TestCase):
         self.assert_(a._doc['d']['d2'] == '2009-04-16T16:05:41Z')
         self.assert_(a.d['d2'] == datetime(2009, 4, 16, 16, 5, 41))
         self.assert_(a.d == {'s2': 'test', 's': 'test', 'd2': datetime(2009, 4, 16, 16, 5, 41), 'created': datetime(2009, 4, 16, 16, 5, 41)})
-
+        
+        a = A()
+        a.d['test'] = { 'a': datetime(2009, 5, 10, 21, 19, 21, 127380) }
+        
+        import sys
+        print >>sys.stderr, a.d
+        self.assert_(a.d == { 'test': {'a': datetime(2009, 5, 10, 21, 19, 21)}})
+        
+        self.assert_(a._doc == {'d': {'test': {'a': '2009-05-10T21:19:21Z'}}, 'doc_type': 'A'} )
+        
+        a.d['test']['b'] = "essai"
+        self.assert_(a._doc == {'d': {'test': {'a': '2009-05-10T21:19:21Z', 'b': 'essai'}}, 'doc_type': 'A'})
+        
+        a.d['essai'] = "test"
+        self.assert_(a.d == {'essai': 'test',
+         'test': {'a': datetime(2009, 5, 10, 21, 19, 21),
+                  'b': 'essai'}}
+        )
+        self.assert_(a._doc == {'d': {'essai': 'test', 'test': {'a': '2009-05-10T21:19:21Z', 'b': 'essai'}},
+         'doc_type': 'A'})
+         
+        del a.d['test']['a']
+        self.assert_(a.d == {'essai': 'test', 'test': {'b': 'essai'}})
+        self.assert_(a._doc ==  {'d': {'essai': 'test', 'test': {'b': 'essai'}}, 'doc_type': 'A'})
+        
+        a.d['test']['essai'] = { "a": datetime(2009, 5, 10, 21, 21, 11) }
+        self.assert_(a.d == {'essai': 'test',
+         'test': {'b': 'essai',
+                  'essai': {'a': datetime(2009, 5, 10, 21, 21, 11)}}}
+        )
+        self.assert_(a._doc == {'d': {'essai': 'test',
+               'test': {'b': 'essai', 'essai': {'a': '2009-05-10T21:21:11Z'}}},
+         'doc_type': 'A'}
+        )
+        
+        del a.d['test']['essai']
+        self.assert_(a._doc == {'d': {'essai': 'test', 'test': {'b': 'essai'}}, 'doc_type': 'A'})
+        
+        a = A()
+        a.d['s'] = "level1"
+        a.d['d'] = {}
+        a.d['d']['s'] = "level2"
+        self.assert_(a._doc == {'d': {'d': {'s': 'level2'}, 's': 'level1'}, 'doc_type': 'A'})
+        a.save()
+        a1 = A.get(a.id)
+        a1.d['d']['s'] = "level2 edited"
+        self.assert_(a1.d['d']['s'] == "level2 edited")
+        self.assert_(a1._doc['d']['d']['s'] == "level2 edited")
+        
     def testDictPropertyNotEmpty(self):
         from datetime import datetime
         class A(Document):
