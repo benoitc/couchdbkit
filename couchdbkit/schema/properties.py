@@ -417,105 +417,13 @@ class DictProperty(Property):
         return dict(value)
         
     def to_python(self, value):
-        return self.DictProxy(value)
+        return LazyDict(value_to_python(value), value)
         
     def to_json(self, value):
         return value_to_json(value)
         
         
-    class DictProxy(dict):
-        
-        def __init__(self, d):
-            self._dict = d
-            
-        def __repr__(self):
-            return repr(dict_to_python(self._dict))
 
-        def __str__(self):
-            return str(dict_to_python(self._dict))
-              
-        def __eq__(self, other):
-            return dict_to_python(self._dict) == other
-        
-        def __ne__(self, other):
-            return dict_to_python(self._dict) != other
-            
-        def __getitem__(self, key):
-            return value_to_python(self._dict[key])
-            
-        def __setitem__(self, key, value):
-            self._dict[key] = value_to_json(value)
-            
-        def __delitem__(self, key):
-            del self._dict[key]
-            
-        def get(self, key, default=None, type=None):
-            if key in self._dict:
-                if type is not None:
-                    try:
-                        return type(self._dict[key])
-                    except ValueError:
-                        pass 
-                return self._dict[key]
-            return default
-            
-        def iteritems(self):
-            for key, value in self._dict.iteritems():
-                yield key, value_to_python(value)
-                
-        def itervalues(self):
-            for value in self._dict.itervalues():
-                yield value_to_python(value)
-                
-        def values(self):
-            return list(self.itervalues())
-            
-        def items():
-            return list(self.iteritems())
-            
-        def keys(self):
-            return self._dict.keys()
-            
-        def iterkeys(self):
-            return iter(self.keys())
-            
-        def copy(self):
-            return self.__class__(self._dict)
-    
-        def pop(self, key, default=None):
-            return self._dict.pop(key, default=default)
-            
-        def __len__(self):
-            return len(self.keys())
-            
-        def __contains__(self, key):
-            if key in self._dict:
-                return True
-            return False
-            
-        __iter__ = iteritems
-        
-        def setdefault(self, key, default):
-            if key in self._dict:
-                return value_to_python(self._dict[key])
-
-            self._dict.setdefault(key, value_to_json(default))
-            return default
-
-        def update(self, value):
-            for k, v in value.items():
-                value[k] = value_to_json(v)
-            self._dict.update(value)
-            
-        def popitem(self, value):
-            value[0] = value_to_json(value[0])
-            value = self._dict.popitem(value)
-            value[0] = value_to_python(value[0])
-            return value
-            
-        def clear(self):
-            self._dict.clear()
-            
 class ListProperty(Property):
     """A property that stores a list of things.
 
@@ -578,83 +486,11 @@ class ListProperty(Property):
         return list(value)
         
     def to_python(self, value):
-        return self.ListProxy(value)
+        return LazyList(value_to_python(value), value)
         
     def to_json(self, value):
-        return [value_to_json(item) for item in value]
+        return value_to_json(value)
 
-    class ListProxy(list):
-        """ ProxyList. Idee taken from couchdb-python."""
-        def __init__(self, l):
-            self._list = l
-
-        def __lt__(self, other):
-            return list_to_python(self._list) < other
-
-        def __le__(self, other):
-            return list_to_python(self._list) <= other
-
-        def __eq__(self, other):
-            return list_to_python(self._list) == other
-
-        def __ne__(self, other):
-            return list_to_python(self._list) != other
-
-        def __gt__(self, other):
-            return list_to_python(self._list) > other
-
-        def __ge__(self, other):
-            return list_to_python(self._list) >= other
-
-        def __repr__(self):
-            return repr(list_to_python(self._list))
-
-        def __str__(self):
-            return str(list_to_python(self._list))
-
-        def __unicode__(self):
-            return unicode(self._list)
-
-        def __getslice__(self, i, j):
-            return self.__getitem__(slice(i, j))
-            
-        def __setslice__(self, i, j, seq):
-            return self.__setitem__(slice(i, j), seq)
-            
-        def __delslice__(self, i, j):
-            return self.__delitem__(slice(i, j))
-        
-        def __delitem__(self, index):
-            del self._list[index]
-
-        def __getitem__(self, index):
-            return value_to_python(self._list[index])
-
-        def __setitem__(self, index, value):
-            self._list[index] = value_to_json(value)
-
-        def __iter__(self):
-            for index in range(len(self)):
-                yield self[index]
-
-        def __len__(self):
-            return len(self._list)
-
-        def __nonzero__(self):
-            return bool(self._list)
-
-        def append(self, *args, **kwargs):
-            if args:
-                assert len(args) == 1
-                value = args[0]
-            else:
-                value = kwargs
-            value = value_to_json(value)
-            self._list.append(value)
-
-        def extend(self, list):
-            for item in list:
-                self.append(item)
 
 class StringListProperty(ListProperty):
     """ shorthand for list that should containe only str"""
@@ -664,6 +500,98 @@ class StringListProperty(ListProperty):
         super(StringListProperty, self).__init__(verbose_name=verbose_name, 
             default=default, required=required, item_type=str,**kwds)
 
+
+
+# structures proxy
+
+class LazyDict(dict):
+
+    def __init__(self, d, doc):
+        dict.__init__(self)
+        d = d or {}
+        self.doc = doc
+        for key, value in d.items():
+            self[key] = value
+
+    def __setitem__(self, key, value):
+        if isinstance(value, dict):
+            self.doc[key] = {}
+            value = LazyDict(value,  self.doc[key])
+        elif isinstance(value, list):
+            value = LazyList(value,  self.doc[key])
+        else:
+            self.doc.update({key: value_to_json(value) })
+        super(LazyDict, self).__setitem__(key, value)
+
+    def __delitem__(self, key):
+        del self.doc[key]
+        super(LazyDict, self).__delitem__(key)
+
+    def pop(self, key, default=None):
+        del self.doc[key]
+        return super(LazyDict, self).pop(key, default=default)
+
+    def setdefault(self, key, default):
+        if key in self:
+            return self[key]  
+        self.doc.setdefault(key, value_to_json(default))
+        super(LazyDict, self).setdefault(key, default)
+        return default
+
+    def update(self, value):
+        for k, v in value.items():
+            self[k] = v
+
+    def popitem(self, value):
+        new_value = super(LazyDict, self).popitem(value)
+        self.doc.popitem(value_to_json(value))
+        return new_value
+
+    def clear(self):
+        self.doc.clear()
+        super(LazyDict, self).clear()
+
+class LazyList(list):
+
+    def __init__(self, l, doc):
+        list.__init__(self, l)
+        l = l or []
+        self.doc = doc
+        for idx, item in enumerate(l):
+            self[idx] = item
+        
+    def __delitem__(self, index):
+        del self.doc[index]
+        list.__delitem__(self, index)
+
+    def __setitem__(self, index, value):
+        if isinstance(value, dict):
+            self.doc[index] = {}
+            value = LazyDict(value, self.doc[index])
+        elif isinstance(value, list):
+            self.doc[index] = []
+            value = LazyList(value, self.doc[index])
+        else:
+            self.doc[index] = value_to_json(value)
+        list.__setitem__(self, index, value)
+
+    def append(self, *args, **kwargs):
+        if args:
+            assert len(args) == 1
+            value = args[0]
+        else:
+            value = kwargs
+
+        index = len(self)
+        if isinstance(value, dict):
+            self.doc.append({})
+            value = LazyDict(value, self.doc[index])
+        elif isinstance(value, list):
+            self.doc.append([])
+            value = LazyList(value, self.doc[index])
+        else:
+            self.doc.append(value_to_json(value))
+        super(LazyList, self).append(value)
 
 # some mapping
  

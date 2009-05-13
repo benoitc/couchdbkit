@@ -113,7 +113,6 @@ class _LazyList(list):
             value = _LazyList(value, self.doc, index)
         else:
             self.doc[index] = value_to_json(value)
-        self._list[index] = value_to_json(value)
 
     def append(self, *args, **kwargs):
         if args:
