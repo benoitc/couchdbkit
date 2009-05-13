@@ -30,7 +30,7 @@ __all__ = ['ALLOWED_PROPERTY_TYPES', 'Property', 'StringProperty',
         'StringListProperty', 'dict_to_json', 'list_to_json', 
         'value_to_json', 'MAP_TYPES_PROPERTIES', 'value_to_python', 
         'dict_to_python', 'list_to_python', 'convert_property',
-        'value_to_property']
+        'value_to_property', 'LazyDict', 'LazyList']
         
 ALLOWED_PROPERTY_TYPES = set([
     basestring,

@@ -25,8 +25,9 @@ import warnings
 
 from couchdbkit.client import Database
 from couchdbkit.schema import properties as p
-from couchdbkit.schema.properties import value_to_json, value_to_python, \
-convert_property, MAP_TYPES_PROPERTIES, ALLOWED_PROPERTY_TYPES, value_to_property
+from couchdbkit.schema.properties import value_to_python, \
+convert_property, MAP_TYPES_PROPERTIES, ALLOWED_PROPERTY_TYPES, \
+LazyDict, LazyList
 from couchdbkit.exceptions import *
 from couchdbkit.resource import ResourceNotFound
 
@@ -44,93 +45,6 @@ def check_reserved_words(attr_name):
         raise ReservedWordError(
             "Cannot define property using reserved word '%(attr_name)s'." % 
             locals())
-
-class _LazyDict(dict):
-
-    def __init__(self, d, doc, name):
-        dict.__init__(self)
-        d = d or {}
-        doc[name] = {}
-        self.doc = doc[name]
-        for key, value in d.items():
-            self[key] = value
-
-    def __setitem__(self, key, value):
-        if isinstance(value, dict):
-            value = _LazyDict(value, self.doc, key)
-        elif isinstance(value, list):
-            value = _LazyList(value, self.doc, key)
-        else:
-            self.doc.update({key: value_to_json(value) })
-        super(_LazyDict, self).__setitem__(key, value)
-
-    def __delitem__(self, key):
-        del self.doc[key]
-        super(_LazyDict, self).__delitem__(key)
-
-    def pop(self, key, default=None):
-        del self.doc[key]
-        return super(_LazyDict, self).pop(key, default=default)
-
-    def setdefault(self, key, default):
-        if key in self:
-            return self[key]  
-        self.doc.setdefault(key, value_to_json(default))
-        super(_LazyDict, self).setdefault(key, default)
-        return default
-
-    def update(self, value):
-        for k, v in value.items():
-            self[k] = v
-
-    def popitem(self, value):
-        new_value = super(_LazyDict, self).popitem(value)
-        self.doc.popitem(value_to_json(value))
-        return new_value
-
-    def clear(self):
-        self.doc.clear()
-        super(_LazyDict, self).clear()
-
-class _LazyList(list):
-
-    def __init__(self, l, doc, name):
-        list.__init__(self)
-        l = l or []
-        doc[name] = []
-        self.doc = doc[name]
-        for item in l:
-            self.append(item)
-        
-    def __delitem__(self, index):
-        del self.doc[index]
-        del self[index]
-
-    def __setitem__(self, index, value):
-        if isinstance(value, dict):
-            value = _LazyDict(value, self.doc, index)
-        elif isinstance(value, list):
-            value = _LazyList(value, self.doc, index)
-        else:
-            self.doc[index] = value_to_json(value)
-
-    def append(self, *args, **kwargs):
-        if args:
-            assert len(args) == 1
-            value = args[0]
-        else:
-            value = kwargs
-
-        index = len(self)
-        if isinstance(value, dict):
-            self.doc.append({})
-            value = _LazyDict(value, self.doc, index)
-        elif isinstance(value, list):
-            self.doc.append([])
-            value = _LazyList(value, self.doc, index)
-        else:
-            self.doc.append(value_to_json(value))
-        super(_LazyList, self).append(value)
 
 class SchemaProperties(type):
 
@@ -263,9 +177,13 @@ class DocumentSchema(object):
                 self._dynamic_properties = {}
                 
             if isinstance(value, dict):
-                value = _LazyDict(value, self._doc, key)
+                if key not in self._doc:
+                    self._doc[key] = {}
+                value = LazyDict(value, self._doc[key])
             elif isinstance(value, list):
-                value = _LazyList(value, self._doc, key)
+                if key not in self._doc:
+                    self._doc[key] = []
+                value = LazyList(value, self._doc[key])
             self._dynamic_properties[key] = value
 
             if not isinstance(value, (p.Property,)) and \
