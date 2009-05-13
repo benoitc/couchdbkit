@@ -902,15 +902,18 @@ class PropertyTestCase(unittest.TestCase):
         self.assert_(len(a.l) == 1)
         self.assert_(a.l[0] == datetime(2009, 4, 13, 22, 56, 10))
         self.assert_(a._doc == {'doc_type': 'A', 'l': ['2009-04-13T22:56:10Z']})
+        a.l.append({ 's': "test"})
+        self.assert_(a.l == [datetime(2009, 4, 13, 22, 56, 10), {'s': 'test'}])
+        self.assert_(a._doc == {'doc_type': 'A', 'l': ['2009-04-13T22:56:10Z', {'s': 'test'}]}
+        )
         
         a.save()
         
-
         b = A.get(a.id)
-        self.assert_(len(b.l) == 1)
+        self.assert_(len(b.l) == 2)
         self.assert_(b.l[0] == datetime(2009, 4, 13, 22, 56, 10))
-        self.assert_(b._doc['l'] == ['2009-04-13T22:56:10Z'])
-
+        self.assert_(b._doc['l'] == ['2009-04-13T22:56:10Z', {'s': 'test'}])
+        
     def testListPropertyNotEmpty(self):
         from datetime import datetime
         class A(Document):
