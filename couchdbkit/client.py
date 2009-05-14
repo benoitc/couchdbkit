@@ -432,7 +432,7 @@ class Database(object):
 
         return View(self, view_path, wrapper=wrapper)(**params)
 
-    def temp_view(self, design, obj=None,  wrapper=None, **params):
+    def temp_view(self, design, obj=None, wrapper=None, **params):
         """ get adhoc view results """
         if obj is not None:
             if not hasattr(obj, 'wrap'):
