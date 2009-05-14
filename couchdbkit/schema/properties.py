@@ -554,8 +554,8 @@ class LazyDict(dict):
 class LazyList(list):
 
     def __init__(self, l, doc):
-        list.__init__(self, l)
         l = l or []
+        list.__init__(self, l)
         self.doc = doc
         for idx, item in enumerate(l):
             self[idx] = item
