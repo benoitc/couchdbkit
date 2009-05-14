@@ -307,4 +307,16 @@ class SessionDatabaseTestCase(unittest.TestCase):
         a.save()
         self.assert_(a.id in self.db)
         
+    def testCustomDatabaseClass(self):
+        class CustomDatabase(Database):
+            def foo(self):
+                return "foo"
+                
+        session = create_session(self.Server, 'couchdbkit_test',
+                database_class=CustomDatabase)
+                
+        self.assert_(hasattr(session, 'foo') == True)
+        self.assert_(session.foo() == "foo")
+        
+        
         

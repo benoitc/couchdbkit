@@ -19,10 +19,22 @@ import threading
 
 from couchdbkit.client import Server, Database
 
-def create_session(server, db_name, scoped_func=None):
+def create_session(server, db_name, scoped_func=None, database_class=None):
+    """
+    create a threadsafe db sesson.
+    
+    :param server: `couchdbkit.Server` instance
+    :param db_name: str, name of db
+    :param scopped_function: function to get thread local ident. 
+    :param database_class: custom class inheriting from `couchdbkit.Database`.
+    """
     if isinstance(server, basestring):
         server = Server(server)
-    return Session(server, db_name, scoped_func)
+    
+    session = Session(server, db_name, scoped_func)
+    if database_class and database_class is not None:
+        session._DATABASE_CLASS = database_class
+    return session
 
 class Session(object):
     """ Provide a thread local management of db.
@@ -49,13 +61,15 @@ class Session(object):
             MyDocument.save()
         
     """
+    
+    _DATABASE_CLASS = Database
 
     def __init__(self, server, dbname, scoped_func=None):
         self.server = server
         self.dbname = dbname
         self.registry = ScopedRegistry(self.session_factory,
                 scoped_func)
-                
+                         
     def __repr__(self):
         return "<%s %s>" % (self.__class__.__name__, self.dbname)
     
@@ -109,7 +123,7 @@ class Session(object):
         return (len(db) > 0)
 
     def session_factory(self):
-        return Database(self.server, self.dbname)
+        return self._DATABASE_CLASS(self.server, self.dbname)
 
 class ScopedRegistry(object):
     """A Registry that can store one or multiple instances of a single
