@@ -378,6 +378,9 @@ class Database(object):
             result = self.res.delete(doc, 
                     rev=response['etag'].strip('"'))
         return result
+
+    def search( self, view_name, **params):
+        return View(self, "/_fti/%s" %  view_name)(**params)
         
     def copy_doc(self, doc, dest=None):
         """ copy an existing document to a new id. If dest is None, a new uuid will be requested
