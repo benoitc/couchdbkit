@@ -378,9 +378,6 @@ class Database(object):
             result = self.res.delete(doc, 
                     rev=response['etag'].strip('"'))
         return result
-
-    def search( self, view_name, handler='_fti' , **params):
-        return View(self, "/%s/%s" % (handler, view_name))(**params)
         
     def copy_doc(self, doc, dest=None):
         """ copy an existing document to a new id. If dest is None, a new uuid will be requested
@@ -416,6 +413,7 @@ class Database(object):
             
         
     def view(self, view_name, obj=None, wrapper=None, **params):
+        """ get view results """
         if view_name.startswith('/'):
             view_name = view_name[1:]
         if view_name == '_all_docs':
@@ -435,11 +433,17 @@ class Database(object):
         return View(self, view_path, wrapper=wrapper)(**params)
 
     def temp_view(self, design, obj=None,  wrapper=None, **params):
+        """ get adhoc view results """
         if obj is not None:
             if not hasattr(obj, 'wrap'):
                 raise AttributeError(" no 'wrap' method found in obj %s)" % str(obj))
             wrapper = obj.wrap
         return TempView(self, design, wrapper=wrapper)(**params)
+        
+    def search( self, view_name, handler='_fti', wrapper=None, **params):
+        """ Search. Return results from search. Use couchdb-lucene 
+        with its default settings by default."""
+        return View(self, "/%s/%s" % (handler, view_name), wrapper=wrapper)(**params)
 
     def documents(self, wrapper=None, **params):
         return View(self, '_all_docs', wrapper=wrapper, **params)
