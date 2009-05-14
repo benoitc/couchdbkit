@@ -1151,5 +1151,35 @@ class PropertyTestCase(unittest.TestCase):
          {'date': '2009-05-12T13:35:09Z', 's': 'test edited'}]
         )
         
+        
+        design_doc = {
+            '_id': '_design/test',
+            'language': 'javascript',
+            'views': {
+                'all': {
+                    "map": """function(doc) { if (doc.doc_type == "A") { emit(doc._id, doc);
+}}"""
+                }
+            }
+        }
+        self.db.save_doc(design_doc)
+        
+        a2 = A()
+        a2.l = []
+        a2.l.append(7)
+        a2.save()
+        docs = A.view('test/all')
+        self.assert_(len(docs) == 2)
+        
+        a3 = A()
+        a3.l = []
+        a3.save()
+        docs = A.view('test/all')
+        self.assert_(len(docs) == 3)
+        
+        
+        
+        
+        
 if __name__ == '__main__':
     unittest.main()
