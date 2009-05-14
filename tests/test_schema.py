@@ -1177,5 +1177,14 @@ class PropertyTestCase(unittest.TestCase):
         docs = A.view('test/all')
         self.assert_(len(docs) == 3)
         
+        a = A(l = [1, 2])
+        self.assert_(a.l == [1,2])
+        self.assert_(a._doc['l'] == [1,2])
+        
+        a = A()
+        a.l = [1, 2]
+        self.assert_(a.l == [1,2])
+        self.assert_(a._doc['l'] == [1,2])
+        
 if __name__ == '__main__':
     unittest.main()

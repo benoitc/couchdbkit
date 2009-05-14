@@ -567,8 +567,12 @@ class LazyList(list):
         list.__init__(self, l)
         self.doc = doc
         for idx, item in enumerate(l):
+            try:
+                current = self.doc[idx]
+            except IndexError:
+                self.doc.append('')
             self[idx] = item
-        
+            
     def __delitem__(self, index):
         del self.doc[index]
         list.__delitem__(self, index)
@@ -601,7 +605,7 @@ class LazyList(list):
         else:
             self.doc.append(value_to_json(value))
         super(LazyList, self).append(value)
-
+        
 # some mapping
  
 MAP_TYPES_PROPERTIES = {
