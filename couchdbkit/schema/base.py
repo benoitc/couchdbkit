@@ -142,14 +142,18 @@ class DocumentSchema(object):
                 del properties[attr_name]
 
     def dynamic_properties(self):
+        """ get dict of dynamic properties """
         if self._dynamic_properties is None:
             return {}
         return self._dynamic_properties
 
     def properties(self):
+        """ get dict of defined properties """
         return self._properties
 
     def all_properties(self):
+        """ get all properties. 
+        Generally we just need to use keys"""
         all_properties = self._properties
         all_properties.update(self.dynamic_properties())
         return all_properties
@@ -160,7 +164,15 @@ class DocumentSchema(object):
             self._doc['doc_type'] = doc_type
         return self._doc
 
+    #TODO: add a way to maintain custom dynamic properties
     def __setattr__(self, key, value):
+        """
+        override __setattr__ . If value is in dir, we just use setattr. 
+        If value is not known (dynamic) we test if type and name of value 
+        is supported (in ALLOWED_PROPERTY_TYPES, Property instance and not
+        start with '_') a,d add it to `_dynamic_properties` dict. If value is 
+        a list or a dict we use LazyList and LazyDict to maintain in the value.
+        """
         check_reserved_words(key)
         if not hasattr( self, key ) and not self._allow_dynamic_properties:
             raise AttributeError("%s is not defined in schema (not a valid property)" % key)
@@ -282,6 +294,7 @@ class DocumentSchema(object):
 
     @classmethod
     def wrap(cls, data):
+        """ wrap `data` dict in object properties """
         instance = cls()
         instance._doc = data        
         for prop in instance._properties.values():
@@ -317,8 +330,9 @@ class DocumentSchema(object):
                 self._properties[attr_name].validate(
                         getattr(self, attr_name), required=required)
         return True
-   
+     
     def clone(self, **kwargs):
+        """ clone a document """
         for prop_name in self._properties.keys():
             try:
                 kwargs[prop_name] = self._doc[prop_name]
@@ -333,6 +347,7 @@ class DocumentSchema(object):
 
     @classmethod
     def build(cls, **kwargs):
+        """ build a new instance from this document object. """
         obj = cls()
         properties = {}
         for attr_name, attr in kwargs.items():
@@ -435,6 +450,8 @@ class DocumentBase(DocumentSchema):
     
     @classmethod
     def get(cls, docid, rev=None, db=None, dynamic_properties=True):
+        """ get document with `docid` 
+        """
         if db is not None:
             cls._db = db
         cls._allow_dynamic_properties = dynamic_properties
@@ -444,6 +461,7 @@ class DocumentBase(DocumentSchema):
         
     @classmethod
     def get_or_create(cls, docid=None, db=None, dynamic_properties=True):
+        """ get  or create document with `docid` """
         if db is not None:
             cls._db = db
                

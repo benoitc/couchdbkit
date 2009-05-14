@@ -505,6 +505,11 @@ class StringListProperty(ListProperty):
 # structures proxy
 
 class LazyDict(dict):
+    
+    """ object to make sure we keep update of dict 
+    in _doc. We just override a dict and maintain change in
+    doc reference (doc[keyt] obviously).
+    """
 
     def __init__(self, d, doc):
         dict.__init__(self)
@@ -552,6 +557,10 @@ class LazyDict(dict):
         super(LazyDict, self).clear()
 
 class LazyList(list):
+    """ object to make sure we keep update of list 
+    in _doc. We just override a dict and maintain change in
+    doc reference (doc[keyt] obviously).
+    """
 
     def __init__(self, l, doc):
         l = l or []
@@ -611,6 +620,7 @@ MAP_TYPES_PROPERTIES = {
 }           
             
 def convert_property(value):
+    """ convert a value to json from Property._to_json """
     if type(value) in MAP_TYPES_PROPERTIES:
         prop = MAP_TYPES_PROPERTIES[type(value)]()
         value = prop.to_json(value)
@@ -618,6 +628,7 @@ def convert_property(value):
 
 
 def value_to_property(value):
+    """ Convert value in a Property object """
     if type(value) in MAP_TYPES_PROPERTIES:
         prop = MAP_TYPES_PROPERTIES[type(value)]()
         return prop
@@ -627,13 +638,16 @@ def value_to_property(value):
 # utilities functions
 
 def validate_list_content(value, item_type=None):
+    """ validate type of values in a list """
     return [validate_content(item, item_type=item_type) for item in value]
     
 def validate_dict_content(value, item_type=None):
+     """ validate type of values in a dict """
     return dict([(k, validate_content(v, 
                 item_type=item_type)) for k, v in value.iteritems()])
            
 def validate_content(value, item_type=None):
+    """ validate a value. test if value is in supported types """
     if isinstance(value, list):
         value = validate_list_content(value, item_type=item_type)
     elif isinstance(value, dict):
@@ -648,12 +662,18 @@ def validate_content(value, item_type=None):
     return value
 
 def dict_to_json(value):
+    """ convert a dict to json """
     return dict([(k, value_to_json(v)) for k, v in value.iteritems()])
     
 def list_to_json(value):
+    """ convert a list to json """
     return [value_to_json(item) for item in value]
     
 def value_to_json(value):
+    """ convert a value to json using appropriate regexp.
+    For Dates we use ISO 8601. Decimal are converted to string.
+    
+    """
     if isinstance(value, datetime.datetime):
         value = value.replace(microsecond=0).isoformat() + 'Z'
     elif isinstance(value, datetime.date):
@@ -670,6 +690,9 @@ def value_to_json(value):
     
     
 def value_to_python(value):
+    """ convert a json value to python type using regexp. values converted
+    have been put in json via `value_to_json` .
+    """
     data_type = None
     if isinstance(value, basestring):
         if re_date.match(value):
@@ -694,7 +717,9 @@ def value_to_python(value):
     return value
     
 def list_to_python(value):
+    """ convert a list of json values to python list """
     return [value_to_python(item) for item in value]
     
 def dict_to_python(value):
+     """ convert a json object values to python dict """
     return dict([(k, value_to_python(v)) for k, v in value.iteritems()])
