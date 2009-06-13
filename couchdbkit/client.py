@@ -365,7 +365,6 @@ class Database(object):
             {"ok":true,"rev":"2839830636"}
         """
         result = { 'ok': False }
-        
         if isinstance(doc, dict):
             if not '_id' or not '_rev' in doc:
                 raise KeyError('_id and _rev are required to delete a doc')
