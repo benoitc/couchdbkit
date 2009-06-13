@@ -16,7 +16,7 @@
 import sys
 
 from couchdbkit import schema
-from couchdbkit.ext.django import get_schema, register_schema
+from couchdbkit.ext.django.loading import get_schema, register_schema
 
 __all__ = ['Property', 'StringProperty', 'IntegerProperty', 
             'DecimalProperty', 'BooleanProperty', 'FloatProperty', 
