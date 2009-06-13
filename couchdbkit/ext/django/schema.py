@@ -34,7 +34,6 @@ class DocumentMeta(schema.SchemaProperties):
         if not parents:
             return super_new(cls, name, bases, attrs)
             
-        module = attrs['__module__']
         new_class = super_new(cls, name, bases, attrs)
         document_module = sys.modules[new_class.__module__]
         app_label = document_module.__name__.split('.')[-2]

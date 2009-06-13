@@ -181,7 +181,7 @@ class BaseDocumentForm(BaseForm):
         super(BaseDocumentForm, self).__init__(data, files, auto_id, prefix, object_data,
                                             error_class, label_suffix, empty_permitted)
                                             
-    def save(self, commit=True, dynamic=False):
+    def save(self, commit=True, dynamic=True):
         """
         Saves this ``form``'s cleaned_data into document instance
         ``self.instance``.

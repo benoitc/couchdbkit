@@ -25,7 +25,7 @@ def home(request):
     else:
         form = GreetingForm()
         
-    greetings = Greeting.view('greeting/all')
+    greetings = Greeting.view('greeting/all', descending=True)
     
     return render("home.html", {
         "form": form,

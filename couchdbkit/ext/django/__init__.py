@@ -14,9 +14,8 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-
 from django.db.models import signals
-            
+
 def syncdb(app, created_models, verbosity=2, **kwargs):
     from couchdbkit.ext.django.loading import couchdbkit_handler
     couchdbkit_handler.sync(app, verbosity=2)
