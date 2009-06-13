@@ -14,6 +14,7 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+
 import sys
 import os
 
@@ -28,10 +29,12 @@ import urllib
 import urlparse
 
 from couchdbkit import Server, create_session, ResourceConflict
+from couchdbkit.loaders import FileSystemDocLoader
 from couchdbkit.resource import PreconditionFailed
 from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured
 from django.db.models import signals
+    
+from django.core.exceptions import ImproperlyConfigured
 from django.utils.datastructures import SortedDict
 from restclient.transport import getDefaultHTTPTransport
 
@@ -84,6 +87,11 @@ class CouchdbkitHandler(object):
                 db.server.create_db(db.dbname)
             except:
                 pass
+                
+            app_path = os.path.abspath(os.path.join(sys.modules[app.__module__].__file__, ".."))
+            print app_path
+            loader = FileSystemDocLoader(app_path, "_design", design_name=app_name)
+            loader.sync()
                 
     def get_db(self, app_label):
         return self._databases[app_label]

@@ -162,7 +162,7 @@ class BaseDocsLoader(object):
                 
 
 class FileSystemDocsLoader(BaseDocsLoader):
-    """ Load ocs from the filesystem. This loader can find docs
+    """ Load docs from the filesystem. This loader can find docs
     in folders on the file system and is the preferred way to load them. 
     
     The loader takes the path for design docs as a string  or if multiple
@@ -227,12 +227,15 @@ class FileSystemDocsLoader(BaseDocsLoader):
                 
         return docs
         
-    def get_designdoc(self, root, name, verbose=False):
+    def get_designdoc(self, root, name, design_name=None, verbose=False):
         if not name.startswith('.') and not os.path.isfile(name):
             design_doc = {}
             manifest = []
             objects = {}
-            docid = design_doc['_id'] = "_design/%s" % name
+            if design_name is None:
+                docid = design_doc['_id'] = "_design/%s" % name
+            else:
+                docid = design_doc['_id'] = "_design/%s" % design_name
             app_dir = os.path.join(root, name)
             attach_dir = os.path.join(app_dir, '_attachments')
 
@@ -378,3 +381,18 @@ class FileSystemDocsLoader(BaseDocsLoader):
         doc['_attachments'].update(_attachments)
         doc['couchapp']['signatures'].update(_signatures)
         doc['couchapp']['length'].update(_length)
+        
+class FileSystemDocLoader(BaseDocsLoader):
+    """ Load only one design doc from a path on the filesystem.
+        
+        >>> loader = FileSystemDocsLoader("/path/to/designdocfolder", "nameodesigndoc")
+    """
+    
+    def __init__(self, designpath, name, design_name=None):
+        self.designpath = designpath
+        self.name = name
+        self.design_name = design_name
+        
+    def get_docs(self, verbose=False):
+        return [self.get_designdoc(self.designpath, self.name, 
+                design_name=self.design_name, verbose=verbose)]
