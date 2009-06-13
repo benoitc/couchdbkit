@@ -4,21 +4,31 @@ from datetime import datetime
 from django.shortcuts import render_to_response as render
 from django.template import RequestContext, loader, Context
 
-from couchdbkit.ext.django.loading import get_db
+from couchdbkit.ext.django.forms import DocumentForm
 
 from djangoapp.greeting.models import Greeting
 
+
+class GreetingForm(DocumentForm):
+    
+    class Meta:
+        document = Greeting
+
 def home(request):
-    db = get_db('greeting')
-    greet = Greeting(
-        author="Benoit",
-        content="Welcome to simplecouchdb world",
-        date=datetime.utcnow()
-    )
-   
-    greet.save()
+    
+    greet = None
+    
+    if request.POST:
+        form = GreetingForm(request.POST)
+        if form.is_valid():
+            greet = form.save()  
+    else:
+        form = GreetingForm()
+        
+    greetings = Greeting.view('greeting/all')
     
     return render("home.html", {
-        "info": greet._db.info(),
-        "id": greet.id
+        "form": form,
+        "greet": greet,
+        "greetings": greetings
     }, context_instance=RequestContext(request))

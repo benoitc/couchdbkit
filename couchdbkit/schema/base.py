@@ -233,17 +233,13 @@ class DocumentSchema(object):
         except AttributeError, e:
             if key in self._doc:
                 return self._doc[key]
-            raise KeyError, e
-        except:
             raise
 
     def __setitem__(self, key, value):
         """ add a property
         """
-        try:
-            setattr(self, key, value)
-        except AttributeError, e:
-            raise KeyError, e
+        setattr(self, key, value)
+    
 
     def __delitem__(self, key):
         """ delete a property
