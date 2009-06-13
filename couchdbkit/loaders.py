@@ -382,7 +382,7 @@ class FileSystemDocsLoader(BaseDocsLoader):
         doc['couchapp']['signatures'].update(_signatures)
         doc['couchapp']['length'].update(_length)
         
-class FileSystemDocLoader(BaseDocsLoader):
+class FileSystemDocLoader(FileSystemDocsLoader):
     """ Load only one design doc from a path on the filesystem.
         
         >>> loader = FileSystemDocsLoader("/path/to/designdocfolder", "nameodesigndoc")

@@ -88,10 +88,9 @@ class CouchdbkitHandler(object):
             except:
                 pass
                 
-            app_path = os.path.abspath(os.path.join(sys.modules[app.__module__].__file__, ".."))
-            print app_path
-            loader = FileSystemDocLoader(app_path, "_design", design_name=app_name)
-            loader.sync()
+            app_path = os.path.abspath(os.path.join(sys.modules[app.__name__].__file__, ".."))
+            loader = FileSystemDocLoader(app_path, "_design", design_name=appname)
+            loader.sync(db)
                 
     def get_db(self, app_label):
         return self._databases[app_label]
