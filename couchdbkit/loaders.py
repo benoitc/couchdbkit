@@ -141,12 +141,15 @@ class BaseDocsLoader(object):
                     del attachments[filename]
 
         for filename, value in attachments.iteritems():
+            content_length = _length.get(filename, None)
             if verbose:
-                print "Attaching %s" % filename
+                print "Attaching %s (%s)" % (filename, content_length)
+            
+            f = open(value, "rb")
             # fix issue with httplib that raises BadStatusLine
             # error because it didn't close the connection
-            self._put_attachment(db, current_design, value, filename, 
-                    content_length=_length.get(filename, None), verbose=verbose)
+            self._put_attachment(db, current_design, f, filename, 
+                    content_length=content_length, verbose=verbose)
                      
         # update signatures
         current_design = db[docid]
@@ -220,45 +223,44 @@ class FileSystemDocsLoader(BaseDocsLoader):
             if not os.path.isdir(designpath):
                 raise DocsPathNotFound("%s doesn't exist" % designpath)
             for name in os.listdir(designpath):
-                if name.startswith('.'):
-                    continue
-                elif os.path.isfile(name):
-                    continue
-                else:
-                    design_doc = {}
-                    manifest = []
-                    objects = {}
-                    docid = design_doc['_id'] = "_design/%s" % name
-                    app_dir = os.path.join(designpath, name)
-                    attach_dir = os.path.join(app_dir, '_attachments')
-
-                    design_doc.update(self.dir_to_fields(app_dir, manifest=manifest,
-                            verbose=verbose))
-
-                    if not 'couchapp' in design_doc:
-                        design_doc['couchapp'] = {}
-
-                    if 'shows' in design_doc:
-                        package_shows(design_doc, design_doc['shows'], app_dir, objects, verbose=verbose)
-
-                    if 'lists' in design_doc:
-                        package_shows(design_doc, design_doc['lists'], app_dir, objects, verbose=verbose)
-
-                    if 'views' in design_doc:
-                        package_views(design_doc, design_doc["views"], app_dir, objects, verbose=verbose)
-
-                    couchapp = design_doc.get('couchapp', False)
-                    design_doc.update({
-                        'couchapp': {
-                            'manifest': manifest,
-                            'objects': objects
-                        }
-                    })
-                    self.attach(design_doc, attach_dir, docid, verbose=verbose)
-                    self.attach_vendors(design_doc, app_dir, docid, verbose=verbose)
-                    docs.append(design_doc)
-        return docs
+                docs.append(self.get_designdoc(designpath, name, verbose=verbose))
                 
+        return docs
+        
+    def get_designdoc(self, root, name, verbose=False):
+        if not name.startswith('.') and not os.path.isfile(name):
+            design_doc = {}
+            manifest = []
+            objects = {}
+            docid = design_doc['_id'] = "_design/%s" % name
+            app_dir = os.path.join(root, name)
+            attach_dir = os.path.join(app_dir, '_attachments')
+
+            design_doc.update(self.dir_to_fields(app_dir, manifest=manifest,
+                    verbose=verbose))
+
+            if not 'couchapp' in design_doc:
+                design_doc['couchapp'] = {}
+
+            if 'shows' in design_doc:
+                package_shows(design_doc, design_doc['shows'], app_dir, objects, verbose=verbose)
+
+            if 'lists' in design_doc:
+                package_shows(design_doc, design_doc['lists'], app_dir, objects, verbose=verbose)
+
+            if 'views' in design_doc:
+                package_views(design_doc, design_doc["views"], app_dir, objects, verbose=verbose)
+
+            couchapp = design_doc.get('couchapp', False)
+            design_doc.update({
+                'couchapp': {
+                    'manifest': manifest,
+                    'objects': objects
+                }
+            })
+            self.attach(design_doc, attach_dir, docid, verbose=verbose)
+            self.attach_vendors(design_doc, app_dir, docid, verbose=verbose)
+        return design_doc
             
     def dir_to_fields(self, app_dir, current_dir='', depth=0,
             manifest=[], verbose=False):
@@ -360,7 +362,7 @@ class FileSystemDocsLoader(BaseDocsLoader):
                         if vendor is not None:
                             name = os.path.join('vendor/%s' % vendor, name)
                         _signatures[name] = sign_file(file_path)
-                        _attachments[name] = open(file_path, 'rb')
+                        _attachments[name] = file_path
                         _length[name] = int(os.path.getsize(file_path))
         
         for prop in ('couchapp', '_attachments'):
