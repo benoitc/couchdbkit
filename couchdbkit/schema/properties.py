@@ -306,6 +306,9 @@ class DateTimeProperty(Property):
     def to_json(self, value):
         if self.auto_now:
             value = self.now()
+        
+        if value is None:
+            return value
         return value.replace(microsecond=0).isoformat() + 'Z'
 
     data_type = datetime.datetime
@@ -335,6 +338,8 @@ class DateProperty(DateTimeProperty):
         return value
 
     def to_json(self, value):
+        if value is None:
+            return value
         return value.isoformat()
 
 class TimeProperty(DateTimeProperty):
@@ -360,6 +365,8 @@ class TimeProperty(DateTimeProperty):
         return value
 
     def to_json(self, value):
+        if value is None:
+            return value
         return value.replace(microsecond=0).isoformat()
         
 

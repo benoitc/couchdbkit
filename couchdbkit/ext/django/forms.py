@@ -78,12 +78,12 @@ def document_to_dict(instance, properties=None, exclude=None):
     """
     # avoid a circular import
     data = {}
-    for prop in instance.all_properties():
-        if properties and not prop.name in properties:
+    for prop_name in instance._doc.keys():
+        if properties and not prop_name in properties:
             continue
-        if exclude and prop.name in exclude:
+        if exclude and prop_name in exclude:
             continue
-        data[prop.name] = value_to_python(instance._doc[prop.name])
+        data[prop_name] = value_to_python(instance._doc[prop_name])
     return data
 
 def fields_for_document(document, properties=None, exclude=None):
