@@ -393,7 +393,8 @@ class Database(object):
     def delete_doc(self, doc):
         """ delete a document or a list of document
 
-        @param doc: str or dict,  docyment id or full doc.
+        @param doc: str or dict,  document id or full doc.
+        
         @return: dict like:
        
         .. code-block:: python
