@@ -13,6 +13,9 @@
 # WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+""" Meta properties """
+
 from calendar import timegm
 import datetime
 import decimal
@@ -29,37 +32,37 @@ __all__ = ['SchemaProperty']
 class SchemaProperty(Property):
     """ Schema property. It allow you add a DocumentSchema instance 
     a member of a Document object. It return a
-    :class:`simplecouchdb.schemaDocumentSchema` object.
+   `schemaDocumentSchema` object.
 
     Exemple :
     
-        >>> from simplecouchdb.schema import *
-        >>> class Blog(DocumentSchema):
-        ...     title = StringProperty()
-        ...     author = StringProperty(default="me")
-        ... 
-        >>> class Entry(Document):
-        ...     title = StringProperty()
-        ...     body = StringProperty()
-        ...     blog = SchemaProperty(Blog())
-        ... 
-        >>> test = Entry()
-        >>> test._doc
-        {'body': None, 'doc_type': 'Entry', 'title': None, 'blog': {'doc_type': 'Blog', 'author': u'me', 'title': None}}
-        >>> test.blog.title = "Mon Blog"
-        >>> test._doc
-        {'body': None, 'doc_type': 'Entry', 'title': None, 'blog': {'doc_type': 'Blog', 'author': u'me', 'title': u'Mon Blog'}}
-        >>> test.blog.title
-        u'Mon Blog'
-        >>> from simplecouchdb import Server
-        >>> s = Server()
-        >>> db = s.create_db('simplecouchdb_test')
-        >>> Entry._db = db 
-        >>> test.save()
-        >>> doc = Entry.objects.get(test.id)
-        >>> doc.blog.title
-        u'Mon Blog'
-        >>> del s['simplecouchdb_test']
+            >>> from couchdbkit import *
+            >>> class Blog(DocumentSchema):
+            ...     title = StringProperty()
+            ...     author = StringProperty(default="me")
+            ... 
+            >>> class Entry(Document):
+            ...     title = StringProperty()
+            ...     body = StringProperty()
+            ...     blog = SchemaProperty(Blog())
+            ... 
+            >>> test = Entry()
+            >>> test._doc
+            {'body': None, 'doc_type': 'Entry', 'title': None, 'blog': {'doc_type': 'Blog', 'author': u'me', 'title': None}}
+            >>> test.blog.title = "Mon Blog"
+            >>> test._doc
+            {'body': None, 'doc_type': 'Entry', 'title': None, 'blog': {'doc_type': 'Blog', 'author': u'me', 'title': u'Mon Blog'}}
+            >>> test.blog.title
+            u'Mon Blog'
+            >>> from couchdbkit import Server
+            >>> s = Server()
+            >>> db = s.create_db('couchdbkit_test')
+            >>> Entry._db = db 
+            >>> test.save()
+            >>> doc = Entry.objects.get(test.id)
+            >>> doc.blog.title
+            u'Mon Blog'
+            >>> del s['simplecouchdb_test']
 
     """
 

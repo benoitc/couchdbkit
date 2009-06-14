@@ -13,6 +13,11 @@
 # WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+""" Wrapper of couchdbkit Document and Properties for django. It also 
+add possibility to a document to register itself in CouchdbkitHandler
+"""
+
 import sys
 
 from couchdbkit import schema

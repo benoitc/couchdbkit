@@ -14,6 +14,19 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+"""
+Loaders are a simple way to manage design docs in your Python application. 
+Loaders are compatible with couchapp script (http://github.com/couchapp/couchapp).
+So it means that you can simply use couchdbkit as replacement for yours python
+applications with advantages of couchdbkit client. Compatible with couchapp means that
+you can also use macros to include javascript code or design doc members in your views,
+shows & lists.
+
+Current loaders are FileSystemDocsLoader and FileSystemDocLoader. The first
+one take a directory and retrieve all design docs before sending them to
+CouchDB. Second allow you to send only one design doc.
+"""
+
 import copy
 import httplib
 import os

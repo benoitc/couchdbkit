@@ -15,6 +15,14 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
+"""
+When you need threadsafe connection to your databases, use the session
+object. The session act like with database object, but all connections 
+are placed in the local thread. So no more collision, lost or anything 
+else, which could happend often on BSD system.
+"""
+
+
 import threading
 
 from couchdbkit.client import Server, Database
@@ -23,10 +31,10 @@ def create_session(server, db_name, scoped_func=None, database_class=None):
     """
     create a threadsafe db sesson.
     
-    :param server: `couchdbkit.Server` instance
-    :param db_name: str, name of db
-    :param scopped_function: function to get thread local ident. 
-    :param database_class: custom class inheriting from `couchdbkit.Database`.
+    @param server: `couchdbkit.Server` instance
+    @param db_name: str, name of db
+    @param scopped_function: function to get thread local ident. 
+    @param database_class: custom class inheriting from `couchdbkit.Database`.
     """
     if isinstance(server, basestring):
         server = Server(server)
@@ -59,6 +67,11 @@ class Session(object):
         
             MyDocument.set_db(session) 
             MyDocument.save()
+
+
+    In case you want to use your own database object,
+    you could pass it to Session object by settings
+    _DATABASE_CLASS property.
         
     """
     
@@ -74,6 +87,9 @@ class Session(object):
         return "<%s %s>" % (self.__class__.__name__, self.dbname)
     
     def __call__(self, document):
+        """ pass to session object an object with `_db` property
+        it will set it with a session object you could use later
+        """
         if not hasattr(document, '_db'):
             raise TypeError('%s is not a Document object' % document)
 

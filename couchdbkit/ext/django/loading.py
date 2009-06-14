@@ -14,7 +14,10 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-
+"""
+Maintain registry of documents used in your django project
+and manage db sessions 
+"""
 
 import sys
 import os
@@ -41,6 +44,7 @@ from restclient.transport import getDefaultHTTPTransport
 COUCHDB_DATABASES = getattr(settings, "COUCHDB_DATABASES", [])
 
 class CouchdbkitHandler(object):
+    """ The couchdbkit handler for django """
     
     # share state between instances
     __shared_state__ = dict(
@@ -49,6 +53,9 @@ class CouchdbkitHandler(object):
     )    
        
     def __init__(self, databases, transport=None):
+        """ initialize couchdbkit handler with COUCHDB_DATABASES
+        settings """
+
         self.__dict__ = self.__shared_state__
         
         if transport is None:
@@ -78,6 +85,8 @@ class CouchdbkitHandler(object):
             self._databases[app_label] = create_session(server, dbname, local)
     
     def sync(self, app, verbosity=2):
+        """ used to sync views of all applications and eventually create
+        database """
         app_name = app.__name__.rsplit('.', 1)[0]
         app_label = app_name.split('.')[-1]
         if app_label in self._databases:
@@ -94,9 +103,11 @@ class CouchdbkitHandler(object):
             loader.sync(db)
                 
     def get_db(self, app_label):
+        """ retrieve db session for a django application """
         return self._databases[app_label]
                 
     def register_schema(self, app_label, *schema):
+        """ register a Document object"""
         for s in schema:
             schema_name = schema[0].__name__.lower()
             schema_dict = self.app_schema.setdefault(app_label, SortedDict())
@@ -115,6 +126,7 @@ class CouchdbkitHandler(object):
             s._db = self.get_db(app_label)
 
     def get_schema(self, app_label, schema_name):
+        """ retriev Document object from its name and app name """
         return self.app_schema.get(app_label, SortedDict()).get(schema_name.lower())
         
 couchdbkit_handler = CouchdbkitHandler(COUCHDB_DATABASES)

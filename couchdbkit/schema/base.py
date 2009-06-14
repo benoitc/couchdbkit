@@ -16,7 +16,8 @@
 
 """ module that provide a Document object that allow you 
 to map statically, dynamically or both a CouchDB
-document in python """
+document in python 
+"""
 
 import datetime
 import decimal
@@ -253,9 +254,9 @@ class DocumentSchema(object):
     def __contains__(self, key):
         """ does object contain this propery ?
 
-        :param key: name of property
+        @param key: name of property
         
-        :return: True if key exist.
+        @return: True if key exist.
         """ 
         if key in self.all_properties():
             return True
@@ -419,7 +420,7 @@ class DocumentBase(DocumentSchema):
     def save(self):
         """ Save document in database.
             
-        :params db: couchdbkit.core.Database instance
+        @params db: couchdbkit.core.Database instance
         """
         self.validate()    
         if self._db is None:
@@ -435,7 +436,7 @@ class DocumentBase(DocumentSchema):
     def bulk_save(cls, docs):
         """ Save multiple documents in database.
             
-        :params docs: list of couchdbkit.schema.Document instance
+        @params docs: list of couchdbkit.schema.Document instance
         """
         if cls._db is None:
             raise TypeError("doc database required to save document")
@@ -491,13 +492,13 @@ class AttachmentMixin(object):
         content_type=None, content_length=None):
         """ Add attachement to a document.
  
-        :param content: string or :obj:`File` object.
-        :param name: name or attachment (file name).
-        :param content_type: string, mimetype of attachment.
+        @param content: string or :obj:`File` object.
+        @param name: name or attachment (file name).
+        @param content_type: string, mimetype of attachment.
         If you don't set it, it will be autodetected.
-        :param content_lenght: int, size of attachment.
+        @param content_lenght: int, size of attachment.
 
-        :return: bool, True if everything was ok.
+        @return: bool, True if everything was ok.
         """
         if not hasattr(self, '_db'):
             raise TypeError("doc database required to save document")
@@ -507,9 +508,9 @@ class AttachmentMixin(object):
     def delete_attachment(self, name):
         """ delete attachement of documen
         
-        :param name: name of attachement
+        @param name: name of attachement
     
-        :return: dict, withm member ok setto True if delete was ok.
+        @return: dict, withm member ok setto True if delete was ok.
         """
         if not hasattr(self, '_db'):
             raise TypeError("doc database required to save document")
@@ -518,9 +519,9 @@ class AttachmentMixin(object):
     def fetch_attachment(self, name):
         """ get attachment in document
         
-        :param name: name of attachment default: default result
+        @param name: name of attachment default: default result
 
-        :return: str or unicode, attachment
+        @return: str or unicode, attachment
         """
         if not hasattr(self, '_db'):
             raise TypeError("doc database required to save document")
@@ -574,10 +575,10 @@ class QueryMixin(object):
         Results of view are automatically wrapped
         to Document object.
 
-        :params view_name: str, name of view
-        :params params:  params of view
+        @params view_name: str, name of view
+        @params params:  params of view
 
-        :return: :class:`simplecouchdb.core.ViewResults` instance. All
+        @return: :class:`simplecouchdb.core.ViewResults` instance. All
         results are wrapped to current document instance.
         """
         return cls.__view(view_type="view", data=view_name, wrapper=wrapper, 
@@ -590,10 +591,10 @@ class QueryMixin(object):
         results are automatically wrapped to 
         Document object.
 
-        :params design: design object, See `simplecouchd.client.Database`
-        :params params:  params of view
+        @params design: design object, See `simplecouchd.client.Database`
+        @params params:  params of view
 
-        :return: Like view, return a :class:`simplecouchdb.core.ViewResults` 
+        @return: Like view, return a :class:`simplecouchdb.core.ViewResults` 
         instance. All results are wrapped to current document instance.
         """
         return cls.__view(view_type="temp_view", data=design, wrapper=wrapper, 

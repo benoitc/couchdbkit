@@ -14,6 +14,9 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+"""
+All exceptions yused in couchdbkit.
+"""
 
 class InvalidAttachment(Exception):
     """ raised when an attachment is invalid """

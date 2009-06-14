@@ -16,6 +16,11 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 
+"""
+Mostly utility functions couchdbkit uses internally that don't
+really belong anywhere else in the modules."""
+
+
 import codecs
 import string
 from calendar import timegm

@@ -19,7 +19,8 @@ couchdb.resource
 ~~~~~~~~~~~~~~~~~~~~~~
 
 This module provide a common interface for all CouchDB request. This
-module make HTTP request using :mod:`httplib2` module or :mod:`pycurl` if available.
+module make HTTP request using :mod:`httplib2` module or :mod:`pycurl` 
+if available. Just use set transport argument for this.
 
 Example: 
     
@@ -67,8 +68,8 @@ class CouchdbResource(restclient.Resource):
 
         CouchdbResource represent an HTTP resource to CouchDB.
 
-        :param uri: str, full uri to the server.
-        :param transport: any http instance of object based on 
+        @param uri: str, full uri to the server.
+        @param transport: any http instance of object based on 
                 `restclient.transport.HTTPTransportBase`. By 
                 default it will use a client based on 
                 `pycurl <http://pycurl.sourceforge.net/>`_ if 
@@ -82,6 +83,7 @@ class CouchdbResource(restclient.Resource):
         self.client.safe = ":/"
 
     def copy(self, path=None, headers=None, **params):
+        """ add copy to HTTP verbs """
         return self.request('COPY', path=path, headers=headers, **params)
         
     def request(self, method, path=None, payload=None, headers=None, **params):
@@ -91,25 +93,24 @@ class CouchdbResource(restclient.Resource):
         Usage example, get infos of a couchdb server on 
         http://127.0.0.1:5984 :
 
-        .. code-block:: python
 
-            import simplecouchdb.CouchdbResource
-            resource = simplecouchdb.CouchdbResource()
+            import couchdbkit.CouchdbResource
+            resource = couchdbkit.CouchdbResource()
             infos = resource.request('GET'))
 
-        :param method: str, the HTTP action to be performed: 
+        @param method: str, the HTTP action to be performed: 
             'GET', 'HEAD', 'POST', 'PUT', or 'DELETE'
-        :param path: str or list, path to add to the uri
-        :param data: str or string or any object that could be
+        @param path: str or list, path to add to the uri
+        @param data: str or string or any object that could be
             converted to JSON.
-        :param headers: dict, optionnal headers that will
+        @param headers: dict, optionnal headers that will
             be added to HTTP request.
-        :param params: Optionnal parameterss added to the request. 
+        @param params: Optionnal parameterss added to the request. 
             Parameterss are for example the parameters for a view. See 
             `CouchDB View API reference 
             <http://wiki.apache.org/couchdb/HTTP_view_API>`_ for example.
         
-        :return: tuple (data, resp), where resp is an `httplib2.Response` 
+        @return: tuple (data, resp), where resp is an `httplib2.Response` 
             object and data a python object (often a dict).
         """
         
@@ -189,6 +190,7 @@ class CouchdbResource(restclient.Resource):
         return data
 
     def encode_params(self, params):
+        """ encode parameters in json if needed """
         _params = {}
         if params:
             for name, value in params.items():

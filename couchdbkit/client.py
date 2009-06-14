@@ -14,6 +14,32 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+"""
+Implement client to access to CouchDB. It allow you to manage a CouchDB server, 
+databases, doc managements and view access. All objects mostly reflect python 
+objects for convenience. Server and Databases objects could be used for example 
+as easy as using a dict.
+
+Example:
+    
+    >>> from couchdbkit import Server
+    >>> server = Server()
+    >>> db = server.create_db('couchdbkit_test')
+    >>> doc = db.save_doc({ 'string': 'test', 'number': 4 })
+    >>> docid = doc['_id']
+    >>> doc2 = db.get(docid)
+    >>> doc['string']
+    u'test'
+    >>> del db[docid]
+    >>> docid in db
+    False
+    >>> del server['simplecouchdb_test']
+
+"""
+
+
+
+
 import base64
 import cgi
 from itertools import groupby
@@ -37,9 +63,9 @@ class Server(object):
             transport=None):
         """ constructor for Server object
         
-        :attr uri: uri of CouchDb host
-        :attr uuid_batch_count: max of uuids to get in one time
-        :attr transport: an transport instance from :mod:`restclient.transport`. Could be used
+        @param uri: uri of CouchDb host
+        @param uuid_batch_count: max of uuids to get in one time
+        @param transport: an transport instance from :mod:`restclient.transport`. Could be used
                 to manage authentification to your server or proxy.
         """
         
@@ -56,7 +82,7 @@ class Server(object):
         
     def info(self):
         """ info of server 
-        :return: dict
+        @return: dict
         """
         return self.res.get()
     
@@ -68,9 +94,9 @@ class Server(object):
     def create_db(self, dbname):
         """ Create a database on CouchDb host
 
-        :param dname: str, name of db
+        @param dname: str, name of db
 
-        :return: Database instance if it's ok or dict message
+        @return: Database instance if it's ok or dict message
         """
         
         if "/" in dbname:
@@ -81,17 +107,28 @@ class Server(object):
         return res['ok']
 
     def get_or_create_db(self, dbname):
+        """
+        It try to return a Database object for dbname. If 
+        database don't exit, it will be created.
+        
+        """
         try:
             return self[dbname]
         except ResourceNotFound:
             return self.create_db(dbname)
         
     def delete_db(self, dbname):
+        """
+        Delete database
+        """
         if "/" in dbname:
             dbname = url_quote(dbname, safe=":")
         del self[dbname]
         
     def next_uuid(self, count=None):
+        """
+        return an available uuid from couchdbkit
+        """
         if count is not None:
             self._uuid_batch_count = count
         else:
@@ -133,8 +170,8 @@ class Database(object):
     def __init__(self, server, dbname):
         """Constructor for Database
 
-        :param server: Server instance
-        :param dbname: str, name of database
+        @param server: Server instance
+        @param dbname: str, name of database
         """
 
         if not hasattr(server, 'next_uuid'):
@@ -162,7 +199,7 @@ class Database(object):
         """
         Get infos of database
             
-        :return: dict
+        @return: dict
         """
         data = self.res.get()
         return data
@@ -181,8 +218,8 @@ class Database(object):
     def doc_exist(self, docid):
         """Test if document exist in database
 
-        :param docid: str, document id
-        :return: boolean, True if document exist
+        @param docid: str, document id
+        @return: boolean, True if document exist
         """
 
         try:
@@ -195,13 +232,13 @@ class Database(object):
         """Get document from database
         
         Args:
-        :param docid: str, document id to retrieve 
-        :param rev: if specified, allow you to retrieve
+        @param docid: str, document id to retrieve 
+        @param rev: if specified, allow you to retrieve
         a specifiec revision of document
-        :param wrapper: callable. function that take a dict as param. 
+        @param wrapper: callable. function that take a dict as param. 
         Used to wrap an object.
         
-        :return: dict, representation of CouchDB document as
+        @return: dict, representation of CouchDB document as
          a dict.
         """
         docid = self.escape_docid(docid)
@@ -229,10 +266,10 @@ class Database(object):
         You can use all(), one(), first() just like views
 
         Args:
-        :param by_seq: bool, if True the "_all_docs_by_seq" is passed to
+        @param by_seq: bool, if True the "_all_docs_by_seq" is passed to
         couchdb. It will return all updated list.
 
-        :return: list, results of the view
+        @return: list, results of the view
         """
         if by_seq:
             return self.view('_all_docs_by_seq', **params)
@@ -241,15 +278,14 @@ class Database(object):
     def doc_revisions(self, docid, with_doc=True):
         """ retrieve revisions of a doc
             
-        :param docid: str, id of document
-        :param with_doc: bool, if True return document
+        @param docid: str, id of document
+        @param with_doc: bool, if True return document
         dict with revisions as member, if false return 
         only revisions
         
-        :return: dict: '_rev_infos' member if you have set with_doc
+        @return: dict: '_rev_infos' member if you have set with_doc
         to True :
-
-        .. code-block:: python
+        
 
                 {
                     "_revs_info": [
@@ -280,9 +316,9 @@ class Database(object):
         being automatically retried by proxies in the event of network
         segmentation and lost responses. (Idee from `Couchrest <http://github.com/jchris/couchrest/>`)
 
-        :param doc: dict 
+        @param doc: dict 
 
-        :return: dict or list of dict: dict or list are updated 
+        @return: dict or list of dict: dict or list are updated 
         with doc '_id' and '_rev' properties returned 
         by CouchDB server.
 
@@ -307,9 +343,9 @@ class Database(object):
     def bulk_save(self, docs, use_uuids=True, all_or_nothing=False):
         """ bulk save. Modify Multiple Documents With a Single Request
         
-        :attr docs: list of docs
-        :attr use_uuids: add _id in doc who don't have it already set.
-        :attr all_or_nothing: In the case of a power failure, when the database 
+        @param docs: list of docs
+        @param use_uuids: add _id in doc who don't have it already set.
+        @param all_or_nothing: In the case of a power failure, when the database 
         restarts either all the changes will have been saved or none of them. 
         However, it does not do conflict checking, so the documents will 
         be committed even if this creates conflicts.
@@ -357,8 +393,8 @@ class Database(object):
     def delete_doc(self, doc):
         """ delete a document or a list of document
 
-        :param doc: str or dict,  docyment id or full doc.
-        :return: dict like:
+        @param doc: str or dict,  docyment id or full doc.
+        @return: dict like:
        
         .. code-block:: python
 
@@ -380,8 +416,8 @@ class Database(object):
         
     def copy_doc(self, doc, dest=None):
         """ copy an existing document to a new id. If dest is None, a new uuid will be requested
-        :attr doc: dict or string, document or document id
-        :attr dest: basestring or dict. if _rev is specified in dict it will override the doc
+        @param doc: dict or string, document or document id
+        @param dest: basestring or dict. if _rev is specified in dict it will override the doc
         """
         if isinstance(doc, basestring):
             docid = doc
@@ -412,7 +448,15 @@ class Database(object):
             
         
     def view(self, view_name, obj=None, wrapper=None, **params):
-        """ get view results """
+        """ get view results from database. viewname is generally 
+        a string like `designname/viewnam". It return an ViewResults
+        object on which you could iterate, list, ... . You could wrap
+        results in wrapper function, a wrapper function take a row
+        as argument. Wrapping could be also done by passing an Object 
+        in obj arguments. This Object should have a `wrap` method
+        that work like a simple wrapper function.
+
+        """
         if view_name.startswith('/'):
             view_name = view_name[1:]
         if view_name == '_all_docs':
@@ -432,7 +476,7 @@ class Database(object):
         return View(self, view_path, wrapper=wrapper)(**params)
 
     def temp_view(self, design, obj=None, wrapper=None, **params):
-        """ get adhoc view results """
+        """ get adhoc view results. Like view it reeturn a ViewResult object."""
         if obj is not None:
             if not hasattr(obj, 'wrap'):
                 raise AttributeError(" no 'wrap' method found in obj %s)" % str(obj))
@@ -445,6 +489,9 @@ class Database(object):
         return View(self, "/%s/%s" % (handler, view_name), wrapper=wrapper)(**params)
 
     def documents(self, wrapper=None, **params):
+        """ return a ViewResults objects containing all documents. 
+        This is a shorthand to view function.
+        """
         return View(self, '_all_docs', wrapper=wrapper, **params)
     iter_documents = documents    
 
@@ -452,14 +499,14 @@ class Database(object):
             content_type=None, content_length=None, chunked=True):
         """ Add attachement to a document.
 
-        :param doc: dict, document object
-        :param content: string or :obj:`File` object.
-        :param name: name or attachment (file name).
-        :param content_type: string, mimetype of attachment.
+        @param doc: dict, document object
+        @param content: string or :obj:`File` object.
+        @param name: name or attachment (file name).
+        @param content_type: string, mimetype of attachment.
         If you don't set it, it will be autodetected.
-        :param content_lenght: int, size of attachment.
+        @param content_lenght: int, size of attachment.
 
-        :return: bool, True if everything was ok.
+        @return: bool, True if everything was ok.
 
 
         Example:
@@ -520,10 +567,10 @@ class Database(object):
     def delete_attachment(self, doc, name):
         """ delete attachement of documen
 
-        :param doc: dict, document object in python
-        :param name: name of attachement
+        @param doc: dict, document object in python
+        @param name: name of attachement
     
-        :return: dict, withm member ok setto True if delete was ok.
+        @return: dict, withm member ok setto True if delete was ok.
         """
         docid = self.escape_docid(doc['_id'])
         name = url_quote(name, safe="")
@@ -533,10 +580,10 @@ class Database(object):
     def fetch_attachment(self, id_or_doc, name):
         """ get attachment in document
         
-        :param id_or_doc: str or dict, doc id or document dict
-        :param name: name of attachment default: default result
+        @param id_or_doc: str or dict, doc id or document dict
+        @param name: name of attachment default: default result
 
-        :return: str, attachment
+        @return: str, attachment
         """
 
         if isinstance(id_or_doc, basestring):
@@ -602,8 +649,8 @@ class ViewResults(object):
         """
         Constructor of ViewResults object
         
-        :attr view: Object inherited from :mod:`couchdbkit.client.view.ViewInterface
-        :attr params: params to apply when fetching view.
+        @param view: Object inherited from :mod:`couchdbkit.client.view.ViewInterface
+        @param params: params to apply when fetching view.
         
         """
         self.view = view
@@ -712,6 +759,7 @@ class ViewResults(object):
         
         
 class ViewInterface(object):
+    """ Generic object interface used by View and TempView objects. """
     
     def __init__(self, db, wrapper=None):
         self._db = db
@@ -727,6 +775,7 @@ class ViewInterface(object):
         raise NotImplementedError
         
 class View(ViewInterface):
+    """ Object used to wrap a view and return ViewResults. Generally called. """
     
     def __init__(self, db, view_path, wrapper=None):
         ViewInterface.__init__(self, db, wrapper=wrapper)
@@ -740,6 +789,7 @@ class View(ViewInterface):
             return self._db.res.get(self.view_path, **params)
             
 class TempView(ViewInterface):
+    """ Object used to wrap a temporary and return ViewResults. """
     def __init__(self, db, design, wrapper=None):
         ViewInterface.__init__(self, db, wrapper=wrapper)
         self.design = design

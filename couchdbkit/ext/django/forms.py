@@ -43,6 +43,41 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+""" Implement DocumentForm object. It map Document objects to Form and 
+works like ModelForm object :
+
+    >>> from couchdbkit.ext.django.forms  import DocumentForm
+
+    # Create the form class.
+    >>> class ArticleForm(DocumentForm):
+    ...     class Meta:
+    ...         model = Article
+
+    # Creating a form to add an article.
+    >>> form = ArticleForm()
+
+    # Creating a form to change an existing article.
+    >>> article = Article.get(someid)
+    >>> form = ArticleForm(instance=article)
+    
+
+The generated Form class will have a form field for every model field. 
+Each document property has a corresponding default form field:
+
+* StringProperty   ->  CharField,
+* IntegerProperty  ->  IntegerField,
+* DecimalProperty  ->  DecimalField,
+* BooleanProperty  ->  BooleanField,
+* FloatProperty    ->  FloatField,
+* DateTimeProperty ->  DateTimeField,
+* DateProperty     ->  DateField,
+* TimeProperty     ->  TimeField
+
+
+More fields types will be supported soon.
+"""
+
+
 from django.utils.text import capfirst
 from django.utils.datastructures import SortedDict
 from django.forms.util import ValidationError, ErrorList
@@ -162,6 +197,7 @@ class DocumentFormMetaClass(type):
         return new_class
     
 class BaseDocumentForm(BaseForm):
+    """ Base Document Form object """
     
     def __init__(self, data=None, files=None, auto_id='id_%s', prefix=None, 
             initial=None, error_class=ErrorList, label_suffix=":",
@@ -217,4 +253,5 @@ class BaseDocumentForm(BaseForm):
         return self.instance
             
 class DocumentForm(BaseDocumentForm):
+    """ The document form object """
     __metaclass__ = DocumentFormMetaClass          
