@@ -37,14 +37,15 @@ couchdbkit documents :
         ....
     )
 
-Then add your documents objects in models.py : 
+Add your documents objects in models.py : 
 
+    from couchdbkit.ext.django.schema import *
     class Greeting(Document):
         author = StringProperty()
         content = StringProperty(required=True)
         date = DateTimeProperty(default=datetimee.utcnow)
 
-and use it in your views :
+and use it in your views.py :
         
     class GreetingForm(DocumentForm):
         
