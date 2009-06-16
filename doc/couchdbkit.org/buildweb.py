@@ -84,6 +84,14 @@ def convert_markdown(value):
 def convert_textile(value):
     return textile(value, validate=False, 
             sanitize=False, encoding='utf-8', output='utf-8').decode('utf-8')
+            
+def rfc3339_date(date):
+    # iso8601
+    if date.tzinfo:
+        return date.strftime('%Y-%m-%dT%H:%M:%S%z')
+    else:
+        return date.strftime('%Y-%m-%dT%H:%M:%SZ')
+
     
 class Site(object):    
     def __init__(self):
@@ -120,10 +128,42 @@ class Site(object):
                     f.close()
             except (IOError, OSError), err:
                 raise
-            self.sitemap.append(page.url)
+            self.sitemap.append(page)
         if blog is not None:
             blog.render()    
         
+    def generate_rss(self):
+        rss = PyRSS2Gen.RSS2(
+            title = conf.SITE_NAME,
+            link = conf.SITE_URL,
+            description = conf.SITE_DESCRIPTION,
+            lastBuildDate = datetime.datetime.utcnow(),
+            items = [])
+        for i, e in enumerate(self.feed):
+            item = PyRSS2Gen.RSSItem(
+                    title = e['title'],
+                    link = e['link'],
+                    description = e['description'],
+                    guid = PyRSS2Gen.Guid(e['link']),
+                    pubDate = datetime.datetime.fromtimestamp(e['pubDate']))
+            rss.items.append(item)
+            if i == 15: break
+        rss.write_xml(open(os.path.join(conf.OUTPUT_PATH, "feed.xml"), "w"))
+        
+    def generate_sitemap(self):
+        xml = u'<?xml version="1.0" encoding="UTF-8"?>'
+        xml += u'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+        for page in self.sitemap:
+            xml += u'<url>'
+            xml += u'<loc>%s</loc>' % page.url
+            xml += u'<lastmod>%s</lastmod>' % rfc3339_date(page.headers['published'])
+            xml += u'<changefreq>daily</changefreq>'
+            xml += u'<priority>0.5</priority>'
+            xml += u'</url>'
+        xml += u'</urlset>'
+        with codecs.open(os.path.join(conf.OUTPUT_PATH, "sitemaps.xml"), "w", "utf-8") as f:
+            f.write(xml)
+            
             
     def render(self):
         for root, dirs, files in os.walk(conf.INPUT_PATH):
@@ -134,24 +174,10 @@ class Site(object):
             
         if self.feed:
             self.feed.sort(lambda a, b: a['pubDate'] - b['pubDate'])
-            rss = PyRSS2Gen.RSS2(
-                title = conf.SITE_NAME,
-                link = conf.SITE_URL,
-                description = conf.SITE_DESCRIPTION,
-                lastBuildDate = datetime.datetime.utcnow(),
-                items = [])
-            for i, e in enumerate(self.feed):
-                item = PyRSS2Gen.RSSItem(
-                        title = e['title'],
-                        link = e['link'],
-                        description = e['description'],
-                        guid = PyRSS2Gen.Guid(e['link']),
-                        pubDate = datetime.datetime.fromtimestamp(e['pubDate']))
-                rss.items.append(item)
-                if i == 15: break
-                
-            rss.write_xml(open(os.path.join(conf.OUTPUT_PATH, "feed.xml"), "w"))
-                     
+            self.generate_rss()
+        
+        if self.sitemap:
+            self.generate_sitemap()        
 
 class Blog(object):
     
@@ -177,8 +203,7 @@ class Blog(object):
         else:
             date = ""
         page.headers['date'] = date
-        page.headers['pubDate'] = os.stat(page.finput)[ST_CTIME]
-        page.headers['published'] = datetime.datetime.fromtimestamp(page.headers['pubDate'])
+        
         page.headers['description'] = description
         self.pages.append(page)
         
@@ -226,7 +251,7 @@ class Blog(object):
                     f.close()
             except (IOError, OSError), err:
                 raise
-            self.site.sitemap.append(page.url)
+            self.site.sitemap.append(page)
 
 class Page(object):
     content_types = {
@@ -271,6 +296,8 @@ class Page(object):
                     (name, value) = header.split(": ", 1)
                     headers[name.lower()] = unicode(value.strip())
                 self.headers = headers
+                self.headers['pubDate'] = os.stat(self.finput)[ST_CTIME]
+                self.headers['published'] = datetime.datetime.fromtimestamp(self.headers['pubDate'])
                 self.body = body
                 content_type = self.headers.get('content_type', conf.CONTENT_TYPE)
                 if content_type in self.content_types.keys(): 
