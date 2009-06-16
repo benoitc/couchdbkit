@@ -337,7 +337,7 @@ aside#sidebar ul.sidenav li {
 pre.code {
 	border-left: 3px solid #666;
 	background-color: #191919;
-	padding: 0.8em;
+	padding: 8px;
 	color: #fff;
 	font-family: "Courier New", Courier, mono;
 	margin-bottom: 10px;
