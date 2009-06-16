@@ -15,7 +15,7 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 """
-Extension to use couchdbkit in Django 1.x. It allow you to use couchdbkit
+Extension to use couchdbkit in Django 1.x. It allows you to use couchdbkit
 easily in your django projects.
 
 Just add to your settings the `COUCHDB_DATABASES` that defines 

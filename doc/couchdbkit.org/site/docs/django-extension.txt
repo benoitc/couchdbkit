@@ -1,9 +1,9 @@
 title: The django extension
 page_type: blog
 
-There are a lot of people trying to integrate CouchDB in their "Django":http://djangoproject.com application. Most of the implementations are very complicated. So I decided to release code the couchdbkit extension for Django 1.0x.
+There are a lot of people trying to integrate CouchDB in their "Django":http://djangoproject.com application. Most of the implementations are very complicated. So I decided to release the code of couchdbkit extension for Django 1.0x.
 
-This extension provide you a threadsafe access and mangement of documents and views in your django application with some usefull tools specific to Django.
+This extension provides you a threadsafe access and mangement of documents and views in your django application with some usefull tools specific to Django.
 
 h2. setup the extension
 
@@ -15,11 +15,11 @@ COUCHDB_DATABASES = (
 )
 </pre>
 
-This one define the db greeting on url `http://127.0.0.1:5984/greeting`
+This one defines the db greeting on url `http://127.0.0.1:5984/greeting`
 for the application `greeting`of djangoapp project.
 
-Then add extension to your INSTALLED_APPS before all applications using
-couchdbkit documents ::w
+Then add the extension to your INSTALLED_APPS before all applications using
+couchdbkit documents
 
 <pre class="code prettyprint">
 INSTALLED_APPS = (
@@ -45,8 +45,8 @@ Databse will be automatically set for each `Document` defined in models.py
 
 h2. Create your django views
 
-First we define a `DocumentForm` instance. a `DocumentForm` works like the ModelForm object but for couchdb
-documents. It allow you to create form based on a Document class or instance.
+First we define a `DocumentForm` instance. A `DocumentForm` works like the ModelForm object but for couchdb
+documents. It allows you to create form based on a Document class or instance.
 
 <pre class="code prettyprint">        
 class GreetingForm(DocumentForm):    
@@ -55,7 +55,7 @@ class GreetingForm(DocumentForm):
 </pre>
 
 
-Then defin your views with proper actions :
+Then define your views with proper actions :
 
 <pre class="code prettyprint">  
 def home(request):

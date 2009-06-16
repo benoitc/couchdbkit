@@ -1,7 +1,7 @@
 title: Getting started
 page_type: blog
 
-This tutoriall exposes key features of this library through mainly code
+This tutorial exposes key features of this library through mainly code
 examples. For in-depth description of the modules, you'll want to read 
 the "API":/docs/api/  documentation.
 
@@ -48,7 +48,7 @@ greet.save()
 
 Here we update the author name.
 
-Note: You can noticed that we don't use the db object here to update. In fact db object was automatically associated with the Greeting class on first `save`. You could have done this asssociation before by doing :
+Note: You can notice that we don't use the db object here to update. In fact db object was automatically associated with the Greeting class on first `save`. You could have done this asssociation before by doing :
 
 <pre class="code prettyprint">
 Greeting = db(Greeting)
@@ -67,7 +67,7 @@ Now you just added an homepage property to the document.
 
 h3. Get all greetings
 
-You first have to  create a view and save it in the db. We call it `greeting/all`. To do this we will use the loader system of couchdbkit that allow you to send views to couchdb.
+You first have to create a view and save it in the db. We call it `greeting/all`. To do this we will use the loader system of couchdbkit that allows you to send views to couchdb.
 
 We create a folder that contains the design doc, and then the folder for the view. On unix :
 
@@ -75,7 +75,7 @@ We create a folder that contains the design doc, and then the folder for the vie
 mkdir -p ~/Work/couchdbkit/example/_design/greeting/views/all
 </pre>
 
-In this folder we crea a file `map.js`:
+In this folder we edit a file `map.js`:
 
 <pre class="code prettyprint">
 function(doc) { 
@@ -88,7 +88,7 @@ On "Textmate":http://macromates.com, you have :
 
 !/images/gettingstarted.png(couchdbkit textmate screen)!
 
-A systeme will be provided to manage view creation and other things. As some noticed, this system works like "couchapp":http://github.com/couchapp/couchapp/tree/.
+A system will be provided to manage view creation and other things. As some noticed, this system works like "couchapp":http://github.com/couchapp/couchapp/tree/.
 
 Then we use `FileSystemDocsLoader` object to send the design document to CouchDB:
 
