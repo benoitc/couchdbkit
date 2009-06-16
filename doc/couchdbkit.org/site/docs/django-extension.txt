@@ -35,7 +35,7 @@ A document is a simple Python object that map properties of a Couchdb Document. 
 
 <pre class="code prettyprint">
  from couchdbkit.ext.django.schema import *
-
+ 
  class Greeting(Document):
      author = StringProperty()
      content = StringProperty(required=True)
@@ -49,7 +49,7 @@ h2. Create your django views
 First we define a `DocumentForm` instance. A `DocumentForm` works like the ModelForm object but for couchdb
 documents. It allows you to create form based on a Document class or instance.
 
-<pre class="code prettyprint">        
+<pre class="code prettyprint">
  class GreetingForm(DocumentForm):    
      class Meta:
          document = Greeting
@@ -58,19 +58,18 @@ documents. It allows you to create form based on a Document class or instance.
 
 Then define your views with proper actions :
 
-<pre class="code prettyprint">  
+<pre class="code prettyprint">
  def home(request):
      greet = None
- 
      if request.POST:
          form = GreetingForm(request.POST)
          if form.is_valid():
              greet = form.save()  
      else:
          form = GreetingForm()
-    
+     
      greetings = Greeting.view('greeting/all')
-
+     
      return render("home.html", {
          "form": form,
          "greet": greet,
@@ -83,7 +82,7 @@ h2. Define the Couchdb `design doc` for the application
 Views/shows/lists are created in _design folder of your application.
 exemple :
 
-<pre class="code">  
+<pre class="code">
  greeting/_design
  greeting/_design/views
  greeting/_design/views/all

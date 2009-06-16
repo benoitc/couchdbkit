@@ -121,7 +121,7 @@ INSTALLED_APPS = (
 
 	<p>First we define a `DocumentForm` instance. A `DocumentForm` works like the ModelForm object but for couchdb<br />documents. It allows you to create form based on a Document class or instance.</p>
 
-<pre class="code prettyprint">        
+<pre class="code prettyprint">
  class GreetingForm(DocumentForm):    
      class Meta:
          document = Greeting
@@ -129,16 +129,15 @@ INSTALLED_APPS = (
 
 	<p>Then define your views with proper actions :</p>
 
-	<p><pre class="code prettyprint">  
+	<p><pre class="code prettyprint">
  def home(request):
-     greet = None</p>
-
+     greet = None
      if request.POST:
          form = GreetingForm(request.<span class="caps">POST</span>)
          if form.is_valid():
              greet = form.save()  
      else:
-         form = GreetingForm()
+         form = GreetingForm()</p>
 
      greetings = Greeting.view('greeting/all&#8217;)
 
@@ -153,7 +152,7 @@ INSTALLED_APPS = (
 
 	<p>Views/shows/lists are created in _design folder of your application.<br />exemple :</p>
 
-<pre class="code">  
+<pre class="code">
  greeting/_design
  greeting/_design/views
  greeting/_design/views/all
