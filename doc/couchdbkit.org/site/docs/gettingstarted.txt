@@ -19,7 +19,6 @@ If you have not installed couchdbkit yet, follow instruction on "download page":
 
 h2. Store the submitted Greetings
 
-
 <pre class="code prettyprint">
  import datetime
  from couchdbkit.client import Server
