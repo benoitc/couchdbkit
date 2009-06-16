@@ -13,9 +13,32 @@
             </header>
             {{ item.description }}
             <footer>
-                <p><a href="{{ item.link|rel_url }}">Read more ...</a></p>
+                <p><a href="{{ item.link|rel_url }}">Read more ...</a> <span class='comments'><a href='{{ item.link|rel_url }}#disqus_thread'>View Comments</a></p>
+                
             </footer>
         </article>
     {% endfor %}
+    
+    <script>//var disqus_developer = 1;</script>
+
 </section>
+{% endblock %}
+
+{% block script %}
+    <script>
+    //<![CDATA[
+    (function() {
+            
+    		var links = document.getElementsByTagName('a');
+    		var query = '?';
+    		for(var i = 0; i < links.length; i++) {
+    			if(links[i].href.indexOf('#disqus_thread') >= 0) {
+    				query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+    			}
+    		}
+    		document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/couchdbkit/get_num_replies.js' + query + '"></' + 'script>');
+    	})();
+    //]]>
+    </script>
+    
 {% endblock %}

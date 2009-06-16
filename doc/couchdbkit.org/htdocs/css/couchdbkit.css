@@ -227,6 +227,21 @@ article p {
     font-size: 1em;
 }
 
+article p span.comments {
+    margin-left: 5px;
+}
+
+span.comments a {
+    text-transform: lowercase;
+    color:#525252;
+    background:#F5F5F5 none repeat scroll 0 0;
+    border:1px solid #DDDDDD;
+    font-size: 0.8em;
+    padding: 0.2em;
+}
+
+
+
 article img{
     width: 100%;
 }

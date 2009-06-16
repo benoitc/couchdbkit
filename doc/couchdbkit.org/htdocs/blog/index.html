@@ -84,10 +84,14 @@
 
 	<p>All this website is static. For this purpose I wrote a script to generate doc and news from differents text files. The <a href="http://lamsonproject.org/">Lamson project</a> used this idee for its own site, and I found it very usefull. I preferred to write mine script to allow use of jinja and some other changes (it will be possible for example to generate a cloud).</p>
             <footer>
-                <p><a href="/blog/2009-06-16-Couchdbkit-site-launched.html">Read more ...</a></p>
+                <p><a href="/blog/2009-06-16-Couchdbkit-site-launched.html">Read more ...</a> <span class='comments'><a href='/blog/2009-06-16-Couchdbkit-site-launched.html#disqus_thread'>View Comments</a></p>
+                
             </footer>
         </article>
     
+    
+    <script>//var disqus_developer = 1;</script>
+
 </section>
 
         
@@ -101,5 +105,22 @@
     
     
     
+    <script>
+    //<![CDATA[
+    (function() {
+            
+    		var links = document.getElementsByTagName('a');
+    		var query = '?';
+    		for(var i = 0; i < links.length; i++) {
+    			if(links[i].href.indexOf('#disqus_thread') >= 0) {
+    				query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+    			}
+    		}
+    		document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/couchdbkit/get_num_replies.js' + query + '"></' + 'script>');
+    	})();
+    //]]>
+    </script>
+    
+
 </body>
 </html>

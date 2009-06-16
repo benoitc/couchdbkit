@@ -303,7 +303,8 @@ class Page(object):
         kwargs = {
             "body": body,
             "sitename": conf.SITE_NAME,
-            "siteurl": conf.SITE_URL
+            "siteurl": conf.SITE_URL,
+            "url": self.url
         }
         kwargs.update(self.headers)
         return render_template(template, **kwargs)
