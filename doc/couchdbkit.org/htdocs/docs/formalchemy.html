@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
-    <title>Couchdbkit - Couchdbkit Documentation</title>
+    <title>Couchdbkit - Formalchemy extension</title>
     <!--[if IE]>
 
     <script>
@@ -74,44 +74,43 @@
     
         
 <section id="content">
-    <h1>Couchdbkit Documentation</h1>
-    
-        <article class="item">
-            <header>
-                <h2><a href="/docs/formalchemy.html">Formalchemy extension</a></h2>
-            </header>
-            	<p>For the <a href="/docs/django-extension.html">Django extension</a> I wrote the object `DocumentForm` that allows you to create a Django Form class based on a Document class or instance of a Document. </p>
+    <article>
+        <h1>Formalchemy extension</h1>
+        	<p>For the <a href="/docs/django-extension.html">Django extension</a> I wrote the object `DocumentForm` that allows you to create a Django Form class based on a Document class or instance of a Document. </p>
 
 	<p>But you don&#8217;t need to use Django to have this facility in your web application. If you use <a href="http://pylonshq.com/">Pylons</a> you already know <a href="http://code.google.com/p/formalchemy/">FormAlchemy</a>. FormAlchemy was originaly developped to map <a href="http://www.sqlalchemy.org/">SQLAlchemy</a> object in form but it now contain an extension for Couchdbkit too. </p>
-            <footer>
-                <p><a href="/docs/formalchemy.html">Read more ...</a></p>
-            </footer>
-        </article>
-    
-        <article class="item">
-            <header>
-                <h2><a href="/docs/django-extension.html">The django extension</a></h2>
-            </header>
-            	<p>There are a lot of people trying to integrate CouchDB in their <a href="http://djangoproject.com">Django</a> application. Most of the implementations are very complicated. So I decided to release the code of couchdbkit extension for Django 1.0x.</p>
 
-	<p>This extension provides you a threadsafe access and mangement of documents and views in your django application with some usefull tools specific to Django.</p>
-            <footer>
-                <p><a href="/docs/django-extension.html">Read more ...</a></p>
-            </footer>
-        </article>
-    
-        <article class="item">
-            <header>
-                <h2><a href="/docs/gettingstarted.html">Getting started</a></h2>
-            </header>
-            	<p>This tutorial exposes key features of this library through mainly code<br />examples. For in-depth description of the modules, you&#8217;ll want to read <br />the <a href="/docs/api/">API</a>  documentation.</p>
+	<h2>How to use it?</h2>
 
-	<p>If you have not installed couchdbkit yet, follow instruction on <a href="/download.html">download page</a> . Once you&#8217;ve done, you can write your first CouchDB document:</p>
-            <footer>
-                <p><a href="/docs/gettingstarted.html">Read more ...</a></p>
-            </footer>
-        </article>
-    
+	<p>Once again we have our Document `Greeting`</p>
+
+	<p><pre class="code prettyprint">
+ from couchdbkit import *</p>
+
+ class Greeting(Document):
+     author = StringProperty()
+     content = StringProperty(required=True)
+     date = DateTimeProperty(default=datetimee.utcnow)
+</pre>
+
+	<p>The couchdbkit extension of FormAlchemy is in module `formalchemy.ext.couchdb`. To map our document to a FormAlchemy do : </p>
+
+	<p><pre class="code prettyprint">
+ from formalchemy.ext.couchdb import FieldSet</p>
+
+ fs = FieldSet(Greeting)
+ greet = Greeting(
+     author=&#8220;Benoit&#8221;,
+     content=&#8220;Welcome to simplecouchdb world&#8221;,
+     date=datetime.datetime.utcnow()
+ )
+ fs = fs.bind(greet)
+</pre>
+
+	<p>And that&#8217;s it. </p>
+
+	<p>For more information about FormAlchemy go on its <a href="http://docs.formalchemy.org/">documentation</a> .</p>
+    </article>
 </section>
 
         

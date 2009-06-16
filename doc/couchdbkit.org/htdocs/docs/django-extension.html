@@ -106,12 +106,13 @@ INSTALLED_APPS = (
 
 	<p>A document is a simple Python object that map properties of a Couchdb Document. Documents should be defined like Django models in the file models.py of your application:</p>
 
-<pre class="code prettyprint">
-from couchdbkit.ext.django.schema import *
-class Greeting(Document):
-    author = StringProperty()
-    content = StringProperty(required=True)
-    date = DateTimeProperty(default=datetimee.utcnow)
+	<p><pre class="code prettyprint">
+ from couchdbkit.ext.django.schema import *</p>
+
+ class Greeting(Document):
+     author = StringProperty()
+     content = StringProperty(required=True)
+     date = DateTimeProperty(default=datetimee.utcnow)
 </pre>
 
 	<p>Databse will be automatically set for each `Document` defined in models.py</p>
@@ -121,42 +122,42 @@ class Greeting(Document):
 	<p>First we define a `DocumentForm` instance. A `DocumentForm` works like the ModelForm object but for couchdb<br />documents. It allows you to create form based on a Document class or instance.</p>
 
 <pre class="code prettyprint">        
-class GreetingForm(DocumentForm):    
-    class Meta:
-        document = Greeting
+ class GreetingForm(DocumentForm):    
+     class Meta:
+         document = Greeting
 </pre>
 
 	<p>Then define your views with proper actions :</p>
 
-	<p><pre class="code prettyprint">  <br />def home(request):
-    greet = None</p>
+	<p><pre class="code prettyprint">  
+ def home(request):
+     greet = None</p>
 
-    if request.POST:
-        form = GreetingForm(request.<span class="caps">POST</span>)
-        if form.is_valid():
-            greet = form.save()  
-    else:
-        form = GreetingForm()
+     if request.POST:
+         form = GreetingForm(request.<span class="caps">POST</span>)
+         if form.is_valid():
+             greet = form.save()  
+     else:
+         form = GreetingForm()
 
-    greetings = Greeting.view('greeting/all&#8217;)
+     greetings = Greeting.view('greeting/all&#8217;)
 
-    return render(&#8220;home.html&#8221;, {
-        &#8220;form&#8221;: form,
-        &#8220;greet&#8221;: greet,
-        &#8220;greetings&#8221;: greetings
-    }, context_instance=RequestContext(request)
-
-	<p></pre></p>
+     return render(&#8220;home.html&#8221;, {
+         &#8220;form&#8221;: form,
+         &#8220;greet&#8221;: greet,
+         &#8220;greetings&#8221;: greetings
+     }, context_instance=RequestContext(request)
+</pre>
 
 	<h2>Define the Couchdb `design doc` for the application</h2>
 
 	<p>Views/shows/lists are created in _design folder of your application.<br />exemple :</p>
 
 <pre class="code">  
-greeting/_design
-greeting/_design/views
-greeting/_design/views/all
-greeting/_design/views/all/map.js
+ greeting/_design
+ greeting/_design/views
+ greeting/_design/views/all
+ greeting/_design/views/all/map.js
 </pre>
 
 	<p>To create databases and sync views, just run the usual `syncdb` command.<br />It won&#8217;t destroy your datas, just synchronize views.</p>
@@ -166,8 +167,8 @@ greeting/_design/views/all/map.js
 	<p>Obviously there are time when you need to do more than fetching document or views results. At any time you could use the database session associated to an application :</p>
 
 <pre class="code prettyprint">
-from couchdbkit.ext.django.loading import get_db
-db = get_db('greeting&#8217;)
+ from couchdbkit.ext.django.loading import get_db
+ db = get_db('greeting&#8217;)
 </pre>
 
 	<h2>To go further</h2>

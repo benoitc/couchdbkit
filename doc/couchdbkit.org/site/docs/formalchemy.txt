@@ -1,0 +1,37 @@
+title: Formalchemy extension
+page_type: blog
+
+For the "Django extension":/docs/django-extension.html I wrote the object `DocumentForm` that allows you to create a Django Form class based on a Document class or instance of a Document. 
+
+But you don't need to use Django to have this facility in your web application. If you use "Pylons":http://pylonshq.com/ you already know "FormAlchemy":http://code.google.com/p/formalchemy/. FormAlchemy was originaly developped to map "SQLAlchemy":http://www.sqlalchemy.org/ object in form but it now contain an extension for Couchdbkit too. 
+
+h2. How to use it?
+
+Once again we have our Document `Greeting`
+
+<pre class="code prettyprint">
+ from couchdbkit import *
+ 
+ class Greeting(Document):
+     author = StringProperty()
+     content = StringProperty(required=True)
+     date = DateTimeProperty(default=datetimee.utcnow)
+</pre>
+
+The couchdbkit extension of FormAlchemy is in module `formalchemy.ext.couchdb`. To map our document to a FormAlchemy do : 
+
+<pre class="code prettyprint">
+ from formalchemy.ext.couchdb import FieldSet
+ 
+ fs = FieldSet(Greeting)
+ greet = Greeting(
+     author="Benoit",
+     content="Welcome to simplecouchdb world",
+     date=datetime.datetime.utcnow()
+ )
+ fs = fs.bind(greet)
+</pre>
+
+And that's it. 
+
+For more information about FormAlchemy go on its "documentation":http://docs.formalchemy.org/ .

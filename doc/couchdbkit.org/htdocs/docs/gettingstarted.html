@@ -80,33 +80,44 @@
 
 	<p>If you have not installed couchdbkit yet, follow instruction on <a href="/download.html">download page</a> . Once you&#8217;ve done, you can write your first CouchDB document:</p>
 
-<pre class="code prettyprint">
-from couchdbkit.schema import Document
-from couchdbkit.properties import *
-class Greeting(Document):
-     author = StringProperty()
-     content = StringProperty()
-     date = DateTimeProperty()
+	<p><pre class="code prettyprint">
+ from couchdbkit.schema import Document
+ from couchdbkit.properties import *</p>
+
+ class Greeting(Document):
+      author = StringProperty()
+      content = StringProperty()
+      date = DateTimeProperty()
 </pre>
 
 	<h2>Store the submitted Greetings</h2>
 
-<pre class="code prettyprint">
-import datetime
-from couchdbkit.client import Server
-from couchdbkit.session import create_session
-server = Server()
-try:
-    server.create_db(&#8220;greetings&#8221;)
-except:
-    pass
-db = create_session(server, &#8220;greetings&#8221;)
-greet = Greeting(
-    author=&#8220;Benoit&#8221;,
-    content=&#8220;Welcome to simplecouchdb world&#8221;,
-    date=datetime.datetime.utcnow()
-)
-db(greet).save()
+	<p><pre class="code prettyprint">
+ import datetime
+ from couchdbkit.client import Server
+ from couchdbkit.session import create_session</p>
+
+ # server object
+ server = Server()
+
+ # create database
+ try:
+     server.create_db(&#8220;greetings&#8221;)
+ except:
+     pass
+
+ # open a database session
+ db = create_session(server, &#8220;greetings&#8221;)
+
+ # create a new greet
+ greet = Greeting(
+     author=&#8220;Benoit&#8221;,
+     content=&#8220;Welcome to simplecouchdb world&#8221;,
+     date=datetime.datetime.utcnow()
+ )
+
+ # save it 
+ db(greet).save()
 </pre>
 
 	<p>Your document `greet` in `greetings` db. Each document is save with a `doc_type` field that allow you to find easily each kind of document with the views. By default `doc_type` is the name of the class.</p>
@@ -114,8 +125,8 @@ db(greet).save()
 	<p>Now that you saved your document, you can update it :</p>
 
 <pre class="code prettyprint">
-greet.author = &#8220;Benoît Chesneau&#8221;
-greet.save()
+ greet.author = &#8220;Benoît Chesneau&#8221;
+ greet.save()
 </pre>
 
 	<p>Here we update the author name.</p>
@@ -123,7 +134,7 @@ greet.save()
 	<p>Note: You can notice that we don&#8217;t use the db object here to update. In fact db object was automatically associated with the Greeting class on first `save`. You could have done this asssociation before by doing :</p>
 
 <pre class="code prettyprint">
-Greeting = db(Greeting)
+ Greeting = db(Greeting)
 </pre>
 
 	<h2>Dynamic properties</h2>
@@ -131,8 +142,8 @@ Greeting = db(Greeting)
 	<p>Mmm ok, but isn&#8217;t CouchDB storing documents schema less ? Do you want to add a property ? Easy:</p>
 
 <pre class="code prettyprint">
-greet.homepage = &#8220;http://www.e-engura.org&#8221;
-greet.save()
+ greet.homepage = &#8220;http://www.e-engura.org&#8221;
+ greet.save()
 </pre>
 
 	<p>Now you just added an homepage property to the document.</p>
@@ -150,10 +161,10 @@ mkdir -p ~/Work/couchdbkit/example/_design/greeting/views/all
 	<p>In this folder we edit a file `map.js`:</p>
 
 <pre class="code prettyprint">
-function(doc) { 
-     if (doc.doc_type == &#8220;Greeting&#8221;) 
-          emit(doc._id, doc); 
-}
+ function(doc) { 
+   if (doc.doc_type == &#8220;Greeting&#8221;) 
+    emit(doc._id, doc); 
+ }
 </pre>
 
 	<p>On <a href="http://macromates.com">Textmate</a>, you have :</p>
@@ -164,16 +175,17 @@ function(doc) {
 
 	<p>Then we use `FileSystemDocsLoader` object to send the design document to CouchDB:</p>
 
-<pre class="code prettyprint">
-from couchdbkit.loaders import FileSystemDocsLoader
-loader = FileSystemDocsLoader(&#8217;/home/benoitc/Work/couchdbkit/example/_design&#8217;)
-loader.sync(db, verbose=True)
+	<p><pre class="code prettyprint">
+ from couchdbkit.loaders import FileSystemDocsLoader</p>
+
+ loader = FileSystemDocsLoader(&#8217;/home/benoitc/Work/couchdbkit/example/_design&#8217;)
+ loader.sync(db, verbose=True)
 </pre>
 
 	<p>The design doc is now in `greetings`database and you can get all greets :</p>
 
 <pre class="code prettyprint">
-greets = Greeting.view('greeting/all&#8217;)
+ greets = Greeting.view('greeting/all&#8217;)
 </pre>
     </article>
 </section>

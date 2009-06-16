@@ -82,7 +82,7 @@ def convert_markdown(value):
     return md.convert(value)
     
 def convert_textile(value):
-    return textile(value, validate=False, 
+    return textile(value, validate=False, head_offset=False,
             sanitize=False, encoding='utf-8', output='utf-8').decode('utf-8')
             
 def rfc3339_date(date):

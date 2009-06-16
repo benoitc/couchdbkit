@@ -398,7 +398,7 @@ class FileSystemDocsLoader(BaseDocsLoader):
 class FileSystemDocLoader(FileSystemDocsLoader):
     """ Load only one design doc from a path on the filesystem.
         
-        >>> loader = FileSystemDocsLoader("/path/to/designdocfolder", "nameodesigndoc")
+        >>> loader = FileSystemDocLoader("/path/to/designdocfolder", "nameodesigndoc")
     """
     
     def __init__(self, designpath, name, design_name=None):
