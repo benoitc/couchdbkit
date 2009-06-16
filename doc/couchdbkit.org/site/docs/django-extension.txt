@@ -10,23 +10,23 @@ h2. setup the extension
 Just add to your settings the `COUCHDB_DATABASES` that defines 
 
 <pre class="code prettyprint">
-COUCHDB_DATABASES = (
-    ('djangoapp.greeting', 'http://127.0.0.1:5984/greeting'),
-)
+ COUCHDB_DATABASES = (
+     ('djangoapp.greeting', 'http://127.0.0.1:5984/greeting'),
+ )
 </pre>
 
 This one defines the db greeting on url `http://127.0.0.1:5984/greeting`
 for the application `greeting`of djangoapp project.
 
 Then add the extension to your INSTALLED_APPS before all applications using
-couchdbkit documents
+couchdbkit documents.
 
 <pre class="code prettyprint">
-INSTALLED_APPS = (
-    ....
-    'couchdbkit.ext.django',
-    ....
-)
+ INSTALLED_APPS = (
+     ....
+     'couchdbkit.ext.django',
+     ....
+ )
 </pre>
 
 h2. Create a document object
@@ -35,7 +35,7 @@ A document is a simple Python object that map properties of a Couchdb Document. 
 
 <pre class="code prettyprint">
  from couchdbkit.ext.django.schema import *
- 
+  
  class Greeting(Document):
      author = StringProperty()
      content = StringProperty(required=True)
@@ -46,8 +46,7 @@ Databse will be automatically set for each `Document` defined in models.py
 
 h2. Create your django views
 
-First we define a `DocumentForm` instance. A `DocumentForm` works like the ModelForm object but for couchdb
-documents. It allows you to create form based on a Document class or instance.
+First we define a `DocumentForm` instance. A `DocumentForm` works like the ModelForm object but for couchdb documents. It allows you to create form based on a Document class or instance.
 
 <pre class="code prettyprint">
  class GreetingForm(DocumentForm):    
@@ -55,32 +54,30 @@ documents. It allows you to create form based on a Document class or instance.
          document = Greeting
 </pre>
 
-
 Then define your views with proper actions :
 
 <pre class="code prettyprint">
  def home(request):
-     greet = None
-     if request.POST:
-         form = GreetingForm(request.POST)
-         if form.is_valid():
-             greet = form.save()  
-     else:
-         form = GreetingForm()
+    greet = None
+    if request.POST:
+    form = GreetingForm(request.POST)
+    if form.is_valid():
+        greet = form.save()  
+    else:
+        form = GreetingForm()
      
-     greetings = Greeting.view('greeting/all')
+    greetings = Greeting.view("greeting/all")
      
-     return render("home.html", {
-         "form": form,
-         "greet": greet,
-         "greetings": greetings
-     }, context_instance=RequestContext(request)
+    return render("home.html", {
+            "form": form,
+            "greet": greet,
+            "greetings": greetings
+    }, context_instance=RequestContext(request)
 </pre>
 
 h2. Define the Couchdb `design doc` for the application
 
-Views/shows/lists are created in _design folder of your application.
-exemple :
+Views/shows/lists are created in _design folder of your application. exemple :
 
 <pre class="code">
  greeting/_design
