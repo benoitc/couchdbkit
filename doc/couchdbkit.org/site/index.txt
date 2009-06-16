@@ -34,7 +34,7 @@ greet.homepage = "http://couchdbkit.org"
 from couchdbkit.loaders import FileSystemDocsLoader
 
 loader = FileSystemDocsLoader('/path/to/designs')
-loader.sync(d)
+loader.sync(db)
 </pre>
 
 </article>
