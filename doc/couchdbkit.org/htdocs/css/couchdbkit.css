@@ -149,7 +149,7 @@ section#about {
     display: block;
     width: 100%;
     background: #fff;
-    height: 230px;
+    height: 225px;
     
 }
 
@@ -175,7 +175,7 @@ article#features p.gettingstarted {
     position: relative;
     margin-top: 10px;
     text-align: right;
-    margin-bottom: -11px;
+    margin-bottom: -5px;
 }
 
 article#features p.gettingstarted a {
@@ -223,7 +223,7 @@ article h4 {
 }
 
 article p {
-    padding-bottom: 0.8em;
+    padding: 0.3em;
     line-height: 1.1em;
 }
 
@@ -340,12 +340,8 @@ pre.code {
 	padding: 8px;
 	color: #fff;
 	font-family: "Courier New", Courier, mono;
-	margin-bottom: 10px;
-	margin-top: 10px;
-}
-
-pre.code p {
-    padding: 0;
+	margin-bottom: 2px;
+	margin-top: 2px;
 }
 
 /* Pretty printing styles. Used with prettify.js. */
