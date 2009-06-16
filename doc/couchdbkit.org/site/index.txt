@@ -27,11 +27,11 @@ class Greeting(Document):
     content = StringProperty()
     date = DateTimeProperty()
     
-greet.homepage = "http://Couchdbkit.org"
+greet.homepage = "http://couchdbkit.org"
 </pre>
 <p>Manage easily design docs in your Python application with <code>loaders</code>.</p> 
 <pre class="code prettyprint">
-from Couchdbkit.loaders import FileSystemDocsLoader
+from couchdbkit.loaders import FileSystemDocsLoader
 
 loader = FileSystemDocsLoader('/path/to/designs')
 loader.sync(d)
