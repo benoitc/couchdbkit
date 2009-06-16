@@ -62,7 +62,7 @@
             <div class="info">
                 <h3>Get involved</h3>
                 <ul>
-                    <li><p><a href="irc://irc.freenode.net/couchdbkit">#couchdbkit IRC channel</a>: chat with orthr couchdbkit users</p></li>
+                    <li><p><a href="irc://irc.freenode.net/couchdbkit">#couchdbkit IRC channel</a>: chat with other couchdbkit users</p></li>
                     <li><p><a href="http://bitbucket.org/benoitc/couchdbkit/issues/">Ticket system</a>: report bugs and make feature requests</p></li>
                     <li><p><a href="http://groups.google.com/group/couchdbkit">Mailing-List</a>: The main list for help and follow changes.</p></li>
                 </ul>
@@ -76,7 +76,7 @@
 <section id="content">
     <article>
         <h1>Getting started</h1>
-        	<p>This tutoriall exposes key features of this library through mainly code<br />examples. For in-depth description of the modules, you&#8217;ll want to read <br />the <a href="/docs/api/">API</a>  documentation.</p>
+        	<p>This tutorial exposes key features of this library through mainly code<br />examples. For in-depth description of the modules, you&#8217;ll want to read <br />the <a href="/docs/api/">API</a>  documentation.</p>
 
 	<p>If you have not installed couchdbkit yet, follow instruction on <a href="/download.html">download page</a> . Once you&#8217;ve done, you can write your first CouchDB document:</p>
 
@@ -120,7 +120,7 @@ greet.save()
 
 	<p>Here we update the author name.</p>
 
-	<p>Note: You can noticed that we don&#8217;t use the db object here to update. In fact db object was automatically associated with the Greeting class on first `save`. You could have done this asssociation before by doing :</p>
+	<p>Note: You can notice that we don&#8217;t use the db object here to update. In fact db object was automatically associated with the Greeting class on first `save`. You could have done this asssociation before by doing :</p>
 
 <pre class="code prettyprint">
 Greeting = db(Greeting)
@@ -139,7 +139,7 @@ greet.save()
 
 	<h3>Get all greetings</h3>
 
-	<p>You first have to  create a view and save it in the db. We call it `greeting/all`. To do this we will use the loader system of couchdbkit that allow you to send views to couchdb.</p>
+	<p>You first have to create a view and save it in the db. We call it `greeting/all`. To do this we will use the loader system of couchdbkit that allows you to send views to couchdb.</p>
 
 	<p>We create a folder that contains the design doc, and then the folder for the view. On unix :</p>
 
@@ -147,7 +147,7 @@ greet.save()
 mkdir -p ~/Work/couchdbkit/example/_design/greeting/views/all
 </pre>
 
-	<p>In this folder we crea a file `map.js`:</p>
+	<p>In this folder we edit a file `map.js`:</p>
 
 <pre class="code prettyprint">
 function(doc) { 
@@ -160,7 +160,7 @@ function(doc) {
 
 	<p><img src="/images/gettingstarted.png" title="couchdbkit textmate screen" alt="couchdbkit textmate screen" /></p>
 
-	<p>A systeme will be provided to manage view creation and other things. As some noticed, this system works like <a href="http://github.com/couchapp/couchapp/tree/">couchapp</a>.</p>
+	<p>A system will be provided to manage view creation and other things. As some noticed, this system works like <a href="http://github.com/couchapp/couchapp/tree/">couchapp</a>.</p>
 
 	<p>Then we use `FileSystemDocsLoader` object to send the design document to CouchDB:</p>
 

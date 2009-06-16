@@ -62,7 +62,7 @@
             <div class="info">
                 <h3>Get involved</h3>
                 <ul>
-                    <li><p><a href="irc://irc.freenode.net/couchdbkit">#couchdbkit IRC channel</a>: chat with orthr couchdbkit users</p></li>
+                    <li><p><a href="irc://irc.freenode.net/couchdbkit">#couchdbkit IRC channel</a>: chat with other couchdbkit users</p></li>
                     <li><p><a href="http://bitbucket.org/benoitc/couchdbkit/issues/">Ticket system</a>: report bugs and make feature requests</p></li>
                     <li><p><a href="http://groups.google.com/group/couchdbkit">Mailing-List</a>: The main list for help and follow changes.</p></li>
                 </ul>
@@ -76,9 +76,9 @@
 <section id="content">
     <article>
         <h1>The django extension</h1>
-        	<p>There are a lot of people trying to integrate CouchDB in their <a href="http://djangoproject.com">Django</a> application. Most of the implementations are very complicated. So I decided to release code the couchdbkit extension for Django 1.0x.</p>
+        	<p>There are a lot of people trying to integrate CouchDB in their <a href="http://djangoproject.com">Django</a> application. Most of the implementations are very complicated. So I decided to release the code of couchdbkit extension for Django 1.0x.</p>
 
-	<p>This extension provide you a threadsafe access and mangement of documents and views in your django application with some usefull tools specific to Django.</p>
+	<p>This extension provides you a threadsafe access and mangement of documents and views in your django application with some usefull tools specific to Django.</p>
 
 	<h2>setup the extension</h2>
 
@@ -90,9 +90,9 @@ COUCHDB_DATABASES = (
 )
 </pre>
 
-	<p>This one define the db greeting on url `http://127.0.0.1:5984/greeting`<br />for the application `greeting`of djangoapp project.</p>
+	<p>This one defines the db greeting on url `http://127.0.0.1:5984/greeting`<br />for the application `greeting`of djangoapp project.</p>
 
-	<p>Then add extension to your INSTALLED_APPS before all applications using<br />couchdbkit documents ::w</p>
+	<p>Then add the extension to your INSTALLED_APPS before all applications using<br />couchdbkit documents</p>
 
 <pre class="code prettyprint">
 INSTALLED_APPS = (
@@ -118,7 +118,7 @@ class Greeting(Document):
 
 	<h2>Create your django views</h2>
 
-	<p>First we define a `DocumentForm` instance. a `DocumentForm` works like the ModelForm object but for couchdb<br />documents. It allow you to create form based on a Document class or instance.</p>
+	<p>First we define a `DocumentForm` instance. A `DocumentForm` works like the ModelForm object but for couchdb<br />documents. It allows you to create form based on a Document class or instance.</p>
 
 <pre class="code prettyprint">        
 class GreetingForm(DocumentForm):    
@@ -126,7 +126,7 @@ class GreetingForm(DocumentForm):
         document = Greeting
 </pre>
 
-	<p>Then defin your views with proper actions :</p>
+	<p>Then define your views with proper actions :</p>
 
 	<p><pre class="code prettyprint">  <br />def home(request):
     greet = None</p>

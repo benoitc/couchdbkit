@@ -62,8 +62,8 @@
 
             <h2>Features</h2>
             <ul>
-                <li>a full client always in sync with latest couchdb releases or trunk. Currently you can use full features of couchdb 0.9 and lates trunk</li>
-                <li>a client that allow you to use the http backend you want via py-restclient. Currently curl or httplib. You could also write your own, see transports documentation of py-restclient.</li>
+                <li>a full client always in sync with latest couchdb releases or trunk. Currently you can use full features of couchdb 0.9 and latest trunk</li>
+                <li>a client allowing you to use the http backend you want via py-restclient. Currently curl or httplib. You could also write your own, see transports documentation of py-restclient.</li>
                 <li>threadsafe</li>
                 <li>A system to attach design docs to your application  and send them to CouchDB.</li>
                 <li>Manage documents with dynamic schema. Documents are completely dynamic</li>
@@ -91,7 +91,7 @@
             <div class="info">
                 <h3>Get involved</h3>
                 <ul>
-                    <li><p><a href="irc://irc.freenode.net/couchdbkit">#couchdbkit IRC channel</a>: chat with orthr couchdbkit users</p></li>
+                    <li><p><a href="irc://irc.freenode.net/couchdbkit">#couchdbkit IRC channel</a>: chat with other couchdbkit users</p></li>
                     <li><p><a href="http://bitbucket.org/benoitc/couchdbkit/issues/">Ticket system</a>: report bugs and make feature requests</p></li>
                     <li><p><a href="http://groups.google.com/group/couchdbkit">Mailing-List</a>: The main list for help and follow changes.</p></li>
                 </ul>
@@ -136,7 +136,7 @@ greet.homepage = "http://couchdbkit.org"
 from couchdbkit.loaders import FileSystemDocsLoader
 
 loader = FileSystemDocsLoader('/path/to/designs')
-loader.sync(d)
+loader.sync(db)
 </pre>
 
 </article>
