@@ -161,6 +161,15 @@ greeting/_design/views/all/map.js
 
 	<p>To create databases and sync views, just run the usual `syncdb` command.<br />It won&#8217;t destroy your datas, just synchronize views.</p>
 
+	<h2>One more thing</h2>
+
+	<p>Obviously there are time when you need to do more than fetching document or views results. At any time you could use the database session associated to an application :</p>
+
+<pre class="code prettyprint">
+from couchdbkit.ext.django.loading import get_db
+db = get_db('greeting&#8217;)
+</pre>
+
 	<h2>To go further</h2>
 
 	<p>You could find the source of this tutorial in examples/djangoapp . If you want to go further don&#8217;t hesitate to read <a href="/docs/api">API</a> .</p>
