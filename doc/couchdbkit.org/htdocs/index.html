@@ -113,8 +113,6 @@
 <p>Couchdbkit provides you a full featured and easy client to access and manage CouchDB. It allow you to manage a CouchDB server, databases, doc managements and view access. All objects mostly reflect python objects for convenience. Server and Databases objects could be used for example as easy as using a dict.</p>
 
 <pre class="code prettyprint">
-server = Server()
-from Couchdbkit import *
 s = Server()
 db = s.create_db("couchbdkit_test")
 db['somedoc'] = { 'test': 'essai' }
