@@ -1,0 +1,49 @@
+title: Welcome to the Couchdbkit project
+content_type: html
+template: index.html
+
+
+<section id="content">
+<article id="gettingstarted">
+
+<h2>CouchDB framework in Python</h2>
+
+<p>Couchdbkit provides you a full featured and easy client to access and manage CouchDB. It allow you to manage a CouchDB server, databases, doc managements and view access. All objects mostly reflect python objects for convenience. Server and Databases objects could be used for example as easy as using a dict.</p>
+
+<pre class="code prettyprint">
+server = Server()
+from Couchdbkit import *
+s = Server()
+db = s.create_db("couchbdkit_test")
+db['somedoc'] = { 'test': 'essai' }
+doc = db['someid']
+</pre>
+
+<p>Map couchdb object in python object easyly with dynamic schema. It's similar to ORMs but with all couchdb glory.</p>
+
+<pre class="code prettyprint">
+from Couchdbkit import Document
+
+class Greeting(Document):
+    author = StringProperty()
+    content = StringProperty()
+    date = DateTimeProperty()
+    
+greet.homepage = "http://Couchdbkit.org"
+</pre>
+<p>Manage easily design docs in your Python application with <code>loaders</code>.</p> 
+<pre class="code prettyprint">
+from Couchdbkit.loaders import FileSystemDocsLoader
+
+loader = FileSystemDocsLoader('/path/to/designs')
+loader.sync(d)
+</pre>
+
+</article>
+<article id="go_further">
+    <h2>Next steps</h2>
+    <p>Grab the <a href="download.html">code</a> and you can read through the <a href="/docs/gettingstarted.html">getting started</a> tutorial. After you've gone through that, best thing to do is read the <a href="/docs/">documentation</a> on this site.</p>
+    <p>If you need help, don't hesitate to <a href="/contact.html">contact me</a>.</p>
+</article>
+
+</section>

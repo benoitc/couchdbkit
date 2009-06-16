@@ -1,0 +1,9 @@
+title: Frequently Asked questions
+
+h2. What is CouchdbKit?
+
+Couchdbkit goal is to provide a framework for your Python application to access and manage Couchdb. It provides you a full featured and easy client to access and manage CouchDB. It allow you to manage a CouchDB server, databases, doc managements and view access. All objects mostly reflect python objects for convenience. Server and Databases objects could be used for example as easy as using a dict.
+
+h2. What about other libraries?
+
+There are other python library for CouchDB like couchdb-python. I preferred to write my own because I was/am comfortable with it . I'm not trying to compare them to mine. Couchdbkit follows its own way.

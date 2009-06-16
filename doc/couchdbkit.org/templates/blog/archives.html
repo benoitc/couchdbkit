@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+{% block content %}
+
+<section id="content">
+    <ul>
+    {% for item in entries %}
+        <li> <a href="{{ item.link }}">{{ item.title }}</a></li>
+    {% endfor %}
+    </ul>
+</section>
+{% endblock %}

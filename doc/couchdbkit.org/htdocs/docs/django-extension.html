@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>Couchdbkit - The django extension</title>
+    <!--[if IE]>
+
+    <script>
+        // allow IE to recognize HTMl5 elements
+        document.createElement('section');
+        document.createElement('article');
+        document.createElement('aside');
+        document.createElement('footer');
+        document.createElement('header');
+        document.createElement('nav');
+        document.createElement('time');
+
+    </script>
+    <![endif]-->
+
+    <link rel="stylesheet" href="/css/couchdbkit.css?20090615" type="text/css" media="screen, projection" />
+    <link rel="stylesheet" href="/static/css/print.css?20090615" type="text/css" media="print" />
+    <script type="text/javascript" src="/js/prettify.js"></script>
+    
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/feed.xml" />
+    
+
+    
+        
+</head>
+<body onload="prettyPrint()">
+    
+    <div class="container">
+        <header id="site_header">
+            <h1><a href="/"><span>couchdbkit</span></a></h1>
+            <ul id="main_nav">
+                <li><a href="/">home</a></li>
+                <li><a href="/blog/">news</a></li>
+                <li><a href="/download.html">download</a></li>
+                <li><a href="/docs/">documentation</a></li>
+                <li><a href="/docs/api/">API</a></li>
+            </ul>
+
+        </header>
+        
+        
+        
+        
+        <aside id="sidebar">
+            <ul class="sidenav">
+                <li><a href="/blog/">Latest news</a></li>
+                <li><a href="/download.html">Download latest</a></li>
+                <li><a href="/docs/gettingstarted.html">Getting started</a></li>
+                <li><a href="/docs/faq.html">Frequently Asked Questions</a></li>
+                <li><a href="/docs/about.html">About couchdbkit</a></li>
+                <li><a href="/contact.html">Getting help with couchdbkit</a></li>
+            </ul>
+            <div class="info">
+                <h3>Getting started</h3>
+                <p>See the <a href="/download.html">download instructions</a> for information on getting couchdbkit, and read the <a href="/docs/gettingstarted.html">getting started</a> instructions to start programming CouchDB in your own application in less than 10 minutes.</p>
+            </div>
+            <div class="info">
+                <h3>Get involved</h3>
+                <ul>
+                    <li><p><a href="irc://irc.freenode.net/couchdbkit">#couchdbkit IRC channel</a>: chat with orthr couchdbkit users</p></li>
+                    <li><p><a href="http://bitbucket.org/benoitc/couchdbkit/issues/">Ticket system</a>: report bugs and make feature requests</p></li>
+                    <li><p><a href="http://groups.google.com/group/couchdbkit">Mailing-List</a>: The main list for help and follow changes.</p></li>
+                </ul>
+                        
+            </div>
+           
+        </aside>
+        
+    
+        
+<section id="content">
+    <article>
+        <h1>The django extension</h1>
+        	<p>There are a lot of people trying to integrate CouchDB in their <a href="http://djangoproject.com">Django</a> application. Most of the implementations are very complicated. So I decided to release code the couchdbkit extension for Django 1.0x.</p>
+
+	<p>This extension provide you a threadsafe access and mangement of documents and views in your django application with some usefull tools specific to Django.</p>
+
+	<h2>setup the extension</h2>
+
+	<p>Just add to your settings the `COUCHDB_DATABASES` that defines </p>
+
+<pre class="code prettyprint">
+COUCHDB_DATABASES = (
+    ('djangoapp.greeting&#8217;, 'http://127.0.0.1:5984/greeting&#8217;),
+)
+</pre>
+
+	<p>This one define the db greeting on url `http://127.0.0.1:5984/greeting`<br />for the application `greeting`of djangoapp project.</p>
+
+	<p>Then add extension to your INSTALLED_APPS before all applications using<br />couchdbkit documents ::w</p>
+
+<pre class="code prettyprint">
+INSTALLED_APPS = (
+    ....
+    'couchdbkit.ext.django&#8217;,
+    ....
+)
+</pre>
+
+	<h2>Create a document object</h2>
+
+	<p>A document is a simple Python object that map properties of a Couchdb Document. Documents should be defined like Django models in the file models.py of your application:</p>
+
+<pre class="code prettyprint">
+from couchdbkit.ext.django.schema import *
+class Greeting(Document):
+    author = StringProperty()
+    content = StringProperty(required=True)
+    date = DateTimeProperty(default=datetimee.utcnow)
+</pre>
+
+	<p>Databse will be automatically set for each `Document` defined in models.py</p>
+
+	<h2>Create your django views</h2>
+
+	<p>First we define a `DocumentForm` instance. a `DocumentForm` works like the ModelForm object but for couchdb<br />documents. It allow you to create form based on a Document class or instance.</p>
+
+<pre class="code prettyprint">        
+class GreetingForm(DocumentForm):    
+    class Meta:
+        document = Greeting
+</pre>
+
+	<p>Then defin your views with proper actions :</p>
+
+	<p><pre class="code prettyprint">  <br />def home(request):
+    greet = None</p>
+
+    if request.POST:
+        form = GreetingForm(request.<span class="caps">POST</span>)
+        if form.is_valid():
+            greet = form.save()  
+    else:
+        form = GreetingForm()
+
+    greetings = Greeting.view('greeting/all&#8217;)
+
+    return render(&#8220;home.html&#8221;, {
+        &#8220;form&#8221;: form,
+        &#8220;greet&#8221;: greet,
+        &#8220;greetings&#8221;: greetings
+    }, context_instance=RequestContext(request)
+
+	<p></pre></p>
+
+	<h2>Define the Couchdb `design doc` for the application</h2>
+
+	<p>Views/shows/lists are created in _design folder of your application.<br />exemple :</p>
+
+<pre class="code">  
+greeting/_design
+greeting/_design/views
+greeting/_design/views/all
+greeting/_design/views/all/map.js
+</pre>
+
+	<p>To create databases and sync views, just run the usual `syncdb` command.<br />It won&#8217;t destroy your datas, just synchronize views.</p>
+
+	<h2>To go further</h2>
+
+	<p>You could find the source of this tutorial in examples/djangoapp . If you want to go further don&#8217;t hesitate to read <a href="/docs/api">API</a> .</p>
+    </article>
+</section>
+
+        
+        <footer id="bottom">
+            <p class="copyright">2008-2009 &copy; Benoît Chesneau - Some rights reserved.</p>
+            <div id="cc"><a rel="license" href="http://creativecommons.org/licenses/by/2.0/fr/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/2.0/fr/80x15.png" /></a> This <span xmlns:dc="http://purl.org/dc/elements/1.1/" href="http://purl.org/dc/dcmitype/InteractiveResource" rel="dc:type">website</span> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/2.0/fr/">Creative Commons Attribution 2.0 France License</a>.</div>
+        </footer>
+        
+    </div>
+
+    
+    
+    
+</body>
+</html>

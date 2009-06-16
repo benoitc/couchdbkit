@@ -1,0 +1,52 @@
+title: Downloading Couchdbkit
+
+This is a manual for installing Couchdbkit and its dependencies.
+
+h2. 1. Installing CouchDB
+
+Couchdbkit require couchdb 0.9 or later to use it.
+
+To install Couchdb follow documentation from "CouchDB wiki":http://wiki.apache.org/couchdb/Installation .
+
+h2. 2. Installing Couchdbkit
+
+Couchdbkit <b>requires python2.5x/2.6x</b> to work. python 3.x will be supported soon. 
+
+h3. 2.1 Installing with easy_install
+
+To install Couchdbkit using easy_install you must make sure you have a recent version of setuptools installed (as of this writing, 0.6c6 (0.6a9 on windows) or later):
+
+<pre class="code prettyprint">
+$ curl -O http://peak.telecommunity.com/dist/ez_setup.py
+$ sudo python ez_setup.py -U setuptools
+</pre>
+
+To install or upgrade to the latest released version of Couchdbkit:
+
+<pre class="code prettyprint">$ sudo easy_install -U Couchdbkit</pre>
+
+h3. 2.2 Installing from source
+
+To install Couchdbkit from source, simply use the normal procedure for installing any Python package. Since Couchdbkit uses setuptools, all dependencies (including setuptools itself) will be automatically acquired and installed for you as appropriate.
+
+h4. Fetch sources
+
+You could download latest sources from "Bitbucket Downloads":http://bitbucket.org/benoitc/couchdbkit/downloads/
+
+Or fetch them with hg. Therefore we have to "install hg":http://www.selenic.com/mercurial/wiki/ and then run :
+
+<pre class="code prettyprint">
+$ hg clone http://bitbucket.org/benoitc/couchdbkit/
+</pre>
+
+h4. install Couchdbkit
+
+<pre class="code prettyprint">
+$ python setup.py install
+</pre>
+
+If you're using a hg clone, it's recommended to use the setuptools develop command, which will simply activate Couchdbkit directly from your source directory. This way you can do a git fetch or make changes to the source code without re-installing every time:
+
+<pre class="code prettyprint">
+$ python setup.py develop
+</pre>

@@ -1,0 +1,99 @@
+title: The django extension
+page_type: blog
+
+There are a lot of people trying to integrate CouchDB in their "Django":http://djangoproject.com application. Most of the implementations are very complicated. So I decided to release code the couchdbkit extension for Django 1.0x.
+
+This extension provide you a threadsafe access and mangement of documents and views in your django application with some usefull tools specific to Django.
+
+h2. setup the extension
+
+Just add to your settings the `COUCHDB_DATABASES` that defines 
+
+<pre class="code prettyprint">
+COUCHDB_DATABASES = (
+    ('djangoapp.greeting', 'http://127.0.0.1:5984/greeting'),
+)
+</pre>
+
+This one define the db greeting on url `http://127.0.0.1:5984/greeting`
+for the application `greeting`of djangoapp project.
+
+Then add extension to your INSTALLED_APPS before all applications using
+couchdbkit documents ::w
+
+<pre class="code prettyprint">
+INSTALLED_APPS = (
+    ....
+    'couchdbkit.ext.django',
+    ....
+)
+</pre>
+
+h2. Create a document object
+
+A document is a simple Python object that map properties of a Couchdb Document. Documents should be defined like Django models in the file models.py of your application:
+
+<pre class="code prettyprint">
+from couchdbkit.ext.django.schema import *
+class Greeting(Document):
+    author = StringProperty()
+    content = StringProperty(required=True)
+    date = DateTimeProperty(default=datetimee.utcnow)
+</pre>
+
+Databse will be automatically set for each `Document` defined in models.py
+
+h2. Create your django views
+
+First we define a `DocumentForm` instance. a `DocumentForm` works like the ModelForm object but for couchdb
+documents. It allow you to create form based on a Document class or instance.
+
+<pre class="code prettyprint">        
+class GreetingForm(DocumentForm):    
+    class Meta:
+        document = Greeting
+</pre>
+
+
+Then defin your views with proper actions :
+
+<pre class="code prettyprint">  
+def home(request):
+    greet = None
+
+    if request.POST:
+        form = GreetingForm(request.POST)
+        if form.is_valid():
+            greet = form.save()  
+    else:
+        form = GreetingForm()
+    
+    greetings = Greeting.view('greeting/all')
+
+    return render("home.html", {
+        "form": form,
+        "greet": greet,
+        "greetings": greetings
+    }, context_instance=RequestContext(request)
+    
+</pre>
+
+h2. Define the Couchdb `design doc` for the application
+
+Views/shows/lists are created in _design folder of your application.
+exemple :
+
+<pre class="code">  
+greeting/_design
+greeting/_design/views
+greeting/_design/views/all
+greeting/_design/views/all/map.js
+</pre>
+
+To create databases and sync views, just run the usual `syncdb` command.
+It won't destroy your datas, just synchronize views.
+
+
+h2. To go further
+
+You could find the source of this tutorial in examples/djangoapp . If you want to go further don't hesitate to read "API":/docs/api .

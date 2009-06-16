@@ -1,0 +1,5 @@
+title: About CouchdbKit
+
+**CouchDBKit** is a framework to allow your python application to use "Apache CouchDB":http://couchdb.apache.org. 
+
+I started it for one project in my own company, **"Enki Multimedia":http://e-engura.org** but it since evolved in a completely new library though some code is still based on it. We decided to make it public.

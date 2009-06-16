@@ -1,0 +1,10 @@
+title: Couchdbkit website launched
+content_type: textile
+page_type: blog
+template: blog/post.html
+
+Just launched **Couchdbkit** site at "couchdbkit.org":http://www.couchdbkit.org. 
+
+All this website is static. For this purpose I wrote a script to generate doc and news from differents text files. The "Lamson project":http://lamsonproject.org/ used this idee for its own site, and I found it very usefull. I preferred to write mine script to allow use of jinja and some other changes (it will be possible for example to generate a cloud).
+
+I started to write documentation and more will come soon. You can follow changes via the "RSS feed":/feed.xml .

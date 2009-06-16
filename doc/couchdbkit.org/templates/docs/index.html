@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<section id="content">
+    <h1>{{ title }}</h1>
+    {% for item in entries %}
+        <article class="item">
+            <header>
+                <h2><a href="{{ item.link|rel_url }}">{{ item.title }}</a></h2>
+            </header>
+            {{ item.description }}
+            <footer>
+                <p><a href="{{ item.link|rel_url }}">Read more ...</a></p>
+            </footer>
+        </article>
+    {% endfor %}
+</section>
+{% endblock %}

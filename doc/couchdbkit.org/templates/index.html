@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+{% block top %}
+
+<div class="wrapper">
+    <section id="about">
+        <article id="goal">
+
+            <h2>CouchDB framework in Python</h2>
+
+            <p><strong><a href="http://couchdb.apache.org">Apache CouchDB</a></strong> is a distributed, fault-tolerant and schema-free document-oriented database accessible via a RESTful HTTP/JSON API. Among other features, it provides robust, incremental replication with bi-directional conflict detection and resolution, and is queryable and indexable using a table-oriented view engine with JavaScript acting as the default view definition language.</p>
+
+            <p>Couchdbkit goal is to provide a framework for your Python application to access and manage Couchdb.</p>
+        </article>
+
+        <article id="features">
+
+            <h2>Features</h2>
+            <ul>
+                <li>a full client always in sync with latest couchdb releases or trunk. Currently you can use full features of couchdb 0.9 and lates trunk</li>
+                <li>a client that allow you to use the http backend you want via py-restclient. Currently curl or httplib. You could also write your own, see transports documentation of py-restclient.</li>
+                <li>threadsafe</li>
+                <li>A system to attach design docs to your application  and send them to CouchDB.</li>
+                <li>Manage documents with dynamic schema. Documents are completely dynamic</li>
+            </ul>
+            <p class="gettingstarted"><a href="/docs/gettingstarted.html">Getting started</a></p>
+        </article>
+    </section>
+</div>
+{% endblock %}
+
+{% block content %}
+
+
+{{ body }}
+{% endblock %}

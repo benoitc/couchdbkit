@@ -1,0 +1,105 @@
+title: Getting started
+page_type: blog
+
+This tutoriall exposes key features of this library through mainly code
+examples. For in-depth description of the modules, you'll want to read 
+the "API":/docs/api/  documentation.
+
+If you have not installed couchdbkit yet, follow instruction on "download page":/download.html . Once you've done, you can write your first CouchDB document:
+
+<pre class="code prettyprint">
+from couchdbkit.schema import Document
+from couchdbkit.properties import *
+class Greeting(Document):
+     author = StringProperty()
+     content = StringProperty()
+     date = DateTimeProperty()
+</pre>
+
+h2. Store the submitted Greetings
+
+
+<pre class="code prettyprint">
+import datetime
+from couchdbkit.client import Server
+from couchdbkit.session import create_session
+server = Server()
+try:
+    server.create_db("greetings")
+except:
+    pass
+db = create_session(server, "greetings")
+greet = Greeting(
+    author="Benoit",
+    content="Welcome to simplecouchdb world",
+    date=datetime.datetime.utcnow()
+)
+db(greet).save()
+</pre>
+
+Your document `greet` in `greetings` db. Each document is save with a `doc_type` field that allow you to find easily each kind of document with the views. By default `doc_type` is the name of the class.
+
+Now that you saved your document, you can update it :
+
+<pre class="code prettyprint">
+greet.author = "Benoît Chesneau"
+greet.save()
+</pre>
+
+Here we update the author name.
+
+Note: You can noticed that we don't use the db object here to update. In fact db object was automatically associated with the Greeting class on first `save`. You could have done this asssociation before by doing :
+
+<pre class="code prettyprint">
+Greeting = db(Greeting)
+</pre>
+
+h2. Dynamic properties
+
+Mmm ok, but isn't CouchDB storing documents schema less ? Do you want to add a property ? Easy:
+
+<pre class="code prettyprint">
+greet.homepage = "http://www.e-engura.org"
+greet.save()
+</pre>
+
+Now you just added an homepage property to the document.
+
+h3. Get all greetings
+
+You first have to  create a view and save it in the db. We call it `greeting/all`. To do this we will use the loader system of couchdbkit that allow you to send views to couchdb.
+
+We create a folder that contains the design doc, and then the folder for the view. On unix :
+
+<pre class="code prettyprint">
+mkdir -p ~/Work/couchdbkit/example/_design/greeting/views/all
+</pre>
+
+In this folder we crea a file `map.js`:
+
+<pre class="code prettyprint">
+function(doc) { 
+     if (doc.doc_type == "Greeting") 
+          emit(doc._id, doc); 
+}
+</pre>
+
+On "Textmate":http://macromates.com, you have :
+
+!/images/gettingstarted.png(couchdbkit textmate screen)!
+
+A systeme will be provided to manage view creation and other things. As some noticed, this system works like "couchapp":http://github.com/couchapp/couchapp/tree/.
+
+Then we use `FileSystemDocsLoader` object to send the design document to CouchDB:
+
+<pre class="code prettyprint">
+from couchdbkit.loaders import FileSystemDocsLoader
+loader = FileSystemDocsLoader('/home/benoitc/Work/couchdbkit/example/_design')
+loader.sync(db, verbose=True)
+</pre>
+
+The design doc is now in `greetings`database and you can get all greets :
+
+<pre class="code prettyprint">
+greets = Greeting.view('greeting/all')
+</pre>
