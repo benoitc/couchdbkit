@@ -531,6 +531,7 @@ class LazyDict(dict):
             self.doc[key] = {}
             value = LazyDict(value,  self.doc[key])
         elif isinstance(value, list):
+            self.doc[key] = []
             value = LazyList(value,  self.doc[key])
         else:
             self.doc.update({key: value_to_json(value) })
