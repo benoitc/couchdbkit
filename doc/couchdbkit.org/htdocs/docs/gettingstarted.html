@@ -82,7 +82,7 @@
 
 	<p><pre class="code prettyprint">
  from couchdbkit.schema import Document
- from couchdbkit.properties import *</p>
+ from couchdbkit.schema.properties import *</p>
 
  class Greeting(Document):
       author = StringProperty()
@@ -104,17 +104,17 @@
 
  # create database
  try:
-     server.create_db(&#8220;greetings&#8221;)
+     server.create_db(&quot;greetings&quot;)
  except:
      pass
 
  # open a database session
- db = create_session(server, &#8220;greetings&#8221;)
+ db = create_session(server, &quot;greetings&quot;)
 
  # create a new greet
  greet = Greeting(
-     author=&#8220;Benoit&#8221;,
-     content=&#8220;Welcome to simplecouchdb world&#8221;,
+     author=&quot;Benoit&quot;,
+     content=&quot;Welcome to simplecouchdb world&quot;,
      date=datetime.datetime.utcnow()
  )
 
@@ -127,7 +127,7 @@
 	<p>Now that you saved your document, you can update it :</p>
 
 <pre class="code prettyprint">
- greet.author = &#8220;Benoît Chesneau&#8221;
+ greet.author = &quot;Benoît Chesneau&quot;
  greet.save()
 </pre>
 
@@ -144,7 +144,7 @@
 	<p>Mmm ok, but isn&#8217;t CouchDB storing documents schema less ? Do you want to add a property ? Easy:</p>
 
 <pre class="code prettyprint">
- greet.homepage = &#8220;http://www.e-engura.org&#8221;
+ greet.homepage = &quot;http://www.e-engura.org&quot;
  greet.save()
 </pre>
 
@@ -157,14 +157,14 @@
 	<p>We create a folder that contains the design doc, and then the folder for the view. On unix :</p>
 
 <pre class="code prettyprint">
-mkdir -p ~/Work/couchdbkit/example/_design/greeting/views/all
+ mkdir -p ~/Work/couchdbkit/example/_design/greeting/views/all
 </pre>
 
 	<p>In this folder we edit a file `map.js`:</p>
 
 <pre class="code prettyprint">
  function(doc) { 
-   if (doc.doc_type == &#8220;Greeting&#8221;) 
+   if (doc.doc_type == &quot;Greeting&quot;) 
     emit(doc._id, doc); 
  }
 </pre>
@@ -180,14 +180,14 @@ mkdir -p ~/Work/couchdbkit/example/_design/greeting/views/all
 	<p><pre class="code prettyprint">
  from couchdbkit.loaders import FileSystemDocsLoader</p>
 
- loader = FileSystemDocsLoader(&#8217;/home/benoitc/Work/couchdbkit/example/_design&#8217;)
+ loader = FileSystemDocsLoader('path/to/example/_design')
  loader.sync(db, verbose=True)
 </pre>
 
 	<p>The design doc is now in `greetings`database and you can get all greets :</p>
 
 <pre class="code prettyprint">
- greets = Greeting.view('greeting/all&#8217;)
+ greets = Greeting.view('greeting/all')
 </pre>
     </article>
 </section>

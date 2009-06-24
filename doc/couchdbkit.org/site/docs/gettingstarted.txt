@@ -9,7 +9,7 @@ If you have not installed couchdbkit yet, follow instruction on "download page":
 
 <pre class="code prettyprint">
  from couchdbkit.schema import Document
- from couchdbkit.properties import *
+ from couchdbkit.schema.properties import *
  
  class Greeting(Document):
       author = StringProperty()
@@ -84,7 +84,7 @@ You first have to create a view and save it in the db. We call it `greeting/all`
 We create a folder that contains the design doc, and then the folder for the view. On unix :
 
 <pre class="code prettyprint">
-mkdir -p ~/Work/couchdbkit/example/_design/greeting/views/all
+ mkdir -p ~/Work/couchdbkit/example/_design/greeting/views/all
 </pre>
 
 In this folder we edit a file `map.js`:
@@ -107,7 +107,7 @@ Then we use `FileSystemDocsLoader` object to send the design document to CouchDB
 <pre class="code prettyprint">
  from couchdbkit.loaders import FileSystemDocsLoader
  
- loader = FileSystemDocsLoader('/home/benoitc/Work/couchdbkit/example/_design')
+ loader = FileSystemDocsLoader('/path/to/example/_design')
  loader.sync(db, verbose=True)
 </pre>
 

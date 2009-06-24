@@ -86,7 +86,7 @@
 
 <pre class="code prettyprint">
  COUCHDB_DATABASES = (
-     ('djangoapp.greeting&#8217;, 'http://127.0.0.1:5984/greeting&#8217;),
+     ('djangoapp.greeting', 'http://127.0.0.1:5984/greeting'),
  )
 </pre>
 
@@ -97,7 +97,7 @@
 <pre class="code prettyprint">
  INSTALLED_APPS = (
      ....
-     'couchdbkit.ext.django&#8217;,
+     'couchdbkit.ext.django',
      ....
  )
 </pre>
@@ -106,8 +106,8 @@
 
 	<p>A document is a simple Python object that map properties of a Couchdb Document. Documents should be defined like Django models in the file models.py of your application:</p>
 
-<pre class="code prettyprint">
- from couchdbkit.ext.django.schema import *
+	<p><pre class="code prettyprint">
+ from couchdbkit.ext.django.schema import *</p>
 
  class Greeting(Document):
      author = StringProperty()
@@ -127,24 +127,24 @@
          document = Greeting
 </pre>
 
-<p>Then define your views with proper actions :</p>
+	<p>Then define your views with proper actions :</p>
 
-<pre class="code prettyprint">
+	<p><pre class="code prettyprint">
  def home(request):
     greet = None
     if request.POST:
-    form = GreetingForm(request.POST)
+    form = GreetingForm(request.<span class="caps">POST</span>)
     if form.is_valid():
         greet = form.save()  
     else:
-        form = GreetingForm()
+        form = GreetingForm()</p>
 
-    greetings = Greeting.view("greeting/all")
+    greetings = Greeting.view(&quot;greeting/all&quot;)
 
-    return render("home.html", {
-            "form": form,
-            "greet": greet,
-            "greetings": greetings
+    return render(&quot;home.html&quot;, {
+            &quot;form&quot;: form,
+            &quot;greet&quot;: greet,
+            &quot;greetings&quot;: greetings
     }, context_instance=RequestContext(request)
 </pre>
 
@@ -167,7 +167,7 @@
 
 <pre class="code prettyprint">
  from couchdbkit.ext.django.loading import get_db
- db = get_db('greeting&#8217;)
+ db = get_db('greeting')
 </pre>
 
 	<h2>To go further</h2>
