@@ -390,8 +390,9 @@ class DocumentBase(DocumentSchema):
 
     def __init__(self, d=None, **kwargs):
         if 'id' in kwargs:
-            self._doc['_id'] = kwargs.pop('_id')
-        DocumentSchema.__init__(self, d, **kwargs) 
+            docid = kwargs.pop('id')
+        DocumentSchema.__init__(self, d, **kwargs)
+        self._doc['_id'] = docid
     
     def _get_id(self):
         return self._doc.get('_id', None)
