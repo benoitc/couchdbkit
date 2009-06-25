@@ -3,7 +3,9 @@ content_type: textile
 page_type: blog
 template: blog/post.html
 
-Just released Couchdbkit 0.1.7. Next version will be 0.2 and will have some new features like :
+Just released Couchdbkit 0.1.7. 
+
+Next version will be 0.2 and will have some new features :
 
 * Dump/Loads utilities
 * New view iterator system that would allow us to use less CPU

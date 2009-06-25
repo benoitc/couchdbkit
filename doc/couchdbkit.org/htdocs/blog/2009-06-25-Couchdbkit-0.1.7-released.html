@@ -81,7 +81,9 @@
         <header>
             <h1>Couchdbkit version 0.1.7 released</h1>
         </header>
-        	<p>Just released Couchdbkit 0.1.7. Next version will be 0.2 and will have some new features like :</p>
+        	<p>Just released Couchdbkit 0.1.7. </p>
+
+	<p>Next version will be 0.2 and will have some new features :</p>
 
 	<ul>
 		<li>Dump/Loads utilities</li>
@@ -121,13 +123,13 @@
  In [5]: a.id = &quot;idofapplication&quot;
 
  In [6]: a._doc
- Out<sup class="footnote"><a href="#fnf3182279-6a37-4546-93d6-4f43fb21240d">6</a></sup>: {'_id': 'myid', 'doc_type': 'A', 'id': u&#8217;idofapplication'}
+ Out<sup class="footnote"><a href="#fn3653322e-f3cf-479a-a258-444094f0ecd8">6</a></sup>: {'_id': 'myid', 'doc_type': 'A', 'id': u&#8217;idofapplication'}
 
  In [7]: a._id
- Out<sup class="footnote"><a href="#fn28b0509d-a791-433e-8185-c42379b712d9">7</a></sup>: 'myid'
+ Out<sup class="footnote"><a href="#fn5f9f738d-6402-4903-bb94-439c7e6eaf3e">7</a></sup>: 'myid'
 
  In [8]: a.id
- Out<sup class="footnote"><a href="#fn17053cd7-10da-45c4-9ea1-d11e2d626105">8</a></sup>: 'idofapplication'
+ Out<sup class="footnote"><a href="#fn8922dd47-b08f-43a7-802a-4dda9ed972f6">8</a></sup>: 'idofapplication'
 
  In [9]: s = Server()
 
@@ -138,7 +140,7 @@
  In [12]: a.save()
 
  In [13]: a._doc
- Out<sup class="footnote"><a href="#fnfccaef40-8ffa-47f7-ab63-14b21b9de963">13</a></sup>:
+ Out<sup class="footnote"><a href="#fnace8559c-a5fc-4020-8df0-781d02f1f135">13</a></sup>:
  {'_id': u&#8217;myid',
  '_rev': u&#8217;1-676990679',
  'doc_type': 'A',
@@ -147,10 +149,10 @@
  In [14]: b = A.get('myid')
 
  In [15]: b.id
- Out<sup class="footnote"><a href="#fn2b48f7c5-75e0-4b5e-aba0-ff1015bf8d44">15</a></sup>: u&#8217;idofapplication'
+ Out<sup class="footnote"><a href="#fn346a7bf4-1f3c-41ef-a807-bd690005ab88">15</a></sup>: u&#8217;idofapplication'
 
  In [16]: b._id
- Out<sup class="footnote"><a href="#fn7cf8c3ca-fb37-4892-b066-38ee24492c9b">16</a></sup>: u&#8217;myid'
+ Out<sup class="footnote"><a href="#fnbaccbe29-f613-4fac-83ed-34fb27b92c80">16</a></sup>: u&#8217;myid'
 </pre>
         <footer>
              <p><span class='comments'><a href='/blog/2009-06-25-Couchdbkit-0.1.7-released.html#disqus_thread'>View Comments</a></span></p>
