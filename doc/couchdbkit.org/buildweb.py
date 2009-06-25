@@ -173,7 +173,7 @@ class Site(object):
             self.process_directory(root, files, target_path)
             
         if self.feed:
-            self.feed.sort(lambda a, b: a['pubDate'] - b['pubDate'])
+            self.feed.sort(lambda a, b: a['pubDate'] - b['pubDate'], reverse=True)
             self.generate_rss()
         
         if self.sitemap:
