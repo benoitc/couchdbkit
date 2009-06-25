@@ -1,0 +1,73 @@
+title: Couchdbkit version 0.1.7 released
+content_type: textile
+page_type: blog
+template: blog/post.html
+
+Just released Couchdbkit 0.1.7. Next version will be 0.2 and will have some new features like :
+
+* Dump/Loads utilities
+* New view iterator system that would allow us to use less CPU
+* Aggregation : A way to combine multiple views in one
+* ReferenceProperty: Link documents between themselves
+* ...
+
+Changes for this version are following:
+
+h2. Fixes
+
+
+* documentation typos
+* database name encoding. 
+* list are correctly handled in DictProperty
+
+h2. Breaking changes
+
+I introduced a *breaking change* in latest tip of couchdbkit. Now id and rev members of `schema.Document` aren't alias to _id and _rev. It allow you to use id and rev like you want in CouchDB. It also means that you need to set yourdoc._id to set the id of a schema. I made this change since it seems that a lot of you need it. So here it is. Please test it and let me know if anything is wrong.
+
+A little example :
+ 
+<pre class="code prettyprint">
+ In [1]: from couchdbkit import *
+
+ In [2]: class A(Document):
+   ...:     pass
+   ...:
+
+ In [3]: a = A()
+
+ In [4]: a._id = "myid"
+
+ In [5]: a.id = "idofapplication"
+
+ In [6]: a._doc
+ Out[6]: {'_id': 'myid', 'doc_type': 'A', 'id': u'idofapplication'}
+
+ In [7]: a._id
+ Out[7]: 'myid'
+
+ In [8]: a.id
+ Out[8]: 'idofapplication'
+
+ In [9]: s = Server()
+
+ In [10]: db = s['couchdbkit_test3']
+
+ In [11]: A._db = db
+
+ In [12]: a.save()
+
+ In [13]: a._doc
+ Out[13]:
+ {'_id': u'myid',
+ '_rev': u'1-676990679',
+ 'doc_type': 'A',
+ 'id': u'idofapplication'}
+
+ In [14]: b = A.get('myid')
+
+ In [15]: b.id
+ Out[15]: u'idofapplication'
+
+ In [16]: b._id
+ Out[16]: u'myid'
+</pre>

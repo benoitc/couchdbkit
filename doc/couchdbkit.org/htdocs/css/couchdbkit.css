@@ -231,6 +231,18 @@ article p span.comments {
     margin-left: 5px;
 }
 
+article ul {
+    list-style-type: disc;
+    list-style-position: inside;
+    
+    padding-left: 1em;
+    	text-indent: -1em;
+}
+
+article footer {
+    display: block;
+    padding-top: 10px;
+}
 span.comments a {
     text-transform: lowercase;
     color:#525252;
