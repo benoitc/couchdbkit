@@ -101,9 +101,9 @@ class LoaderTestCase(unittest.TestCase):
         fsignature = sign_file(os.path.join(self.app_dir, '_attachments/index.html'))
         self.assert_(signature==fsignature)
         
-    def testSync(self):
+    def _sync(self, atomic=True):
         l = FileSystemDocsLoader(self.tempdir)
-        l.sync(self.db, verbose=True)
+        l.sync(self.db, atomic=atomic, verbose=True)
         # any design doc created ?
         design_doc = None
         try:
@@ -142,6 +142,11 @@ class LoaderTestCase(unittest.TestCase):
         self.assertFalse('"template"' in design_doc['shows']['example-show'])
         self.assert_('Resig' in design_doc['shows']['example-show'])
         
+    def testSync(self):
+        self._sync()
+        
+    def testSyncNonAtomic(self):
+        self._sync(atomic=False)
         
 if __name__ == '__main__':
     unittest.main()

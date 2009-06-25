@@ -26,9 +26,12 @@ Current loaders are FileSystemDocsLoader and FileSystemDocLoader. The first
 one take a directory and retrieve all design docs before sending them to
 CouchDB. Second allow you to send only one design doc.
 """
+from __future__ import with_statement
 
+import base64
 import copy
 import httplib
+import mimetypes
 import os
 import socket
 import sys
@@ -66,7 +69,7 @@ class BaseDocsLoader(object):
     def get_docs(self):
         raise NotImplementedError
     
-    def sync(self, dbs, verbose=False):
+    def sync(self, dbs, atomic=True, verbose=False):
         if not isinstance(dbs, (list, tuple)):
             dbs = [dbs]
         
@@ -101,9 +104,14 @@ class BaseDocsLoader(object):
                     if '_rev' in current:
                         new_doc['_rev'] = current.get('_rev')
                         
-                db[docid] = new_doc
-                if docid.startswith('_design/'):
-                    self.send_attachments(db, doc, verbose=verbose)
+                if not atomic:
+                    db[docid] = new_doc
+                    if docid.startswith('_design/'):
+                        self.send_attachments(db, doc, verbose=verbose)
+                else:
+                    if docid.startswith('_design/'):
+                        self.encode_attachments(db, doc, new_doc, verbose=verbose)
+                    db[docid] = new_doc
             
     def _put_attachment(self, db, doc, content, filename, content_length=None, 
             verbose=False):
@@ -129,6 +137,54 @@ class BaseDocsLoader(object):
                     print >>sys.stderr, "%s file not uploaded, sorry." % filename
                 break
             
+    def encode_attachments(self, db, design_doc,new_doc, verbose=False):
+        # init vars
+        all_signatures = {}                  
+        if not 'couchapp' in design_doc:
+            design_doc['couchapp'] = {}
+        
+        _signatures = design_doc['couchapp'].get('signatures', {})
+        _length = design_doc['couchapp'].get('length', {})
+        _attachments = design_doc.get('_attachments', {})
+        docid = design_doc['_id']
+        
+        attachments = _attachments.copy()
+        current_design = {}
+        try:
+            current_design = db[docid]
+        except ResourceNotFound:
+            pass
+            
+        new_attachments = current_design.get('_attachments', {})
+        metadata = current_design.get('couchapp', {})
+        if 'signatures' in metadata:
+            all_signatures = metadata['signatures'].copy()
+            for filename in metadata['signatures'].iterkeys():
+                if not filename not in _signatures:
+                    del new_attachments[filename]
+                    del all_signatures[filename]
+                elif _signatures[filename] == metadata['signatures'][filename]:
+                    del attachments[filename]
+
+        for filename, value in attachments.iteritems():
+            content_length = _length.get(filename, None)
+            if verbose:
+                print "Attaching %s (%s)" % (filename, content_length)
+            
+            with open(value, "rb") as f:
+                new_attachments[filename] = {
+                    "content_type": ';'.join(filter(None, mimetypes.guess_type(filename))),
+                    "data": base64.b64encode(f.read()),
+                }
+                     
+        # update signatures
+        if not 'couchapp' in new_doc:
+            new_doc['couchapp'] = {}
+
+        all_signatures.update(_signatures)
+        new_doc['couchapp'].update({'signatures': _signatures})
+        new_doc['_attachments'] = new_attachments
+                
     def send_attachments(self, db, design_doc, verbose=False):
         # init vars
         all_signatures = {}                  
@@ -158,10 +214,10 @@ class BaseDocsLoader(object):
             if verbose:
                 print "Attaching %s (%s)" % (filename, content_length)
             
-            f = open(value, "rb")
-            # fix issue with httplib that raises BadStatusLine
-            # error because it didn't close the connection
-            self._put_attachment(db, current_design, f, filename, 
+            with open(value, "rb") as f:
+                # fix issue with httplib that raises BadStatusLine
+                # error because it didn't close the connection
+                self._put_attachment(db, current_design, f, filename, 
                     content_length=content_length, verbose=verbose)
                      
         # update signatures
@@ -172,7 +228,6 @@ class BaseDocsLoader(object):
         all_signatures.update(_signatures)
         current_design['couchapp'].update({'signatures': all_signatures})
         db[docid] = current_design
-                
 
 class FileSystemDocsLoader(BaseDocsLoader):
     """ Load docs from the filesystem. This loader can find docs
