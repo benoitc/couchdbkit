@@ -49,7 +49,7 @@ Here is the code to save a greet on database Greeting. We also see how to create
  db(greet).save()
 </pre>
 
-Your document `greet` in `greetings` db. Each document is savec with a `doc_type` field that allow you to find easily each kind of document with the views. By default `doc_type` is the name of the class.
+Your document `greet` in `greetings` db. Each document is saved with a `doc_type` field that allow you to find easily each kind of document with the views. By default `doc_type` is the name of the class.
 
 Now that you saved your document, you can update it :
 
