@@ -24,7 +24,9 @@ h2. Fixes
 
 h2. Breaking changes
 
-I introduced a *breaking change* in latest tip of couchdbkit. Now id and rev members of `schema.Document` aren't alias to _id and _rev. It allow you to use id and rev like you want in CouchDB. It also means that you need to set yourdoc._id to set the id of a schema. I made this change since it seems that a lot of you need it. So here it is. Please test it and let me know if anything is wrong.
+I introduced a *breaking change* in latest version of couchdbkit. Now id and rev members of `schema.Document` aren't alias to _id and _rev. It allows you to use id and rev like you want in CouchDB. It also means that you need to set yourdoc._id to set the id of a document. I made this change since it seems that a lot of you need it. So here it is. 
+
+Please test it and let me know if anything is wrong.
 
 A little example :
  
