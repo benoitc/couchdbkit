@@ -43,7 +43,10 @@ class ClientServerTestCase(unittest.TestCase):
         all_dbs = self.Server.all_dbs()
         self.assert_('couchdbkit_test' in all_dbs)
         del self.Server['couchdbkit_test']
-
+        res = self.Server.create_db("couchdbkit/test")
+        self.assert_('couchdbkit/test' in self.Server.all_dbs())
+        del self.Server['couchdbkit/test']
+        
     def testGetOrCreateDb(self):
         # create the database
         self.assertFalse("get_or_create_db" in self.Server)

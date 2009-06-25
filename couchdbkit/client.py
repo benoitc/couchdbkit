@@ -98,10 +98,8 @@ class Server(object):
 
         @return: Database instance if it's ok or dict message
         """
-        
-        if "/" in dbname:
-            dbname = url_quote(dbname, safe=":")
-        res = self.res.put('/%s/' % validate_dbname(dbname))
+        _dbname = url_quote(validate_dbname(dbname), safe=":")
+        res = self.res.put('/%s/' % _dbname)
         if res['ok']:
             return Database(self, dbname)
         return res['ok']
@@ -121,8 +119,6 @@ class Server(object):
         """
         Delete database
         """
-        if "/" in dbname:
-            dbname = url_quote(dbname, safe=":")
         del self[dbname]
         
     def next_uuid(self, count=None):
@@ -145,7 +141,7 @@ class Server(object):
         raise ResourceNotFound
         
     def __delitem__(self, dbname):
-        return self.res.delete('/%s/' % validate_dbname(dbname))
+        return self.res.delete('/%s/' % url_quote(dbname, safe=":"))
         
     def __contains__(self, dbname):
         if dbname in self.all_dbs():
@@ -181,7 +177,7 @@ class Database(object):
         self.dbname = validate_dbname(dbname)
         self.server = server
         self.res = server.res.clone()
-        self.res.update_uri('/%s' % dbname)
+        self.res.update_uri('/%s' % url_quote(dbname, safe=":"))
     
     def __repr__(self):
         return "<%s %s>" % (self.__class__.__name__, self.dbname)
