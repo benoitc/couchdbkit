@@ -382,7 +382,16 @@ class FileSystemDocsLoader(BaseDocsLoader):
                 try:
                     content = read_file(current_path)
                 except UnicodeDecodeError, e:
-                    print >>sys.stderr, str(e)
+                    if verbose >= 2:
+                        print >>sys.stderr, "%s isn't encoded in utf8" % current_path
+                    content = self.ui.read(current_path, utf8=False)
+                    try:
+                        content.encode('utf-8')
+                    except UnicodeError, e:
+                        print >>sys.stderr, "plan B didn't work, %s is a binary" % current_path
+                        print >>sys.stderr, "use plan C: encode to base64"
+                        content = "base64-encoded;%s" % base64.b64encode(content)
+                        
                 if name.endswith('.json'):
                     try:
                         content = json.loads(content)

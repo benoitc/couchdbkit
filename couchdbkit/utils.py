@@ -18,8 +18,9 @@
 
 """
 Mostly utility functions couchdbkit uses internally that don't
-really belong anywhere else in the modules."""
-
+really belong anywhere else in the modules.
+"""
+from __future__ import with_statement
 
 import codecs
 import string
@@ -55,17 +56,18 @@ def to_bytestring(s):
     else:
         return s
     
-def read_file(fname):
+def read_file(fname, utf8=True, force_read=False):
     """ read file content"""
-    
-    try:
-        f = codecs.open(fname, 'rb', "utf-8")
-        data = f.read()
-    except UnicodeDecodeError, e:
-        f = open(fname, 'rb')
-        data = f.read()
-    finally:
-        f.close()
+    if utf8:
+        try:
+            with codecs.open(fname, 'rb', "utf-8") as f:
+                data = f.read()
+        except UnicodeError, e:
+            if force_read:
+                return read_file(fname, utf8=False)
+    else:
+        with open(fname, 'rb') as f:
+            data = f.read()
     return data
 
 def sign_file(file_path):
@@ -76,7 +78,7 @@ def sign_file(file_path):
     :return: string, md5 hexdigest
     """
     if os.path.isfile(file_path):
-        content = read_file(file_path)
+        content = read_file(file_path, force_read=True)
         return md5(to_bytestring(content)).hexdigest()
     return ''
 
@@ -110,7 +112,7 @@ def read_json(filename, use_environment=False):
     :return: dict or list
     """
     try:
-        data = read_file(filename)
+        data = read_file(filename, force_read=True)
     except IOError, e:
         if e[0] == 2:
             return {}
