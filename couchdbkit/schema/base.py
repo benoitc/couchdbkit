@@ -389,6 +389,7 @@ class DocumentBase(DocumentSchema):
     _db = None
 
     def __init__(self, d=None, **kwargs):
+        docid = None
         if 'id' in kwargs:
             docid = kwargs.pop('id')
         DocumentSchema.__init__(self, d, **kwargs)
