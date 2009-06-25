@@ -39,7 +39,7 @@ __all__ = ['ReservedWordError', 'ALLOWED_PROPERTY_TYPES', 'DocumentSchema',
 
 _RESERVED_WORDS = ['_id', '_rev', '$schema', 'type']
 
-_NODOC_WORDS = ['doc_type','id', 'rev', 'type']
+_NODOC_WORDS = ['doc_type', 'type']
 
 def check_reserved_words(attr_name):
     if attr_name in _RESERVED_WORDS:
@@ -402,22 +402,11 @@ class DocumentBase(DocumentSchema):
 
     def __init__(self, d=None, **kwargs):
         docid = None
-        if 'id' in kwargs:
-            docid = kwargs.pop('id')
-        elif '_id' in kwargs:
+        if '_id' in kwargs:
             docid = kwargs.pop('_id')
         DocumentSchema.__init__(self, d, **kwargs)
         if docid is not None:
             self._doc['_id'] = valid_id(docid)
-    
-    def _get_id(self):
-        return self._doc.get('_id', None)
-
-    def _set_id(self, docid):
-        self._doc['_id'] = valid_id(docid)
-    id = property(_get_id, _set_id)
-
-    rev = property(lambda self: self._doc.get('_rev'))
 
     @classmethod
     def set_db(cls, db):

@@ -141,13 +141,13 @@ class DocumentTestCase(unittest.TestCase):
         doc.string2 = "test2"
 
         doc.save()
-        self.assert_(doc.id is not None)
-        doc1 = db.get(doc.id)
+        self.assert_(doc._id is not None)
+        doc1 = db.get(doc._id)
         self.assert_(doc1['string2'] == "test2")
 
         doc2 = Test(string3="test")
         doc2.save()
-        doc3 = db.get(doc2.id)
+        doc3 = db.get(doc2._id)
         self.assert_(doc3['string3'] == "test")
 
         self.server.delete_db('couchdbkit_test')
@@ -161,11 +161,11 @@ class DocumentTestCase(unittest.TestCase):
             string = StringProperty()
 
         doc1 = Test(string="test")
-        self.assert_(doc1.id is None)
+        self.assert_(doc1._id is None)
         doc2 = Test(string="test2")
-        self.assert_(doc2.id is None)
+        self.assert_(doc2._id is None)
         doc3 = Test(string="test3")
-        self.assert_(doc3.id is None)
+        self.assert_(doc3._id is None)
 
         try:
             Test.bulk_save( [doc1, doc2, doc3] )
@@ -180,12 +180,12 @@ class DocumentTestCase(unittest.TestCase):
             self.assert_(str(e) == "one of your documents does not have the correct type" )
 
         Test.bulk_save( [doc1, doc2, doc3] )
-        self.assert_(doc1.id is not None)
-        self.assert_(doc1.rev is not None)
-        self.assert_(doc2.id is not None)
-        self.assert_(doc2.rev is not None)
-        self.assert_(doc3.id is not None)
-        self.assert_(doc3.rev is not None)
+        self.assert_(doc1._id is not None)
+        self.assert_(doc1._rev is not None)
+        self.assert_(doc2._id is not None)
+        self.assert_(doc2._rev is not None)
+        self.assert_(doc3._id is not None)
+        self.assert_(doc3._rev is not None)
         self.assert_(doc1.string == "test")
         self.assert_(doc2.string == "test2")
         self.assert_(doc3.string == "test3")
@@ -204,13 +204,13 @@ class DocumentTestCase(unittest.TestCase):
         doc = Test()
         doc.string2 = "test2"
         doc.save()
-        doc2 = Test.get(doc.id)
+        doc2 = Test.get(doc._id)
 
         self.assert_(doc2.string2 == "test2")
     
         doc2.string3 = "blah"
         doc2.save()
-        doc3 = db.get(doc2.id)
+        doc3 = db.get(doc2._id)
         self.assert_(doc3)
 
         self.server.delete_db('couchdbkit_test')
@@ -228,7 +228,7 @@ class DocumentTestCase(unittest.TestCase):
                 field4=decimal.Decimal("45.4"),
                 field5=4.4)
         doc.save()
-        doc1 = Test.get(doc.id)
+        doc1 = Test.get(doc._id)
         self.server.delete_db('couchdbkit_test')
 
         self.assert_(isinstance(doc1.field, basestring))
@@ -270,10 +270,10 @@ class DocumentTestCase(unittest.TestCase):
         doc3.save()
         doc4.save()
      
-        get1 = Test.get(doc1.id)
-        get2 = Test2.get(doc2.id)
-        get3 = Test2.get(doc3.id)
-        get4 = Test3.get(doc4.id)
+        get1 = Test.get(doc1._id)
+        get2 = Test2.get(doc2._id)
+        get3 = Test2.get(doc3._id)
+        get4 = Test3.get(doc4._id)
 
 
         self.server.delete_db('couchdbkit_test')
@@ -469,10 +469,10 @@ class DocumentTestCase(unittest.TestCase):
         a.save()
   
         text_attachment = u"un texte attaché"
-        old_rev = a.rev
+        old_rev = a._rev
 
         a.put_attachment(text_attachment, "test", "text/plain")
-        self.assert_(old_rev != a.rev)
+        self.assert_(old_rev != a._rev)
         fetch_attachment = a.fetch_attachment("test")
         self.assert_(text_attachment == fetch_attachment)
         self.server.delete_db('couchdbkit_test')
@@ -489,7 +489,7 @@ class DocumentTestCase(unittest.TestCase):
         a.save()
         
         text_attachment = "un texte attaché"
-        old_rev = a.rev
+        old_rev = a._rev
         
         a.put_attachment(text_attachment, "test", "text/plain")
         a.delete_attachment('test')
@@ -510,11 +510,11 @@ class DocumentTestCase(unittest.TestCase):
         a.s = "test"
         dbsession(a).save()
         
-        b = dbsession(A).get(a.id)
+        b = dbsession(A).get(a._id)
 
         self.assert_(b.s == "test")
         
-        c = A.get(a.id)
+        c = A.get(a._id)
         self.assert_(c.s == "test")
         
         self.server.delete_db('couchdbkit_test')
@@ -540,10 +540,10 @@ class DocumentTestCase(unittest.TestCase):
         a2.s = "test2"
         session2(a2).save()
 
-        b = session(A).get(a.id)
+        b = session(A).get(a._id)
         self.assert_(b.s == "test")
 
-        b2 = session2(A).get(a2.id)
+        b2 = session2(A).get(a2._id)
         self.assert_(b2.s == "test2")
 
         self.server.delete_db('couchdbkit_test')
@@ -680,7 +680,7 @@ class PropertyTestCase(unittest.TestCase):
         self.assert_(isinstance(test.field1, datetime.datetime))
         Test._db = self.db
         test.save()
-        doc2 = Test.get(test.id)
+        doc2 = Test.get(test._id)
         
         v = doc2.field
         v1 = doc2.field1
@@ -700,7 +700,7 @@ class PropertyTestCase(unittest.TestCase):
 
         test.save()
 
-        doc2 = Test.get(test.id)
+        doc2 = Test.get(test._id)
 
         v1 = doc2.field1
         vd = doc2.dynamic_field
@@ -726,7 +726,7 @@ class PropertyTestCase(unittest.TestCase):
         MyDoc._db = self.db
 
         doc.save()
-        doc2 = MyDoc.get(doc.id)
+        doc2 = MyDoc.get(doc._id)
         
         self.assert_(isinstance(doc2.schema, MySchema) == True)
         self.assert_(doc2.schema.astring == u"test")
@@ -908,7 +908,7 @@ class PropertyTestCase(unittest.TestCase):
         
         a.save()
         
-        b = A.get(a.id)
+        b = A.get(a._id)
         self.assert_(len(b.l) == 2)
         self.assert_(b.l[0] == datetime(2009, 4, 13, 22, 56, 10))
         self.assert_(b._doc['l'] == ['2009-04-13T22:56:10Z', {'s': 'test'}])
@@ -1017,7 +1017,7 @@ class PropertyTestCase(unittest.TestCase):
         a.d['d']['s'] = "level2"
         self.assert_(a._doc == {'d': {'d': {'s': 'level2'}, 's': 'level1'}, 'doc_type': 'A'})
         a.save()
-        a1 = A.get(a.id)
+        a1 = A.get(a._id)
         a1.d['d']['s'] = "level2 edited"
         self.assert_(a1.d['d']['s'] == "level2 edited")
         self.assert_(a1._doc['d']['d']['s'] == "level2 edited")
@@ -1105,7 +1105,7 @@ class PropertyTestCase(unittest.TestCase):
         self.assert_(a._doc == {'d': {'d': {'s': 'level2'}, 's': 'level1'}, 'doc_type': 'A', 's': u'test'})
         a.save()
         
-        a1 = A.get(a.id)
+        a1 = A.get(a._id)
         a1.d['d']['s'] = "level2 edited"
         self.assert_(a1.d['d']['s'] == "level2 edited")
 
@@ -1134,7 +1134,7 @@ class PropertyTestCase(unittest.TestCase):
         )
         a.save()
         
-        a1 = A.get(a.id)
+        a1 = A.get(a._id)
         self.assert_(a1.l == [1,
          datetime(2009, 5, 12, 13, 35, 9),
          {u'date': datetime(2009, 5, 12, 13, 35, 9), u's': u'test'}]

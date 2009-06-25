@@ -288,7 +288,7 @@ class SessionDatabaseTestCase(unittest.TestCase):
         a = A()
         a.save()
     
-        self.assert_(a.id in self.db)
+        self.assert_(a._id in self.db)
         
     def testDocumentWithSession2(self):
         class A(Document):
@@ -296,7 +296,7 @@ class SessionDatabaseTestCase(unittest.TestCase):
 
         a = A()
         self.session(a).save()
-        self.assert_(a.id in self.db)
+        self.assert_(a._id in self.db)
         
     def testDocumentWithSession3(self):
         class A(Document):
@@ -305,7 +305,7 @@ class SessionDatabaseTestCase(unittest.TestCase):
         A.set_db(self.session)
         a = A()
         a.save()
-        self.assert_(a.id in self.db)
+        self.assert_(a._id in self.db)
         
     def testCustomDatabaseClass(self):
         class CustomDatabase(Database):
