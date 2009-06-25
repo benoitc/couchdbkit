@@ -46,6 +46,11 @@ def check_reserved_words(attr_name):
         raise ReservedWordError(
             "Cannot define property using reserved word '%(attr_name)s'." % 
             locals())
+            
+def valid_id(value):
+    if isinstance(value, basestring) and not value.startswith('_'):
+        return value
+    raise TypeError('id "%s" is invalid' % value)
 
 class SchemaProperties(type):
 
@@ -174,39 +179,44 @@ class DocumentSchema(object):
         start with '_') a,d add it to `_dynamic_properties` dict. If value is 
         a list or a dict we use LazyList and LazyDict to maintain in the value.
         """
-        check_reserved_words(key)
-        if not hasattr( self, key ) and not self._allow_dynamic_properties:
-            raise AttributeError("%s is not defined in schema (not a valid property)" % key)
-            
-        if not key.startswith('_') and \
-                key not in self.properties() and \
-                key not in dir(self): 
-            if type(value) not in ALLOWED_PROPERTY_TYPES and \
-                    not isinstance(value, (p.Property,)):
-                raise TypeError("Document Schema cannot accept values of type '%s'." %
-                        type(value).__name__)
-                        
-            if self._dynamic_properties is None:
-                self._dynamic_properties = {}
-                
-            if isinstance(value, dict):
-                if key not in self._doc:
-                    self._doc[key] = {}
-                value = LazyDict(value, self._doc[key])
-            elif isinstance(value, list):
-                if key not in self._doc:
-                    self._doc[key] = []
-                value = LazyList(value, self._doc[key])
-            self._dynamic_properties[key] = value
-
-            if not isinstance(value, (p.Property,)) and \
-                    not isinstance(value, dict) and \
-                    not isinstance(value, list):
-                if callable(value):
-                    value = value()
-                self._doc[key] = convert_property(value)
+        
+        if key == "_id" and valid_id(value):
+            self._doc['_id'] = value
         else:
-            object.__setattr__(self, key, value)
+            check_reserved_words(key)
+            if not hasattr( self, key ) and not self._allow_dynamic_properties:
+                raise AttributeError("%s is not defined in schema (not a valid property)" % key)
+            
+        
+            elif not key.startswith('_') and \
+                    key not in self.properties() and \
+                    key not in dir(self): 
+                if type(value) not in ALLOWED_PROPERTY_TYPES and \
+                        not isinstance(value, (p.Property,)):
+                    raise TypeError("Document Schema cannot accept values of type '%s'." %
+                            type(value).__name__)
+                        
+                if self._dynamic_properties is None:
+                    self._dynamic_properties = {}
+                
+                if isinstance(value, dict):
+                    if key not in self._doc:
+                        self._doc[key] = {}
+                    value = LazyDict(value, self._doc[key])
+                elif isinstance(value, list):
+                    if key not in self._doc:
+                        self._doc[key] = []
+                    value = LazyList(value, self._doc[key])
+                self._dynamic_properties[key] = value
+
+                if not isinstance(value, (p.Property,)) and \
+                        not isinstance(value, dict) and \
+                        not isinstance(value, list):
+                    if callable(value):
+                        value = value()
+                    self._doc[key] = convert_property(value)
+            else:
+                object.__setattr__(self, key, value)
 
     def __delattr__(self, key):
         """ delete property
@@ -224,6 +234,8 @@ class DocumentSchema(object):
         """
         if self._dynamic_properties and key in self._dynamic_properties:
             return self._dynamic_properties[key]
+        elif key == "_id" or key == "_rev":
+            return self._doc.get(key)
         return getattr(super(DocumentSchema, self), key)
     
     def __getitem__(self, key):
@@ -392,16 +404,17 @@ class DocumentBase(DocumentSchema):
         docid = None
         if 'id' in kwargs:
             docid = kwargs.pop('id')
+        elif '_id' in kwargs:
+            docid = kwargs.pop('_id')
         DocumentSchema.__init__(self, d, **kwargs)
-        self._doc['_id'] = docid
+        if docid is not None:
+            self._doc['_id'] = valid_id(docid)
     
     def _get_id(self):
         return self._doc.get('_id', None)
 
     def _set_id(self, docid):
-        if not isinstance(docid, basestring):
-            raise TypeError('doc id should be a string')
-        self._doc['_id'] = docid
+        self._doc['_id'] = valid_id(docid)
     id = property(_get_id, _set_id)
 
     rev = property(lambda self: self._doc.get('_rev'))
