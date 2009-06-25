@@ -135,7 +135,12 @@ class ClientDatabaseTestCase(unittest.TestCase):
         db['test2'] = doc2
         self.assert_(db.doc_exist('test2'))
         del self.Server['couchdbkit_test']
-
+        
+        db = self.Server.create_db('couchdbkit/test')
+        doc1 = { '_id': 'test', 'string': 'test', 'number': 4 }
+        db.save_doc(doc1)
+        self.assert_(db.doc_exist('test'))
+        del self.Server['couchdbkit/test']
             
     def testUpdateDoc(self):
         db = self.Server.create_db('couchdbkit_test')

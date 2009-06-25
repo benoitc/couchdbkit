@@ -177,6 +177,8 @@ class Database(object):
         self.dbname = validate_dbname(dbname)
         self.server = server
         self.res = server.res.clone()
+        if "/" in dbname:
+            self.res.client.safe = ":/%"
         self.res.update_uri('/%s' % url_quote(dbname, safe=":"))
     
     def __repr__(self):
