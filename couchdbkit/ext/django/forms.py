@@ -232,7 +232,7 @@ class BaseDocumentForm(BaseForm):
         for prop_name in self.instance._doc.keys():
             if opts.properties and key not in opts.properties:
                 continue
-            if opts.exclude and prop_name in exclude:
+            if opts.exclude and prop_name in opts.exclude:
                 continue
             if prop_name in cleaned_data:
                 value = cleaned_data.pop(prop_name)
