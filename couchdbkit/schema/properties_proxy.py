@@ -131,6 +131,3 @@ class SchemaProperty(Property):
                 raise BadValueError("%s is not a dict" % str(value))
             value = schema(**value)
         return value._doc
-        
-        
-

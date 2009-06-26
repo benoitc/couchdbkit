@@ -1,0 +1,15 @@
+title: Couchdbkit version 0.1.7.1 released
+content_type: textile
+page_type: blog
+template: blog/post.html
+
+Quick fix release for "Couchdbkit":http://couchdbkit.org.
+
+You can download latest release on "Pypi":http://pypi.python.org/pypi/couchdbkit/0.1.7.1 or check "download page":../download.html for other ways.
+
+h2. Fixes :
+
+* Compatibility of Loaders with windows
+* Fix DocumentForm.save in django extension
+* Fix "/" in database name
+* Fix total_rows in views 

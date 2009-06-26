@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
-    <title>Couchdbkit - Couchdbkit Documentation</title>
+    <title>Couchdbkit - 
+    Couchdbkit version 0.1.7.1 released
+</title>
     <!--[if IE]>
 
     <script>
@@ -73,45 +75,29 @@
         
     
         
+
 <section id="content">
-    <h1>Couchdbkit Documentation</h1>
-    
-        <article class="item">
-            <header>
-                <h2><a href="/docs/formalchemy.html">Formalchemy extension</a></h2>
-            </header>
-            	<p>For the <a href="/docs/django-extension.html">Django extension</a> I wrote the object `DocumentForm` that allows you to create a Django Form class based on a Document class or instance of a Document. </p>
+    <article>
+        <header>
+            <h1>Couchdbkit version 0.1.7.1 released</h1>
+        </header>
+        	<p>Quick fix release for <a href="http://couchdbkit.org">Couchdbkit</a>.</p>
 
-	<p>But you don&#8217;t need to use Django to have this facility in your web application. If you use <a href="http://pylonshq.com/">Pylons</a> you already know <a href="http://code.google.com/p/formalchemy/">FormAlchemy</a>. FormAlchemy was originaly developped to map <a href="http://www.sqlalchemy.org/">SQLAlchemy</a> object in form but it now contain an extension for Couchdbkit too. </p>
-            <footer>
-                <p><a href="/docs/formalchemy.html">Read more ...</a></p>
-            </footer>
-        </article>
-    
-        <article class="item">
-            <header>
-                <h2><a href="/docs/gettingstarted.html">Getting started</a></h2>
-            </header>
-            	<p>This tutorial exposes key features of this library through mainly code<br />examples. For in-depth description of the modules, you&#8217;ll want to read <br />the <a href="/docs/api/">API</a>  documentation.</p>
+	<p>You can download latest release on <a href="http://pypi.python.org/pypi/couchdbkit/0.1.7.1">Pypi</a> or check <a href="../download.html">download page</a> for other ways.</p>
 
-	<p>If you have not installed couchdbkit yet, follow instruction on <a href="/download.html">download page</a> . Once you&#8217;ve done, you can write your first CouchDB document:</p>
-            <footer>
-                <p><a href="/docs/gettingstarted.html">Read more ...</a></p>
-            </footer>
-        </article>
-    
-        <article class="item">
-            <header>
-                <h2><a href="/docs/django-extension.html">The django extension</a></h2>
-            </header>
-            	<p>There are a lot of people trying to integrate CouchDB in their <a href="http://djangoproject.com">Django</a> application. Most of the implementations are very complicated. So I decided to release the code of couchdbkit extension for Django 1.0x.</p>
+	<h2>Fixes :</h2>
 
-	<p>This extension provides you a threadsafe access and mangement of documents and views in your django application with some usefull tools specific to Django.</p>
-            <footer>
-                <p><a href="/docs/django-extension.html">Read more ...</a></p>
-            </footer>
-        </article>
-    
+	<ul>
+		<li>Compatibility of Loaders with windows</li>
+		<li>Fix DocumentForm.save in django extension</li>
+		<li>Fix &quot;/&quot; in database name</li>
+		<li>Fix total_rows in views </li>
+	</ul>
+        <footer>
+             <p><span class='comments'><a href='/blog/1009-06-26-Couchdbkit-0.1.7.1.html#disqus_thread'>View Comments</a></span></p>
+        </footer>
+    </article>
+    <div id="disqus_thread"></div><script type="text/javascript" src="http://disqus.com/forums/couchdbkit/embed.js"></script><noscript><a href="http://couchdbkit.disqus.com/?url=ref">View the discussion thread.</a></noscript><a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
 </section>
 
         
@@ -125,5 +111,22 @@
     
     
     
+    <script>
+    //<![CDATA[
+    (function() {
+            
+    		var links = document.getElementsByTagName('a');
+    		var query = '?';
+    		for(var i = 0; i < links.length; i++) {
+    			if(links[i].href.indexOf('#disqus_thread') >= 0) {
+    				query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+    			}
+    		}
+    		document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/couchdbkit/get_num_replies.js' + query + '&disqus_developer=1"></' + 'script>');
+    	})();
+    //]]>
+    </script>
+    
+
 </body>
 </html>
