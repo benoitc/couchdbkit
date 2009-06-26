@@ -721,6 +721,8 @@ class ViewResults(object):
     @property
     def total_rows(self):
         """ return number of total rows in the view """
+        self._fetch_if_needed()
+        # reduce case, count number of lines
         if self._total_rows is None:
             return self.count()
         return self._total_rows
