@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <title>Couchdbkit - 
-    Couchdbkit news
+    Couchdbkit version 0.1.7.1 released
 </title>
     <!--[if IE]>
 
@@ -77,15 +77,27 @@
         
 
 <section id="content">
-    <ul>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2009-06-26-Couchdbkit-0.1.7.1.html">Couchdbkit version 0.1.7.1 released</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2009-06-16-Couchdbkit-site-launched.html">Couchdbkit website launched</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2009-06-25-Couchdbkit-0.1.7-released.html">Couchdbkit version 0.1.7 released</a></li>
-    
-    </ul>
+    <article>
+        <header>
+            <h1>Couchdbkit version 0.1.7.1 released</h1>
+        </header>
+        	<p>Quick fix release for <a href="http://couchdbkit.org">Couchdbkit</a>.</p>
+
+	<p>You can download latest release on <a href="http://pypi.python.org/pypi/couchdbkit/0.1.7.1">Pypi</a> or check <a href="../download.html">download page</a> for other ways.</p>
+
+	<h2>Fixes :</h2>
+
+	<ul>
+		<li>Compatibility of Loaders with windows</li>
+		<li>Fix DocumentForm.save in django extension</li>
+		<li>Fix &quot;/&quot; in database name</li>
+		<li>Fix total_rows in views </li>
+	</ul>
+        <footer>
+             <p><span class='comments'><a href='/blog/2009-06-26-Couchdbkit-0.1.7.1.html#disqus_thread'>View Comments</a></span></p>
+        </footer>
+    </article>
+    <div id="disqus_thread"></div><script type="text/javascript" src="http://disqus.com/forums/couchdbkit/embed.js"></script><noscript><a href="http://couchdbkit.disqus.com/?url=ref">View the discussion thread.</a></noscript><a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
 </section>
 
         
@@ -99,5 +111,22 @@
     
     
     
+    <script>
+    //<![CDATA[
+    (function() {
+            
+    		var links = document.getElementsByTagName('a');
+    		var query = '?';
+    		for(var i = 0; i < links.length; i++) {
+    			if(links[i].href.indexOf('#disqus_thread') >= 0) {
+    				query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+    			}
+    		}
+    		document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/couchdbkit/get_num_replies.js' + query + '&disqus_developer=1"></' + 'script>');
+    	})();
+    //]]>
+    </script>
+    
+
 </body>
 </html>
