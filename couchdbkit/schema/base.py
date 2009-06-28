@@ -285,6 +285,8 @@ class DocumentSchema(object):
         for prop, value in all_properties.iteritems():
             if value is not None:
                 yield (prop, value)
+                
+    iteritems = __iter__
 
     def items(self):
         """ return list of items
