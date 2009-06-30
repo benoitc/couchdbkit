@@ -340,7 +340,7 @@ class FileSystemDocsLoader(BaseDocsLoader):
             current_dir = app_dir
         for name in os.listdir(current_dir):
             current_path = os.path.join(current_dir, name)
-            rel_path = os.path.relpath(current_path, app_dir)
+            rel_path = relpath(current_path, app_dir)
             if name.startswith('.'):
                 continue
             elif name.startswith('_'):
@@ -438,7 +438,7 @@ class FileSystemDocsLoader(BaseDocsLoader):
                         continue
                     else:
                         file_path = os.path.join(root, filename)
-                        name = os.path.relpath(file_path, attach_dir)
+                        name = relpath(file_path, attach_dir)
                         if vendor is not None:
                             name = os.path.join('vendor', vendor, name)
                         _signatures[name] = sign_file(file_path)

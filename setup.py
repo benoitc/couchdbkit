@@ -56,6 +56,8 @@ to keep its simplicity when you manage it in python""",
     install_requires = [
         'py-restclient>=1.3',
         'simplejson'
-    ]
+    ],
+    
+    test_suite='tests',
 
 )
