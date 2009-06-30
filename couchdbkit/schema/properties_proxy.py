@@ -27,7 +27,7 @@ from couchdbkit.schema.properties import Property
 
 from couchdbkit.schema.base import DocumentSchema, ALLOWED_PROPERTY_TYPES
 
-__all__ = ['SchemaProperty', 'ListSchemaProperty']
+__all__ = ['SchemaProperty']
 
 class SchemaProperty(Property):
     """ Schema property. It allow you add a DocumentSchema instance 
