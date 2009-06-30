@@ -314,11 +314,9 @@ class Database(object):
         being automatically retried by proxies in the event of network
         segmentation and lost responses. (Idee from `Couchrest <http://github.com/jchris/couchrest/>`)
 
-        @param doc: dict 
-
-        @return: dict or list of dict: dict or list are updated 
+        @param doc: dict.  doc is updated 
         with doc '_id' and '_rev' properties returned 
-        by CouchDB server.
+        by CouchDB server when you save.
 
         """
         if doc is None:
