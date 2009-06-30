@@ -913,6 +913,17 @@ class PropertyTestCase(unittest.TestCase):
         self.assert_(b.l[0] == datetime(2009, 4, 13, 22, 56, 10))
         self.assert_(b._doc['l'] == ['2009-04-13T22:56:10Z', {'s': 'test'}])
         
+        
+        a = A(l=["a", "b", "c"])
+        a.save()
+        b = self.db.get(a._id, wrapper=A.wrap)
+        self.assert_(a.l == ["a", "b", "c"])
+        b.l = []
+        self.assert_(b.l == [])
+        self.assert_(b.to_json()['l'] == [])
+        
+       
+        
     def testListPropertyNotEmpty(self):
         from datetime import datetime
         class A(Document):
@@ -1111,6 +1122,17 @@ class PropertyTestCase(unittest.TestCase):
 
         self.assert_(a1._doc['d']['d']['s'] == "level2 edited")
         
+        class A2(Document):
+            pass
+        A2.set_db(self.db) 
+        a = A2(l=["a", "b", "c"])
+        a.save()
+        b = self.db.get(a._id, wrapper=A2.wrap)
+        self.assert_(b.l == ["a", "b", "c"])
+        b.l = []
+        self.assert_(b.l == [])
+        self.assert_(b.to_json()['l'] == [])
+        
     def testDynamicListProperty(self):
         from datetime import datetime
         class A(Document):
@@ -1185,6 +1207,18 @@ class PropertyTestCase(unittest.TestCase):
         a.l = [1, 2]
         self.assert_(a.l == [1,2])
         self.assert_(a._doc['l'] == [1,2])
+        
+
+        class A2(Document):
+            pass
+        A2.set_db(self.db) 
+        a = A2(d={"a": 1, "b": 2, "c": 3})
+        a.save()
+        b = self.db.get(a._id, wrapper=A2.wrap)
+        self.assert_(b.d == {"a": 1, "b": 2, "c": 3})
+        b.d = {}
+        self.assert_(b.d == {})
+        self.assert_(b.to_json()['d'] == {})
         
 if __name__ == '__main__':
     unittest.main()

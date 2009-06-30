@@ -28,7 +28,7 @@ from couchdbkit.client import Database
 from couchdbkit.schema import properties as p
 from couchdbkit.schema.properties import value_to_python, \
 convert_property, MAP_TYPES_PROPERTIES, ALLOWED_PROPERTY_TYPES, \
-LazyDict, LazyList
+LazyDict, LazyList, value_to_json
 from couchdbkit.exceptions import *
 from couchdbkit.resource import ResourceNotFound
 
@@ -108,14 +108,14 @@ class DocumentSchema(object):
     _doc = None
     _db = None
     
-    def __init__(self, d=None, **properties):
+    def __init__(self, _d=None, **properties):
         self._dynamic_properties = {} 
         self._doc = {}
 
-        if d is not None:
-            if not isinstance(d, dict):
+        if _d is not None:
+            if not isinstance(_d, dict):
                 raise TypeError('d should be a dict')
-            properties.update(d)
+            properties.update(_d)
             
         doc_type = getattr(self, '_doc_type', self.__class__.__name__)
         self._doc['doc_type'] = doc_type
@@ -200,13 +200,14 @@ class DocumentSchema(object):
                     self._dynamic_properties = {}
                 
                 if isinstance(value, dict):
-                    if key not in self._doc:
+                    if key not in self._doc or not value:
                         self._doc[key] = {}
                     value = LazyDict(value, self._doc[key])
                 elif isinstance(value, list):
-                    if key not in self._doc:
+                    if key not in self._doc or not value:
                         self._doc[key] = []
                     value = LazyList(value, self._doc[key])
+                    
                 self._dynamic_properties[key] = value
 
                 if not isinstance(value, (p.Property,)) and \
@@ -402,11 +403,11 @@ class DocumentBase(DocumentSchema):
     """
     _db = None
 
-    def __init__(self, d=None, **kwargs):
+    def __init__(self, _d=None, **kwargs):
         docid = None
         if '_id' in kwargs:
             docid = kwargs.pop('_id')
-        DocumentSchema.__init__(self, d, **kwargs)
+        DocumentSchema.__init__(self, _d, **kwargs)
         if docid is not None:
             self._doc['_id'] = valid_id(docid)
 
