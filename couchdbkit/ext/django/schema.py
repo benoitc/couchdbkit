@@ -50,13 +50,9 @@ class Document(schema.Document):
     """ Document object for django extension """
     __metaclass__ = DocumentMeta
     
-    def _get_id(self):
-        return self._id
-        
-    def _set_id(self, docid):
-        self._id = schema.valid_id(docid)
+    get_id = property(lambda self: self['_id'])
+    get_rev = property(lambda self: self['_rev'])
     
-    id = property(_get_id, _set_id)
     
 DocumentSchema = schema.DocumentSchema    
 
