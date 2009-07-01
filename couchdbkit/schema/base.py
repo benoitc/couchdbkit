@@ -35,7 +35,7 @@ from couchdbkit.resource import ResourceNotFound
 
 __all__ = ['ReservedWordError', 'ALLOWED_PROPERTY_TYPES', 'DocumentSchema', 
         'SchemaProperties', 'DocumentBase', 'QueryMixin', 'AttachmentMixin', 
-        'Document', 'StaticDocument']
+        'Document', 'StaticDocument', 'valid_id']
 
 _RESERVED_WORDS = ['_id', '_rev', '$schema', 'type']
 
