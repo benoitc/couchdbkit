@@ -483,7 +483,7 @@ class DocumentBase(DocumentSchema):
             return cls._db.get(docid, wrapper=cls.wrap)
         except ResourceNotFound:
             obj = cls()
-            obj.id = docid
+            obj._id = docid
             obj.save()
             return obj
   

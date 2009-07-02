@@ -563,10 +563,10 @@ class DocumentTestCase(unittest.TestCase):
         self.assertRaises(ResourceNotFound, no_exist)
 
         a = A.get_or_create('test')
-        self.assert_(a.id == "test")
+        self.assert_(a._id == "test")
         
         b = A.get_or_create()
-        self.assert_(a.id is not None)
+        self.assert_(a._id is not None)
         self.server.delete_db('couchdbkit_test')
 
 
