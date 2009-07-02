@@ -487,7 +487,23 @@ class DocumentBase(DocumentSchema):
             obj.save()
             return obj
   
-    new_document = property(lambda self: self._doc.get('_rev') is None) 
+    new_document = property(lambda self: self._doc.get('_rev') is None)
+    
+    def delete(self):
+        """ Delete document from the database.
+        @params db: couchdbkit.core.Database instance
+        """
+        if self._db is None:
+            raise TypeError("doc database required to save document")
+    
+        if self.new_document:
+            raise TypeError("the document is not saved")
+    
+        self._db.delete_doc(self._id)
+        
+        # reinit document
+        del self._doc['_id']
+        del self._doc['_rev']
     
 class AttachmentMixin(object):
     """
