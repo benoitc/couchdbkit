@@ -403,9 +403,10 @@ class Database(object):
             docid = self.escape_docid(doc['_id'])
             result = self.res.delete(docid, rev=doc['_rev'])
         elif isinstance(doc, basestring): # we get a docid
-            data = self.res.head(doc)
+            docid = self.escape_docid(doc)
+            data = self.res.head(docid)
             response = self.res.get_response()
-            result = self.res.delete(doc, 
+            result = self.res.delete(docid, 
                     rev=response['etag'].strip('"'))
         return result
         

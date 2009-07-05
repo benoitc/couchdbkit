@@ -243,6 +243,7 @@ class ClientDatabaseTestCase(unittest.TestCase):
         docid=doc['_id']
         db.delete_doc(doc)
         self.assert_(db.doc_exist(docid) == False)
+        
         del self.Server['couchdbkit_test']
 
     def testStatus404(self):
