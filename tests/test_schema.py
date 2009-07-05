@@ -963,7 +963,7 @@ class PropertyTestCase(unittest.TestCase):
         class B(Document):
             ls = StringListProperty()
         b = B()
-        b.ls.append("test")
+        b.ls.append(u"test")
         self.assertTrue(b.validate())
         b.ls.append(datetime.utcnow())
         self.assertRaises(BadValueError, b.validate)

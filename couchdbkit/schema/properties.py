@@ -501,12 +501,12 @@ class ListProperty(Property):
 
 
 class StringListProperty(ListProperty):
-    """ shorthand for list that should containe only str"""
+    """ shorthand for list that should containe only unicode"""
     
     def __init__(self, verbose_name=None, default=None, 
             required=False, **kwds):
         super(StringListProperty, self).__init__(verbose_name=verbose_name, 
-            default=default, required=required, item_type=str,**kwds)
+            default=default, required=required, item_type=unicode,**kwds)
 
 
 
