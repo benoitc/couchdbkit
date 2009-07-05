@@ -424,7 +424,7 @@ class DocumentBase(DocumentSchema):
             raise TypeError("doc database required to save document")
         return db
     
-    def save(self):
+    def save(self, **params):
         """ Save document in database.
             
         @params db: couchdbkit.core.Database instance
@@ -434,8 +434,11 @@ class DocumentBase(DocumentSchema):
             raise TypeError("doc database required to save document")
         
         doc = self.to_json()
-        self._db.save_doc(doc)
-        self._doc.update({'_id': doc['_id'], '_rev': doc['_rev']})
+        self._db.save_doc(doc, **params)
+        if '_id' in doc and '_rev' in doc:
+            self._doc.update({'_id': doc['_id'], '_rev': doc['_rev']})
+        elif '_id' in doc:
+            self._doc.update({'_id': doc['_id']})
         
     store = save
 

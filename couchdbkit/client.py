@@ -307,7 +307,7 @@ class Database(object):
             return None
         return doc_with_revs           
         
-    def save_doc(self, doc):
+    def save_doc(self, doc, **params):
         """ Save a document. It will use the `_id` member of the document 
         or request a new uuid from CouchDB. IDs are attached to
         documents on the client side because POST has the curious property of
@@ -317,6 +317,7 @@ class Database(object):
         @param doc: dict.  doc is updated 
         with doc '_id' and '_rev' properties returned 
         by CouchDB server when you save.
+        @param params, list of optionnal params, like batch="ok"
 
         """
         if doc is None:
@@ -327,14 +328,18 @@ class Database(object):
             
         if '_id' in doc:
             docid = self.escape_docid(doc['_id'])
-            res = self.res.put(docid, payload=doc)
+            res = self.res.put(docid, payload=doc, **params)
         else:
             try:
                 doc['_id'] = self.server.next_uuid()
-                res = self.res.put(doc['_id'], payload=doc)
+                res = self.res.put(doc['_id'], payload=doc, **params)
             except:
-                res = self.res.post(payload=doc)
-        doc.update({ '_id': res['id'], '_rev': res['rev']})
+                res = self.res.post(payload=doc, **params)
+                
+        if 'batch' in params and 'id' in res:
+            doc.update({ '_id': res['id']})
+        else:
+            doc.update({ '_id': res['id'], '_rev': res['rev']})
         
     def bulk_save(self, docs, use_uuids=True, all_or_nothing=False):
         """ bulk save. Modify Multiple Documents With a Single Request
@@ -594,6 +599,10 @@ class Database(object):
         except ResourceNotFound:
             return None
         return data
+        
+    def ensure_full_commit(self):
+        """ commit all docs in memory """
+        return self.res.post('_ensure_full_commit')
         
     def __len__(self):
         return self.info()['doc_count'] 
