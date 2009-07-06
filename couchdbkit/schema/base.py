@@ -243,7 +243,10 @@ class DocumentSchema(object):
         """ get property value
         """
         try:
-            return getattr(self, key)
+            attr = getattr(self, key)
+            if callable(attr):
+                raise AttributeError
+            return attr
         except AttributeError, e:
             if key in self._doc:
                 return self._doc[key]
