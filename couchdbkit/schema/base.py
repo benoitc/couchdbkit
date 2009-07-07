@@ -476,7 +476,7 @@ class DocumentBase(DocumentSchema):
         return cls._db.get(docid, rev=rev, wrapper=cls.wrap)
         
     @classmethod
-    def get_or_create(cls, docid=None, db=None, dynamic_properties=True):
+    def get_or_create(cls, docid=None, db=None, dynamic_properties=True, **params):
         """ get  or create document with `docid` """
         if db is not None:
             cls._db = db
@@ -488,15 +488,17 @@ class DocumentBase(DocumentSchema):
             
         if docid is None:
             obj = cls()
-            obj.save()
+            obj.save(**params)
             return obj
         
+        rev = params.pop('rev', None)
+        
         try:
-            return cls._db.get(docid, wrapper=cls.wrap)
+            return cls._db.get(docid, rev=rev, wrapper=cls.wrap, **params)
         except ResourceNotFound:
             obj = cls()
             obj._id = docid
-            obj.save()
+            obj.save(**params)
             return obj
   
     new_document = property(lambda self: self._doc.get('_rev') is None)
