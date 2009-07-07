@@ -100,14 +100,14 @@
 		<li>compatibility with python 2.5</li>
 		<li>iteritems is back in `DocumentSchema`</li>
 		<li>Fix LazyDict</li>
-		<li>docid with slashes are now properly encoded in all functions</li>
+		<li>docids with slashes are now properly encoded in all functions</li>
 		<li>Fix DocumentForm: make sure instance is passed in form.</li>
 	</ul>
 
 	<h2>Breaking changes</h2>
 
 	<ul>
-		<li>Accessing to document id in `Document`object is now done by using `_id` member. The same for revision (now `_rev`). It allows id and rev members. Since Django don&#8217;t like get_id() and get_rev() poperties has been created to allow access to these properties in templates.</li>
+		<li>Accessing to document id in `Document`object is now done by using `_id` member. The same for revision (now `_rev`). It allows id and rev members. Since Django don&#8217;t like get_id() and get_rev() methods have been created to allow access to these properties in templates.</li>
 		<li>Accept `unicode` instead str in `StringListProperty`</li>
 	</ul>
         <footer>

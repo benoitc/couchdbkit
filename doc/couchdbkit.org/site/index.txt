@@ -28,6 +28,8 @@ class Greeting(Document):
     content = StringProperty()
     date = DateTimeProperty()
     
+greet = Greeting()
+greet.author = "Me"
 greet.homepage = "http://couchdbkit.org"
 </pre>
 <p>Manage easily design docs in your Python application with <code>loaders</code>.</p> 
