@@ -209,7 +209,8 @@ class BaseDocumentForm(BaseForm):
             self.instance = opts.document()
             object_data = {}
         else:
-            object_data = document_to_dict(instance, opts.fields, opts.exclude) 
+            self.instance = instance
+            object_data = document_to_dict(instance, opts.properties, opts.exclude) 
     
         if initial is not None:
             object_data.update(initial)
