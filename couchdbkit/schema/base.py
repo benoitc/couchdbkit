@@ -446,17 +446,23 @@ class DocumentBase(DocumentSchema):
     store = save
 
     @classmethod
-    def bulk_save(cls, docs):
+    def bulk_save(cls, docs, use_uuids=True, all_or_nothing=False):
         """ Save multiple documents in database.
             
         @params docs: list of couchdbkit.schema.Document instance
+        @param use_uuids: add _id in doc who don't have it already set.
+        @param all_or_nothing: In the case of a power failure, when the database 
+        restarts either all the changes will have been saved or none of them. 
+        However, it does not do conflict checking, so the documents will 
+        be committed even if this creates conflicts.
+        
         """
         if cls._db is None:
             raise TypeError("doc database required to save document")
         docs_to_save= [doc._doc for doc in docs if doc._doc_type == cls._doc_type]
         if not len(docs_to_save) == len(docs):
             raise ValueError("one of your documents does not have the correct type")
-        cls._db.bulk_save(docs_to_save)
+        cls._db.bulk_save(docs_to_save, use_uuids=use_uuids, all_or_nothing=all_or_nothing)
     
     @classmethod
     def get(cls, docid, rev=None, db=None, dynamic_properties=True):
