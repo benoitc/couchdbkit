@@ -7,7 +7,7 @@ New release for "Couchdbkit":http://couchdbkit.org.
 
 You can download latest release on "Pypi":http://pypi.python.org/pypi/couchdbkit/0.1.8 or check "download page":../download.html for other ways.
 
-h3. New features :
+h2. New features :
 
 * add ensure_full_commit method to client and allow options in save.
 * add `delete` method to `Document` object
