@@ -1,0 +1,28 @@
+title: Couchdbkit version 0.1.8 released
+content_type: textile
+page_type: blog
+template: blog/post.html
+
+New release for "Couchdbkit":http://couchdbkit.org.
+
+You can download latest release on "Pypi":http://pypi.python.org/pypi/couchdbkit/0.1.8 or check "download page":../download.html for other ways.
+
+h3. New features :
+
+* add ensure_full_commit method to client and allow options in save.
+* add `delete` method to `Document` object
+* add possibility to pass options to `save`, `get_or_create Document methods
+* add missing options to `Document.bulk_save()`
+
+h2. Fixes :
+
+* compatibility with python 2.5
+* iteritems is back in `DocumentSchema`
+* Fix LazyDict
+* docid with slashes are now properly encoded in all functions
+* Fix DocumentForm: make sure instance is passed in form.
+
+h2. Breaking changes
+
+* Accessing to document id in `Document`object is now done by using `_id` member. The same for revision (now `_rev`). It liberate id and rev members. Since Django don't like get_id() and get_rev() poperties has been created to allow access to these properties in templates.
+* Accept `unicode` instead str in `StringListProperty`

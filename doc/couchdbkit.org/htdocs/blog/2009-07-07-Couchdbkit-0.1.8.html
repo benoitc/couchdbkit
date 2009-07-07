@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
-    <title>Couchdbkit - Couchdbkit news</title>
+    <title>Couchdbkit - 
+    Couchdbkit version 0.1.8 released
+</title>
     <!--[if IE]>
 
     <script>
@@ -73,64 +75,46 @@
         
     
         
+
 <section id="content">
-    <h1>couchdbkit project blog</h1>
-    
-        <article>
-            <header>
-                <h2><time title="Publised" datetime="2009-07-07" class="">2009-07-07</time> - <a href="/blog/2009-07-07-Couchdbkit-0.1.8.html">Couchdbkit version 0.1.8 released</a></h2>
-            </header>
-            	<p>New release for <a href="http://couchdbkit.org">Couchdbkit</a>.</p>
+    <article>
+        <header>
+            <h1>Couchdbkit version 0.1.8 released</h1>
+        </header>
+        	<p>New release for <a href="http://couchdbkit.org">Couchdbkit</a>.</p>
 
 	<p>You can download latest release on <a href="http://pypi.python.org/pypi/couchdbkit/0.1.8">Pypi</a> or check <a href="../download.html">download page</a> for other ways.</p>
-            <footer>
-                <p><a href="/blog/2009-07-07-Couchdbkit-0.1.8.html">Read more ...</a> <span class='comments'><a href='/blog/2009-07-07-Couchdbkit-0.1.8.html#disqus_thread'>View Comments</a></span></p>
-                
-            </footer>
-        </article>
-    
-        <article>
-            <header>
-                <h2><time title="Publised" datetime="2009-06-25" class="">2009-06-25</time> - <a href="/blog/2009-06-25-Couchdbkit-0.1.7-released.html">Couchdbkit version 0.1.7 released</a></h2>
-            </header>
-            	<p>Just released Couchdbkit 0.1.7. </p>
 
-	<p>Next version will be 0.2 and will have some new features :</p>
-            <footer>
-                <p><a href="/blog/2009-06-25-Couchdbkit-0.1.7-released.html">Read more ...</a> <span class='comments'><a href='/blog/2009-06-25-Couchdbkit-0.1.7-released.html#disqus_thread'>View Comments</a></span></p>
-                
-            </footer>
-        </article>
-    
-        <article>
-            <header>
-                <h2><time title="Publised" datetime="2009-06-26" class="">2009-06-26</time> - <a href="/blog/2009-06-26-Couchdbkit-0.1.7.1.html">Couchdbkit version 0.1.7.1 released</a></h2>
-            </header>
-            	<p>Quick fix release for <a href="http://couchdbkit.org">Couchdbkit</a>.</p>
+	<h3>New features :</h3>
 
-	<p>You can download latest release on <a href="http://pypi.python.org/pypi/couchdbkit/0.1.7.1">Pypi</a> or check <a href="../download.html">download page</a> for other ways.</p>
-            <footer>
-                <p><a href="/blog/2009-06-26-Couchdbkit-0.1.7.1.html">Read more ...</a> <span class='comments'><a href='/blog/2009-06-26-Couchdbkit-0.1.7.1.html#disqus_thread'>View Comments</a></span></p>
-                
-            </footer>
-        </article>
-    
-        <article>
-            <header>
-                <h2><time title="Publised" datetime="2009-06-16" class="">2009-06-16</time> - <a href="/blog/2009-06-16-Couchdbkit-site-launched.html">Couchdbkit website launched</a></h2>
-            </header>
-            	<p>Just launched <b>Couchdbkit</b> site at <a href="http://www.couchdbkit.org">couchdbkit.org</a>. </p>
+	<ul>
+		<li>add ensure_full_commit method to client and allow options in save.</li>
+		<li>add `delete` method to `Document` object</li>
+		<li>add possibility to pass options to `save`, `get_or_create Document methods</li>
+		<li>add missing options to `Document.bulk_save()`</li>
+	</ul>
 
-	<p>All this website is static. For this purpose I wrote a script to generate doc and news from differents text files. The <a href="http://lamsonproject.org/">Lamson project</a> used this idee for its own site, and I found it very usefull. I preferred to write mine script to allow use of jinja and some other changes (it will be possible for example to generate a cloud).</p>
-            <footer>
-                <p><a href="/blog/2009-06-16-Couchdbkit-site-launched.html">Read more ...</a> <span class='comments'><a href='/blog/2009-06-16-Couchdbkit-site-launched.html#disqus_thread'>View Comments</a></span></p>
-                
-            </footer>
-        </article>
-    
-    
-    <script>//var disqus_developer = 1;</script>
+	<h2>Fixes :</h2>
 
+	<ul>
+		<li>compatibility with python 2.5</li>
+		<li>iteritems is back in `DocumentSchema`</li>
+		<li>Fix LazyDict</li>
+		<li>docid with slashes are now properly encoded in all functions</li>
+		<li>Fix DocumentForm: make sure instance is passed in form.</li>
+	</ul>
+
+	<h2>Breaking changes</h2>
+
+	<ul>
+		<li>Accessing to document id in `Document`object is now done by using `_id` member. The same for revision (now `_rev`). It liberate id and rev members. Since Django don&#8217;t like get_id() and get_rev() poperties has been created to allow access to these properties in templates.</li>
+		<li>Accept `unicode` instead str in `StringListProperty`</li>
+	</ul>
+        <footer>
+             <p><span class='comments'><a href='/blog/2009-07-07-Couchdbkit-0.1.8.html#disqus_thread'>View Comments</a></span></p>
+        </footer>
+    </article>
+    <div id="disqus_thread"></div><script type="text/javascript" src="http://disqus.com/forums/couchdbkit/embed.js"></script><noscript><a href="http://couchdbkit.disqus.com/?url=ref">View the discussion thread.</a></noscript><a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
 </section>
 
         
@@ -155,7 +139,7 @@
     				query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
     			}
     		}
-    		document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/couchdbkit/get_num_replies.js' + query + '"></' + 'script>');
+    		document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/couchdbkit/get_num_replies.js' + query + '&disqus_developer=1"></' + 'script>');
     	})();
     //]]>
     </script>
