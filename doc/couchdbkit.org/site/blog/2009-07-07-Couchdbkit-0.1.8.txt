@@ -24,5 +24,5 @@ h2. Fixes :
 
 h2. Breaking changes
 
-* Accessing to document id in `Document`object is now done by using `_id` member. The same for revision (now `_rev`). It liberate id and rev members. Since Django don't like get_id() and get_rev() poperties has been created to allow access to these properties in templates.
+* Accessing to document id in `Document`object is now done by using `_id` member. The same for revision (now `_rev`). It allows id and rev members. Since Django don't like get_id() and get_rev() poperties has been created to allow access to these properties in templates.
 * Accept `unicode` instead str in `StringListProperty`
