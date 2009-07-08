@@ -38,6 +38,8 @@ Here is the code to save a greet on database Greeting. We also see how to create
  # open a database session
  db = create_session(server, "greetings")
  
+ Greeting = db(Greeting)
+ 
  # create a new greet
  greet = Greeting(
      author="Benoit",
@@ -46,7 +48,7 @@ Here is the code to save a greet on database Greeting. We also see how to create
  )
  
  # save it 
- db(greet).save()
+db(greet).save()
 </pre>
 
 Your document `greet` in `greetings` db. Each document is saved with a `doc_type` field that allow you to find easily each kind of document with the views. By default `doc_type` is the name of the class.

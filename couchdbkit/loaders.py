@@ -291,13 +291,15 @@ class FileSystemDocsLoader(BaseDocsLoader):
             if not os.path.isdir(designpath):
                 raise DocsPathNotFound("%s doesn't exist" % designpath)
             for name in os.listdir(designpath):
-                docs.append(self.get_designdoc(designpath, name, verbose=verbose))
+                ddoc = self.get_designdoc(designpath, name, verbose=verbose)
+                if ddoc:
+                    docs.append(ddoc)
                 
         return docs
         
     def get_designdoc(self, root, name, design_name=None, verbose=False):
+        design_doc = {}
         if not name.startswith('.') and not os.path.isfile(name):
-            design_doc = {}
             manifest = []
             objects = {}
             if design_name is None:
@@ -471,5 +473,9 @@ class FileSystemDocLoader(FileSystemDocsLoader):
         self.design_name = design_name
         
     def get_docs(self, verbose=False):
-        return [self.get_designdoc(self.designpath, self.name, 
-                design_name=self.design_name, verbose=verbose)]
+        docs = []
+        ddoc = self.get_designdoc(self.designpath, self.name, 
+                      design_name=self.design_name, verbose=verbose)
+        if ddoc:
+            docs.append(ddoc)
+        return docs
