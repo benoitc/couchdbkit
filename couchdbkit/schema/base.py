@@ -187,7 +187,6 @@ class DocumentSchema(object):
             if not hasattr( self, key ) and not self._allow_dynamic_properties:
                 raise AttributeError("%s is not defined in schema (not a valid property)" % key)
             
-        
             elif not key.startswith('_') and \
                     key not in self.properties() and \
                     key not in dir(self): 
@@ -202,9 +201,13 @@ class DocumentSchema(object):
                 if isinstance(value, dict):
                     if key not in self._doc or not value:
                         self._doc[key] = {}
+                    elif not isinstance(self._doc[key], dict):
+                        self._doc[key] = {}
                     value = LazyDict(value, self._doc[key])
                 elif isinstance(value, list):
                     if key not in self._doc or not value:
+                        self._doc[key] = []
+                    elif not isinstance(self._doc[key], list):
                         self._doc[key] = []
                     value = LazyList(value, self._doc[key])
                     
