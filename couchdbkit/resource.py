@@ -18,8 +18,8 @@
 couchdb.resource
 ~~~~~~~~~~~~~~~~~~~~~~
 
-This module provide a common interface for all CouchDB request. This
-module make HTTP request using :mod:`httplib2` module or :mod:`pycurl` 
+This module providess a common interface for all CouchDB request. This
+module makes HTTP request using :mod:`httplib2` module or :mod:`pycurl` 
 if available. Just use set transport argument for this.
 
 Example: 
@@ -75,8 +75,8 @@ class CouchdbResource(restclient.Resource):
                 `pycurl <http://pycurl.sourceforge.net/>`_ if 
                 installed or `restclient.transport.HTTPLib2Transport`,
                 a client based on `Httplib2 <http://code.google.com/p/httplib2/>`_ 
-                or make yourown depending of the option you need to access to the 
-                serve (authentification, proxy, ....).
+                or make your own depending on the options you need to access the 
+                server (authentification, proxy, ....).
         """
         
         restclient.Resource.__init__(self, uri=uri, transport=transport)
@@ -126,7 +126,7 @@ class CouchdbResource(restclient.Resource):
 
         body = None
         if payload is not None:
-            #TODO: handl case we wan to put in payload json file.
+            #TODO: handle case we want to put in payload json file.
             if not hasattr(payload, 'read') and not isinstance(payload, basestring):
                 body = json.dumps(payload, allow_nan=False,
                         ensure_ascii=False).encode('utf-8')
