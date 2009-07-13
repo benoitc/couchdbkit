@@ -15,7 +15,7 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 """
-All exceptions yused in couchdbkit.
+All exceptions used in couchdbkit.
 """
 
 class InvalidAttachment(Exception):
