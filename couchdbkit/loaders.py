@@ -17,13 +17,13 @@
 """
 Loaders are a simple way to manage design docs in your Python application. 
 Loaders are compatible with couchapp script (http://github.com/couchapp/couchapp).
-So it means that you can simply use couchdbkit as replacement for yours python
-applications with advantages of couchdbkit client. Compatible with couchapp means that
+So it means that you can simply use couchdbkit as replacement for your python
+applications with advantages of couchdbkit client. Compatibility with couchapp means that
 you can also use macros to include javascript code or design doc members in your views,
 shows & lists.
 
 Current loaders are FileSystemDocsLoader and FileSystemDocLoader. The first
-one take a directory and retrieve all design docs before sending them to
+one takes a directory and retrieve all design docs before sending them to
 CouchDB. Second allow you to send only one design doc.
 """
 from __future__ import with_statement
@@ -46,8 +46,8 @@ class BaseDocsLoader(object):
     implement a custom loading mechanism.  You can then sync docs and design docs
     to the db with the `sync` function.
 
-    A very basic example for a loader that looks up a json file on the file
-    system could look like this::
+    A very basic example for a loader that looks up a json file on the
+    filesystem could look like this::
 
         from couchdbkit import BaseDocsLoader
         import os
@@ -231,7 +231,7 @@ class BaseDocsLoader(object):
 
 class FileSystemDocsLoader(BaseDocsLoader):
     """ Load docs from the filesystem. This loader can find docs
-    in folders on the file system and is the preferred way to load them. 
+    in folders on the filesystem and is the preferred way to load them. 
     
     The loader takes the path for design docs as a string  or if multiple
     locations are wanted a list of them which is then looked up in the
