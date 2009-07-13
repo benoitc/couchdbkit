@@ -150,7 +150,7 @@ class Property(object):
         return unicode(value)
 
     def to_json(self, value):
-        """ convert to json, These converetd value is saved in couchdb. """
+        """ convert to json, Converted value is saved in couchdb. """
         return self.to_python(value)
 
     data_type = None

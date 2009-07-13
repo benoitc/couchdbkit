@@ -30,8 +30,8 @@ from couchdbkit.schema.base import DocumentSchema, ALLOWED_PROPERTY_TYPES
 __all__ = ['SchemaProperty']
 
 class SchemaProperty(Property):
-    """ Schema property. It allow you add a DocumentSchema instance 
-    a member of a Document object. It return a
+    """ Schema property. It allows you add a DocumentSchema instance 
+    a member of a Document object. It returns a
    `schemaDocumentSchema` object.
 
     Exemple :

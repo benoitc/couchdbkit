@@ -14,9 +14,8 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-""" module that provide a Document object that allow you 
-to map statically, dynamically or both a CouchDB
-document in python 
+""" module that provides a Document object that allows you 
+to map CouchDB document in Python statically, dynamically or both
 """
 
 import datetime
@@ -385,7 +384,7 @@ class DocumentSchema(object):
 
 class DocumentBase(DocumentSchema):
     """ Base Document object that map a CouchDB Document.
-    It allow you to map statically a document by 
+    It allow you to statically map a document by 
     providing fields like you do with any ORM or
     dynamically. Ie unknown fields are loaded as
     object property that you can edit, datetime in
@@ -402,7 +401,7 @@ class DocumentBase(DocumentSchema):
             myotherstring = unicode() # just use python types
 
 
-    Fields of a documents can be accessed as property or
+    Document fields can be accessed as property or
     key of dict. These are similar : ``value = instance.key or value = instance['key'].``
 
     To delete a property simply do ``del instance[key'] or delattr(instance, key)``
@@ -524,7 +523,7 @@ class DocumentBase(DocumentSchema):
     
 class AttachmentMixin(object):
     """
-    mixin to manage attachments of a doc.
+    mixin to manage doc attachments.
     
     """
     
@@ -546,7 +545,7 @@ class AttachmentMixin(object):
             content_type=content_type, content_length=content_length)
 
     def delete_attachment(self, name):
-        """ delete attachement of documen
+        """ delete document attachment
         
         @param name: name of attachement
     
@@ -557,7 +556,7 @@ class AttachmentMixin(object):
         return self.__class__._db.delete_attachment(self, name)
 
     def fetch_attachment(self, name):
-        """ get attachment in document
+        """ get attachment in a adocument
         
         @param name: name of attachment default: default result
 
@@ -611,7 +610,7 @@ class QueryMixin(object):
     @classmethod
     def view(cls, view_name, wrapper=None, dynamic_properties=True, 
     **params):
-        """ Get documents associated to a view.
+        """ Get documents associated view a view.
         Results of view are automatically wrapped
         to Document object.
 

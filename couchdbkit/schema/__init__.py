@@ -45,7 +45,7 @@ An CouchDB document is represented in the API by an instance of the correspondin
   Document is dynamic
 --------------------
 
-Sometimes it is usefull to have different properties on each document. CouchDB allow it so why not having it in python. A document can have both dynamic and static property. Any value assigned to an attribute of an instance of a document becomes a property of the CouchDB document, using the name of the attribute. These properties are known as dynamic properties. Properties defined using Property class instances in class attributes are fixed properties.
+Sometimes it is usefull to have different properties on each document. CouchDB allows it, so why not having it in python. A document can have both dynamic and static property. Any value assigned to an attribute of an instance of a document becomes a property of the CouchDB document, using the name of the attribute. These properties are known as dynamic properties. Properties defined using Property class instances in class attributes are fixed properties.
 
 
     class Person(Document):
@@ -110,7 +110,7 @@ For now, there is no way in CouchDB to know that Pet inherit from Animal. Though
 Properties and Types
 --------------------
 
-Couchdb support all Javascript types, including Unicode strings, integers, floating point numbers. We also added support for dates and decimal types. Each of the CouchDB value type has a corresponding Property class provided by the :mod:`simplecouchdb.schema` module.
+Couchdb supports all Javascript types, including Unicode strings, integers, floating point numbers. We also added support for dates and decimal types. Each of the CouchDB value type has a corresponding Property class provided by the :mod:`simplecouchdb.schema` module.
 
 """
 
