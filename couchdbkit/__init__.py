@@ -15,7 +15,7 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 #
-# module loading code borrowed to Werkzeug project under BSD License
+# module loading code borrowed from Werkzeug project under BSD License
 # copyright: (c) 2009 by the Werkzeug Team
 #
 
