@@ -445,7 +445,6 @@ class ListProperty(Property):
          :args default: Optional default value; if omitted, an empty list is used.
          :args**kwds: Optional additional keyword arguments, passed to base class.
 
-        Note that the only permissible value for 'required' is True.
         
         """
         if default is None:
@@ -513,8 +512,7 @@ class StringListProperty(ListProperty):
 # structures proxy
 
 class LazyDict(dict):
-    
-    """ object to make sure we keep update of dict 
+    """ object to make sure we keep updated of dict 
     in _doc. We just override a dict and maintain change in
     doc reference (doc[keyt] obviously).
     """

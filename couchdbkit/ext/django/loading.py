@@ -112,14 +112,8 @@ class CouchdbkitHandler(object):
             schema_name = schema[0].__name__.lower()
             schema_dict = self.app_schema.setdefault(app_label, SortedDict())
             if schema_name in schema_dict:
-                # The same model may be imported via different paths (e.g.
-                # appname.models and project.appname.models). We use the source
-                # filename as a means to detect identity.
                 fname1 = os.path.abspath(sys.modules[s.__module__].__file__)
                 fname2 = os.path.abspath(sys.modules[schema_dict[schema_name].__module__].__file__)
-                # Since the filename extension could be .py the first time and
-                # .pyc or .pyo the second time, ignore the extension when
-                # comparing.
                 if os.path.splitext(fname1)[0] == os.path.splitext(fname2)[0]:
                     continue
             schema_dict[schema_name] = s
