@@ -5,5 +5,5 @@ Url: http://opensource.e-engura.org/couchdbkit
 
 Description:
 ------------
-CouchDB is document oriented database. couchdbkit try
-to keep its simplicity when you manage it in python
+CouchDB is document oriented database. couchdbkit tries
+to maintain its simplicity when used with Python. 
