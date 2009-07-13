@@ -15,10 +15,10 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 """
-Implement client to access to CouchDB. It allow you to manage a CouchDB server, 
-databases, doc managements and view access. All objects mostly reflect python 
-objects for convenience. Server and Databases objects could be used for example 
-as easy as using a dict.
+Client implementation for CouchDB access. It allows you to manage a CouchDB
+server, databases, documents and views. All objects mostly reflect python 
+objects for convenience. Server and Database objects for example, can be 
+used as easy as a dict. 
 
 Example:
     
@@ -55,8 +55,8 @@ from couchdbkit.utils import validate_dbname
 DEFAULT_UUID_BATCH_COUNT = 1000
 
 class Server(object):
-    """ Server object that allow you to access and manage a couchdb node. 
-    A Server object could be use like any `dict` object.
+    """ Server object that allows you to access and manage a couchdb node. 
+    A Server object can be used like any `dict` object.
     """
     
     def __init__(self, uri='http://127.0.0.1:5984', uuid_batch_count=DEFAULT_UUID_BATCH_COUNT, 
@@ -65,7 +65,7 @@ class Server(object):
         
         @param uri: uri of CouchDb host
         @param uuid_batch_count: max of uuids to get in one time
-        @param transport: an transport instance from :mod:`restclient.transport`. Could be used
+        @param transport: an transport instance from :mod:`restclient.transport`. Can be used
                 to manage authentification to your server or proxy.
         """
         
@@ -106,8 +106,8 @@ class Server(object):
 
     def get_or_create_db(self, dbname):
         """
-        It try to return a Database object for dbname. If 
-        database don't exit, it will be created.
+        Try to return a Database object for dbname. If 
+        database doest't exist, it will be created.
         
         """
         try:
@@ -160,7 +160,7 @@ class Server(object):
         
 class Database(object):
     """ Object that abstract access to a CouchDB database
-    A Database object could act as a Dict object.
+    A Database object can act as a Dict object.
     """
 
     def __init__(self, server, dbname):
@@ -195,7 +195,7 @@ class Database(object):
         
     def info(self):
         """
-        Get infos of database
+        Get database information
             
         @return: dict
         """
@@ -214,7 +214,7 @@ class Database(object):
         self.bulk_save( _design_docs )
         
     def doc_exist(self, docid):
-        """Test if document exist in database
+        """Test if document exists in a database
 
         @param docid: str, document id
         @return: boolean, True if document exist
@@ -231,9 +231,9 @@ class Database(object):
         
         Args:
         @param docid: str, document id to retrieve 
-        @param rev: if specified, allow you to retrieve
-        a specifiec revision of document
-        @param wrapper: callable. function that take a dict as param. 
+        @param rev: if specified, allows you to retrieve
+        a specific revision of document
+        @param wrapper: callable. function that takes dict as a param. 
         Used to wrap an object.
         
         @return: dict, representation of CouchDB document as
@@ -253,9 +253,9 @@ class Database(object):
         return doc
 
     def all_docs(self, by_seq=False, **params):
-        """Get all documents from database
+        """Get all documents from a database
 
-        This method has the same behavior than view.
+        This method has the same behavior as a view.
 
         `all_docs( **params )` is the same as `view('_all_docs', **params)`
          and `all_docs( by_seq=True, **params)` is the same as
@@ -265,7 +265,7 @@ class Database(object):
 
         Args:
         @param by_seq: bool, if True the "_all_docs_by_seq" is passed to
-        couchdb. It will return all updated list.
+        couchdb. It will return an updated list of all documents.
 
         @return: list, results of the view
         """
@@ -386,13 +386,13 @@ class Database(object):
     
     def bulk_delete(self, docs, all_or_nothing=False):
         """ bulk delete. 
-        It add '_deleted' member to doc then use bulk_save to save them."""
+        It adds '_deleted' member to doc then uses bulk_save to save them."""
         for doc in docs:
             doc['_deleted'] = True
         self.bulk_save(docs, use_uuids=False, all_or_nothing=all_or_nothing)
  
     def delete_doc(self, doc):
-        """ delete a document or a list of document
+        """ delete a document or a list of documents
         @param doc: str or dict,  document id or full doc.
         @return: dict like:
        
@@ -566,12 +566,12 @@ class Database(object):
         return res['ok']
 
     def delete_attachment(self, doc, name):
-        """ delete attachement of documen
+        """ delete attachement to the document
 
         @param doc: dict, document object in python
         @param name: name of attachement
     
-        @return: dict, withm member ok setto True if delete was ok.
+        @return: dict, with member ok set to True if delete was ok.
         """
         docid = self.escape_docid(doc['_id'])
         name = url_quote(name, safe="")
@@ -579,7 +579,7 @@ class Database(object):
         return self.res(docid).delete(name, rev=doc['_rev'])
 
     def fetch_attachment(self, id_or_doc, name):
-        """ get attachment in document
+        """ get attachment in a document
         
         @param id_or_doc: str or dict, doc id or document dict
         @param name: name of attachment default: default result
