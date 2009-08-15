@@ -1,0 +1,8 @@
+version 0.2 (pre 1.0 ?)
+- new versatile mapper + support of desktopcouch format
+- remove httplib2 dependancy (work take place in py-restclient)
+- add support for oauth
+- full featured python view server
+- more helper for views : key filter
+- support for streaming attachmentsw
+- _changes handler
