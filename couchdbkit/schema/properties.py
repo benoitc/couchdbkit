@@ -129,9 +129,10 @@ class Property(object):
                 for choice in self.choices:
                     if choice == value:
                         match = True
-                    if not match:
-                        raise BadValueError('Property %s is %r; must be one of %r' % (
-                            self.name, value, self.choices))
+                        break
+                if not match:
+                    raise BadValueError('Property %s is %r; must be one of %r' % (
+                        self.name, value, self.choices))
         if self.validators:
             if isinstance(self.validators, (list, tuple,)):
                 for validator in self.validators:
