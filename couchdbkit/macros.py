@@ -39,9 +39,9 @@ All in one, example of a view :
         }
     }
 
-This example includes md5.js code and uses md5 function to create gravatar hash in your views. 
-So you could just store raw data in your docs and calculate hash when views 
-are updated.
+This example includes md5.js code and uses md5 function to create gravatar hash
+in your views.  So you could just store raw data in your docs and calculate
+hash when views are updated.
 
 """
 
