@@ -46,7 +46,7 @@ from itertools import groupby
 from mimetypes import guess_type
 import re
 
-from restclient.rest import url_quote
+from restkit.rest import url_quote
 
 from couchdbkit.exceptions import *
 from couchdbkit.resource import CouchdbResource, ResourceNotFound, ResourceConflict
@@ -65,7 +65,7 @@ class Server(object):
         
         @param uri: uri of CouchDb host
         @param uuid_batch_count: max of uuids to get in one time
-        @param transport: an transport instance from :mod:`restclient.transport`. Can be used
+        @param transport: an transport instance from :mod:`restkit.transport`. Can be used
                 to manage authentification to your server or proxy.
         """
         
@@ -497,7 +497,7 @@ class Database(object):
     iter_documents = documents    
 
     def put_attachment(self, doc, content, name=None, 
-            content_type=None, content_length=None, chunked=True):
+            content_type=None, content_length=None, chunked=False):
         """ Add attachement to a document.
 
         @param doc: dict, document object
@@ -531,38 +531,40 @@ class Database(object):
 
         headers = {}
         
-        content = content or ''
-        if content and chunked:
-            headers.setdefault("Transfer-Encoding", "chunked")
-
+        if not content:
+            content = ""
+            content_length = 0
         if name is None:
             if hasattr(content, "name"):
                 name = content.name
             else:
                 raise InvalidAttachment('You should provid a valid attachment name')
-
+        name = url_quote(name, safe="")
         if content_type is None:
             content_type = ';'.join(filter(None, guess_type(name)))
 
         if content_type:
             headers['Content-Type'] = content_type
-
-        if content_length and content_length is not None:
+            
+        # add appropriate headers    
+        if chunked:
+            headers.setdefault("Transfer-Encoding", "chunked")
+            if 'Content-Length' in headers:
+                del headers['Content-Length']
+        elif content_length and content_length is not None:
             headers['Content-Length'] = content_length
 
         if hasattr(doc, 'to_json'):
-            doc_ = doc.to_json()
+            doc1 = doc.to_json()
         else:
-            doc_ = doc
+            doc1 = doc
 
-        docid = self.escape_docid(doc_['_id'])
-        name = url_quote(name, safe="")
-            
+        docid = self.escape_docid(doc1['_id'])
         res = self.res(docid).put(name, payload=content, 
-                headers=headers, rev=doc_['_rev'])
+                headers=headers, rev=doc1['_rev'])
 
         if res['ok']:
-            doc_.update({ '_rev': res['rev']})
+            doc1.update({ '_rev': res['rev']})
         return res['ok']
 
     def delete_attachment(self, doc, name):

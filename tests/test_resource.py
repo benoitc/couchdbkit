@@ -18,7 +18,7 @@ __author__ = 'benoitc@e-engura.com (Benoît Chesneau)'
 
 import unittest
 
-from restclient import RequestFailed, RequestError
+from restkit import RequestFailed, RequestError
 from couchdbkit.resource import CouchdbResource
 
 
@@ -29,7 +29,7 @@ class ServerTestCase(unittest.TestCase):
     def tearDown(self):
         self.couchdb = None
         try:
-            self.server.delete_db('simplecouchdb_test')
+            self.server.delete_db('couchdkbit_test')
         except:
             pass
 
@@ -38,17 +38,17 @@ class ServerTestCase(unittest.TestCase):
         self.assert_(info.has_key('version'))
         
     def testCreateDb(self):
-        res = self.couchdb.put('/simplecouchdb_test/')
+        res = self.couchdb.put('/couchdkbit_test/')
         self.assert_(res['ok'] == True)
         all_dbs = self.couchdb.get('/_all_dbs')
-        self.assert_('simplecouchdb_test' in all_dbs)
-        self.couchdb.delete('/simplecouchdb_test/')
+        self.assert_('couchdkbit_test' in all_dbs)
+        self.couchdb.delete('/couchdkbit_test/')
 
     def testCreateEmptyDoc(self):
-        res = self.couchdb.put('/simplecouchdb_test/')
+        res = self.couchdb.put('/couchdkbit_test/')
         self.assert_(res['ok'] == True)
-        res = self.couchdb.post('/simplecouchdb_test/', payload={})
-        self.couchdb.delete('/simplecouchdb_test/')
+        res = self.couchdb.post('/couchdkbit_test/', payload={})
+        self.couchdb.delete('/couchdkbit_test/')
         self.assert_(len(res) > 0)
 
     def testRequestFailed(self):

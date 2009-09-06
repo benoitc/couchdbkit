@@ -21,7 +21,7 @@ import shutil
 import tempfile
 import unittest
 
-from restclient import ResourceNotFound, RequestFailed
+from restkit import ResourceNotFound, RequestFailed
 
 from couchdbkit import *
 from couchdbkit.utils import *

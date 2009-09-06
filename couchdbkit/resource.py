@@ -32,36 +32,30 @@ Example:
 """
 
 import httplib
-import restclient
-from restclient.transport import HTTPResponse
+import restkit
+from restkit.httpc import HTTPResponse
 
 import socket
 import sys
 import time
 import types
 
-# First we try to use simplejson if installed
-# then json from python 2.6
-try:
-    import simplejson as json
-except ImportError:
-    import json
+import anyjson
         
 from couchdbkit import __version__
-from couchdbkit.utils import SimplecouchdbJSONEncoder
 
 USER_AGENT = 'couchdbkit/%s' % __version__
 
-class ResourceConflict(restclient.ResourceError):
+class ResourceConflict(restkit.ResourceError):
     """ Exception raised when there is conflict while updating"""
 
-class PreconditionFailed(restclient.ResourceError):
+class PreconditionFailed(restkit.ResourceError):
     """ Exception raised when 412 HTTP error is received in response
     to a request """
 
-ResourceNotFound = restclient.ResourceNotFound
+ResourceNotFound = restkit.ResourceNotFound
 
-class CouchdbResource(restclient.Resource):
+class CouchdbResource(restkit.Resource):
 
     def __init__(self, uri="http://127.0.0.1:5984", transport=None):
         """Constructor for a `CouchdbResource` object.
@@ -70,16 +64,16 @@ class CouchdbResource(restclient.Resource):
 
         @param uri: str, full uri to the server.
         @param transport: any http instance of object based on 
-                `restclient.transport.HTTPTransportBase`. By 
+                `restkit.transport.HTTPTransportBase`. By 
                 default it will use a client based on 
                 `pycurl <http://pycurl.sourceforge.net/>`_ if 
-                installed or `restclient.transport.HTTPLib2Transport`,
+                installed or `restkit.transport.HTTPLib2Transport`,
                 a client based on `Httplib2 <http://code.google.com/p/httplib2/>`_ 
                 or make your own depending on the options you need to access the 
                 server (authentification, proxy, ....).
         """
         
-        restclient.Resource.__init__(self, uri=uri, transport=transport)
+        restkit.Resource.__init__(self, uri=uri, transport=transport)
         self.client.safe = ":/"
 
     def copy(self, path=None, headers=None, **params):
@@ -128,8 +122,7 @@ class CouchdbResource(restclient.Resource):
         if payload is not None:
             #TODO: handle case we want to put in payload json file.
             if not hasattr(payload, 'read') and not isinstance(payload, basestring):
-                body = json.dumps(payload, allow_nan=False,
-                        ensure_ascii=False).encode('utf-8')
+                body = anyjson.serialize(payload).encode('utf-8')
                 headers.setdefault('Content-Type', 'application/json')
             else:
                 body = payload
@@ -138,29 +131,29 @@ class CouchdbResource(restclient.Resource):
 
         def _make_request(retry=1):
             try:
-                return restclient.Resource.request(self, method, path=path,
+                return restkit.Resource.request(self, method, path=path,
                         payload=body, headers=headers, **params)
             except (socket.error, httplib.BadStatusLine), e:
                 if retry > 0:
                     time.sleep(0.4)
                     return _make_request(retry - 1)
-                raise restclient.RequestFailed(str(e), http_code=0,
+                raise restkit.RequestFailed(str(e), http_code=0,
                         response=HTTPResponse({}))
-            except restclient.RequestError, e: 
-                # until py-restclient will be patched to only 
+            except restkit.RequestError, e: 
+                # until py-restkit will be patched to only 
                 # return RequestFailed, do our own raise
-                raise restclient.RequestFailed(str(e), http_code=0,
+                raise restkit.RequestFailed(str(e), http_code=0,
                         response=HTTPResponse({}))
             except:
                 raise
         try:
             data = _make_request()
-        except restclient.RequestFailed, e:
+        except restkit.RequestFailed, e:
             msg = getattr(e, 'msg', '')
             if msg and e.response.get('content-type') == 'application/json':
                 
                 try:
-                    msg = json.loads(msg)
+                    msg = anyjson.deserialize(msg)
                 except ValueError:
                     pass
                     
@@ -183,7 +176,7 @@ class CouchdbResource(restclient.Resource):
         
         if data and response.get('content-type') == 'application/json':
             try:
-                data = json.loads(data)
+                data = anyjson.deserialize(data)
             except ValueError:
                 pass
                 
@@ -196,7 +189,6 @@ class CouchdbResource(restclient.Resource):
             for name, value in params.items():
                 if name in ('key', 'startkey', 'endkey') \
                         or not isinstance(value, basestring):
-                    value = json.dumps(value, allow_nan=False,
-                            ensure_ascii=False)
+                    value = anyjson.serialize(value)
                 _params[name] = value
         return _params

@@ -18,7 +18,7 @@ __author__ = 'benoitc@e-engura.com (Benoît Chesneau)'
 
 import unittest
 
-from restclient import ResourceNotFound, RequestFailed
+from restkit import ResourceNotFound, RequestFailed
 
 from couchdbkit import *
 
