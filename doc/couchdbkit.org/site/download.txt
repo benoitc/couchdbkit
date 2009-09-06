@@ -50,3 +50,13 @@ If you're using a hg clone, it's recommended to use the setuptools develop comma
 <pre class="code prettyprint">
 $ python setup.py develop
 </pre>
+
+3. Install requirements
+
+If you don't use python 2.6x or want to use a faster solution, you will need to install a json serializer. Supported json serializers are : cjson, jsonlib2, jsonlib, simplejson, and django.utils.json. 
+
+To install simplejson :
+
+<pre class="code prettyprint">
+$ easy_install simplejson
+</pre>

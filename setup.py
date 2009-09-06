@@ -27,7 +27,7 @@ import sys
 
 setup(
     name = 'couchdbkit',
-    version = '0.1.8',
+    version = '0.1.9',
 
     description = 'Python couchdb kit',
     long_description = \
@@ -54,8 +54,8 @@ to keep its simplicity when you manage it in python""",
     zip_safe = False,
 
     install_requires = [
-        'py-restclient>=1.3',
-        'simplejson'
+        'restkit',
+        'anyjson'
     ],
     
     test_suite='tests',
