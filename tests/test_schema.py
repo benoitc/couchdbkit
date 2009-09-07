@@ -970,8 +970,8 @@ class PropertyTestCase(unittest.TestCase):
         
         b1  = B()
         b1.ls = [u'hello', u'123']
-        self._assert(b1.ls == [u'hello', u'123'])
-        self._assert(b1._doc['ls'] == [u'hello', u'123'])
+        self.assert_(b1.ls == [u'hello', u'123'])
+        self.assert_(b1._doc['ls'] == [u'hello', u'123'])
 
          
     def testDictProperty(self):

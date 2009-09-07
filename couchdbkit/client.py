@@ -496,8 +496,8 @@ class Database(object):
         return View(self, '_all_docs', wrapper=wrapper, **params)
     iter_documents = documents    
 
-    def put_attachment(self, doc, content, name=None, 
-            content_type=None, content_length=None, chunked=False):
+    def put_attachment(self, doc, content, name=None, content_type=None, 
+        content_length=None):
         """ Add attachement to a document.
 
         @param doc: dict, document object
@@ -547,11 +547,7 @@ class Database(object):
             headers['Content-Type'] = content_type
             
         # add appropriate headers    
-        if chunked:
-            headers.setdefault("Transfer-Encoding", "chunked")
-            if 'Content-Length' in headers:
-                del headers['Content-Length']
-        elif content_length and content_length is not None:
+        if content_length and content_length is not None:
             headers['Content-Length'] = content_length
 
         if hasattr(doc, 'to_json'):
@@ -580,12 +576,15 @@ class Database(object):
         
         return self.res(docid).delete(name, rev=doc['_rev'])
 
-    def fetch_attachment(self, id_or_doc, name):
+    def fetch_attachment(self, id_or_doc, name, stream=False, 
+            stream_size=16384):
         """ get attachment in a document
         
         @param id_or_doc: str or dict, doc id or document dict
         @param name: name of attachment default: default result
-
+        @param stream: boolean, response return a ResponseStream object
+        @param stream_size: int, size in bytes of response stream block
+        
         @return: str, attachment
         """
 
@@ -597,7 +596,8 @@ class Database(object):
         docid = self.escape_docid(docid)
         name = url_quote(name, safe="")
         try:
-            data = self.res(docid).get(name)
+            data = self.res(docid).get(name, _stream=stream, 
+                _stream_size=stream_size)
         except ResourceNotFound:
             return None
         return data

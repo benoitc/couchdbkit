@@ -80,7 +80,8 @@ class CouchdbResource(restkit.Resource):
         """ add copy to HTTP verbs """
         return self.request('COPY', path=path, headers=headers, **params)
         
-    def request(self, method, path=None, payload=None, headers=None, **params):
+    def request(self, method, path=None, payload=None, headers=None, 
+         _stream=False, _stream_size=16384, **params):
         """ Perform HTTP call to the couchdb server and manage 
         JSON conversions, support GET, POST, PUT and DELETE.
         
@@ -99,6 +100,8 @@ class CouchdbResource(restkit.Resource):
             converted to JSON.
         @param headers: dict, optionnal headers that will
             be added to HTTP request.
+        @param _stream: boolean, response return a ResponseStream object
+        @param _stream_size: int, size in bytes of response stream block
         @param params: Optionnal parameterss added to the request. 
             Parameterss are for example the parameters for a view. See 
             `CouchDB View API reference 
@@ -132,7 +135,8 @@ class CouchdbResource(restkit.Resource):
         def _make_request(retry=1):
             try:
                 return restkit.Resource.request(self, method, path=path,
-                        payload=body, headers=headers, **params)
+                        payload=body, headers=headers, _stream=_stream, 
+                        _stream_size=_stream_size, **params)
             except (socket.error, httplib.BadStatusLine), e:
                 if retry > 0:
                     time.sleep(0.4)
