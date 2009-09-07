@@ -39,7 +39,7 @@ from django.conf import settings
 from django.db.models import signals, get_app
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.datastructures import SortedDict
-from restclient.transport import getDefaultHTTPTransport
+from restkit.httpc import ProxiedHttpClient, BasicAuth
 
 COUCHDB_DATABASES = getattr(settings, "COUCHDB_DATABASES", [])
 
@@ -59,13 +59,22 @@ class CouchdbkitHandler(object):
         self.__dict__ = self.__shared_state__
         
         if transport is None:
-            self.transport = getDefaultHTTPTransport()
+            self.transport = ProxiedHttpClient()
         # create databases sessions
         for app_name, uri in databases:
-            parts = urlparse.urlsplit(urllib.unquote(uri))
+            if isinstance(uri, tuple):
+                # case when you want to specify server uri 
+                # and database name specifically. usefull
+                # when you proxy couchdb on some path 
+                server_part, dbname = uri
+                parts = urlparse.urlsplit(urllib.unquote(server_part))
+            else:
+                parts = urlparse.urlsplit(urllib.unquote(uri))
+                dbname = parts[2].split("/")[1]
+
             if parts[0] != 'http' and parts[0] != 'https':
                 raise ValueError('Invalid dbstring')
-            dbname = parts[2].split("/")[1]
+            
             if "@" in parts[1]:
                 server_parts = parts[1].split('@')
                 if ":" in server_parts[0]:
@@ -79,7 +88,7 @@ class CouchdbkitHandler(object):
                 username = password = ""
                      
             if username:
-                self.transport.add_credentials(username, password)
+                self.transport.add_authorization(BasicAuth(username, password))
             server = Server(server_uri, self.transport)
             app_label = app_name.split('.')[-1]
             self._databases[app_label] = create_session(server, dbname, local)

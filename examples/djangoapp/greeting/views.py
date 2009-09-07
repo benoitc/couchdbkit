@@ -14,6 +14,7 @@ class GreetingForm(DocumentForm):
     class Meta:
         document = Greeting
 
+
 def home(request):
     
     greet = None
