@@ -118,7 +118,7 @@ def document_to_dict(instance, properties=None, exclude=None):
             continue
         if exclude and prop_name in exclude:
             continue
-        data[prop_name] = value_to_python(instance._doc[prop_name])
+        data[prop_name] = instance[prop_name]
     return data
 
 def fields_for_document(document, properties=None, exclude=None):
