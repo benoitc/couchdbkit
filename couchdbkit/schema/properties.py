@@ -79,6 +79,7 @@ class Property(object):
         self.required = required
         self.validators = validators
         self.choices = choices
+        self.creation_counter = Property.creation_counter
         Property.creation_counter += 1
 
     def __property_config__(self, document_class, property_name):
