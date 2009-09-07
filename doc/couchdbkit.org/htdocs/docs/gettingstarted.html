@@ -104,22 +104,24 @@
 
  # create database
  try:
-     server.create_db(&quot;greetings&quot;)
+     server.create_db(&#8220;greetings&#8221;)
  except:
      pass
 
  # open a database session
- db = create_session(server, &quot;greetings&quot;)
+ db = create_session(server, &#8220;greetings&#8221;)
+
+ Greeting = db(Greeting)
 
  # create a new greet
  greet = Greeting(
-     author=&quot;Benoit&quot;,
-     content=&quot;Welcome to simplecouchdb world&quot;,
+     author=&#8220;Benoit&#8221;,
+     content=&#8220;Welcome to simplecouchdb world&#8221;,
      date=datetime.datetime.utcnow()
  )
 
  # save it 
- db(greet).save()
+db(greet).save()
 </pre>
 
 	<p>Your document `greet` in `greetings` db. Each document is saved with a `doc_type` field that allow you to find easily each kind of document with the views. By default `doc_type` is the name of the class.</p>
@@ -127,7 +129,7 @@
 	<p>Now that you saved your document, you can update it :</p>
 
 <pre class="code prettyprint">
- greet.author = &quot;Benoît Chesneau&quot;
+ greet.author = &#8220;Benoît Chesneau&#8221;
  greet.save()
 </pre>
 
@@ -144,7 +146,7 @@
 	<p>Mmm ok, but isn&#8217;t CouchDB storing documents schema less ? Do you want to add a property ? Easy:</p>
 
 <pre class="code prettyprint">
- greet.homepage = &quot;http://www.e-engura.org&quot;
+ greet.homepage = &#8220;http://www.e-engura.org&#8221;
  greet.save()
 </pre>
 
@@ -164,7 +166,7 @@
 
 <pre class="code prettyprint">
  function(doc) { 
-   if (doc.doc_type == &quot;Greeting&quot;) 
+   if (doc.doc_type == &#8220;Greeting&#8221;) 
     emit(doc._id, doc); 
  }
 </pre>
@@ -180,14 +182,14 @@
 	<p><pre class="code prettyprint">
  from couchdbkit.loaders import FileSystemDocsLoader</p>
 
- loader = FileSystemDocsLoader('path/to/example/_design')
+ loader = FileSystemDocsLoader(&#8217;/path/to/example/_design&#8217;)
  loader.sync(db, verbose=True)
 </pre>
 
 	<p>The design doc is now in `greetings`database and you can get all greets :</p>
 
 <pre class="code prettyprint">
- greets = Greeting.view('greeting/all')
+ greets = Greeting.view('greeting/all&#8217;)
 </pre>
     </article>
 </section>

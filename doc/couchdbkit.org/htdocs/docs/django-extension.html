@@ -86,7 +86,7 @@
 
 <pre class="code prettyprint">
  COUCHDB_DATABASES = (
-     ('djangoapp.greeting', 'http://127.0.0.1:5984/greeting'),
+     ('djangoapp.greeting&#8217;, 'http://127.0.0.1:5984/greeting&#8217;),
  )
 </pre>
 
@@ -97,7 +97,7 @@
 <pre class="code prettyprint">
  INSTALLED_APPS = (
      ....
-     'couchdbkit.ext.django',
+     'couchdbkit.ext.django&#8217;,
      ....
  )
 </pre>
@@ -139,12 +139,12 @@
     else:
         form = GreetingForm()</p>
 
-    greetings = Greeting.view(&quot;greeting/all&quot;)
+    greetings = Greeting.view(&#8220;greeting/all&#8221;)
 
-    return render(&quot;home.html&quot;, {
-            &quot;form&quot;: form,
-            &quot;greet&quot;: greet,
-            &quot;greetings&quot;: greetings
+    return render(&#8220;home.html&#8221;, {
+            &#8220;form&#8221;: form,
+            &#8220;greet&#8221;: greet,
+            &#8220;greetings&#8221;: greetings
     }, context_instance=RequestContext(request)
 </pre>
 
@@ -167,7 +167,7 @@
 
 <pre class="code prettyprint">
  from couchdbkit.ext.django.loading import get_db
- db = get_db('greeting')
+ db = get_db('greeting&#8217;)
 </pre>
 
 	<h2>To go further</h2>

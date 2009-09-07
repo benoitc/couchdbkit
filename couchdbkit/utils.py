@@ -33,6 +33,9 @@ import re
 import sys
 import time
 
+
+import anyjson
+
 # backport relpath from python2.6
 if not hasattr(os.path, 'relpath'):
     if os.name == "nt":
@@ -103,12 +106,6 @@ if not hasattr(os.path, 'relpath'):
 else:
     relpath = os.path.relpath
 
-# python 2.6
-try: 
-    import simplejson
-except ImportError:
-    import json
-
 VALID_DB_NAME = re.compile(r'^[a-z0-9_$()+-/]+$')
 def validate_dbname(name):
     """ validate dbname """
@@ -168,7 +165,7 @@ def write_json(filename, content):
     :attr content: string
     
     """
-    write_content(filename, json.dumps(content))
+    write_content(filename, anyjson.serialize(content))
 
 def read_json(filename, use_environment=False):
     """ read a json file and deserialize
@@ -191,29 +188,8 @@ def read_json(filename, use_environment=False):
         data = string.Template(data).substitute(os.environ)
 
     try:
-        data = json.loads(data)
+        data = anyjson.deserialize(data)
     except ValueError:
         print >>sys.stderr, "Json is invalid, can't load %s" % filename
         raise
     return data
-
-class SimplecouchdbJSONEncoder(simplejson.JSONEncoder):
-    """
-    JSONEncoder subclass that knows how to encode date/time and decimal types. 
-    """
-    
-    def default(self, o):
-        if isinstance(o, datetime.datetime):
-            return  o.replace(microsecond=0).isoformat() + 'Z'
-        
-        if isinstance(o, datetime.date):
-            return o.isoformat()
-        
-        if isinstance(o, datetime.time):
-            
-            return o.replace(microsecond=0).isoformat()
-        
-        if isinstance(o, decimal.Decimal):
-            return  unicode(o)
-        
-        return super(SimplecouchdbJSONEncoder, self).default(o)

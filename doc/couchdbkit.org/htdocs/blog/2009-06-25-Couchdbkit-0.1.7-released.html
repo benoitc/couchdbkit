@@ -120,41 +120,41 @@
 
  In [3]: a = A()
 
- In [4]: a._id = &quot;myid&quot;
+ In [4]: a._id = &#8220;myid&#8221;
 
- In [5]: a.id = &quot;idofapplication&quot;
+ In [5]: a.id = &#8220;idofapplication&#8221;
 
  In [6]: a._doc
- Out<sup class="footnote"><a href="#fnb25a3ade-aebc-437e-83ce-a8cf23711f62">6</a></sup>: {'_id': 'myid', 'doc_type': 'A', 'id': u&#8217;idofapplication'}
+ Out<sup class="footnote"><a href="#fnd1f3b0f3-160f-4846-b5b6-465fa223ed4f">6</a></sup>: {&#8217;_id&#8217;: 'myid&#8217;, 'doc_type&#8217;: 'A&#8217;, 'id&#8217;: u&#8217;idofapplication&#8217;}
 
  In [7]: a._id
- Out<sup class="footnote"><a href="#fn1c575e87-6366-4362-b954-2bb4e80787a6">7</a></sup>: 'myid'
+ Out<sup class="footnote"><a href="#fnf986bbcd-22cf-4677-820f-5858206f0eff">7</a></sup>: 'myid&#8217;
 
  In [8]: a.id
- Out<sup class="footnote"><a href="#fn1c4d71ed-11e1-49a6-805c-8fae3da97e9c">8</a></sup>: 'idofapplication'
+ Out<sup class="footnote"><a href="#fn393b3afc-0c42-4abb-b737-37d48e3457c8">8</a></sup>: 'idofapplication&#8217;
 
  In [9]: s = Server()
 
- In [10]: db = s['couchdbkit_test3']
+ In [10]: db = s['couchdbkit_test3&#8217;]
 
  In [11]: A._db = db
 
  In [12]: a.save()
 
  In [13]: a._doc
- Out<sup class="footnote"><a href="#fnec86e306-5856-44cb-926c-005c11107761">13</a></sup>:
- {'_id': u&#8217;myid',
- '_rev': u&#8217;1-676990679',
- 'doc_type': 'A',
- 'id': u&#8217;idofapplication'}
+ Out<sup class="footnote"><a href="#fn10a07579-468c-45d4-b239-b6a5f8d72749">13</a></sup>:
+ {&#8217;_id&#8217;: u&#8217;myid&#8217;,
+ '_rev&#8217;: u&#8217;1-676990679&#8217;,
+ 'doc_type&#8217;: 'A&#8217;,
+ 'id&#8217;: u&#8217;idofapplication&#8217;}
 
- In [14]: b = A.get('myid')
+ In [14]: b = A.get('myid&#8217;)
 
  In [15]: b.id
- Out<sup class="footnote"><a href="#fn26e5bbb7-fba0-41ac-ab72-71a1019ce6b6">15</a></sup>: u&#8217;idofapplication'
+ Out<sup class="footnote"><a href="#fn8e4a14fa-44e8-4c72-ad55-4131ac98e302">15</a></sup>: u&#8217;idofapplication&#8217;
 
  In [16]: b._id
- Out<sup class="footnote"><a href="#fn1794328f-3cc5-4c42-bf32-a7b86dd626a0">16</a></sup>: u&#8217;myid'
+ Out<sup class="footnote"><a href="#fnecb382d1-3ce0-49b7-a9f4-1636f743b32f">16</a></sup>: u&#8217;myid&#8217;
 </pre>
         <footer>
              <p><span class='comments'><a href='/blog/2009-06-25-Couchdbkit-0.1.7-released.html#disqus_thread'>View Comments</a></span></p>
