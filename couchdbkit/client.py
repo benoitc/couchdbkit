@@ -498,7 +498,7 @@ class Database(object):
 
     def put_attachment(self, doc, content, name=None, content_type=None, 
         content_length=None):
-        """ Add attachement to a document.
+        """ Add attachement to a document. All attachments are streamed.
 
         @param doc: dict, document object
         @param content: string or :obj:`File` object.
