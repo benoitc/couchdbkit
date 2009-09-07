@@ -149,7 +149,7 @@ def fields_for_document(document, properties=None, exclude=None):
             }
             
             if prop.default is not None:
-                defaults['initial'] = prop.default_value()
+                defaults['initial'] = prop.default_value
                 
             if prop.choices:
                 if prop.default:
