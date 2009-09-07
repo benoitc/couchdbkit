@@ -1,8 +1,0 @@
-TODO:
-
-- add ReferenceProperty
-- Add Aggregate views
-- management of extenals
-- _changes api
-- scripts to dump/load databases
-- make mapper compatible with json schmea

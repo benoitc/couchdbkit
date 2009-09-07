@@ -1,0 +1,22 @@
+title: Couchdbkit version 0.1.9 released
+content_type: textile
+page_type: blog
+template: blog/post.html
+
+New release for "Couchdbkit":http://couchdbkit.org.
+
+You can download latest release on "Pypi":http://pypi.python.org/pypi/couchdbkit/0.1.9 or check "download page":../download.html for other ways.
+
+h2. New features :
+
+* Replacing py-restclient with restkit. It removes dependancy on httplib2 & pycurl and add streaming possibilities.
+* **Streaming**: POST and PUT requests are streamed, streaming attachments from CouchDB is possible (use stream argument in fetch_attachment function)
+* **Use the best available json serialize/deserializer installed**. If you don't use python 2.6x or want to use a faster solution, you will need to install a json serializer. Supported json serializers are : cjson, jsonlib2, jsonlib, simplejson, and django.utils.json. To do that couchdbkit use anyjson module from the "Carrot":http://ask.github.com/carrot/ project.
+
+h2. Fixes :
+
+* removed httplib2 dependancy
+* Add support for custom keys in views results. Usefull for example with couchdb-lucene to get search time or other metadata.
+* Fix LazyList, make sure that if content_type is fixed in ListProperty we don't convert types 
+* Django extension : support of dynamic initial values
+* Django extension : Fields in form are now ordered
