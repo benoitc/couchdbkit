@@ -495,10 +495,10 @@ class ListProperty(Property):
         return list(value)
         
     def to_python(self, value):
-        return LazyList(value_to_python(value), value)
+        return LazyList(value_to_python(value, item_type=self.item_type), value, item_type=self.item_type)
         
     def to_json(self, value):
-        return value_to_json(value)
+        return value_to_json(value, item_type=self.item_type)
 
 
 class StringListProperty(ListProperty):
@@ -519,8 +519,9 @@ class LazyDict(dict):
     doc reference (doc[keyt] obviously).
     """
 
-    def __init__(self, d, doc):
+    def __init__(self, d, doc, item_type=None):
         dict.__init__(self)
+        self.item_type = item_type
         d = d or {}
         self.doc = doc
         for key, value in d.items():
@@ -529,12 +530,12 @@ class LazyDict(dict):
     def __setitem__(self, key, value):
         if isinstance(value, dict):
             self.doc[key] = {}
-            value = LazyDict(value,  self.doc[key])
+            value = LazyDict(value,  self.doc[key], item_type=self.item_type)
         elif isinstance(value, list):
             self.doc[key] = []
-            value = LazyList(value,  self.doc[key])
+            value = LazyList(value,  self.doc[key], item_type=self.item_type)
         else:
-            self.doc.update({key: value_to_json(value) })
+            self.doc.update({key: value_to_json(value, item_type=self.item_type) })
         super(LazyDict, self).__setitem__(key, value)
 
     def __delitem__(self, key):
@@ -548,7 +549,7 @@ class LazyDict(dict):
     def setdefault(self, key, default):
         if key in self:
             return self[key]  
-        self.doc.setdefault(key, value_to_json(default))
+        self.doc.setdefault(key, value_to_json(default, item_type=self.item_type))
         super(LazyDict, self).setdefault(key, default)
         return default
 
@@ -558,7 +559,7 @@ class LazyDict(dict):
 
     def popitem(self, value):
         new_value = super(LazyDict, self).popitem(value)
-        self.doc.popitem(value_to_json(value))
+        self.doc.popitem(value_to_json(value, item_type=self.item_type))
         return new_value
 
     def clear(self):
@@ -571,7 +572,8 @@ class LazyList(list):
     doc reference (doc[keyt] obviously).
     """
 
-    def __init__(self, l, doc):
+    def __init__(self, l, doc, item_type=None):
+        self.item_type = item_type
         l = l or []
         list.__init__(self, l)
         self.doc = doc
@@ -589,12 +591,12 @@ class LazyList(list):
     def __setitem__(self, index, value):
         if isinstance(value, dict):
             self.doc[index] = {}
-            value = LazyDict(value, self.doc[index])
+            value = LazyDict(value, self.doc[index], item_type=self.item_type)
         elif isinstance(value, list):
             self.doc[index] = []
-            value = LazyList(value, self.doc[index])
+            value = LazyList(value, self.doc[index], item_type=self.item_type)
         else:
-            self.doc[index] = value_to_json(value)
+            self.doc[index] = value_to_json(value, item_type=self.item_type)
         list.__setitem__(self, index, value)
 
     def append(self, *args, **kwargs):
@@ -607,12 +609,12 @@ class LazyList(list):
         index = len(self)
         if isinstance(value, dict):
             self.doc.append({})
-            value = LazyDict(value, self.doc[index])
+            value = LazyDict(value, self.doc[index], item_type=self.item_type)
         elif isinstance(value, list):
             self.doc.append([])
-            value = LazyList(value, self.doc[index])
+            value = LazyList(value, self.doc[index], item_type=self.item_type)
         else:
-            self.doc.append(value_to_json(value))
+            self.doc.append(value_to_json(value, item_type=self.item_type))
         super(LazyList, self).append(value)
         
 # some mapping
@@ -674,47 +676,50 @@ def validate_content(value, item_type=None):
                     (ALLOWED_PROPERTY_TYPES))
     return value
 
-def dict_to_json(value):
+def dict_to_json(value, item_type=None):
     """ convert a dict to json """
-    return dict([(k, value_to_json(v)) for k, v in value.iteritems()])
+    return dict([(k, value_to_json(v, item_type=item_type)) for k, v in value.iteritems()])
     
-def list_to_json(value):
+def list_to_json(value, item_type=None):
     """ convert a list to json """
-    return [value_to_json(item) for item in value]
+    return [value_to_json(item, item_type=item_type) for item in value]
     
-def value_to_json(value):
+def value_to_json(value, item_type=None):
     """ convert a value to json using appropriate regexp.
     For Dates we use ISO 8601. Decimal are converted to string.
     
     """
-    if isinstance(value, datetime.datetime):
+    if isinstance(value, datetime.datetime) and is_type_ok(item_type, datetime.datetime):
         value = value.replace(microsecond=0).isoformat() + 'Z'
-    elif isinstance(value, datetime.date):
+    elif isinstance(value, datetime.date) and is_type_ok(item_type, datetime.date):
         value = value.isoformat()
-    elif isinstance(value, datetime.time):
+    elif isinstance(value, datetime.time) and is_type_ok(item_type, datetime.time):
         value = value.replace(microsecond=0).isoformat()
-    elif isinstance(value, decimal.Decimal):
+    elif isinstance(value, decimal.Decimal) and is_type_ok(item_type, decimal.Decimal):
         value = unicode(value) 
     elif isinstance(value, list):
-        value = list_to_json(value)
+        value = list_to_json(value, item_type)
     elif isinstance(value, dict):
-        value = dict_to_json(value)
+        value = dict_to_json(value, item_type)
     return value
     
+def is_type_ok(item_type, value_type):
+    return item_type is None or item_type == value_type
     
-def value_to_python(value):
+    
+def value_to_python(value, item_type=None):
     """ convert a json value to python type using regexp. values converted
     have been put in json via `value_to_json` .
     """
     data_type = None
     if isinstance(value, basestring):
-        if re_date.match(value):
+        if re_date.match(value) and is_type_ok(item_type, datetime.datetime):
             data_type = datetime.date
-        elif re_time.match(value):
+        elif re_time.match(value) and is_type_ok(item_type, datetime.date):
             data_type = datetime.time
-        elif re_datetime.match(value):
+        elif re_datetime.match(value) and is_type_ok(item_type, datetime.time):
             data_type = datetime.datetime
-        elif re_decimal.match(value):
+        elif re_decimal.match(value) and is_type_ok(item_type, decimal.Decimal):
             data_type = decimal.Decimal
         if data_type is not None:
             prop = MAP_TYPES_PROPERTIES[data_type]()
@@ -724,15 +729,15 @@ def value_to_python(value):
             except:
                 pass           
     elif isinstance(value, list):
-        value = list_to_python(value)
+        value = list_to_python(value, item_type=item_type)
     elif isinstance(value, dict):
-        value = dict_to_python(value)
+        value = dict_to_python(value, item_type=item_type)
     return value
     
-def list_to_python(value):
+def list_to_python(value, item_type=None):
     """ convert a list of json values to python list """
-    return [value_to_python(item) for item in value]
+    return [value_to_python(item, item_type=item_type) for item in value]
     
-def dict_to_python(value):
+def dict_to_python(value, item_type=None):
     """ convert a json object values to python dict """
-    return dict([(k, value_to_python(v)) for k, v in value.iteritems()])
+    return dict([(k, value_to_python(v, item_type=item_type)) for k, v in value.iteritems()])
