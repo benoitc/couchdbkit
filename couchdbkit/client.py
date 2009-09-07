@@ -665,6 +665,7 @@ class ViewResults(object):
         self._result_cache = None
         self._total_rows = None
         self._offset = 0
+        self._dynamic_keys = []
 
     def iterator(self):
         self._fetch_if_needed()
@@ -720,9 +721,25 @@ class ViewResults(object):
 
     def fetch(self):
         """ fetch results and cache them """
+        # reset dynamic keys
+        for key in  self._dynamic_keys:
+            try:
+                delattr(self, key)
+            except:
+                pass
+        self._dynamic_keys = []
+        
         self._result_cache = self.view._exec(**self.params)
         self._total_rows = self._result_cache.get('total_rows')
         self._offset = self._result_cache.get('offset', 0)
+        
+        # add key in view results that could be added by an external
+        # like couchdb-lucene
+        for key in self._result_cache.keys():
+            if key not in ["total_rows", "offset", "rows"]:
+                self._dynamic_keys.append(key)
+                setattr(self, key, self._result_cache[keys])
+        
 
     def _fetch_if_needed(self):
         if not self._result_cache:
