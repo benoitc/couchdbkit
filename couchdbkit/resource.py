@@ -81,7 +81,7 @@ class CouchdbResource(restkit.Resource):
         return self.request('COPY', path=path, headers=headers, **params)
         
     def request(self, method, path=None, payload=None, headers=None, 
-         _stream=False, _stream_size=16384, **params):
+         _stream=False, _stream_size=16384, _raw_json=False, **params):
         """ Perform HTTP call to the couchdb server and manage 
         JSON conversions, support GET, POST, PUT and DELETE.
         
@@ -178,7 +178,8 @@ class CouchdbResource(restkit.Resource):
             raise
         response = self.get_response()
         
-        if data and response.get('content-type') == 'application/json':
+        if data and response.get('content-type') == 'application/json' \
+                and not _raw_json:
             try:
                 data = anyjson.deserialize(data)
             except ValueError:
