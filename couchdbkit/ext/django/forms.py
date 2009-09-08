@@ -234,7 +234,7 @@ class BaseDocumentForm(BaseForm):
         opts = self._meta
         cleaned_data = self.cleaned_data.copy()
         for prop_name in self.instance._doc.keys():
-            if opts.properties and key not in opts.properties:
+            if opts.properties and prop_name not in opts.properties:
                 continue
             if opts.exclude and prop_name in opts.exclude:
                 continue
