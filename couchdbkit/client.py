@@ -800,7 +800,7 @@ class ViewResults(object):
         for key in self._result_cache.keys():
             if key not in ["total_rows", "offset", "rows"]:
                 self._dynamic_keys.append(key)
-                setattr(self, key, self._result_cache[keys])
+                setattr(self, key, self._result_cache[key])
                 
                 
     def fetch_raw(self):
