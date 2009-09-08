@@ -102,6 +102,7 @@ class CouchdbResource(restkit.Resource):
             be added to HTTP request.
         @param _stream: boolean, response return a ResponseStream object
         @param _stream_size: int, size in bytes of response stream block
+        @param _raw_json: return raw json instead deserializing it
         @param params: Optionnal parameterss added to the request. 
             Parameterss are for example the parameters for a view. See 
             `CouchDB View API reference 
