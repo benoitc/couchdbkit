@@ -150,16 +150,16 @@ class DocumentSchema(object):
         """ get dict of dynamic properties """
         if self._dynamic_properties is None:
             return {}
-        return self._dynamic_properties
+        return self._dynamic_properties.copy()
 
     def properties(self):
         """ get dict of defined properties """
-        return self._properties
+        return self._properties.copy()
 
     def all_properties(self):
         """ get all properties. 
         Generally we just need to use keys"""
-        all_properties = self._properties
+        all_properties = self._properties.copy()
         all_properties.update(self.dynamic_properties())
         return all_properties
 
