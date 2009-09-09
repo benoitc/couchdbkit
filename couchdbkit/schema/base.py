@@ -590,6 +590,8 @@ class QueryMixin(object):
                 return row
                 
             data['_id'] = docid
+            if 'rev' in data:
+                data['_rev'] = data.pop('rev')
             cls._allow_dynamic_properties = dynamic_properties
             obj = cls.wrap(data)
             return obj

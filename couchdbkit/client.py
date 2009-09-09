@@ -556,7 +556,7 @@ class Database(object):
         This is a shorthand to view function.
         """
         return View(self, '_all_docs', wrapper=wrapper)(**params)
-    iter_documents = documents    
+    iterdocuments = documents
 
     def put_attachment(self, doc, content, name=None, content_type=None, 
         content_length=None):
@@ -686,7 +686,7 @@ class Database(object):
        self.delete_doc(docid)
 
     def __iter__(self):
-        return self.iterdocuments()
+        return self.documents().iterator()
         
     def __nonzero__(self):
         return (len(self) > 0)
@@ -774,7 +774,7 @@ class ViewResults(object):
 
     def all(self):
         """ return list of all results """
-        return list(self)
+        return list(self.iterator())
 
     def count(self):
         """ return number of returned results """
