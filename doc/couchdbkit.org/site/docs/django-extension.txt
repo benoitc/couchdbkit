@@ -39,7 +39,7 @@ A document is a simple Python object that map properties of a Couchdb Document. 
  class Greeting(Document):
      author = StringProperty()
      content = StringProperty(required=True)
-     date = DateTimeProperty(default=datetimee.utcnow)
+     date = DateTimeProperty(default=datetime.utcnow)
 </pre>
 
 Databse will be automatically set for each `Document` defined in models.py
