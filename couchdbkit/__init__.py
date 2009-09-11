@@ -41,7 +41,7 @@ all_by_module = {
                                 'convert_property', 'DocumentSchema', 'DocumentBase', 
                                 'QueryMixin', 'AttachmentMixin', 'Document', 'StaticDocument',
                                 'SchemaProperty', 'ListProperty', 'DictProperty', 
-                                'StringListProperty']
+                                'StringListProperty', 'contain']
                             
 }
 

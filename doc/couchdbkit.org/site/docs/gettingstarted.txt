@@ -8,8 +8,8 @@ the "API":/docs/api/  documentation.
 If you have not installed couchdbkit yet, follow instruction on "download page":/download.html . Once you've done, you can write your first CouchDB document:
 
 <pre class="code prettyprint">
- from couchdbkit.schema import Document
- from couchdbkit.schema.properties import *
+ import datetime
+ from couchdbkit.schema import *
  
  class Greeting(Document):
       author = StringProperty()
@@ -22,24 +22,15 @@ h2. Store the submitted Greetings
 Here is the code to save a greet on database Greeting. We also see how to create a database.
 
 <pre class="code prettyprint">
- import datetime
- from couchdbkit.client import Server
- from couchdbkit.session import create_session
- 
  # server object
  server = Server()
  
  # create database
- try:
-     server.create_db("greetings")
- except:
-     pass
+ db = get_or_create_db("greeting")
  
- # open a database session
- db = create_session(server, "greetings")
- 
- Greeting = db(Greeting)
- 
+ # associate Greeting to the db
+ contain(db, Greeting)
+
  # create a new greet
  greet = Greeting(
      author="Benoit",
@@ -48,8 +39,15 @@ Here is the code to save a greet on database Greeting. We also see how to create
  )
  
  # save it 
-db(greet).save()
+ greet.save()
 </pre>
+
+Note: Here we use contain to associate the db to the <code>Greeting</code> object. This function could be use to associate myltiple dcouemnt objects to one db : <code>contain(db, Doc1, ...)</code> One other way to associate a db to a <code>Document</code> class would be :
+
+<pre class="code prettyprint">
+ Greeting.set_db(db)
+</pre>
+
 
 Your document `greet` in `greetings` db. Each document is saved with a `doc_type` field that allow you to find easily each kind of document with the views. By default `doc_type` is the name of the class.
 
@@ -60,13 +58,7 @@ Now that you saved your document, you can update it :
  greet.save()
 </pre>
 
-Here we update the author name.
-
-Note: You can notice that we don't use the db object here to update. In fact db object was automatically associated with the Greeting class on first `save`. You could have done this asssociation before by doing :
-
-<pre class="code prettyprint">
- Greeting = db(Greeting)
-</pre>
+Here we have updated the author name.
 
 h2. Dynamic properties
 
