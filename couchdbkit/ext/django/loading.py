@@ -32,7 +32,7 @@ from django.conf import settings
 from django.db.models import signals, get_app
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.datastructures import SortedDict
-from restkit.httpc import ProxiedHttpClient, BasicAuth
+from restkit.httpc import HttpClient, BasicAuth
 
 COUCHDB_DATABASES = getattr(settings, "COUCHDB_DATABASES", [])
 
@@ -52,7 +52,7 @@ class CouchdbkitHandler(object):
         self.__dict__ = self.__shared_state__
         
         if transport is None:
-            self.transport = ProxiedHttpClient()
+            self.transport = HttpClient()
         # create databases sessions
         for app_name, uri in databases:
             if isinstance(uri, tuple):
