@@ -32,7 +32,6 @@ all_by_module = {
                                 'DocsPathNotFound'],
     'couchdbkit.client':        ['Server', 'Database', 'ViewResults',
                                 'View', 'TempView'],
-    'couchdbkit.session':       ['create_session'],
     'couchdbkit.loaders':       ['BaseDocsLoader', 'FileSystemDocsLoader'],
     'couchdbkit.schema':        ['Property', 'StringProperty', 'IntegerProperty', 
                                 'DecimalProperty', 'BooleanProperty', 'FloatProperty', 
