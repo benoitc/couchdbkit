@@ -81,8 +81,8 @@
 	<p>If you have not installed couchdbkit yet, follow instruction on <a href="/download.html">download page</a> . Once you&#8217;ve done, you can write your first CouchDB document:</p>
 
 	<p><pre class="code prettyprint">
- from couchdbkit.schema import Document
- from couchdbkit.schema.properties import *</p>
+ import datetime
+ from couchdbkit.schema import *</p>
 
  class Greeting(Document):
       author = StringProperty()
@@ -95,23 +95,14 @@
 	<p>Here is the code to save a greet on database Greeting. We also see how to create a database.</p>
 
 	<p><pre class="code prettyprint">
- import datetime
- from couchdbkit.client import Server
- from couchdbkit.session import create_session</p>
-
  # server object
- server = Server()
+ server = Server()</p>
 
  # create database
- try:
-     server.create_db(&#8220;greetings&#8221;)
- except:
-     pass
+ db = get_or_create_db(&#8220;greeting&#8221;)
 
- # open a database session
- db = create_session(server, &#8220;greetings&#8221;)
-
- Greeting = db(Greeting)
+ # associate Greeting to the db
+ contain(db, Greeting)
 
  # create a new greet
  greet = Greeting(
@@ -121,7 +112,13 @@
  )
 
  # save it 
-db(greet).save()
+ greet.save()
+</pre>
+
+	<p>Note: Here we use contain to associate the db to the <code>Greeting</code> object. This function could be use to associate myltiple dcouemnt objects to one db : <code>contain(db, Doc1, ...)</code> One other way to associate a db to a <code>Document</code> class would be :</p>
+
+<pre class="code prettyprint">
+ Greeting.set_db(db)
 </pre>
 
 	<p>Your document `greet` in `greetings` db. Each document is saved with a `doc_type` field that allow you to find easily each kind of document with the views. By default `doc_type` is the name of the class.</p>
@@ -133,13 +130,7 @@ db(greet).save()
  greet.save()
 </pre>
 
-	<p>Here we update the author name.</p>
-
-	<p>Note: You can notice that we don&#8217;t use the db object here to update. In fact db object was automatically associated with the Greeting class on first `save`. You could have done this asssociation before by doing :</p>
-
-<pre class="code prettyprint">
- Greeting = db(Greeting)
-</pre>
+	<p>Here we have updated the author name.</p>
 
 	<h2>Dynamic properties</h2>
 

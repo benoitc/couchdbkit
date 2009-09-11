@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <title>Couchdbkit - 
-    Couchdbkit version 0.1.7 released
+    Couchdbkit version 0.2 released
 </title>
     <!--[if IE]>
 
@@ -79,85 +79,34 @@
 <section id="content">
     <article>
         <header>
-            <h1>Couchdbkit version 0.1.7 released</h1>
+            <h1>Couchdbkit version 0.2 released</h1>
         </header>
-        	<p>Just released Couchdbkit 0.1.7. </p>
+        	<p>New release for <a href="http://couchdbkit.org">Couchdbkit</a>.</p>
 
-	<p>Next version will be 0.2 and will have some new features :</p>
+	<p>You can download latest release on <a href="http://pypi.python.org/pypi/couchdbkit/0.2">Pypi</a> or check <a href="../download.html">download page</a> for other ways.</p>
 
-	<ul>
-		<li>Dump/Loads utilities</li>
-		<li>New view iterator system that would allow us to use less <span class="caps">CPU</span></li>
-		<li>Aggregation : A way to combine multiple views in one</li>
-		<li>ReferenceProperty: Link documents between themselves</li>
-		<li>...</li>
-	</ul>
-
-	<p>Changes for this version are following:</p>
-
-	<h2>Fixes</h2>
+	<h2>New features :</h2>
 
 	<ul>
-		<li>documentation typos</li>
-		<li>database name encoding. </li>
-		<li>list are correctly handled in DictProperty</li>
+		<li>Update to support latest features of restkit : new threadsafe support and now handle a pool of connections.</li>
+		<li>It&#8217;s now possible to fetch raw json from the clients. Some methods have _raw_json params. raw view results could be retrieved with `fetch_raw` method.</li>
 	</ul>
 
-	<h2>Breaking changes</h2>
+	<h2>Fixes :</h2>
 
-	<p>I introduced a <strong>breaking change</strong> in latest version of couchdbkit. Now id and rev members of `schema.Document` aren&#8217;t alias to _id and _rev. It allows you to use id and rev like you want in CouchDB. It also means that you need to set yourdoc._id to set the id of a document. I made this change since it seems that a lot of you need it. So here it is. </p>
+	<ul>
+		<li>Fix issues with dynamic properties</li>
+		<li>Fix db.documents iterator</li>
+		<li>Fix ext.django.forms</li>
+	</ul>
 
-	<p>Please test it and let me know if anything is wrong.</p>
+	<h2>Breaking Changes</h2>
 
-	<p>A little example :</p>
+	<p>The module `couchdbkit.session` don&#8217;t exist anymore. Couchdbkit is now threadsafe by default due to last change in <a href="http://bitbucket.org/benoitc/restkit/">restkit</a> . You don&#8217;t need now to use `create_session`to make the db object threadsafe or to apply it to your 'couchdbkit.schema.Document` object. `Session.contain` has been replaced by `couchdbkit.schema.contain` function. </p>
 
-	<p><pre class="code prettyprint">
- In [1]: from couchdbkit import *</p>
-
- In [2]: class A(Document):
-   ...:     pass
-   ...:
-
- In [3]: a = A()
-
- In [4]: a._id = &#8220;myid&#8221;
-
- In [5]: a.id = &#8220;idofapplication&#8221;
-
- In [6]: a._doc
- Out<sup class="footnote"><a href="#fn5f43441b-afe3-46f6-9ccc-c1027c184b5d">6</a></sup>: {&#8217;_id&#8217;: 'myid&#8217;, 'doc_type&#8217;: 'A&#8217;, 'id&#8217;: u&#8217;idofapplication&#8217;}
-
- In [7]: a._id
- Out<sup class="footnote"><a href="#fna1ac5ce5-769c-4ee7-b935-4540a1c2783e">7</a></sup>: 'myid&#8217;
-
- In [8]: a.id
- Out<sup class="footnote"><a href="#fn74ad9277-3691-40c8-80de-dd9f55ee3ace">8</a></sup>: 'idofapplication&#8217;
-
- In [9]: s = Server()
-
- In [10]: db = s['couchdbkit_test3&#8217;]
-
- In [11]: A._db = db
-
- In [12]: a.save()
-
- In [13]: a._doc
- Out<sup class="footnote"><a href="#fna593d481-d2d0-44e1-a9ae-17aebd0f2286">13</a></sup>:
- {&#8217;_id&#8217;: u&#8217;myid&#8217;,
- '_rev&#8217;: u&#8217;1-676990679&#8217;,
- 'doc_type&#8217;: 'A&#8217;,
- 'id&#8217;: u&#8217;idofapplication&#8217;}
-
- In [14]: b = A.get('myid&#8217;)
-
- In [15]: b.id
- Out<sup class="footnote"><a href="#fn78da80f7-7ca9-4104-a364-55797c32b959">15</a></sup>: u&#8217;idofapplication&#8217;
-
- In [16]: b._id
- Out<sup class="footnote"><a href="#fnb150dc80-9622-414c-81df-125b49886982">16</a></sup>: u&#8217;myid&#8217;
-</pre>
+	<p>The <a href="../gettingstarted.html">tutorial</a> has been updated to reflect this.</p>
         <footer>
-             <p><span class='comments'><a href='/blog/2009-06-25-Couchdbkit-0.1.7-released.html#disqus_thread'>View Comments</a></span></p>
+             <p><span class='comments'><a href='/blog/2009-09-11-Couchdbkit-0.2.html#disqus_thread'>View Comments</a></span></p>
         </footer>
     </article>
     <div id="disqus_thread"></div><script type="text/javascript" src="http://disqus.com/forums/couchdbkit/embed.js"></script><noscript><a href="http://couchdbkit.disqus.com/?url=ref">View the discussion thread.</a></noscript><a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
