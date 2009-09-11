@@ -150,3 +150,9 @@ of the CouchDB value type has a corresponding Property class provided by the
 from couchdbkit.schema.properties import *
 from couchdbkit.schema.base import *
 from couchdbkit.schema.properties_proxy import *
+
+def contain(db, *docs):
+    """ associate a db to multiple `Document` class"""
+    for doc in docs:
+        if hasattr(doc, '_db'):
+            doc._db = db

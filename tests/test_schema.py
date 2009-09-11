@@ -498,64 +498,13 @@ class DocumentTestCase(unittest.TestCase):
         
         self.server.delete_db('couchdbkit_test')
 
-    def testScopedSession(self):
-        db = self.server.create_db('couchdbkit_test')
-        dbsession = create_session(self.server,
-                'couchdbkit_test')
-
-        class A(Document):
-            s = StringProperty()
-
-        a = A()
-        a.s = "test"
-        dbsession(a).save()
-        
-        b = dbsession(A).get(a._id)
-
-        self.assert_(b.s == "test")
-        
-        c = A.get(a._id)
-        self.assert_(c.s == "test")
-        
-        self.server.delete_db('couchdbkit_test')
-
-    def testSccopedSesion2(self):
-        db = self.server.create_db('couchdbkit_test')
-        db2 = self.server.create_db('couchdbkit_test2')
-
-        session = dbsession = create_session(self.server,
-                'couchdbkit_test')
-
-        session2 = dbsession = create_session(self.server,
-                'couchdbkit_test')
-
-        class A(Document):
-            s = StringProperty()
-
-        a = A()
-        a.s = "test"
-        session(a).save()
-
-        a2 = A()
-        a2.s = "test2"
-        session2(a2).save()
-
-        b = session(A).get(a._id)
-        self.assert_(b.s == "test")
-
-        b2 = session2(A).get(a2._id)
-        self.assert_(b2.s == "test2")
-
-        self.server.delete_db('couchdbkit_test')
-        self.server.delete_db('couchdbkit_test2')
-
     def testGetOrCreate(self):
         self.server.create_db('couchdbkit_test')
-        db = create_session(self.server, 'couchdbkit_test')
+        db = self.server['couchdbkit_test']
 
         class A(Document):
             s = StringProperty()
-        A = db(A)
+        A._db = db
 
         def no_exist():
             a = A.get('test')

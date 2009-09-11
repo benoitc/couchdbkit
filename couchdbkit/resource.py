@@ -57,7 +57,8 @@ ResourceNotFound = restkit.ResourceNotFound
 
 class CouchdbResource(restkit.Resource):
 
-    def __init__(self, uri="http://127.0.0.1:5984", transport=None):
+    def __init__(self, uri="http://127.0.0.1:5984", transport=None, 
+            use_proxy=False, min_size=0, max_size=4, pool_class=None, **kwargs):
         """Constructor for a `CouchdbResource` object.
 
         CouchdbResource represent an HTTP resource to CouchDB.
@@ -71,11 +72,23 @@ class CouchdbResource(restkit.Resource):
                 a client based on `Httplib2 <http://code.google.com/p/httplib2/>`_ 
                 or make your own depending on the options you need to access the 
                 server (authentification, proxy, ....).
+        @param use_proxy: boolean, default is False, if you want to use a proxy
+        @param min_size: minimum number of connections in the pool
+        @param max_size: maximum number of connection in the pool
+        @param pool_class: custom pool class
         """
         
-        restkit.Resource.__init__(self, uri=uri, transport=transport)
+        restkit.Resource.__init__(self, uri=uri, transport=transport, 
+                use_proxy=use_proxy, min_size=min_size, max_size=max_size, 
+                pool_class=pool_class)
         self.client.safe = ":/"
 
+    def clone(self):
+        obj = self.__class__(uri=self.uri, transport=self.transport,
+                use_proxy=self.use_proxy, min_size=self.min_size, 
+                max_size=self.max_size, pool_class=self.pool_class)
+        return obj
+        
     def copy(self, path=None, headers=None, **params):
         """ add copy to HTTP verbs """
         return self.request('COPY', path=path, headers=headers, **params)
@@ -132,12 +145,11 @@ class CouchdbResource(restkit.Resource):
                 body = payload
 
         params = self.encode_params(params)
-
         def _make_request(retry=1):
             try:
                 return restkit.Resource.request(self, method, path=path,
-                        payload=body, headers=headers, _stream=_stream, 
-                        _stream_size=_stream_size, **params)
+                                 payload=body, headers=headers, _stream=_stream, 
+                                 _stream_size=_stream_size, **params)
             except (socket.error, httplib.BadStatusLine), e:
                 if retry > 0:
                     time.sleep(0.4)
@@ -151,6 +163,8 @@ class CouchdbResource(restkit.Resource):
                         response=HTTPResponse({}))
             except:
                 raise
+        
+
         try:
             data = _make_request()
         except restkit.RequestFailed, e:

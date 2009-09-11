@@ -22,17 +22,10 @@ and manage db sessions
 import sys
 import os
 
-try:
-    # Only exists in Python 2.4+
-    from threading import local
-except ImportError:
-    # Import copy of _thread_local.py from Python 2.4
-    from django.utils._threading_local import local
-
 import urllib
 import urlparse
 
-from couchdbkit import Server, create_session, ResourceConflict
+from couchdbkit import Server, contain, ResourceConflict
 from couchdbkit.loaders import FileSystemDocLoader
 from couchdbkit.resource import PreconditionFailed
 from django.conf import settings
@@ -91,7 +84,7 @@ class CouchdbkitHandler(object):
                 self.transport.add_authorization(BasicAuth(username, password))
             server = Server(server_uri, self.transport)
             app_label = app_name.split('.')[-1]
-            self._databases[app_label] = create_session(server, dbname, local)
+            self._databases[app_label] = server[dbname]
     
     def sync(self, app, verbosity=2):
         """ used to sync views of all applications and eventually create
