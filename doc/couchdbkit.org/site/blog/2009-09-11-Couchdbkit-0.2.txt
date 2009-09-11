@@ -23,4 +23,4 @@ h2. Breaking Changes
 
 The module `couchdbkit.session` don't exist anymore. Couchdbkit is now threadsafe by default due to last change in "restkit":http://bitbucket.org/benoitc/restkit/ . You don't need now to use `create_session`to make the db object threadsafe or to apply it to your 'couchdbkit.schema.Document` object. `Session.contain` has been replaced by `couchdbkit.schema.contain` function. 
 
-The "tutorial":../gettingstarted.html has been updated to reflect this.
+The "tutorial":../docs/gettingstarted.html has been updated to reflect this.
