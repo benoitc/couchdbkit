@@ -9,7 +9,7 @@ If you have not installed couchdbkit yet, follow instruction on "download page":
 
 <pre class="code prettyprint">
  import datetime
- from couchdbkit.schema import *
+ from couchdbkit import *
  
  class Greeting(Document):
       author = StringProperty()
