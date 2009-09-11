@@ -15,7 +15,7 @@ Once again we have our Document `Greeting`
  class Greeting(Document):
      author = StringProperty()
      content = StringProperty(required=True)
-     date = DateTimeProperty(default=datetimee.utcnow)
+     date = DateTimeProperty(default=datetime.utcnow)
 </pre>
 
 The couchdbkit extension of FormAlchemy is in module `formalchemy.ext.couchdb`. To map our document to a FormAlchemy do : 
