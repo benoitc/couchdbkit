@@ -1,0 +1,26 @@
+title: Couchdbkit version 0.2 released
+content_type: textile
+page_type: blog
+template: blog/post.html
+
+New release for "Couchdbkit":http://couchdbkit.org.
+
+You can download latest release on "Pypi":http://pypi.python.org/pypi/couchdbkit/0.2 or check "download page":../download.html for other ways.
+
+h2. New features :
+
+* Update to support latest features of restkit : new threadsafe support and now handle a pool of connections.
+* It's now possible to fetch raw json from the clients. Some methods have _raw_json params. raw view results could be retrieved with `fetch_raw` method.
+
+
+h2. Fixes :
+
+* Fix issues with dynamic properties
+* Fix db.documents iterator
+* Fix ext.django.forms
+
+h2. Breaking Changes
+
+The module `couchdbkit.session` don't exist anymore. Couchdbkit is now threadsafe by default due to last change in "restkit":http://bitbucket.org/benoitc/restkit/ . You don't need now to use `create_session`to make the db object threadsafe or to apply it to your 'couchdbkit.schema.Document` object. `Session.contain` has been replaced by `couchdbkit.schema.contain` function. 
+
+The "tutorial":../gettingstarted.html has been updated to reflect this.
