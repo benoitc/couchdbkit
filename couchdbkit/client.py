@@ -847,7 +847,7 @@ class ViewResults(object):
         else:
             params['key'] = key
         
-        return ViewResults(self.view, params)
+        return ViewResults(self.view, **params)
         
     def __iter__(self):
         return self.iterator()
