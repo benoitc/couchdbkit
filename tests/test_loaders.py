@@ -115,6 +115,9 @@ class LoaderTestCase(unittest.TestCase):
 
         # should create view
         self.assert_('function' in design_doc['views']['example']['map'])
+        # should not create empty views
+        self.assertFalse('empty' in design_doc['views'])
+        self.assertFalse('wrong' in design_doc['views'])
         
         # should use macros
         self.assert_('stddev' in design_doc['views']['example']['map'])

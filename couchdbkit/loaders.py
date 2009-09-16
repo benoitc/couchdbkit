@@ -320,6 +320,24 @@ class FileSystemDocsLoader(BaseDocsLoader):
                     package_shows(design_doc, design_doc[funs], app_dir, objects, verbose=verbose)
 
             if 'views' in design_doc:
+                # clean views
+                # we remove empty views and malformed from the list
+                # of pushed views. We also clean manifest
+                views = {}
+                dmanifest = {}
+                for i, fname in enumerate(manifest):
+                    if fname.startswith("views/") and fname != "views/":
+                        name, ext = os.path.splitext(fname)
+                        if name.endswith('/'):
+                            name = name[:-1]
+                        dmanifest[name] = i
+
+                for vname, value in design_doc['views'].iteritems():
+                    if value and isinstance(value, dict):
+                        views[vname] = value
+                    else:
+                        del manifest[dmanifest["views/%s" % vname]]
+                design_doc['views'] = views
                 package_views(design_doc, design_doc["views"], app_dir, objects, verbose=verbose)
 
             couchapp = design_doc.get('couchapp', False)
