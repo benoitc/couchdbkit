@@ -315,11 +315,9 @@ class FileSystemDocsLoader(BaseDocsLoader):
             if not 'couchapp' in design_doc:
                 design_doc['couchapp'] = {}
 
-            if 'shows' in design_doc:
-                package_shows(design_doc, design_doc['shows'], app_dir, objects, verbose=verbose)
-
-            if 'lists' in design_doc:
-                package_shows(design_doc, design_doc['lists'], app_dir, objects, verbose=verbose)
+            for funs in ['shows', 'lists', 'updates', 'filters']:
+                if funs in design_doc:
+                    package_shows(design_doc, design_doc[funs], app_dir, objects, verbose=verbose)
 
             if 'views' in design_doc:
                 package_views(design_doc, design_doc["views"], app_dir, objects, verbose=verbose)
