@@ -645,7 +645,12 @@ class Database(object):
         docid = self.escape_docid(doc['_id'])
         name = url_quote(name, safe="")
         
-        return self.res(docid).delete(name, rev=doc['_rev'])
+        
+        res = self.res(docid).delete(name, rev=doc['_rev'])
+        if res['ok']:
+            doc.update({ '_rev': res['rev']})
+        return res['ok']
+        
 
     def fetch_attachment(self, id_or_doc, name, stream=False, 
             stream_size=16384):
