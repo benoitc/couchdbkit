@@ -645,7 +645,6 @@ class Database(object):
         docid = self.escape_docid(doc['_id'])
         name = url_quote(name, safe="")
         
-        
         res = self.res(docid).delete(name, rev=doc['_rev'])
         if res['ok']:
             doc.update({ '_rev': res['rev']})

@@ -541,7 +541,7 @@ class AttachmentMixin(object):
         """
         if not hasattr(self, '_db'):
             raise TypeError("doc database required to save document")
-        return self.__class__._db.put_attachment(self, content, name=name,
+        return self.__class__._db.put_attachment(self._doc, content, name=name,
             content_type=content_type, content_length=content_length)
 
     def delete_attachment(self, name):
@@ -553,7 +553,7 @@ class AttachmentMixin(object):
         """
         if not hasattr(self, '_db'):
             raise TypeError("doc database required to save document")
-        return self.__class__._db.delete_attachment(self, name)
+        return self.__class__._db.delete_attachment(self._doc, name)
 
     def fetch_attachment(self, name, stream=False, stream_size=16384):
         """ get attachment in a adocument
@@ -566,7 +566,7 @@ class AttachmentMixin(object):
         """
         if not hasattr(self, '_db'):
             raise TypeError("doc database required to save document")
-        return self.__class__._db.fetch_attachment(self, name, stream=stream,
+        return self.__class__._db.fetch_attachment(self._doc, name, stream=stream,
             stream_size=stream_size)
         
         
