@@ -168,7 +168,7 @@ class Server(object):
     def __getitem__(self, dbname):
         if dbname in self:
             return Database(self, dbname)
-        raise ResourceNotFound
+        raise ResourceNotFound()
         
     def __delitem__(self, dbname):
         return self.res.delete('/%s/' % url_quote(dbname, safe=":"))
