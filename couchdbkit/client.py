@@ -137,6 +137,25 @@ class Server(object):
         """
         del self[dbname]
         
+    #TODO: maintain list of replications
+    def replicate(self, source, target, continuous=False):
+        """
+        simple handler for replication
+        
+        @param source: str, URI or dbname of the source
+        @param target: str, URI or dbname of the target
+        @param continuous: boolean, default is False, set the type of replication
+        
+        More info about replication here : 
+        http://wiki.apache.org/couchdb/Replication
+        
+        """
+        self.res.post('/_replicate', payload={
+            "source": source,
+            "target": target,
+            "continuous": continuous
+        })
+        
     def next_uuid(self, count=None):
         """
         return an available uuid from couchdbkit
