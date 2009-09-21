@@ -81,7 +81,7 @@ class CouchdbResource(restkit.Resource):
         restkit.Resource.__init__(self, uri=uri, transport=transport, 
                 use_proxy=use_proxy, min_size=min_size, max_size=max_size, 
                 pool_class=pool_class)
-        self.client.safe = ":/"
+        self.client.safe = ":/%"
 
     def clone(self):
         obj = self.__class__(uri=self.uri, transport=self.transport,
@@ -128,12 +128,6 @@ class CouchdbResource(restkit.Resource):
         headers = headers or {}
         headers.setdefault('Accept', 'application/json')
         headers.setdefault('User-Agent', USER_AGENT)
-
-        # always init url safe chars
-        self.client.safe=":/"
-        if path is not None  and "%" in path: 
-            # we already encode some parts of url
-            self.client.safe = ":/%"
 
         body = None
         if payload is not None:
