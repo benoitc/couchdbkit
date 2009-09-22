@@ -4,9 +4,9 @@ This is a manual for installing Couchdbkit and its dependencies.
 
 h2. 1. Installing CouchDB
 
-Couchdbkit require couchdb 0.9 or later to use it.
+Couchdbkit requires couchdb 0.9 or later to use it.
 
-To install Couchdb follow documentation from "CouchDB wiki":http://wiki.apache.org/couchdb/Installation .
+To install Couchdb follow the documentation on  "CouchDB wiki":http://wiki.apache.org/couchdb/Installation .
 
 h2. 2. Installing Couchdbkit
 
@@ -45,7 +45,7 @@ h4. install Couchdbkit
 $ python setup.py install
 </pre>
 
-If you're using a hg clone, it's recommended to use the setuptools develop command, which will simply activate Couchdbkit directly from your source directory. This way you can do a git fetch or make changes to the source code without re-installing every time:
+If you're using a hg clone, it's recommended to use the setuptools develop command, which will simply activate Couchdbkit directly from your source directory. This way you can do a hg fetch or make changes to the source code without re-installing every time:
 
 <pre class="code prettyprint">
 $ python setup.py develop

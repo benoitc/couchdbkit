@@ -3,11 +3,11 @@ page_type: blog
 
 There are a lot of people trying to integrate CouchDB in their "Django":http://djangoproject.com application. Most of the implementations are very complicated. So I decided to release the code of couchdbkit extension for Django 1.0x.
 
-This extension provides you a threadsafe access and mangement of documents and views in your django application with some usefull tools specific to Django.
+This extension provides you a threadsafe access and management of documents and views in your django application with some useful tools specific to Django.
 
-h2. setup the extension
+h2. Setup the extension
 
-Just add to your settings the `COUCHDB_DATABASES` that defines 
+Add to your settings the `COUCHDB_DATABASES` that defines relations between your django applications and couchdb databases :
 
 <pre class="code prettyprint">
  COUCHDB_DATABASES = (
@@ -15,10 +15,10 @@ Just add to your settings the `COUCHDB_DATABASES` that defines
  )
 </pre>
 
-This one defines the db greeting on url `http://127.0.0.1:5984/greeting`
-for the application `greeting`of djangoapp project.
+This defines the db greeting on url `http://127.0.0.1:5984/greeting`
+for the application `greeting` of djangoapp project.
 
-Then add the extension to your INSTALLED_APPS before all applications using
+Then add the extension to your INSTALLED_APPS before any other application using
 couchdbkit documents.
 
 <pre class="code prettyprint">
@@ -31,7 +31,7 @@ couchdbkit documents.
 
 h2. Create a document object
 
-A document is a simple Python object that map properties of a Couchdb Document. Documents should be defined like Django models in the file models.py of your application:
+A document is a simple Python object that maps properties of a Couchdb Document. Documents should be defined like Django models in the file models.py of your application:
 
 <pre class="code prettyprint">
  from couchdbkit.ext.django.schema import *
@@ -42,7 +42,7 @@ A document is a simple Python object that map properties of a Couchdb Document. 
      date = DateTimeProperty(default=datetime.utcnow)
 </pre>
 
-Databse will be automatically set for each `Document` defined in models.py
+The database will be automatically set for each `Document` defined in models.py
 
 h2. Create your django views
 
@@ -77,7 +77,7 @@ Then define your views with proper actions :
 
 h2. Define the Couchdb `design doc` for the application
 
-Views/shows/lists are created in _design folder of your application. exemple :
+Views/shows/lists are created in _design folder of your application :
 
 <pre class="code">
  greeting/_design
@@ -91,7 +91,7 @@ It won't destroy your datas, just synchronize views.
 
 h2. One more thing
 
-Obviously there are time when you need to do more than fetching document or views results. At any time you could use the database session associated to an application :
+Obviously there are times when you need to do more than fetching document or views results. At any time you could use the database session associated to an application :
 
 <pre class="code prettyprint">
  from couchdbkit.ext.django.loading import get_db

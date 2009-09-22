@@ -1,9 +1,9 @@
 title: Formalchemy extension
 page_type: blog
 
-For the "Django extension":/docs/django-extension.html I wrote the object `DocumentForm` that allows you to create a Django Form class based on a Document class or instance of a Document. 
+In the "Django extension":/docs/django-extension.html, I wrote the object `DocumentForm` that allows you to create a Django Form class based on a Document class or instance of a Document. 
 
-But you don't need to use Django to have this facility in your web application. If you use "Pylons":http://pylonshq.com/ you already know "FormAlchemy":http://code.google.com/p/formalchemy/. FormAlchemy was originaly developped to map "SQLAlchemy":http://www.sqlalchemy.org/ object in form but it now contain an extension for Couchdbkit too. 
+But you don't need to use Django to have this facility in your web application. If you use "Pylons":http://pylonshq.com/ you may already know "FormAlchemy":http://code.google.com/p/formalchemy/. FormAlchemy was originaly developped to map "SQLAlchemy":http://www.sqlalchemy.org/ object in a form but it now contains an extension for Couchdbkit too. 
 
 h2. How to use it?
 
@@ -34,4 +34,4 @@ The couchdbkit extension of FormAlchemy is in module `formalchemy.ext.couchdb`. 
 
 And that's it. 
 
-For more information about FormAlchemy go on its "documentation":http://docs.formalchemy.org/ .
+For more information about FormAlchemy, please check its "documentation":http://docs.formalchemy.org/ .
