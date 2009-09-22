@@ -36,9 +36,9 @@ __all__ = ['ReservedWordError', 'ALLOWED_PROPERTY_TYPES', 'DocumentSchema',
         'SchemaProperties', 'DocumentBase', 'QueryMixin', 'AttachmentMixin', 
         'Document', 'StaticDocument', 'valid_id']
 
-_RESERVED_WORDS = ['_id', '_rev', '$schema', 'type']
+_RESERVED_WORDS = ['_id', '_rev', '$schema']
 
-_NODOC_WORDS = ['doc_type', 'type']
+_NODOC_WORDS = ['doc_type']
 
 def check_reserved_words(attr_name):
     if attr_name in _RESERVED_WORDS:
