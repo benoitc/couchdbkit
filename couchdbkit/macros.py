@@ -49,13 +49,9 @@ import glob
 import os
 import re
 import sys
-# python 2.6
-try:
-    import json 
-except ImportError:
-    import simplejson as json
-
 from hashlib import md5
+
+import anyjson
 
 from couchdbkit.utils import read_file, read_json, to_bytestring
 
@@ -181,6 +177,6 @@ def run_json_macros(doc, f_string, app_dir, verbose=False):
         return f_string
 
     for k, v in included.iteritems():
-        varstrings.append("var %s = %s;" % (k, json.dumps(v)))
+        varstrings.append("var %s = %s;" % (k, anyjson.serialize(v)))
 
     return re_json.sub(rjson2, f_string)

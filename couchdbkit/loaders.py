@@ -36,6 +36,8 @@ import os
 import socket
 import sys
 
+import anyjson
+
 from couchdbkit.exceptions import DocsPathNotFound
 from couchdbkit.resource import ResourceNotFound
 from couchdbkit.utils import *
@@ -51,7 +53,7 @@ class BaseDocsLoader(object):
 
         from couchdbkit import BaseDocsLoader
         import os
-        import simplejson as json
+        import anyjson
 
         class MyDocsLoader(BaseDocsLoader):
 
@@ -62,7 +64,7 @@ class BaseDocsLoader(object):
                 if not os.path.exists(path):
                     raise DocsPathNotFound
                 with file(path) as f:
-                    source = json.loads(f.read().decode('utf-8'))
+                    source = anyjson.deserialize(f.read().decode('utf-8'))
                 return source
     """
     
@@ -412,7 +414,7 @@ class FileSystemDocsLoader(BaseDocsLoader):
                         
                 if name.endswith('.json'):
                     try:
-                        content = json.loads(content)
+                        content = anyjson.deserialize(content)
                     except ValueError:
                         if verbose >= 2:
                             print >>sys.stderr, "Json invalid in %s" % current_path
