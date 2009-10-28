@@ -25,7 +25,8 @@ Example:
     >>> from couchdbkit import Server
     >>> server = Server()
     >>> db = server.create_db('couchdbkit_test')
-    >>> doc = db.save_doc({ 'string': 'test', 'number': 4 })
+    >>> doc = { 'string': 'test', 'number': 4 }
+    >>> db.save_doc(doc)
     >>> docid = doc['_id']
     >>> doc2 = db.get(docid)
     >>> doc['string']
@@ -373,8 +374,8 @@ class Database(object):
         @param _raw_json: return raw json instead deserializing it
         @param params, list of optionnal params, like batch="ok"
         
-        with `_raw_json=True` It return raw response. If False it return
-        anything but update doc object with new revision (if batch=False).
+        with `_raw_json=True` It return raw response. If False it update 
+        doc instance with new revision (if batch=False).
         """
         if doc is None:
             doc = {}
