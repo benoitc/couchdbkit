@@ -145,7 +145,6 @@ class CouchdbResource(restkit.Resource):
                              payload=body, headers=headers, _stream=_stream, 
                              _stream_size=_stream_size, **params)
         except restkit.RequestFailed, e:
-            print "mmm"
             msg = getattr(e, 'msg', '')
             if msg and e.response.get('content-type') == 'application/json':
                 
@@ -166,7 +165,6 @@ class CouchdbResource(restkit.Resource):
                 raise PreconditionFailed(error, http_code=412,
                         response=e.response)
             else:
-                print "argh"
                 raise 
         except:
             raise
