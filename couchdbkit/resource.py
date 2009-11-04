@@ -139,29 +139,13 @@ class CouchdbResource(restkit.Resource):
                 body = payload
 
         params = self.encode_params(params)
-        def _make_request(retry=1):
-            try:
-                return restkit.Resource.request(self, method, path=path,
-                                 payload=body, headers=headers, _stream=_stream, 
-                                 _stream_size=_stream_size, **params)
-            except (socket.error, httplib.BadStatusLine), e:
-                if retry > 0:
-                    time.sleep(0.4)
-                    return _make_request(retry - 1)
-                raise restkit.RequestFailed(str(e), http_code=0,
-                        response=HTTPResponse({}))
-            except restkit.RequestError, e: 
-                # until py-restkit will be patched to only 
-                # return RequestFailed, do our own raise
-                raise restkit.RequestFailed(str(e), http_code=0,
-                        response=HTTPResponse({}))
-            except:
-                raise
         
-
         try:
-            data = _make_request()
+            data = restkit.Resource.request(self, method, path=path,
+                             payload=body, headers=headers, _stream=_stream, 
+                             _stream_size=_stream_size, **params)
         except restkit.RequestFailed, e:
+            print "mmm"
             msg = getattr(e, 'msg', '')
             if msg and e.response.get('content-type') == 'application/json':
                 
@@ -182,6 +166,7 @@ class CouchdbResource(restkit.Resource):
                 raise PreconditionFailed(error, http_code=412,
                         response=e.response)
             else:
+                print "argh"
                 raise 
         except:
             raise
