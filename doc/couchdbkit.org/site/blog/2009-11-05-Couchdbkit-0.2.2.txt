@@ -18,7 +18,7 @@ h2. New features :
 
 h2. Fixes :
 
-* update doc
+* Updated doc
 * Don't reserver `type` property
 * Fix view results params
 * Remove malformed views when uploading with loaders
