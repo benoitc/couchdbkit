@@ -202,13 +202,13 @@ class DocumentSchema(object):
                         self._doc[key] = {}
                     elif not isinstance(self._doc[key], dict):
                         self._doc[key] = {}
-                    value = LazyDict(value, self._doc[key])
+                    value = LazyDict(self._doc[key], init_vals=value)
                 elif isinstance(value, list):
                     if key not in self._doc or not value:
                         self._doc[key] = []
                     elif not isinstance(self._doc[key], list):
                         self._doc[key] = []
-                    value = LazyList(value, self._doc[key])
+                    value = LazyList(self._doc[key], init_vals=value)
                     
                 self._dynamic_properties[key] = value
 

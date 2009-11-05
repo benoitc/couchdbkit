@@ -427,7 +427,7 @@ class DictProperty(Property):
         return dict(value)
         
     def to_python(self, value):
-        return LazyDict(value_to_python(value), value)
+        return LazyDict(value)
         
     def to_json(self, value):
         return value_to_json(value)
@@ -495,7 +495,7 @@ class ListProperty(Property):
         return list(value)
         
     def to_python(self, value):
-        return LazyList(value_to_python(value, item_type=self.item_type), value, item_type=self.item_type)
+        return LazyList(value, item_type=self.item_type)
         
     def to_json(self, value):
         return value_to_json(value, item_type=self.item_type)
@@ -517,23 +517,40 @@ class LazyDict(dict):
     """ object to make sure we keep updated of dict 
     in _doc. We just override a dict and maintain change in
     doc reference (doc[keyt] obviously).
+    
+    if init_vals is specified, doc is overwritten
+    with the dict given. Otherwise, the values already in 
+    doc are used. 
     """
 
-    def __init__(self, d, doc, item_type=None):
+    def __init__(self, doc, item_type=None, init_vals=None):
         dict.__init__(self)
         self.item_type = item_type
-        d = d or {}
+
         self.doc = doc
-        for key, value in d.items():
-            self[key] = value
+        if init_vals is None:
+            self._wrap()
+        else:
+            for key, value in init_vals.items():
+                self[key] = value
+
+    def _wrap(self):
+        for key, json_value in self.doc.items():
+            if isinstance(json_value, dict):
+                value = LazyDict(json_value, item_type=self.item_type)
+            elif isinstance(json_value, list):
+                value = LazyList(json_value, item_type=self.item_type)
+            else:
+                value = value_to_python(json_value, self.item_type)
+            dict.__setitem__(self, key, value)
 
     def __setitem__(self, key, value):
         if isinstance(value, dict):
             self.doc[key] = {}
-            value = LazyDict(value,  self.doc[key], item_type=self.item_type)
+            value = LazyDict(self.doc[key], item_type=self.item_type, init_vals=value)
         elif isinstance(value, list):
             self.doc[key] = []
-            value = LazyList(value,  self.doc[key], item_type=self.item_type)
+            value = LazyList(self.doc[key], item_type=self.item_type, init_vals=value)
         else:
             self.doc.update({key: value_to_json(value, item_type=self.item_type) })
         super(LazyDict, self).__setitem__(key, value)
@@ -568,22 +585,39 @@ class LazyDict(dict):
 
 class LazyList(list):
     """ object to make sure we keep update of list 
-    in _doc. We just override a dict and maintain change in
-    doc reference (doc[keyt] obviously).
+    in _doc. We just override a list and maintain change in
+    doc reference (doc[index] obviously).
+
+    if init_vals is specified, doc is overwritten
+    with the list given. Otherwise, the values already in 
+    doc are used. 
     """
 
-    def __init__(self, l, doc, item_type=None):
+    def __init__(self, doc, item_type=None, init_vals=None):
+        list.__init__(self)
+        
         self.item_type = item_type
-        l = l or []
-        list.__init__(self, l)
         self.doc = doc
-        for idx, item in enumerate(l):
-            try:
-                current = self.doc[idx]
-            except IndexError:
-                self.doc.append('')
-            self[idx] = item
-            
+        if init_vals is None:
+            # just wrap the current values
+            self._wrap()
+        else:
+            # initialize this list and the underlying list
+            # with the values given.
+            del self.doc[:]
+            for item in init_vals:
+                self.append(item)
+
+    def _wrap(self):
+        for json_value in self.doc:
+            if isinstance(json_value, dict):
+                value = LazyDict(json_value, item_type=self.item_type)
+            elif isinstance(json_value, list):
+                value = LazyList(json_value, item_type=self.item_type)
+            else:
+                value = value_to_python(json_value, self.item_type)
+            list.append(self, value)
+
     def __delitem__(self, index):
         del self.doc[index]
         list.__delitem__(self, index)
@@ -591,10 +625,10 @@ class LazyList(list):
     def __setitem__(self, index, value):
         if isinstance(value, dict):
             self.doc[index] = {}
-            value = LazyDict(value, self.doc[index], item_type=self.item_type)
+            value = LazyDict(self.doc[index], item_type=self.item_type, init_vals=value)
         elif isinstance(value, list):
             self.doc[index] = []
-            value = LazyList(value, self.doc[index], item_type=self.item_type)
+            value = LazyList(self.doc[index], item_type=self.item_type, init_vals=value)
         else:
             self.doc[index] = value_to_json(value, item_type=self.item_type)
         list.__setitem__(self, index, value)
@@ -609,10 +643,10 @@ class LazyList(list):
         index = len(self)
         if isinstance(value, dict):
             self.doc.append({})
-            value = LazyDict(value, self.doc[index], item_type=self.item_type)
+            value = LazyDict(self.doc[index], item_type=self.item_type, init_vals=value)
         elif isinstance(value, list):
             self.doc.append([])
-            value = LazyList(value, self.doc[index], item_type=self.item_type)
+            value = LazyList(self.doc[index], item_type=self.item_type, init_vals=value)
         else:
             self.doc.append(value_to_json(value, item_type=self.item_type))
         super(LazyList, self).append(value)
