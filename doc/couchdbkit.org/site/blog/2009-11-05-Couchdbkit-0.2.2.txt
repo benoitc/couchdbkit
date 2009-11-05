@@ -1,0 +1,35 @@
+title: Couchdbkit version 0.2.2 released
+content_type: textile
+page_type: blog
+template: blog/post.html
+
+New release for "Couchdbkit":http://couchdbkit.org. This release fix a lot of oddities from previous version.
+
+You can download latest release on "Pypi":http://pypi.python.org/pypi/couchdbkit/0.2 or check "download page":../download.html for other ways.
+
+h2. New features :
+
+* Depends on new restkit 0.8.4 witch improve error handling and performances.
+* Create a Database object from full url without passing dbname in `Database.from_uri` function Database.from_uri("http://127.0.0.1:5984/couchdbkit_test")</pre>
+* Use of anyjson for serializing. It allows you to choose the json serializer you need. It also means that if you don't use python 2.6 or above you will need to install one.
+* add support for update and filters functions in loader. (backport from couchapp)
+* Add simple replication handler in server object
+
+
+h2. Fixes :
+
+* update doc
+* Don't reserver `type` property
+* Fix view results params
+* Remove malformed views when uploading with loaders
+* Make sure rev is updated afetr we delete an attachment
+* Make sure we don't reencode urls
+* Some fixes in django extension
+* Make ListProperty & DictProperty lazy
+
+
+h2. Breaking Changes
+
+The module `couchdbkit.session` don't exist anymore. Couchdbkit is now threadsafe by default due to last change in "restkit":http://bitbucket.org/benoitc/restkit/ . You don't need now to use `create_session`to make the db object threadsafe or to apply it to your 'couchdbkit.schema.Document` object. `Session.contain` has been replaced by `couchdbkit.schema.contain` function. 
+
+The "tutorial":../docs/gettingstarted.html has been updated to reflect this.
