@@ -133,8 +133,13 @@ def fields_for_document(document, properties=None, exclude=None):
     in the ``properties`` argument.
     """
     field_list = []
-    values = document._properties.values()
-    values.sort(lambda a, b: cmp(a.creation_counter, b.creation_counter))
+    
+    values = []
+    if properties:
+        values = [document._properties[prop] for prop in properties if prop in document._properties]
+    else:
+        values = document._properties.values()
+        values.sort(lambda a, b: cmp(a.creation_counter, b.creation_counter))
     
     for prop in values: 
         if properties and not prop.name in properties:
