@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
-    <title>Couchdbkit - Couchdbkit Documentation</title>
+    <title>Couchdbkit - 
+    Couchdbkit version 0.2.2 released
+</title>
     <!--[if IE]>
 
     <script>
@@ -73,45 +75,49 @@
         
     
         
+
 <section id="content">
-    <h1>Couchdbkit Documentation</h1>
-    
-        <article class="item">
-            <header>
-                <h2><a href="/docs/django-extension.html">The django extension</a></h2>
-            </header>
-            	<p>There are a lot of people trying to integrate CouchDB in their <a href="http://djangoproject.com">Django</a> application. Most of the implementations are very complicated. So I decided to release the code of couchdbkit extension for Django 1.0x.</p>
+    <article>
+        <header>
+            <h1>Couchdbkit version 0.2.2 released</h1>
+        </header>
+        	<p>New release for <a href="http://couchdbkit.org">Couchdbkit</a>. This release fix a lot of oddities from previous version.</p>
 
-	<p>This extension provides you a threadsafe access and management of documents and views in your django application with some useful tools specific to Django.</p>
-            <footer>
-                <p><a href="/docs/django-extension.html">Read more ...</a></p>
-            </footer>
-        </article>
-    
-        <article class="item">
-            <header>
-                <h2><a href="/docs/formalchemy.html">Formalchemy extension</a></h2>
-            </header>
-            	<p>In the <a href="/docs/django-extension.html">Django extension</a>, I wrote the object `DocumentForm` that allows you to create a Django Form class based on a Document class or instance of a Document. </p>
+	<p>You can download latest release on <a href="http://pypi.python.org/pypi/couchdbkit/0.2">Pypi</a> or check <a href="../download.html">download page</a> for other ways.</p>
 
-	<p>But you don&#8217;t need to use Django to have this facility in your web application. If you use <a href="http://pylonshq.com/">Pylons</a> you may already know <a href="http://code.google.com/p/formalchemy/">FormAlchemy</a>. FormAlchemy was originaly developped to map <a href="http://www.sqlalchemy.org/">SQLAlchemy</a> object in a form but it now contains an extension for Couchdbkit too. </p>
-            <footer>
-                <p><a href="/docs/formalchemy.html">Read more ...</a></p>
-            </footer>
-        </article>
-    
-        <article class="item">
-            <header>
-                <h2><a href="/docs/gettingstarted.html">Getting started</a></h2>
-            </header>
-            	<p>This tutorial exposes key features of this library mainly through code<br />examples. For in-depth description of the modules, you&#8217;ll want to read <br />the <a href="/docs/api/">API</a>  documentation.</p>
+	<h2>New features :</h2>
 
-	<p>If you have not installed couchdbkit yet, follow instructions on <a href="/download.html">download page</a> . Once you&#8217;ve done, you can write your first CouchDB document:</p>
-            <footer>
-                <p><a href="/docs/gettingstarted.html">Read more ...</a></p>
-            </footer>
-        </article>
-    
+	<ul>
+		<li>Depends on new restkit 0.8.4 witch improve error handling and performances.</li>
+		<li>Create a Database object from full url without passing dbname in `Database.from_uri` function Database.from_uri(&#8220;http://127.0.0.1:5984/couchdbkit_test&#8221;)</pre></li>
+		<li>Use of anyjson for serializing. It allows you to choose the json serializer you need. It also means that if you don&#8217;t use python 2.6 or above you will need to install one.</li>
+		<li>add support for update and filters functions in loader. (backport from couchapp)</li>
+		<li>Add simple replication handler in server object</li>
+	</ul>
+
+	<h2>Fixes :</h2>
+
+	<ul>
+		<li>update doc</li>
+		<li>Don&#8217;t reserver `type` property</li>
+		<li>Fix view results params</li>
+		<li>Remove malformed views when uploading with loaders</li>
+		<li>Make sure rev is updated afetr we delete an attachment</li>
+		<li>Make sure we don&#8217;t reencode urls</li>
+		<li>Some fixes in django extension</li>
+		<li>Make ListProperty & DictProperty lazy</li>
+	</ul>
+
+	<h2>Breaking Changes</h2>
+
+	<p>The module `couchdbkit.session` don&#8217;t exist anymore. Couchdbkit is now threadsafe by default due to last change in <a href="http://bitbucket.org/benoitc/restkit/">restkit</a> . You don&#8217;t need now to use `create_session`to make the db object threadsafe or to apply it to your 'couchdbkit.schema.Document` object. `Session.contain` has been replaced by `couchdbkit.schema.contain` function. </p>
+
+	<p>The <a href="../docs/gettingstarted.html">tutorial</a> has been updated to reflect this.</p>
+        <footer>
+             <p><span class='comments'><a href='/blog/2009-11-05-Couchdbkit-0.2.2.html#disqus_thread'>View Comments</a></span></p>
+        </footer>
+    </article>
+    <div id="disqus_thread"></div><script type="text/javascript" src="http://disqus.com/forums/couchdbkit/embed.js"></script><noscript><a href="http://couchdbkit.disqus.com/?url=ref">View the discussion thread.</a></noscript><a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
 </section>
 
         
@@ -125,5 +131,22 @@
     
     
     
+    <script>
+    //<![CDATA[
+    (function() {
+            
+    		var links = document.getElementsByTagName('a');
+    		var query = '?';
+    		for(var i = 0; i < links.length; i++) {
+    			if(links[i].href.indexOf('#disqus_thread') >= 0) {
+    				query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+    			}
+    		}
+    		document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/couchdbkit/get_num_replies.js' + query + '&disqus_developer=1"></' + 'script>');
+    	})();
+    //]]>
+    </script>
+    
+
 </body>
 </html>
