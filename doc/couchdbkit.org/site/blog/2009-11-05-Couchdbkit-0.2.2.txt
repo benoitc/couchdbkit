@@ -5,7 +5,7 @@ template: blog/post.html
 
 New release for "Couchdbkit":http://couchdbkit.org. This release fix a lot of oddities from previous version.
 
-You can download latest release on "Pypi":http://pypi.python.org/pypi/couchdbkit/0.2 or check "download page":../download.html for other ways.
+You can download latest release on "Pypi":http://pypi.python.org/pypi/couchdbkit/0.2.2 or check "download page":../download.html for other ways.
 
 h2. New features :
 
