@@ -84,7 +84,7 @@ class CouchdbkitHandler(object):
                 self.transport.add_authorization(BasicAuth(username, password))
             server = Server(server_uri, self.transport)
             app_label = app_name.split('.')[-1]
-            self._databases[app_label] = server[dbname]
+            self._databases[app_label] = server.get_or_create_db(dbname)
     
     def sync(self, app, verbosity=2):
         """ used to sync views of all applications and eventually create
