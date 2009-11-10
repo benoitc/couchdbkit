@@ -15,19 +15,16 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-try:
-    from setuptools import setup, find_packages
-except ImportError:
-    import ez_setup
-    ez_setup.use_setuptools()
-    from setuptools import setup, find_packages
+from distribute_setup import use_setuptools
+use_setuptools()
+from setuptools import setup, find_packages
 
 import os
 import sys
 
 setup(
     name = 'couchdbkit',
-    version = '0.2.2',
+    version = '0.2.3',
 
     description = 'Python couchdb kit',
     long_description = \
@@ -54,7 +51,8 @@ to keep its simplicity when you manage it in python""",
     zip_safe = False,
 
     install_requires = [
-        'restkit==0.8.4',
+        'distribute',
+        'restkit==0.8.6',
         'anyjson'
     ],
     
