@@ -62,7 +62,8 @@ class Server(object):
     """
     
     def __init__(self, uri='http://127.0.0.1:5984', uuid_batch_count=DEFAULT_UUID_BATCH_COUNT, 
-            transport=None, use_proxy=False, min_size=0, max_size=4, pool_class=None):
+            transport=None, use_proxy=False, timeout=300, min_size=0, 
+            max_size=4, pool_class=None):
         """ constructor for Server object
         
         @param uri: uri of CouchDb host
@@ -70,6 +71,7 @@ class Server(object):
         @param transport: an transport instance from :mod:`restkit.transport`. Can be used
                 to manage authentification to your server or proxy.
         @param use_proxy: boolean, default is False, if you want to use a proxy
+        @param timeout: connection timeour, delay after a connection should be released
         @param min_size: minimum number of connections in the pool
         @param max_size: maximum number of connection in the pool
         @param pool_class: custom pool class
@@ -81,6 +83,7 @@ class Server(object):
         self.uri = uri
         self.transport = transport
         self.use_proxy = use_proxy
+        self.timeout = timeout
         self.min_size = min_size
         self.max_size = max_size
         self.pool_class = pool_class
@@ -88,7 +91,8 @@ class Server(object):
         self._uuid_batch_count = uuid_batch_count
         
         self.res = CouchdbResource(uri, transport=transport, use_proxy=use_proxy,
-            min_size=min_size, max_size=max_size, pool_class=pool_class)
+            timeout=self.timeout, min_size=min_size, max_size=max_size, 
+            pool_class=pool_class)
         self.uuids = []
         
     def info(self, _raw_json=False):
