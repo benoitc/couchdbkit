@@ -13,6 +13,7 @@ store/*
 .coverage
 couchdbkit.egg-info
 dist
+examples/djangoapp/test.db
 
 syntax: regexp
 .*\#.*\#$
