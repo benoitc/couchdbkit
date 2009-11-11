@@ -35,6 +35,7 @@ from django.utils.datastructures import SortedDict
 from restkit.httpc import HttpClient, BasicAuth
 
 COUCHDB_DATABASES = getattr(settings, "COUCHDB_DATABASES", [])
+COUCHDB_TIMEOUT = getattr(settings, "COUCHDB_TIMEOUT", 300)
 
 class CouchdbkitHandler(object):
     """ The couchdbkit handler for django """
@@ -82,7 +83,8 @@ class CouchdbkitHandler(object):
                      
             if username:
                 self.transport.add_authorization(BasicAuth(username, password))
-            server = Server(server_uri, self.transport)
+            server = Server(server_uri, transport=self.transport, 
+                        timeout=COUCHDB_TIMEOUT)
             app_label = app_name.split('.')[-1]
             self._databases[app_label] = server.get_or_create_db(dbname)
     
