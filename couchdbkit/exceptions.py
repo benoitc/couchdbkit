@@ -42,3 +42,11 @@ class ReservedWordError(Exception):
     
 class DocsPathNotFound(Exception):
     """ exception raised when path given for docs isn't found """
+    
+class BulkSaveError(Exception):
+    """ exception raised when bulk save contain errors.
+    error are saved in `errors` property.
+    """
+    def __init__(self, errors, *args):
+        self.errors = errors
+

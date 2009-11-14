@@ -29,7 +29,7 @@ all_by_module = {
     'couchdbkit.exceptions':    ['InvalidAttachment', 'DuplicatePropertyError',
                                 'BadValueError', 'MultipleResultsFound',
                                 'NoResultFound', 'ReservedWordError', 
-                                'DocsPathNotFound'],
+                                'DocsPathNotFound', 'BulkSaveError'],
     'couchdbkit.client':        ['Server', 'Database', 'ViewResults',
                                 'View', 'TempView'],
     'couchdbkit.loaders':       ['BaseDocsLoader', 'FileSystemDocsLoader'],

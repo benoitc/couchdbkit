@@ -459,6 +459,43 @@ class ClientDatabaseTestCase(unittest.TestCase):
 
         del self.Server['couchdbkit_test']
         
+    def testMultipleDocCOnflict(self):
+        db = self.Server.create_db('couchdbkit_test')
+        docs = [
+                { 'string': 'test', 'number': 4 },
+                { 'string': 'test', 'number': 5 },
+                { 'string': 'test', 'number': 4 },
+                { 'string': 'test', 'number': 6 }
+        ]
+        db.bulk_save(docs)
+        self.assert_(len(db) == 4)
+        docs1 = [
+                docs[0],
+                docs[1],
+                {'_id': docs[2]['_id'], 'string': 'test', 'number': 4 },
+                {'_id': docs[3]['_id'], 'string': 'test', 'number': 6 }
+        ]
+
+        self.assertRaises(BulkSaveError, db.bulk_save, docs1)
+
+        def errors():
+            docs2 = [
+                docs1[0],
+                docs1[1],
+                {'_id': docs[2]['_id'], 'string': 'test', 'number': 4 },
+                {'_id': docs[3]['_id'], 'string': 'test', 'number': 6 }
+            ]
+            try:
+                db.bulk_save(docs2)
+            except BulkSaveError, e:
+                return e.errors
+       
+
+        self.assert_(len(errors()) == 2)
+
+        del self.Server['couchdbkit_test']
+
+
     def testCopy(self):
         db = self.Server.create_db('couchdbkit_test')
         doc = { "f": "a" }
