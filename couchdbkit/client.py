@@ -455,7 +455,11 @@ class Database(object):
             return results
         
         for i, res in enumerate(results):
-            docs[i].update({'_id': res['id'], '_rev': res['rev']})
+            if 'error' in res:
+                docs[i].update({'_id': res['id'], 'error': res['error'], 
+                            'reason': res['reason']})
+            else:
+                docs[i].update({'_id': res['id'], '_rev': res['rev']})
     
     def bulk_delete(self, docs, all_or_nothing=False, _raw_json=False):
         """ bulk delete. 
