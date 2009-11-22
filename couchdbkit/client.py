@@ -264,7 +264,7 @@ class Database(object):
         compact a view.
         """
         path = "/_compact"
-        if dname:
+        if dname is not None:
             path = "%s/%s" % (path, self.escape_docid(dname))
         res = self.res.post(path)
         return res
