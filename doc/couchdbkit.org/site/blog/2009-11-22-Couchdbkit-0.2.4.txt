@@ -1,0 +1,17 @@
+title: Couchdbkit version 0.2.4 released
+content_type: textile
+page_type: blog
+template: blog/post.html
+
+New release for "Couchdbkit":http://couchdbkit.org. This release fix a lot of oddities from previous version.
+
+You can download latest release on "Pypi":http://pypi.python.org/pypi/couchdbkit/0.2.4 or check "download page":../download.html for other ways.
+
+h2. New features :
+
+* Depends on new restkit 0.8.8 - support timeout, latest webbob exceptions, handle connection reset
+* new property: ListSchemaProperty. Allow you to savec and validate a list of DocumentSchema object
+* db.compact function has now a dname argyment - allow you to compact views handled by the design doc named `dname`
+* db.view_cleanuo function - Old view output remains on disk until you explicitly run cleanup 
+* if conflicts or any other error in bulk_save, BulkSaveError is now raised. You can get list of documents in errors by using `error` property of this exception.
+* allow django extension to set timeout in settings
