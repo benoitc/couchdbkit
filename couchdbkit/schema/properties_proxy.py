@@ -177,18 +177,7 @@ class SchemaListProperty(Property):
         return LazySchemaList(value, self._schema, self._use_instance)
         
     def to_json(self, value):
-        if not self._use_instance:
-            schema = self._schema()
-        else:
-            schema = self._schema.clone()
-      
-        for v in value:
-            if not isinstance(v, DocumentSchema):
-                if not isinstance(v, dict):
-                    raise BadValueError("%s is not a dict" % str(v))
-                v = schema(**v)
-            v = v._doc
-        return value
+        return [svalue_to_json(v, self._schema, self._use_instance) for v in value]
         
         
 class LazySchemaList(list):

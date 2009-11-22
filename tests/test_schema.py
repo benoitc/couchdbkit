@@ -849,7 +849,13 @@ class PropertyTestCase(unittest.TestCase):
         a1.s = "test2"
         b.slm.append(a1)
         self.assert_(b._doc == {'doc_type': 'B', 'slm': [{'doc_type': 'A', 's': u'test'}, {'doc_type': 'A', 's': u'test2'}]})
-
+        
+        B.set_db(self.db) 
+        b.save()
+        b1 = B.get(b._id)
+        self.assert_(len(b1.slm) == 2)
+        self.assert_(b1.slm[0].s == "test")
+        
 
     def testListProperty(self):
         from datetime import datetime
