@@ -61,7 +61,8 @@ class Server(object):
     A Server object can be used like any `dict` object.
     """
     
-    def __init__(self, uri='http://127.0.0.1:5984', uuid_batch_count=DEFAULT_UUID_BATCH_COUNT, 
+    def __init__(self, uri='http://127.0.0.1:5984', 
+            uuid_batch_count=DEFAULT_UUID_BATCH_COUNT, 
             transport=None, use_proxy=False, timeout=300, min_size=0, 
             max_size=4, pool_class=None):
         """ constructor for Server object
@@ -91,7 +92,7 @@ class Server(object):
         self._uuid_batch_count = uuid_batch_count
         
         self.res = CouchdbResource(uri, transport=transport, use_proxy=use_proxy,
-            timeout=self.timeout, min_size=min_size, max_size=max_size, 
+            timeout=timeout, min_size=min_size, max_size=max_size, 
             pool_class=pool_class)
         self.uuids = []
         
@@ -267,6 +268,10 @@ class Database(object):
         if dname is not None:
             path = "%s/%s" % (path, self.escape_docid(dname))
         res = self.res.post(path)
+        return res
+        
+    def view_cleanup(self):
+        res = self.res.post('/_view_cleanup')
         return res
 
     def flush(self):

@@ -59,7 +59,7 @@ RequestFailed = restkit.RequestFailed
 class CouchdbResource(restkit.Resource):
 
     def __init__(self, uri="http://127.0.0.1:5984", transport=None, 
-            use_proxy=False, min_size=0, max_size=4, timeout=300,
+            use_proxy=False, timeout=300, min_size=0, max_size=4,
             pool_class=None, **kwargs):
         """Constructor for a `CouchdbResource` object.
 
