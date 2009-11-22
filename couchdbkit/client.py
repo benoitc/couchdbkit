@@ -258,9 +258,16 @@ class Database(object):
         data = self.res.get(_raw_json=_raw_json)
         return data
         
-    def compact(self):
-        """ compact database"""
-        res = self.res.post('/_compact')
+    def compact(self, dname=None):
+        """ compact database
+        @param dname: string, name of design doc. Usefull to 
+        compact a view.
+        """
+        path = "/_compact"
+        if dname:
+            path = "%s/%s" % (path, self.escape_docid(dname))
+        res = self.res.post(path)
+        return res
 
     def flush(self):
         _design_docs = [self[i["id"]] for i in self.all_docs(startkey="_design", endkey="_design/"+u"\u9999")]

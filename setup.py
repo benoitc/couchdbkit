@@ -52,7 +52,7 @@ to keep its simplicity when you manage it in python""",
 
     install_requires = [
         'distribute',
-        'restkit==0.8.6',
+        'restkit>=0.8.6',
         'anyjson'
     ],
     
