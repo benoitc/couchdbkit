@@ -25,6 +25,7 @@ import sys
 
 all_by_module = {
     'couchdbkit.resource':      ['ResourceNotFound', 'ResourceConflict', 
+                                'RequestFailed', 'PreconditionFailed', 
                                 'CouchdbResource'],
     'couchdbkit.exceptions':    ['InvalidAttachment', 'DuplicatePropertyError',
                                 'BadValueError', 'MultipleResultsFound',

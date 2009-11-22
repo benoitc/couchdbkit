@@ -54,6 +54,7 @@ class PreconditionFailed(restkit.ResourceError):
     to a request """
 
 ResourceNotFound = restkit.ResourceNotFound
+RequestFailed = restkit.RequestFailed
 
 class CouchdbResource(restkit.Resource):
 
@@ -160,10 +161,10 @@ class CouchdbResource(restkit.Resource):
             else:
                 error = msg
 
-            if e.status_code == 409:
+            if e.status_int == 409:
                 raise ResourceConflict(error[1], http_code=409,
                         response=e.response)
-            elif e.status_code == 412:
+            elif e.status_int == 412:
                 raise PreconditionFailed(error, http_code=412,
                         response=e.response)
             else:
