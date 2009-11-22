@@ -12,6 +12,6 @@ h2. New features :
 * Depends on new restkit 0.8.8 - support timeout, latest webbob exceptions, handle connection reset
 * new property: ListSchemaProperty. Allow you to savec and validate a list of DocumentSchema object
 * db.compact function has now a dname argyment - allow you to compact views handled by the design doc named `dname`
-* db.view_cleanuo function - Old view output remains on disk until you explicitly run cleanup 
+* db.view_cleanup function - Old view output remains on disk until you explicitly run cleanup 
 * if conflicts or any other error in bulk_save, BulkSaveError is now raised. You can get list of documents in errors by using `error` property of this exception.
 * allow django extension to set timeout in settings
