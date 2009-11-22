@@ -830,6 +830,26 @@ class PropertyTestCase(unittest.TestCase):
             None, 'sm': {'doc_type': 'A', 's': u't2'}})
 
         self.assert_(b2.sm.s != b.sm.s)
+        
+    def testSchemaListProperty(self):
+        class A(DocumentSchema):
+            s = StringProperty()
+            
+        class B(Document):
+            slm = SchemaListProperty(A)
+            
+        b = B()
+        self.assert_(b.slm == [])
+        
+        a = A()
+        a.s = "test"
+        b.slm.append(a)
+        self.assert_(b._doc == {'doc_type': 'B', 'slm': [{'doc_type': 'A', 's': u'test'}]})
+        a1 = A()
+        a1.s = "test2"
+        b.slm.append(a1)
+        self.assert_(b._doc == {'doc_type': 'B', 'slm': [{'doc_type': 'A', 's': u'test'}, {'doc_type': 'A', 's': u'test2'}]})
+
 
     def testListProperty(self):
         from datetime import datetime

@@ -509,8 +509,6 @@ class StringListProperty(ListProperty):
         super(StringListProperty, self).__init__(verbose_name=verbose_name, 
             default=default, required=required, item_type=unicode,**kwds)
 
-
-
 # structures proxy
 
 class LazyDict(dict):

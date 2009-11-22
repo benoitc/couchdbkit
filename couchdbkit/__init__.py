@@ -40,8 +40,8 @@ all_by_module = {
                                 'value_to_python', 'dict_to_python', 'list_to_python', 
                                 'convert_property', 'DocumentSchema', 'DocumentBase', 
                                 'QueryMixin', 'AttachmentMixin', 'Document', 'StaticDocument',
-                                'SchemaProperty', 'ListProperty', 'DictProperty', 
-                                'StringListProperty', 'contain']
+                                'SchemaProperty', 'SchemaListProperty', 'ListProperty', 
+                                'DictProperty', 'StringListProperty', 'contain']
                             
 }
 
