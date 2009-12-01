@@ -371,7 +371,7 @@ class Database(object):
         docid = self.escape_docid(docid)
         try:
             if with_doc:
-                doc_with_rev = self.res.get(docid, _raw_json=_raw_json, revs=True)
+                doc_with_revs = self.res.get(docid, _raw_json=_raw_json, revs=True)
             else:
                 doc_with_revs = self.res.get(docid, _raw_json=_raw_json, revs_info=True)
         except ResourceNotFound:
