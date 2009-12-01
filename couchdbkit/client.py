@@ -191,17 +191,18 @@ class Server(object):
         self.res.add_authorization(obj_auth)
           
     def __getitem__(self, dbname):
-        if dbname in self:
-            return Database(self, dbname)
-        raise ResourceNotFound()
+        self.res.head('/%s/' % url_quote(dbname, safe=":"))
+        return Database(self, dbname)
         
     def __delitem__(self, dbname):
         return self.res.delete('/%s/' % url_quote(dbname, safe=":"))
         
     def __contains__(self, dbname):
-        if dbname in self.all_dbs():
-            return True
-        return False
+        try:
+            self.res.head('/%s/' % url_quote(dbname, safe=":"))
+        except:
+            return False
+        return True
         
     def __iter__(self):
         for dbname in self.all_dbs():
