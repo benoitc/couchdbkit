@@ -15,16 +15,21 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-from distribute_setup import use_setuptools
-use_setuptools()
-from setuptools import setup, find_packages
-
-import os
 import sys
+
+if not hasattr(sys, 'version_info') or sys.version_info < (2, 5, 0, 'final'):
+    raise SystemExit("Couchapp requires Python 2.5 or later.")
+
+try:
+    from setuptools import setup, find_packages
+except ImportError:
+    from distribute_setup import use_setuptools, find_packages
+    use_setuptools()
+    from setuptools import setup
 
 setup(
     name = 'couchdbkit',
-    version = '0.2.4',
+    version = '0.3',
 
     description = 'Python couchdb kit',
     long_description = \
@@ -51,8 +56,7 @@ to keep its simplicity when you manage it in python""",
     zip_safe = False,
 
     install_requires = [
-        'distribute',
-        'restkit>=0.8.8',
+        'restkit>=0.9.0',
         'anyjson'
     ],
     

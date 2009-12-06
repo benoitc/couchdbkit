@@ -527,8 +527,8 @@ class AttachmentMixin(object):
     
     """
     
-    def put_attachment(self, content, name=None,
-        content_type=None, content_length=None):
+    def put_attachment(self, content, name=None, content_type=None, 
+                content_length=None):
         """ Add attachement to a document.
  
         @param content: string or :obj:`File` object.
