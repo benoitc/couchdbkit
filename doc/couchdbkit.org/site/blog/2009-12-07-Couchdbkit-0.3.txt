@@ -1,0 +1,16 @@
+title: Couchdbkit version 0.3 released - pre-awesome
+content_type: textile
+page_type: blog
+template: blog/post.html
+
+New release for "Couchdbkit":http://couchdbkit.org. This release fix a lot of oddities from previous version and prepare for next version.
+
+You can download latest release on "Pypi":http://pypi.python.org/pypi/couchdbkit/0.3 or check "download page":../download.html for other ways.
+
+h2. New features :
+
+* Updated Resource and client objects to handle restkit 0.9. It means that now you can stream all response from CouchDB in raw mode. Also errors returned are better. This is a big change. It will allow next features to come.
+* new property Server.uuids
+* Fix: don't spot `_all_dbs` each time we want to test if a db exists.
+* Fix: doc with revisions
+* Fix: macros
