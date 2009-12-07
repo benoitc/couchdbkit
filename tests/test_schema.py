@@ -493,8 +493,7 @@ class DocumentTestCase(unittest.TestCase):
         
         a.put_attachment(text_attachment, "test", "text/plain")
         a.delete_attachment('test')
-        attachment = a.fetch_attachment('test')
-        self.assert_(attachment == None)
+        self.assertRaises(ResourceNotFound, a.fetch_attachment, 'test')
         
         self.server.delete_db('couchdbkit_test')
 

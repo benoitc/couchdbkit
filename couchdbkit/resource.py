@@ -30,11 +30,11 @@ Example:
     u'Welcome'
 
 """
-
+import base64
 import httplib
 import restkit
-from restkit.httpc import HTTPResponse
-
+from restkit.utils import url_quote
+import re
 import socket
 import sys
 import time
@@ -46,6 +46,9 @@ from couchdbkit import __version__
 
 USER_AGENT = 'couchdbkit/%s' % __version__
 
+class ResourceNotFound(restkit.ResourceError):
+    """ Exception raised when resource is not found"""
+
 class ResourceConflict(restkit.ResourceError):
     """ Exception raised when there is conflict while updating"""
 
@@ -53,14 +56,23 @@ class PreconditionFailed(restkit.ResourceError):
     """ Exception raised when 412 HTTP error is received in response
     to a request """
 
-ResourceNotFound = restkit.ResourceNotFound
 RequestFailed = restkit.RequestFailed
+
+class CouchDBResponse(restkit.httpc.HTTPResponse):
+    
+    @property
+    def json_body(self):
+        body = self.get_body()
+        try:
+            return anyjson.deserialize(body)
+        except ValueError:
+            return body
+
 
 class CouchdbResource(restkit.Resource):
 
     def __init__(self, uri="http://127.0.0.1:5984", transport=None, 
-            use_proxy=False, timeout=300, min_size=0, max_size=4,
-            pool_class=None, **kwargs):
+            response_class=CouchDBResponse, **client_opts):
         """Constructor for a `CouchdbResource` object.
 
         CouchdbResource represent an HTTP resource to CouchDB.
@@ -82,22 +94,14 @@ class CouchdbResource(restkit.Resource):
         """
         
         restkit.Resource.__init__(self, uri=uri, transport=transport, 
-                use_proxy=use_proxy, timeout=timeout, min_size=min_size, 
-                max_size=max_size, pool_class=pool_class)
-        self.client.safe = ":/%"
-
-    def clone(self):
-        obj = self.__class__(uri=self.uri, transport=self.transport,
-                use_proxy=self.use_proxy, timeout=self.timeout, min_size=self.min_size, 
-                max_size=self.max_size, pool_class=self.pool_class)
-        return obj
+                response_class=response_class, **client_opts)
+        self.safe = ":/%"
         
     def copy(self, path=None, headers=None, **params):
         """ add copy to HTTP verbs """
         return self.request('COPY', path=path, headers=headers, **params)
         
-    def request(self, method, path=None, payload=None, headers=None, 
-         _stream=False, _stream_size=16384, _raw_json=False, **params):
+    def request(self, method, path=None, payload=None, headers=None, **params):
         """ Perform HTTP call to the couchdb server and manage 
         JSON conversions, support GET, POST, PUT and DELETE.
         
@@ -116,9 +120,7 @@ class CouchdbResource(restkit.Resource):
             converted to JSON.
         @param headers: dict, optionnal headers that will
             be added to HTTP request.
-        @param _stream: boolean, response return a ResponseStream object
-        @param _stream_size: int, size in bytes of response stream block
-        @param _raw_json: return raw json instead deserializing it
+        @param raw: boolean, response return a Response object
         @param params: Optionnal parameterss added to the request. 
             Parameterss are for example the parameters for a view. See 
             `CouchDB View API reference 
@@ -141,28 +143,33 @@ class CouchdbResource(restkit.Resource):
             else:
                 body = payload
 
-        params = self.encode_params(params)
+        params = encode_params(params)
         
         try:
-            data = restkit.Resource.request(self, method, path=path,
-                             payload=body, headers=headers, _stream=_stream, 
-                             _stream_size=_stream_size, **params)
-        except restkit.RequestFailed, e:
+            resp = restkit.Resource.request(self, method, path=path,
+                             payload=body, headers=headers, **params)
+                             
+        except restkit.ResourceError, e:
             msg = getattr(e, 'msg', '')
-            if msg and e.response.get('content-type') == 'application/json':
-                
-                try:
-                    msg = anyjson.deserialize(msg)
-                except ValueError:
-                    pass
+            
+            if e.response and msg:
+                if e.response.headers.get('content-type') == 'application/json':
+                    try:
+                        msg = anyjson.deserialize(msg)
+                    except ValueError:
+                        pass
                     
             if type(msg) is dict:
                 error = msg.get('reason')
             else:
                 error = msg
+                
+            if e.status_int == 404:
+                raise ResourceNotFound(error, http_code=404,
+                        response=e.response)
 
-            if e.status_int == 409:
-                raise ResourceConflict(error[1], http_code=409,
+            elif e.status_int == 409:
+                raise ResourceConflict(error, http_code=409,
                         response=e.response)
             elif e.status_int == 412:
                 raise PreconditionFailed(error, http_code=412,
@@ -171,24 +178,34 @@ class CouchdbResource(restkit.Resource):
                 raise 
         except:
             raise
-        response = self.get_response()
         
-        if data and response.get('content-type') == 'application/json' \
-                and not _raw_json:
-            try:
-                data = anyjson.deserialize(data)
-            except ValueError:
-                pass
-                
-        return data
+        return resp
 
-    def encode_params(self, params):
-        """ encode parameters in json if needed """
-        _params = {}
-        if params:
-            for name, value in params.items():
-                if name in ('key', 'startkey', 'endkey') \
-                        or not isinstance(value, basestring):
-                    value = anyjson.serialize(value)
-                _params[name] = value
-        return _params
+def encode_params(params):
+    """ encode parameters in json if needed """
+    _params = {}
+    if params:
+        for name, value in params.items():
+            if name in ('key', 'startkey', 'endkey') \
+                    or not isinstance(value, basestring):
+                value = anyjson.serialize(value)
+            _params[name] = value
+    return _params
+
+def escape_docid(docid):
+    if docid.startswith('/'):
+        docid = docid[1:]
+    if docid.startswith('_design'):
+        docid = '_design/%s' % url_quote(docid[8:], safe='')
+    else:
+        docid = url_quote(docid, safe='')
+    return docid
+    
+re_sp = re.compile('\s')
+def encode_attachments(attachments):
+    for k, v in attachments.iteritems():
+        if v.get('stub', False):
+            continue
+        else:
+            v['data'] = re_sp.sub('', base64.b64encode(v['data']))
+    return attachments

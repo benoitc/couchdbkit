@@ -48,13 +48,18 @@ from mimetypes import guess_type
 import re
 
 import anyjson
-from restkit.rest import url_quote
+from restkit.utils import url_quote
 
 from couchdbkit.exceptions import *
-from couchdbkit.resource import CouchdbResource, ResourceNotFound, ResourceConflict
+import couchdbkit.resource as resource
 from couchdbkit.utils import validate_dbname
 
 DEFAULT_UUID_BATCH_COUNT = 1000
+
+def maybe_raw(response, raw=False):
+    if raw: 
+        return response
+    return response.json_body
 
 class Server(object):
     """ Server object that allows you to access and manage a couchdb node. 
@@ -62,39 +67,28 @@ class Server(object):
     """
     
     def __init__(self, uri='http://127.0.0.1:5984', 
-            uuid_batch_count=DEFAULT_UUID_BATCH_COUNT, 
-            transport=None, use_proxy=False, timeout=300, min_size=0, 
-            max_size=4, pool_class=None):
+            uuid_batch_count=DEFAULT_UUID_BATCH_COUNT, resource_instance=None):
         """ constructor for Server object
         
         @param uri: uri of CouchDb host
         @param uuid_batch_count: max of uuids to get in one time
-        @param transport: an transport instance from :mod:`restkit.transport`. Can be used
-                to manage authentification to your server or proxy.
-        @param use_proxy: boolean, default is False, if you want to use a proxy
-        @param timeout: connection timeour, delay after a connection should be released
-        @param min_size: minimum number of connections in the pool
-        @param max_size: maximum number of connection in the pool
-        @param pool_class: custom pool class
+        @param resource_instance: `restkit.resource.CouchdbDBResource` instance. 
+            It alows you to set a resource class with custom parameters.
         """
         
         if not uri or uri is None:
             raise ValueError("Server uri is missing")
 
         self.uri = uri
-        self.transport = transport
-        self.use_proxy = use_proxy
-        self.timeout = timeout
-        self.min_size = min_size
-        self.max_size = max_size
-        self.pool_class = pool_class
         self.uuid_batch_count = uuid_batch_count
         self._uuid_batch_count = uuid_batch_count
         
-        self.res = CouchdbResource(uri, transport=transport, use_proxy=use_proxy,
-            timeout=timeout, min_size=min_size, max_size=max_size, 
-            pool_class=pool_class)
-        self.uuids = []
+        if resource_instance and isinstance(resource_instance, resource.CouchdbResource):
+            resource_instance.uri = uri
+            self.res = resource_instance.clone()
+        else:
+            self.res = resource.CouchdbResource(uri)
+        self._uuids = []
         
     def info(self, _raw_json=False):
         """ info of server 
@@ -103,15 +97,14 @@ class Server(object):
         @return: dict
         
         """
-        return self.res.get(_raw_json=_raw_json)
+        return maybe_raw(self.res.get(), raw=_raw_json)
     
     def all_dbs(self, _raw_json=False):
         """ get list of databases in CouchDb host 
         
         @param _raw_json: return raw json instead deserializing it
         """
-        result = self.res.get('/_all_dbs', _raw_json=_raw_json)
-        return result
+        return maybe_raw(self.res.get('/_all_dbs'), raw=_raw_json)
         
     def create_db(self, dbname):
         """ Create a database on CouchDb host
@@ -122,9 +115,9 @@ class Server(object):
         """
         _dbname = url_quote(validate_dbname(dbname), safe=":")
         res = self.res.put('/%s/' % _dbname)
-        if res['ok']:
+        if res.json_body['ok']:
             return Database(self, dbname)
-        return res['ok']
+        return False
 
     def get_or_create_db(self, dbname):
         """
@@ -134,7 +127,7 @@ class Server(object):
         """
         try:
             return self[dbname]
-        except ResourceNotFound:
+        except resource.ResourceNotFound:
             return self.create_db(dbname)
         
     def delete_db(self, dbname):
@@ -156,12 +149,16 @@ class Server(object):
         http://wiki.apache.org/couchdb/Replication
         
         """
-        self.res.post('/_replicate', payload={
+        res = self.res.post('/_replicate', payload={
             "source": source,
             "target": target,
             "continuous": continuous
         })
+    
+    def uuids(self, count=1, raw=False):
+        return maybe_raw(self.res.get('/_uuids', count=count))
         
+    
     def next_uuid(self, count=None):
         """
         return an available uuid from couchdbkit
@@ -172,9 +169,9 @@ class Server(object):
             self._uuid_batch_count = self.uuid_batch_count
         
         self.uuids = self.uuids or []
-        if not self.uuids:
-            self.uuids = self.res.get('/_uuids', count=self._uuid_batch_count)["uuids"]
-        return self.uuids.pop()
+        if not self._uuids:
+            self._uuids = self.uuids(count=self._uuid_batch_count)["uuids"]
+        return self._uuids.pop()
         
     def add_authorization(self, obj_auth):
         """
@@ -234,7 +231,7 @@ class Database(object):
         self.server = server
         self.res = server.res.clone()
         if "/" in dbname:
-            self.res.client.safe = ":/%"
+            self.res.safe = ":/%"
         self.res.update_uri('/%s' % url_quote(dbname, safe=":"))
     
     def __repr__(self):
@@ -242,11 +239,11 @@ class Database(object):
         
     @classmethod
     def from_uri(cls, uri, dbname, uuid_batch_count=DEFAULT_UUID_BATCH_COUNT, 
-                transport=None):
+                resource_instance=None):
         """ Create a database from its url. """
         server_uri = uri.split(dbname)[0][:-1]
         server = Server(server_uri, uuid_batch_count=uuid_batch_count, 
-            transport=transport)
+            resource_instance=resource_instance)
         return cls(server, dbname)
         
     def info(self, _raw_json=False):
@@ -257,8 +254,8 @@ class Database(object):
         
         @return: dict
         """
-        data = self.res.get(_raw_json=_raw_json)
-        return data
+        return maybe_raw(self.res.get(), raw=_raw_json)
+
         
     def compact(self, dname=None):
         """ compact database
@@ -267,13 +264,13 @@ class Database(object):
         """
         path = "/_compact"
         if dname is not None:
-            path = "%s/%s" % (path, self.escape_docid(dname))
+            path = "%s/%s" % (path, resource.escape_docid(dname))
         res = self.res.post(path)
-        return res
+        return res.json_body
         
     def view_cleanup(self):
         res = self.res.post('/_view_cleanup')
-        return res
+        return res.json_body
 
     def flush(self):
         _design_docs = [self[i["id"]] for i in self.all_docs(startkey="_design", endkey="_design/"+u"\u9999")]
@@ -290,8 +287,8 @@ class Database(object):
         """
 
         try:
-            data = self.res.head(self.escape_docid(docid))
-        except ResourceNotFound:
+            self.res.head(resource.escape_docid(docid))
+        except resource.ResourceNotFound:
             return False
         return True
         
@@ -309,11 +306,11 @@ class Database(object):
         @return: dict, representation of CouchDB document as
          a dict.
         """
-        docid = self.escape_docid(docid)
+        docid = resource.escape_docid(docid)
         if rev is not None:
-            doc = self.res.get(docid, _raw_json=_raw_json, rev=rev)
+            doc = maybe_raw(self.res.get(docid, rev=rev), raw=_raw_json)
         else:
-            doc = self.res.get(docid, _raw_json=_raw_json)
+            doc = maybe_raw(self.res.get(docid), raw=_raw_json)
 
         if wrapper is not None:
             if not callable(wrapper):
@@ -340,7 +337,12 @@ class Database(object):
         @return: list, results of the view
         """
         if by_seq:
-            return self.view('_all_docs_by_seq', _raw_json=_raw_json, **params)
+            try:
+                return self.view('_all_docs_by_seq', _raw_json=_raw_json, **params)
+            except resource.ResourceNotFound:
+                # CouchDB 0.11 or sup
+                raise AttributeError("_all_docs_by_seq isn't supported on Couchdb %s" % self.server.info()[1])
+                
         return self.view('_all_docs', _raw_json=_raw_json, **params)
         
     def doc_revisions(self, docid, with_doc=True, _raw_json=False):
@@ -368,17 +370,19 @@ class Database(object):
         an additional field, _revs, the value being a list of 
         the available revision IDs. 
         """
-        docid = self.escape_docid(docid)
+        docid = resource.escape_docid(docid)
         try:
             if with_doc:
-                doc_with_revs = self.res.get(docid, _raw_json=_raw_json, revs=True)
+                doc_with_revs = maybe_raw(self.res.get(docid, revs=True), 
+                                    raw=_raw_json)
             else:
-                doc_with_revs = self.res.get(docid, _raw_json=_raw_json, revs_info=True)
-        except ResourceNotFound:
+                doc_with_revs = maybe_raw(self.res.get(docid, revs_info=True), 
+                                    raw=_raw_json)
+        except resource.ResourceNotFound:
             return None
         return doc_with_revs           
         
-    def save_doc(self, doc, _raw_json=False, **params):
+    def save_doc(self, doc, encode_attachments=True, _raw_json=False, **params):
         """ Save a document. It will use the `_id` member of the document 
         or request a new uuid from CouchDB. IDs are attached to
         documents on the client side because POST has the curious property of
@@ -397,19 +401,19 @@ class Database(object):
         if doc is None:
             doc = {}
             
-        if '_attachments' in doc:
-            doc['_attachments'] = self.encode_attachments(doc['_attachments'])
+        if '_attachments' in doc and encode_attachments:
+            doc['_attachments'] = resource.encode_attachments(doc['_attachments'])
             
         if '_id' in doc:
-            docid = self.escape_docid(doc['_id'])
-            res = self.res.put(docid, payload=doc, _raw_json=_raw_json, **params)
+            docid = resource.escape_docid(doc['_id'])
+            res = maybe_raw(self.res.put(docid, payload=doc, **params), raw=_raw_json)
         else:
             try:
                 doc['_id'] = self.server.next_uuid()
-                res = self.res.put(doc['_id'], payload=doc,
-                            _raw_json=_raw_json, **params)
+                res =  maybe_raw(self.res.put(doc['_id'], payload=doc, **params), 
+                            raw=_raw_json)
             except:
-                res = self.res.post(payload=doc, _raw_json=_raw_json, **params)
+                res = maybe_raw(self.res.post(payload=doc, **params), raw=_raw_json)
                 
         if _raw_json:    
             return res
@@ -462,7 +466,8 @@ class Database(object):
             payload["all-or-nothing"] = True
             
         # update docs
-        results = self.res.post('/_bulk_docs', payload=payload, _raw_json=_raw_json)
+        results = maybe_raw(self.res.post('/_bulk_docs', payload=payload),
+                        raw=_raw_json)
         
         if _raw_json:
             return results
@@ -507,14 +512,14 @@ class Database(object):
             if not '_id' or not '_rev' in doc:
                 raise KeyError('_id and _rev are required to delete a doc')
                 
-            docid = self.escape_docid(doc['_id'])
-            result = self.res.delete(docid, _raw_json=_raw_json, rev=doc['_rev'])
+            docid = resource.escape_docid(doc['_id'])
+            result = maybe_raw(self.res.delete(docid, rev=doc['_rev']), 
+                        raw=_raw_json)
         elif isinstance(doc, basestring): # we get a docid
-            docid = self.escape_docid(doc)
-            data = self.res.head(docid)
-            response = self.res.get_response()
-            result = self.res.delete(docid, 
-                    _raw_json=_raw_json, rev=response['etag'].strip('"'))
+            docid = resource.escape_docid(doc)
+            response = self.res.head(docid)
+            result = maybe_raw(self.res.delete(docid, rev=response.headers['etag'].strip('"')), 
+                        raw=_raw_json)
         return result
         
     def copy_doc(self, doc, dest=None, _raw_json=False):
@@ -546,12 +551,13 @@ class Database(object):
                 raise KeyError("dest doesn't exist or this not a document ('_id' or '_rev' missig).")
     
         if destination:
-            result = self.res.copy('/%s' % docid, headers={ "Destination": str(destination) },
-                                _raw_json=_raw_json)
+            result = maybe_raw(self.res.copy('/%s' % docid, 
+                        headers={ "Destination": str(destination) }),
+                        raw=_raw_json)
             return result
             
         result = { 'ok': False }
-        if raw_json:
+        if _raw_json:
             return anyjson.serialize(result)
         return result
             
@@ -612,7 +618,7 @@ class Database(object):
     iterdocuments = documents
 
     def put_attachment(self, doc, content, name=None, content_type=None, 
-        content_length=None):
+            content_length=None):
         """ Add attachement to a document. All attachments are streamed.
 
         @param doc: dict, document object
@@ -670,9 +676,9 @@ class Database(object):
         else:
             doc1 = doc
 
-        docid = self.escape_docid(doc1['_id'])
+        docid = resource.escape_docid(doc1['_id'])
         res = self.res(docid).put(name, payload=content, 
-                headers=headers, rev=doc1['_rev'])
+                headers=headers, rev=doc1['_rev']).json_body
 
         if res['ok']:
             doc1.update({ '_rev': res['rev']})
@@ -686,25 +692,22 @@ class Database(object):
     
         @return: dict, with member ok set to True if delete was ok.
         """
-        docid = self.escape_docid(doc['_id'])
+        docid = resource.escape_docid(doc['_id'])
         name = url_quote(name, safe="")
         
-        res = self.res(docid).delete(name, rev=doc['_rev'])
+        res = self.res(docid).delete(name, rev=doc['_rev']).json_body
         if res['ok']:
             doc.update({ '_rev': res['rev']})
         return res['ok']
         
 
-    def fetch_attachment(self, id_or_doc, name, stream=False, 
-            stream_size=16384):
+    def fetch_attachment(self, id_or_doc, name, stream=False):
         """ get attachment in a document
         
         @param id_or_doc: str or dict, doc id or document dict
         @param name: name of attachment default: default result
-        @param stream: boolean, response return a ResponseStream object
-        @param stream_size: int, size in bytes of response stream block
-        
-        @return: str, attachment
+        @param stream: boolean, if True return a file object
+        @return: `restkit.httpc.Response` object
         """
 
         if isinstance(id_or_doc, basestring):
@@ -712,18 +715,18 @@ class Database(object):
         else:
             docid = id_or_doc['_id']
       
-        docid = self.escape_docid(docid)
+        docid = resource.escape_docid(docid)
         name = url_quote(name, safe="")
-        try:
-            data = self.res(docid).get(name, _stream=stream, 
-                _stream_size=stream_size)
-        except ResourceNotFound:
-            return None
-        return data
+        
+        resp = self.res(docid).get(name)
+        if stream:
+            return resp.body_file
+        return resp.unicode_body
+        
         
     def ensure_full_commit(self, _raw_json=False):
         """ commit all docs in memory """
-        return self.res.post('_ensure_full_commit', _raw_json=_raw_json)
+        return maybe_raw(self.res.post('_ensure_full_commit'), raw=_raw_json)
         
     def __len__(self):
         return self.info()['doc_count'] 
@@ -747,24 +750,6 @@ class Database(object):
         
     def __nonzero__(self):
         return (len(self) > 0)
-        
-    def escape_docid(self, docid):
-        if docid.startswith('/'):
-            docid = docid[1:]
-        if docid.startswith('_design'):
-            docid = '_design/%s' % url_quote(docid[8:], safe='')
-        else:
-            docid = url_quote(docid, safe='')
-        return docid  
-
-    def encode_attachments(self, attachments):
-        for k, v in attachments.iteritems():
-            if v.get('stub', False):
-                continue
-            else:
-                re_sp = re.compile('\s')
-                v['data'] = re_sp.sub('', base64.b64encode(v['data']))
-        return attachments
         
 class ViewResults(object):
     """
@@ -848,7 +833,7 @@ class ViewResults(object):
                 pass
         self._dynamic_keys = []
         
-        self._result_cache = self.view._exec(**self.params)
+        self._result_cache = self.view._exec(**self.params).json_body
         self._total_rows = self._result_cache.get('total_rows')
         self._offset = self._result_cache.get('offset', 0)
         
@@ -862,7 +847,7 @@ class ViewResults(object):
                 
     def fetch_raw(self):
         """ retrive the raw result """
-        return self.view._exec(_raw_json=True, **self.params)
+        return self.view._exec(**self.params)
 
     def _fetch_if_needed(self):
         if not self._result_cache:

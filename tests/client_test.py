@@ -30,6 +30,7 @@ class ClientServerTestCase(unittest.TestCase):
     def tearDown(self):
         try:
             del self.Server['couchdbkit_test']
+            del self.Server['couchdbkit/test']
         except:
             pass
 
@@ -80,10 +81,10 @@ class ClientServerTestCase(unittest.TestCase):
     def testGetUUIDS(self):
         uuid = self.Server.next_uuid()
         self.assert_(isinstance(uuid, basestring) == True)
-        self.assert_(len(self.Server.uuids) == 999)
+        self.assert_(len(self.Server._uuids) == 999)
         uuid2 = self.Server.next_uuid()
         self.assert_(uuid != uuid2)
-        self.assert_(len(self.Server.uuids) == 998)
+        self.assert_(len(self.Server._uuids) == 998)
         
 class ClientDatabaseTestCase(unittest.TestCase):
     def setUp(self):
@@ -377,8 +378,7 @@ class ClientDatabaseTestCase(unittest.TestCase):
         old_rev = doc['_rev']
         db.put_attachment(doc, text_attachment, "test", "text/plain")
         db.delete_attachment(doc, 'test')
-        attachment = db.fetch_attachment(doc, 'test')
-        self.assert_(attachment == None)
+        self.assertRaises(ResourceNotFound, db.fetch_attachment, doc, 'test')
         del self.Server['couchdbkit_test']
         
     def testAttachmentsWithSlashes(self):
