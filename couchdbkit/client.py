@@ -421,7 +421,10 @@ class Database(object):
         if 'batch' in params and 'id' in res:
             doc.update({ '_id': res['id']})
         else:
-            doc.update({ '_id': res['id'], '_rev': res['rev']})
+            res['_id'] = res.pop('id')
+            res['_rev'] = res.pop('rev')
+            
+            doc.update(res)
         
     def bulk_save(self, docs, use_uuids=True, all_or_nothing=False, _raw_json=False):
         """ bulk save. Modify Multiple Documents With a Single Request
@@ -463,7 +466,7 @@ class Database(object):
                     
         payload = { "docs": docs }
         if all_or_nothing:
-            payload["all-or-nothing"] = True
+            payload["all_or_nothing"] = True
             
         # update docs
         results = maybe_raw(self.res.post('/_bulk_docs', payload=payload),
