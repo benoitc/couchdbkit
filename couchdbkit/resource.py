@@ -72,7 +72,7 @@ class CouchDBResponse(restkit.httpc.HTTPResponse):
 class CouchdbResource(restkit.Resource):
 
     def __init__(self, uri="http://127.0.0.1:5984", transport=None, 
-            response_class=CouchDBResponse, **client_opts):
+            response_class=None, **client_opts):
         """Constructor for a `CouchdbResource` object.
 
         CouchdbResource represent an HTTP resource to CouchDB.
@@ -92,6 +92,9 @@ class CouchdbResource(restkit.Resource):
         @param max_size: maximum number of connection in the pool
         @param pool_class: custom pool class
         """
+        
+        if response_class is None:
+            response_class = CouchDBResponse
         
         restkit.Resource.__init__(self, uri=uri, transport=transport, 
                 response_class=response_class, **client_opts)

@@ -27,7 +27,7 @@ import urlparse
 
 from couchdbkit import Server, contain, ResourceConflict
 from couchdbkit.loaders import FileSystemDocLoader
-from couchdbkit.resource import PreconditionFailed
+from couchdbkit.resource import CouchdbResource, PreconditionFailed
 from django.conf import settings
 from django.db.models import signals, get_app
 from django.core.exceptions import ImproperlyConfigured
@@ -46,14 +46,12 @@ class CouchdbkitHandler(object):
         app_schema = SortedDict()
     )    
        
-    def __init__(self, databases, transport=None):
+    def __init__(self, databases):
         """ initialize couchdbkit handler with COUCHDB_DATABASES
         settings """
 
         self.__dict__ = self.__shared_state__
-        
-        if transport is None:
-            self.transport = HttpClient()
+
         # create databases sessions
         for app_name, uri in databases:
             if isinstance(uri, tuple):
@@ -80,11 +78,11 @@ class CouchdbkitHandler(object):
             else:
                 server_uri = '%s://%s' % (parts[0], parts[1])
                 username = password = ""
-                     
-            if username:
-                self.transport.add_authorization(BasicAuth(username, password))
-            server = Server(server_uri, transport=self.transport, 
-                        timeout=COUCHDB_TIMEOUT)
+                
+            res = CouchdbResource(server_uri, timeout=COUCHDB_TIMEOUT)
+            res.add_authorization(BasicAuth(username, password))
+            
+            server = Server(server_uri, resource_instance=res)
             app_label = app_name.split('.')[-1]
             self._databases[app_label] = server.get_or_create_db(dbname)
     
