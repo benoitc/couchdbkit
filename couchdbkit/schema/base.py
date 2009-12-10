@@ -285,19 +285,17 @@ class DocumentSchema(object):
     def __iter__(self):
         """ iter document instance properties
         """
-
-        all_properties = self.all_properties()
-
-        for prop, value in all_properties.iteritems():
-            if value is not None:
-                yield (prop, value)
+        for k in self.all_properties().keys():
+            yield k, self[k]
+        raise StopIteration
                 
     iteritems = __iter__
 
     def items(self):
         """ return list of items
         """
-        return list(self)
+        return [(k, self[k]) for k in self.all_properties().keys()]
+
 
     def __len__(self):
         """ get number of properties
