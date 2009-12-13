@@ -34,8 +34,7 @@ class ClientServerTestCase(unittest.TestCase):
             del self.server['couchdbkit_test']
         except:
             pass
-        
-            
+      
     def test_fetch(self):
         res1 = self.consumer.fetch()
         self.assert_("last_seq" in res1)
@@ -66,8 +65,6 @@ class ClientServerTestCase(unittest.TestCase):
         self.lines = []
         def test_line(line):
             self.lines.append(line)
-            if line["seq"] == 5:
-                self.consumer.close()
             
         self.consumer.register_callback(test_line)
         t =  threading.Thread(target=self.consumer.wait)
@@ -80,6 +77,12 @@ class ClientServerTestCase(unittest.TestCase):
             
         self.assert_(len(self.lines) == 5)
         self.assert_(self.lines[4]["id"] == "test4")
+        doc = {"_id": "test5"}
+        self.db.save_doc(doc)
+        self.assert_(len(self.lines) == 6)
+        self.assert_(self.lines[5]["id"] == "test5")
+        
+        
         
 if __name__ == '__main__':
     unittest.main()
