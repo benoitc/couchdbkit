@@ -1,4 +1,4 @@
-couchdbkit v0.2.1
+couchdbkit v0.3.1
 Author: Benoit Chesneau <benoitc@e-engura.org>
 License : see LICENSE file.
 Url: http://couchdbkit.org

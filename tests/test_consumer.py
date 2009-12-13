@@ -83,6 +83,5 @@ class ClientServerTestCase(unittest.TestCase):
         self.assert_(self.lines[5]["id"] == "test5")
         
         
-        
 if __name__ == '__main__':
     unittest.main()
