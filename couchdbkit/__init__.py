@@ -33,6 +33,7 @@ all_by_module = {
                                 'DocsPathNotFound', 'BulkSaveError'],
     'couchdbkit.client':        ['Server', 'Database', 'ViewResults',
                                 'View', 'TempView'],
+    'couchdbkit.consumer':      ['Consumer'],
     'couchdbkit.loaders':       ['BaseDocsLoader', 'FileSystemDocsLoader'],
     'couchdbkit.schema':        ['Property', 'StringProperty', 'IntegerProperty', 
                                 'DecimalProperty', 'BooleanProperty', 'FloatProperty', 
