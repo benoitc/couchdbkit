@@ -128,6 +128,7 @@ class Consumer(object):
             asyncore.loop()
         except:
             self.close()
+            raise
             
     def close(self):
         if self._resp is None:
@@ -180,10 +181,3 @@ class continuous_changes_handler(asynchat.async_chat):
             line = anyjson.deserialize(line)
             for callback in self.callbacks:
                 callback(line)
-        
-        
-    
-    
-        
-        
-    
