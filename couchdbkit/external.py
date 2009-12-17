@@ -66,8 +66,12 @@ class External(InOutHandler):
     """
     
     def send_response(self, code=200, body="", headers={}):
-        self.write(anyjson.serialize({"code": code, "body": body, 
-            "headers": headers}))
+        resp = {
+            'code': code, 
+            'body': body, 
+            'headers': headers
+        }
+        self.write(anyjson.serialize(resp))
     
             
             

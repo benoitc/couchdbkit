@@ -14,7 +14,7 @@ ADMINS = (
 MANAGERS = ADMINS
 
 DATABASE_ENGINE = 'sqlite3' 
-DATABASE_NAME = 'test.db'
+DATABASE_NAME = os.path.join(PROJECT_PATH,'test.db')
 
 COUCHDB_DATABASES = (
     ('djangoapp.greeting', 'http://127.0.0.1:5984/greeting'),
@@ -43,7 +43,7 @@ MEDIA_ROOT = os.path.join(PROJECT_PATH, 'static')
 
 MEDIA_URL = '/media'
 
-ADMIN_MEDIA_PREFIX = '/media/admin/'
+ADMIN_MEDIA_PREFIX = '/admin/media/'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '3c7!ofj2o@7vglv+dj(pm_2_m*n)4qnfi7cw+7#8c3ng6sxcml'

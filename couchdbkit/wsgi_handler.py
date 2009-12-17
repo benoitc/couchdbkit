@@ -26,7 +26,7 @@ from couchdbkit import __version__
 from couchdbkit.external import External
 
 def _normalize_name(name):
-    return "-".join([w.capitalize() for w in name.split("-")])
+    return  "-".join([w.lower().capitalize() for w in name.split("-")])
 
 class WSGIRequest(object):
     
@@ -34,55 +34,57 @@ class WSGIRequest(object):
     
     def __init__(self, line):
         self.line = line
-        self.response_status = 500
+        self.response_status = 200
         self.response_headers = {}
-        self.response_headers.setdefault("Content-Type", "text/plain")
         self.start_response_called = False
     
     def read(self):
         headers = self.parse_headers()
         
-        length = None
+        length = headers.get("CONTENT_LENGTH")
         if self.line["body"] and self.line["body"] != "undefined":
+            length = len(self.line["body"])
             body = StringIO.StringIO(self.line["body"])
-            length = len(body)
+            
         else:
             body = StringIO.StringIO()
             
         # path
-        path_info = unquote("/".join(self.line["path"]))
-        
-        # buikd query string
-        params = []
-        retval = []
+        script_name, path_info = self.line['path'][:2],  self.line['path'][2:]
+        if path_info:
+            path_info = "/%s" % "/".join(path_info)
+        else: 
+            path_info = ""
+        script_name = "/%s" % "/".join(script_name)
+
+        # build query string
+        args = []
+        query_string = None
         for k, v in self.line["query"].items():
             if v is None:
                 continue
             else:
-                params.append((k,v))
-                
-        if params:  retval = ['?', url_encode(dict(params))]
-        query_string = "".join(retval)
+                args.append((k,v))       
+        if args: query_string = url_encode(dict(args))
         
         # raw path could be useful
         path = "%s%s" % (path_info, query_string)
-        
+                
         # get server address
         if ":" in self.line["headers"]["Host"]:
             server_address = self.line["headers"]["Host"].split(":")
         else:
             server_address = (self.line["headers"]["Host"], 80)
-        
-        
+
         environ = {
             "wsgi.url_scheme": 'http',
             "wsgi.input": body,
-            "wsgi.errors": sys.stderr,
+            "wsgi.errors": StringIO.StringIO(),
             "wsgi.version": (1, 0),
             "wsgi.multithread": False,
             "wsgi.multiprocess": True,
             "wsgi.run_once": False,
-            "SCRIPT_NAME": "",
+            "SCRIPT_NAME": script_name,
             "SERVER_SOFTWARE": self.SERVER_VERSION,
             "COUCHDB_INFO": self.line["info"],
             "COUCHDB_REQUEST": self.line,
@@ -90,7 +92,7 @@ class WSGIRequest(object):
             "PATH_INFO": unquote(path_info),
             "QUERY_STRING": query_string,
             "RAW_URI": path,
-            "CONTENT_TYPE": headers.get('content-type', ''),
+            "CONTENT_TYPE": headers.get('CONTENT-TYPE', ''),
             "CONTENT_LENGTH": length,
             "REMOTE_ADDR": self.line['peer'],
             "REMOTE_PORT": 0,
@@ -109,13 +111,15 @@ class WSGIRequest(object):
     def start_response(self, status, response_headers):
         self.response_status = int(status.split(" ")[0])
         for name, value in response_headers:
-            self.response_headers[_normalize_name(name)] = str(value)
+            name = _normalize_name(name)
+            self.response_headers[name] = value.strip()
         self.start_response_called = True
                 
     def parse_headers(self):
-        headers = self.line.get("headers", {})
-        for name, value in headers.items():
-            headers[name.strip().upper()] = value.strip()
+        headers = {}
+        for name, value in self.line.get("headers", {}).items():
+            name = name.strip().upper().encode("utf-8")
+            headers[name] = value.strip().encode("utf-8")
         return headers
 
 class WSGIHandler(External):
@@ -126,12 +130,15 @@ class WSGIHandler(External):
         self.app = application
     
     def handle_line(self, line):
-        req = WSGIRequest(line)
         try:
+            req = WSGIRequest(line)
             response = self.app(req.read(), req.start_response)
         except:
-            response = traceback.format_exc()  
-        self.send_response(req.response_status, "".join(response), 
-            req.response_headers)
+            self.send_response(500, "".join(traceback.format_exc()), 
+                    {"Content-Type": "text/plain"})
+            return 
+            
+        content = "".join(response).encode("utf-8")    
+        self.send_response(req.response_status, content, req.response_headers)
     
     
