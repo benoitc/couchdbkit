@@ -60,6 +60,8 @@ to keep its simplicity when you manage it in python""",
         'anyjson'
     ],
     
+    scripts = ["bin/couchdbkit-wsgi"],
+    
     test_suite='tests',
 
 )
