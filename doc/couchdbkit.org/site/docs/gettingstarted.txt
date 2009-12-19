@@ -26,10 +26,10 @@ Here is the code to save a greet on `Greeting` database. We also see how to crea
  server = Server()
  
  # create database
- db = get_or_create_db("greeting")
+ db = server.get_or_create_db("greeting")
  
  # associate Greeting to the db
- contain(db, Greeting)
+ Greeting.set_db(db)
 
  # create a new greet
  greet = Greeting(
@@ -42,11 +42,7 @@ Here is the code to save a greet on `Greeting` database. We also see how to crea
  greet.save()
 </pre>
 
-Note: Here we use `contain` to associate the db to the <code>Greeting</code> object. This function could be use to associate myltiple dcouemnt objects to one db : <code>contain(db, Doc1, ...)</code> One other way to associate a db to a <code>Document</code> class would be :
-
-<pre class="code prettyprint">
- Greeting.set_db(db)
-</pre>
+Note: Here we use `contain` to associate the db to the <code>Greeting</code> object. This function could be use to associate myltiple dcouemnt objects to one db : <code>contain(db, Doc1, ...)</code> 
 
 
 Your document `greet` is now in the `greetings` db. Each document is saved with a `doc_type` field that allow you to find easily each kind of document with the views. By default `doc_type` is the name of the class.
@@ -54,7 +50,7 @@ Your document `greet` is now in the `greetings` db. Each document is saved with 
 Now that you saved your document, you can update it:
 
 <pre class="code prettyprint">
- greet.author = "Benoît Chesneau"
+ greet.author = u"Benoît Chesneau"
  greet.save()
 </pre>
 
