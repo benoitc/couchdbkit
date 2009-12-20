@@ -59,9 +59,7 @@ to keep its simplicity when you manage it in python""",
         'restkit>=0.9.2',
         'anyjson'
     ],
-    
-    scripts = ["bin/couchdbkit-wsgi"],
-    
+        
     test_suite='tests',
 
 )
