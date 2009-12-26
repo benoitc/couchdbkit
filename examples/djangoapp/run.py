@@ -15,7 +15,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import couchdbkit
+from couchdbkit.contrib import WSGIHandler
 import os
 import sys
 
@@ -28,7 +28,7 @@ import django.core.handlers.wsgi
 app = django.core.handlers.wsgi.WSGIHandler()
 
 def main():
-    handler = couchdbkit.WSGIHandler(app)
+    handler = WSGIHandler(app)
     handler.run()
     
 if __name__ == "__main__":

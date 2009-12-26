@@ -16,6 +16,7 @@
 #  limitations under the License.
 
 import couchdbkit
+from couchdbkit.contrib import WSGIHandler
 import json
 
 def app(environ, start_response):
@@ -30,7 +31,7 @@ def app(environ, start_response):
     return [data]
     
 def main():
-    handler = couchdbkit.WSGIHandler(app)
+    handler = WSGIHandler(app)
     handler.run()
     
 if __name__ == "__main__":

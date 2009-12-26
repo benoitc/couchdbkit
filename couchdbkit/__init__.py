@@ -35,7 +35,6 @@ all_by_module = {
                                 'View', 'TempView'],
     'couchdbkit.consumer':      ['Consumer'],
     'couchdbkit.external':      ['External', 'InOutHandler'],
-    'couchdbkit.wsgi_handler':  ['WSGIHandler'],
     'couchdbkit.loaders':       ['BaseDocsLoader', 'FileSystemDocsLoader'],
     'couchdbkit.schema':        ['Property', 'StringProperty', 'IntegerProperty', 
                                 'DecimalProperty', 'BooleanProperty', 'FloatProperty', 
