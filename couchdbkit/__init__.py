@@ -34,7 +34,7 @@ all_by_module = {
     'couchdbkit.client':        ['Server', 'Database', 'ViewResults',
                                 'View', 'TempView'],
     'couchdbkit.consumer':      ['Consumer'],
-    'couchdbkit.external':      ['External', 'InOutHandler'],
+    'couchdbkit.external':      ['External'],
     'couchdbkit.loaders':       ['BaseDocsLoader', 'FileSystemDocsLoader'],
     'couchdbkit.schema':        ['Property', 'StringProperty', 'IntegerProperty', 
                                 'DecimalProperty', 'BooleanProperty', 'FloatProperty', 

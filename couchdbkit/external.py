@@ -17,7 +17,7 @@
 import anyjson
 import sys
         
-class External(InOutHandler):
+class External(object):
     """ simple class to handle an external
     ans send the response.
     
