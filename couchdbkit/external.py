@@ -23,7 +23,7 @@ class External(object):
     
     example:
     
-        from couchdbkit.external import InOutHandler
+        from couchdbkit.external import External
         import anyjson
 
         class Test(External):

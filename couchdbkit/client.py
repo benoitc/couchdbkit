@@ -382,8 +382,6 @@ class Database(object):
             return None
         return doc_with_revs
         
-                   
-    # TODO: manage other data in docs like _conflict.
     def save_doc(self, doc, encode_attachments=True, _raw_json=False, **params):
         """ Save a document. It will use the `_id` member of the document 
         or request a new uuid from CouchDB. IDs are attached to
@@ -399,6 +397,8 @@ class Database(object):
         
         with `_raw_json=True` It return raw response. If False it update 
         doc instance with new revision (if batch=False).
+        
+        @return res: result of save. doc is updated in the mean time
         """
         if doc is None:
             doc = {}
@@ -417,13 +417,15 @@ class Database(object):
             except:
                 res = maybe_raw(self.res.post(payload=doc, **params), raw=_raw_json)
                 
-        if _raw_json:    
+        if _raw_json:‡
             return res
                 
         if 'batch' in params and 'id' in res:
             doc.update({ '_id': res['id']})
         else:
             doc.update({'_id': res['id'], '_rev': res['rev']})
+            
+        return res
         
     def bulk_save(self, docs, use_uuids=True, all_or_nothing=False, _raw_json=False):
         """ bulk save. Modify Multiple Documents With a Single Request
