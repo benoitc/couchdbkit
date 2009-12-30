@@ -380,8 +380,10 @@ class Database(object):
                                     raw=_raw_json)
         except resource.ResourceNotFound:
             return None
-        return doc_with_revs           
+        return doc_with_revs
         
+                   
+    # TODO: manage other data in docs like _conflict.
     def save_doc(self, doc, encode_attachments=True, _raw_json=False, **params):
         """ Save a document. It will use the `_id` member of the document 
         or request a new uuid from CouchDB. IDs are attached to
