@@ -16,33 +16,7 @@
 
 import anyjson
 import sys
-
-class InOutHandler(object):
-    """ Simple class to use to manage stdin,
-    stdout entries from CouchDB. """
-    
-    def __init__(self, stdin=sys.stdin, stdout=sys.stdout):
-        self.stdin = stdin
-        self.stdout = stdout
         
-    def handle_line(self, line):
-        raise NotImplementedError
-        
-    def write(self, line):
-        self.stdout.write("%s\n" % line)
-        self.stdout.flush()
-        
-    def lines(self):
-        line = self.stdin.readline()
-        while line:
-            yield anyjson.deserialize(line)
-            line = self.stdin.readline()
-    
-    def run(self):
-        for line in self.lines():
-            self.handle_line(line)
-            
-            
 class External(InOutHandler):
     """ simple class to handle an external
     ans send the response.
@@ -64,7 +38,28 @@ class External(InOutHandler):
         
     
     """
+
+    def __init__(self, stdin=sys.stdin, stdout=sys.stdout):
+        self.stdin = stdin
+        self.stdout = stdout
+        
+    def handle_line(self, line):
+        raise NotImplementedError
+        
+    def write(self, line):
+        self.stdout.write("%s\n" % line)
+        self.stdout.flush()
+        
+    def lines(self):
+        line = self.stdin.readline()
+        while line:
+            yield anyjson.deserialize(line)
+            line = self.stdin.readline()
     
+    def run(self):
+        for line in self.lines():
+            self.handle_line(line)
+            
     def send_response(self, code=200, body="", headers={}):
         resp = {
             'code': code, 
@@ -72,6 +67,5 @@ class External(InOutHandler):
             'headers': headers
         }
         self.write(anyjson.serialize(resp))
-    
             
             

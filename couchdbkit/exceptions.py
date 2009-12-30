@@ -50,3 +50,5 @@ class BulkSaveError(Exception):
     def __init__(self, errors, *args):
         self.errors = errors
 
+class ViewServerError(Exception):
+    """ exception raised by view server"""
