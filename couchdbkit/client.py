@@ -913,7 +913,8 @@ class ViewInterface(object):
         raise NotImplementedError
         
 class View(ViewInterface):
-    """ Object used to wrap a view and return ViewResults. Generally called. """
+    """ Object used to wrap a view and return ViewResults. 
+    Generally called via the `view` method in a `Database` instance. """
     
     def __init__(self, db, view_path, wrapper=None):
         ViewInterface.__init__(self, db, wrapper=wrapper)
