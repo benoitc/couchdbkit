@@ -417,7 +417,7 @@ class Database(object):
             except:
                 res = maybe_raw(self.res.post(payload=doc, **params), raw=_raw_json)
                 
-        if _raw_json:‡
+        if _raw_json:
             return res
                 
         if 'batch' in params and 'id' in res:
