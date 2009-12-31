@@ -114,17 +114,17 @@ class CouchdbResource(restkit.Resource):
 
             import couchdbkit.CouchdbResource
             resource = couchdbkit.CouchdbResource()
-            infos = resource.request('GET'))
+            infos = resource.request('GET')
 
         @param method: str, the HTTP action to be performed: 
             'GET', 'HEAD', 'POST', 'PUT', or 'DELETE'
         @param path: str or list, path to add to the uri
         @param data: str or string or any object that could be
             converted to JSON.
-        @param headers: dict, optionnal headers that will
+        @param headers: dict, optional headers that will
             be added to HTTP request.
         @param raw: boolean, response return a Response object
-        @param params: Optionnal parameterss added to the request. 
+        @param params: Optional parameterss added to the request. 
             Parameterss are for example the parameters for a view. See 
             `CouchDB View API reference 
             <http://wiki.apache.org/couchdb/HTTP_view_API>`_ for example.
