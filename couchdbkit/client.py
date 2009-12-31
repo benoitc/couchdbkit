@@ -183,7 +183,7 @@ class Server(object):
             >>> from couchdbkit import Server
             >>> from restkit.httpc import BasicAuth
             >>> server = Server()
-            >>> server.add_authorization(BasicAuth((username, password)))
+            >>> server.add_authorization(BasicAuth(username, password))
         """
         self.res.add_authorization(obj_auth)
           
