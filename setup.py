@@ -23,9 +23,9 @@ if not hasattr(sys, 'version_info') or sys.version_info < (2, 5, 0, 'final'):
 try:
     from setuptools import setup, find_packages
 except ImportError:
-    from distribute_setup import use_setuptools, find_packages
+    from distribute_setup import use_setuptools
     use_setuptools()
-    from setuptools import setup
+    from setuptools import setup, find_packages
 
 setup(
     name = 'couchdbkit',
