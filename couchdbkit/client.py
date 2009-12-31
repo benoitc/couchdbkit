@@ -568,7 +568,7 @@ class Database(object):
         
     def view(self, view_name, obj=None, wrapper=None, **params):
         """ get view results from database. viewname is generally 
-        a string like `designname/viewnam". It return an ViewResults
+        a string like `designname/viewname". It return an ViewResults
         object on which you could iterate, list, ... . You could wrap
         results in wrapper function, a wrapper function take a row
         as argument. Wrapping could be also done by passing an Object 
@@ -663,7 +663,7 @@ class Database(object):
             if hasattr(content, "name"):
                 name = content.name
             else:
-                raise InvalidAttachment('You should provid a valid attachment name')
+                raise InvalidAttachment('You should provide a valid attachment name')
         name = url_quote(name, safe="")
         if content_type is None:
             content_type = ';'.join(filter(None, guess_type(name)))
