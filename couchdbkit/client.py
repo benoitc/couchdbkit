@@ -273,11 +273,23 @@ class Database(object):
         return res.json_body
 
     def flush(self):
-        _design_docs = [self[i["id"]] for i in self.all_docs(startkey="_design", endkey="_design/"+u"\u9999")]
+        """ Remove all docs from a database
+        except design docs."""
+        # save ddocs
+        all_ddocs = self.all_docs(startkey="_design", 
+                            endkey="_design/"+u"\u9999",
+                            include_docs=True)
+        ddocs = []
+        for ddoc in all_ddocs:
+            ddoc['doc'].pop('_rev')
+            ddocs.append(ddoc['doc'])
+        
+        # delete db
         self.server.delete_db(self.dbname)
+        
+        # recreate db + ddocs
         self.server.create_db(self.dbname)
-        [i.pop("_rev") for i in _design_docs]
-        self.bulk_save( _design_docs )
+        self.bulk_save(ddocs)
         
     def doc_exist(self, docid):
         """Test if document exists in a database

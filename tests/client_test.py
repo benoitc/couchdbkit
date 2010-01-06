@@ -221,6 +221,8 @@ class ClientDatabaseTestCase(unittest.TestCase):
         self.assertFalse(db.doc_exist('test'))
         self.assertFalse(db.doc_exist('test2'))
         self.assert_(db.doc_exist('_design/test'))
+        ddoc = db.get("_design/test")
+        self.assert_('all' in ddoc['views'])
         del self.Server['couchdbkit_test']
     
     def testDbLen(self):
