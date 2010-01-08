@@ -37,9 +37,8 @@ There are 2 possibilities in CouchDB to listen for changes. You can wait until a
 To wait for a change you may want to use the `wait_once` function. To wait a change since the last sequence: 
 
 <pre class="code prettyprint">
-	>>> c.wait_once(since=2)
-	{'last_seq': 3, 'results': [{'changes': [{'rev': '1-967a00dff5e02add41819138abb3284d'}], 'id': '70958b546d1f214d221c6a16648d3a2b', 'seq': 3}]}
-
+ >>> c.wait_once(since=2)
+ {'last_seq': 3, 'results': [{'changes': [{'rev': '1-967a00dff5e02add41819138abb3284d'}], 'id': '70958b546d1f214d221c6a16648d3a2b', 'seq': 3}]}
 </pre>
 
 `wait_once` will wait until a change happen or until connection timeout. Using `timeout` args or `heartbeat` you can set timeout or keep connection open.
@@ -47,11 +46,11 @@ To wait for a change you may want to use the `wait_once` function. To wait a cha
 To listen on changes asynchronously and react on them, you have to use the `wait` method. This method using Python `asyncore` module, will wait on new changes lines and send these lines to the functions you registered as callaback :
 
 <pre class="code prettyprint">
-	>>> def print_line(line):
-	...     print "got %s" % line
-	... 
-	>>> c.register_callback(print_line)
-	>>> c.wait() # Go into receive loop
+ >>> def print_line(line):
+ ...     print "got %s" % line
+ ... 
+ >>> c.register_callback(print_line)
+ >>> c.wait() # Go into receive loop
 </pre>
 
 
@@ -62,7 +61,7 @@ h2. Filter changes
 `wait_once` and `wait` method allow you to use design docs filter's functions to filter changes. Ex:
 
 <pre class="code prettyprint">
-	>>> c.wait(filter_name="mydesign/filtername")
+ >>> c.wait(filter_name="mydesign/filtername")
 </pre>
 
 `filter_name` argument take the design doc name and filter function name as string.

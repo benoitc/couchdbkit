@@ -110,22 +110,21 @@
 
 	<p>To wait for a change you may want to use the `wait_once` function. To wait a change since the last sequence: </p>
 
-	<p><pre class="code prettyprint">
-	>>> c.wait_once(since=2)
-	{'last_seq&#8217;: 3, 'results&#8217;: [{'changes&#8217;: [{'rev&#8217;: &#8217;1-967a00dff5e02add41819138abb3284d&#8217;}], 'id&#8217;: '70958b546d1f214d221c6a16648d3a2b&#8217;, 'seq&#8217;: 3}]}</p>
-
-	<p></pre></p>
+<pre class="code prettyprint">
+ >>> c.wait_once(since=2)
+ {'last_seq&#8217;: 3, 'results&#8217;: [{'changes&#8217;: [{'rev&#8217;: &#8217;1-967a00dff5e02add41819138abb3284d&#8217;}], 'id&#8217;: '70958b546d1f214d221c6a16648d3a2b&#8217;, 'seq&#8217;: 3}]}
+</pre>
 
 	<p>`wait_once` will wait until a change happen or until connection timeout. Using `timeout` args or `heartbeat` you can set timeout or keep connection open.</p>
 
 	<p>To listen on changes asynchronously and react on them, you have to use the `wait` method. This method using Python `asyncore` module, will wait on new changes lines and send these lines to the functions you registered as callaback :</p>
 
 <pre class="code prettyprint">
-	>>> def print_line(line):
-	...     print &#8220;got %s&#8221; % line
-	... 
-	>>> c.register_callback(print_line)
-	>>> c.wait() # Go into receive loop
+ >>> def print_line(line):
+ ...     print &#8220;got %s&#8221; % line
+ ... 
+ >>> c.register_callback(print_line)
+ >>> c.wait() # Go into receive loop
 </pre>
 
 	<p>By default it will wait infinitely, connection is kept alive.</p>
@@ -135,7 +134,7 @@
 	<p>`wait_once` and `wait` method allow you to use design docs filter&#8217;s functions to filter changes. Ex:</p>
 
 <pre class="code prettyprint">
-	>>> c.wait(filter_name=&#8220;mydesign/filtername&#8221;)
+ >>> c.wait(filter_name=&#8220;mydesign/filtername&#8221;)
 </pre>
 
 	<p>`filter_name` argument take the design doc name and filter function name as string.</p>

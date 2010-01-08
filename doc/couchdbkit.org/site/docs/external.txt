@@ -5,18 +5,18 @@ Building an "external handler":http://wiki.apache.org/couchdb/ExternalProcesses 
 
 
 <pre class="code prettyprint">
-    from couchdbkit.external import External
-    import anyjson
+ from couchdbkit.external import External
+ import anyjson
 
-    class Test(External):
+ class Test(External):
 
-        def handle_line(self, line):
-            self.send_response(200, 
-                "got message external object %s" % anyjson.serialize(line),
-                {"Content-type": "text/plain"})
+     def handle_line(self, line):
+         self.send_response(200, 
+             "got message external object %s" % anyjson.serialize(line),
+             {"Content-type": "text/plain"})
 
-    if __name__ == "__main__":
-        Test().run()
+ if __name__ == "__main__":
+     Test().run()
 </pre>
 
 
