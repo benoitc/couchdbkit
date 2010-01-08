@@ -1,7 +1,9 @@
 title: Listen to database changes
 page_type: blog
 
-Since the "0.10 release":http://couchdb.apache.org/downloads.html of CouchDB, it's possible to listen on "db changes":http://wiki.apache.org/couchdb/HTTP_database_API#Changes via the REST api. The `couchdbkit.Consumer` object provides you a way to listen on these changes asynchronously (continuous changes) or just wait for one change (longpolling). You can of course just fetch changes since the last update sequence.
+Since the "0.10 release":http://couchdb.apache.org/downloads.html of CouchDB, it's possible to listen on "db changes":http://wiki.apache.org/couchdb/HTTP_database_API#Changes via the REST api. 
+
+The `couchdbkit.Consumer` object provides you a way to listen on these changes asynchronously (continuous changes) or just wait for one change (longpolling). You can of course just fetch changes since the last update sequence.
 
 h2. Create a consumer
 

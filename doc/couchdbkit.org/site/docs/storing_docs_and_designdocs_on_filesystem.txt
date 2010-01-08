@@ -3,9 +3,9 @@ page_type: blog
 
 Couchdbkit allows you to manage you design docs and docs on the file system.
 
-!/images/gettingstarted.png(couchdbkit textmate screen)!
-
 A system will be provided to manage view creation and other things. As some noticed, this system works like "couchapp":http://github.com/couchapp/couchapp/tree/.
+
+!/images/gettingstarted.png(couchdbkit textmate screen)!
 
 
 h2. Create a design document
