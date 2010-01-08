@@ -1,0 +1,70 @@
+title: Listen to database changes
+page_type: blog
+
+Since the "0.10 release":http://couchdb.apache.org/downloads.html of CouchDB, it's possible to listen on "db changes":http://wiki.apache.org/couchdb/HTTP_database_API#Changes via the REST api. The `couchdbkit.Consumer` object provides you a way to listen on these changes asynchronously (continuous changes) or just wait for one change (longpolling). You can of course just fetch changes since the last update sequence.
+
+h2. Create a consumer
+
+To create a consumer, instantiate the `couchdbkit.Consumer` object like this.
+
+<pre class="code prettyprint">
+	>>> from couchdbkit import Server, Consumer
+	>>> s = Server()
+	>>> db = s.create_db("mydb")
+	>>> c = Consumer(db)
+</pre>
+
+A consumer object is initialised with the db instance on which you want to listen changes.
+
+h2. Fetch changes
+
+<pre class="code prettyprint">
+	>>> db.save_doc({})
+	{'rev': '1-967a00dff5e02add41819138abb3284d', 'ok': True, 'id': 'e3453543865212eede756809f71436c5'}
+	>>> db.save_doc({})
+	{'rev': '1-967a00dff5e02add41819138abb3284d', 'ok': True, 'id': 'b0ec8a9287cc53b00c1d621720e8144d'}
+	>>> c.fetch(since=0)
+	{'last_seq': 2, 'results': [{'changes': [{'rev': '1-967a00dff5e02add41819138abb3284d'}], 'id': 'e3453543865212eede756809f71436c5', 'seq': 1}, {'changes': [{'rev': '1-967a00dff5e02add41819138abb3284d'}], 'id': 'b0ec8a9287cc53b00c1d621720e8144d', 'seq': 2}]}
+</pre>
+
+
+Here we get all changes since the db has been created via `fetch` method of `Consumer` instance.
+
+
+h3. Listen for changes
+
+There are 2 possibilities in CouchDB to listen for changes. You can wait until a change happen in the db (longpolling) and close connection or you can just listen on each changes events and handle them in one function.
+
+To wait for a change you may want to use the `wait_once` function. To wait a change since the last sequence: 
+
+<pre class="code prettyprint">
+	>>> c.wait_once(since=2)
+	{'last_seq': 3, 'results': [{'changes': [{'rev': '1-967a00dff5e02add41819138abb3284d'}], 'id': '70958b546d1f214d221c6a16648d3a2b', 'seq': 3}]}
+
+</pre>
+
+`wait_once` will wait until a change happen or until connection timeout. Using `timeout` args or `heartbeat` you can set timeout or keep connection open.
+
+To listen on changes asynchronously and react on them, you have to use the `wait` method. This method using Python `asyncore` module, will wait on new changes lines and send these lines to the functions you registered as callaback :
+
+<pre class="code prettyprint">
+	>>> def print_line(line):
+	...     print "got %s" % line
+	... 
+	>>> c.register_callback(print_line)
+	>>> c.wait() # Go into receive loop
+</pre>
+
+
+By default it will wait infinitely, connection is kept alive.
+
+h2. Filter changes
+
+`wait_once` and `wait` method allow you to use design docs filter's functions to filter changes. Ex:
+
+<pre class="code prettyprint">
+	>>> c.wait(filter_name="mydesign/filtername")
+</pre>
+
+`filter_name` argument take the design doc name and filter function name as string.
+	

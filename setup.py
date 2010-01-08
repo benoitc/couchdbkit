@@ -20,6 +20,8 @@ import sys
 if not hasattr(sys, 'version_info') or sys.version_info < (2, 5, 0, 'final'):
     raise SystemExit("Couchapp requires Python 2.5 or later.")
 
+
+extra = {}
 try:
     from setuptools import setup, find_packages
 except ImportError:
@@ -61,5 +63,7 @@ to keep its simplicity when you manage it in python""",
     ],
         
     test_suite='tests',
+    
+    **extra
 
 )

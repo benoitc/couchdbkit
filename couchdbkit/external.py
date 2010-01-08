@@ -36,7 +36,6 @@ class External(object):
         if __name__ == "__main__":
             Test().run()
         
-    
     """
 
     def __init__(self, stdin=sys.stdin, stdout=sys.stdout):
@@ -67,5 +66,3 @@ class External(object):
             'headers': headers
         }
         self.write(anyjson.serialize(resp))
-            
-            

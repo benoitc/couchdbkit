@@ -1,6 +1,5 @@
-version 0.2 (pre 1.0 ?)
+version 0.5
 - new versatile mapper + support of desktopcouch format
 - add support for oauth
 - full featured python view server
 - more helper for views : key filter
-- _changes handler

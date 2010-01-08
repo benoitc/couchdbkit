@@ -1,0 +1,25 @@
+title: Build an external handler
+page_type: blog
+
+Building an "external handler":http://wiki.apache.org/couchdb/ExternalProcesses with couchdbkit is easy. The only thing you have to do is to create an object inheriting from `couchdbkit.external` module. Here is a little snippet that shows you how to handle the example external process from CouchDB wiki":http://wiki.apache.org/couchdb/ExternalProcesse#Example_External_Process with couchdbkit.
+
+
+<pre class="code prettyprint">
+    from couchdbkit.external import External
+    import anyjson
+
+    class Test(External):
+
+        def handle_line(self, line):
+            self.send_response(200, 
+                "got message external object %s" % anyjson.serialize(line),
+                {"Content-type": "text/plain"})
+
+    if __name__ == "__main__":
+        Test().run()
+</pre>
+
+
+All lines received by the external handler are handled in `handle_line` method of External instance. Then the `send_response` method can be used to send the response. It takes the http status code, body and headers as arguments. `This method is a wrapper around `write` method of your instance. 
+
+`couchdbkit.External` interface has been used to build the wsgi external handler. Its "code":http://bitbucket.org/benoitc/couchdbkit/src/5d7bb0ebf3f4/couchdbkit/contrib/wsgi_handler.py is also a good example of use.

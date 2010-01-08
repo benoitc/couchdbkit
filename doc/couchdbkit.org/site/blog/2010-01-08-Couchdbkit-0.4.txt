@@ -1,0 +1,21 @@
+title: Couchdbkit version 0.4 released 
+content_type: textile
+page_type: blog
+template: blog/post.html
+
+New release for "Couchdbkit":http://couchdbkit.org. More fixes and new `External` and *_changes* `Consumer`. The 0.4 branch is the last branch with suport for 0.9x / 0.10x versions of CouchDB. Next releases will support only 0.11/trunk and 1.0 versions and will support python3. The "TODO":http://bitbucket.org/benoitc/couchdbkit/src/tip/TODO.txt has been updated.
+
+You can download latest release on "Pypi":http://pypi.python.org/pypi/couchdbkit/0.4 or check "download page":../download.html for other ways.
+
+h2. New features :
+
+* `External` module. This module allows you to create easily "external handler":http://wiki.apache.org/couchdb/ExternalProcesses for couchdb. There is a little "tutorial':../docs/external.html about it. There is also in contrib an external allowing you to use "wsgi":http://www.python.org/dev/peps/pep-0333/ applications as external handler. See "example":http://bitbucket.org/benoitc/couchdbkit/src/tip/examples/wsgi/test.py .
+* *_changes* Consumer. With this modules you can listen on "db changes":http://wiki.apache.org/couchdb/HTTP_database_API#Changes, simple changes call, longpolling and continuous changes are supported. See the "doc":../docs/changes_consumer.html about it.
+
+h2. Fixes :
+
+* "__iter__":http://bitbucket.org/benoitc/couchdbkit/changeset/c455068b5c59/ in `Document schema` object has been fixed
+* `save_doc` method of a db instance can "return full result":http://bitbucket.org/benoitc/couchdbkit/changeset/891c76027721/ . Useful to manage conflicts.
+* some typos fixed in doc
+* installation with distribute
+* db.flush refactored
