@@ -20,11 +20,17 @@ h2. Fetch changes
 
 <pre class="code prettyprint">
 	>>> db.save_doc({})
-	{'rev': '1-967a00dff5e02add41819138abb3284d', 'ok': True, 'id': 'e3453543865212eede756809f71436c5'}
+	{'rev': '1-967a00dff5e02add41819138abb3284d',
+	 'ok': True, 'id': 'e3453543865212eede756809f71436c5'}
 	>>> db.save_doc({})
-	{'rev': '1-967a00dff5e02add41819138abb3284d', 'ok': True, 'id': 'b0ec8a9287cc53b00c1d621720e8144d'}
+	{'rev': '1-967a00dff5e02add41819138abb3284d', 
+	'ok': True, 'id': 'b0ec8a9287cc53b00c1d621720e8144d'}
 	>>> c.fetch(since=0)
-	{'last_seq': 2, 'results': [{'changes': [{'rev': '1-967a00dff5e02add41819138abb3284d'}], 'id': 'e3453543865212eede756809f71436c5', 'seq': 1}, {'changes': [{'rev': '1-967a00dff5e02add41819138abb3284d'}], 'id': 'b0ec8a9287cc53b00c1d621720e8144d', 'seq': 2}]}
+	{'last_seq': 2, 'results': [{'changes': 
+	[{'rev': '1-967a00dff5e02add41819138abb3284d'}], 
+	'id': 'e3453543865212eede756809f71436c5', 'seq': 1}, 
+	{'changes': [{'rev': '1-967a00dff5e02add41819138abb3284d'}], 
+	'id': 'b0ec8a9287cc53b00c1d621720e8144d', 'seq': 2}]}
 </pre>
 
 
@@ -38,7 +44,9 @@ To wait for a change you may want to use the `wait_once` function. To wait a cha
 
 <pre class="code prettyprint">
  >>> c.wait_once(since=2)
- {'last_seq': 3, 'results': [{'changes': [{'rev': '1-967a00dff5e02add41819138abb3284d'}], 'id': '70958b546d1f214d221c6a16648d3a2b', 'seq': 3}]}
+ {'last_seq': 3, 'results': [{'changes': 
+ [{'rev': '1-967a00dff5e02add41819138abb3284d'}], 
+ 'id': '70958b546d1f214d221c6a16648d3a2b', 'seq': 3}]}
 </pre>
 
 `wait_once` will wait until a change happen or until connection timeout. Using `timeout` args or `heartbeat` you can set timeout or keep connection open.

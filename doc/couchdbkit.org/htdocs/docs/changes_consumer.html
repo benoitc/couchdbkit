@@ -95,11 +95,17 @@
 
 <pre class="code prettyprint">
 	>>> db.save_doc({})
-	{'rev&#8217;: &#8217;1-967a00dff5e02add41819138abb3284d&#8217;, 'ok&#8217;: True, 'id&#8217;: 'e3453543865212eede756809f71436c5&#8217;}
+	{'rev&#8217;: &#8217;1-967a00dff5e02add41819138abb3284d&#8217;,
+	 'ok&#8217;: True, 'id&#8217;: 'e3453543865212eede756809f71436c5&#8217;}
 	>>> db.save_doc({})
-	{'rev&#8217;: &#8217;1-967a00dff5e02add41819138abb3284d&#8217;, 'ok&#8217;: True, 'id&#8217;: 'b0ec8a9287cc53b00c1d621720e8144d&#8217;}
+	{'rev&#8217;: &#8217;1-967a00dff5e02add41819138abb3284d&#8217;, 
+	'ok&#8217;: True, 'id&#8217;: 'b0ec8a9287cc53b00c1d621720e8144d&#8217;}
 	>>> c.fetch(since=0)
-	{'last_seq&#8217;: 2, 'results&#8217;: [{'changes&#8217;: [{'rev&#8217;: &#8217;1-967a00dff5e02add41819138abb3284d&#8217;}], 'id&#8217;: 'e3453543865212eede756809f71436c5&#8217;, 'seq&#8217;: 1}, {'changes&#8217;: [{'rev&#8217;: &#8217;1-967a00dff5e02add41819138abb3284d&#8217;}], 'id&#8217;: 'b0ec8a9287cc53b00c1d621720e8144d&#8217;, 'seq&#8217;: 2}]}
+	{'last_seq&#8217;: 2, 'results&#8217;: [{'changes&#8217;: 
+	[{'rev&#8217;: &#8217;1-967a00dff5e02add41819138abb3284d&#8217;}], 
+	'id&#8217;: 'e3453543865212eede756809f71436c5&#8217;, 'seq&#8217;: 1}, 
+	{'changes&#8217;: [{'rev&#8217;: &#8217;1-967a00dff5e02add41819138abb3284d&#8217;}], 
+	'id&#8217;: 'b0ec8a9287cc53b00c1d621720e8144d&#8217;, 'seq&#8217;: 2}]}
 </pre>
 
 	<p>Here we get all changes since the db has been created via `fetch` method of `Consumer` instance.</p>
@@ -112,7 +118,9 @@
 
 <pre class="code prettyprint">
  >>> c.wait_once(since=2)
- {'last_seq&#8217;: 3, 'results&#8217;: [{'changes&#8217;: [{'rev&#8217;: &#8217;1-967a00dff5e02add41819138abb3284d&#8217;}], 'id&#8217;: '70958b546d1f214d221c6a16648d3a2b&#8217;, 'seq&#8217;: 3}]}
+ {'last_seq&#8217;: 3, 'results&#8217;: [{'changes&#8217;: 
+ [{'rev&#8217;: &#8217;1-967a00dff5e02add41819138abb3284d&#8217;}], 
+ 'id&#8217;: '70958b546d1f214d221c6a16648d3a2b&#8217;, 'seq&#8217;: 3}]}
 </pre>
 
 	<p>`wait_once` will wait until a change happen or until connection timeout. Using `timeout` args or `heartbeat` you can set timeout or keep connection open.</p>
