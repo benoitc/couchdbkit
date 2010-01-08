@@ -1,5 +1,7 @@
 version 0.5
-- new versatile mapper + support of desktopcouch format
+- new versatile mapper + support of desktopcouch records format
+- full Desktop Couchdb apps support
 - add support for oauth
 - full featured python view server
 - more helper for views : key filter
+
