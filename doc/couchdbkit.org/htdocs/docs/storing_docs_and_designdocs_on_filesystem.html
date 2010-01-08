@@ -2,9 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
-    <title>Couchdbkit - 
-    Couchdbkit version 0.1.7 released
-</title>
+    <title>Couchdbkit - Storing design documents and views on the filesystem</title>
     <!--[if IE]>
 
     <script>
@@ -75,92 +73,51 @@
         
     
         
-
 <section id="content">
     <article>
-        <header>
-            <h1>Couchdbkit version 0.1.7 released</h1>
-        </header>
-        	<p>Just released Couchdbkit 0.1.7. </p>
+        <h1>Storing design documents and views on the filesystem</h1>
+        	<p>Couchdbkit allows you to manage you design docs and docs on the file system.</p>
 
-	<p>Next version will be 0.2 and will have some new features :</p>
+	<p><img src="/images/gettingstarted.png" title="couchdbkit textmate screen" alt="couchdbkit textmate screen" /></p>
 
-	<ul>
-		<li>Dump/Loads utilities</li>
-		<li>New view iterator system that would allow us to use less <span class="caps">CPU</span></li>
-		<li>Aggregation : A way to combine multiple views in one</li>
-		<li>ReferenceProperty: Link documents between themselves</li>
-		<li>...</li>
-	</ul>
+	<p>A system will be provided to manage view creation and other things. As some noticed, this system works like <a href="http://github.com/couchapp/couchapp/tree/">couchapp</a>.</p>
 
-	<p>Changes for this version are following:</p>
+	<h2>Create a design document</h2>
 
-	<h2>Fixes</h2>
+	<p>Let&#8217;s create a folder that contains the design doc, and then the folder for the view. On unix :</p>
 
-	<ul>
-		<li>documentation typos</li>
-		<li>database name encoding. </li>
-		<li>list are correctly handled in DictProperty</li>
-	</ul>
+<pre class="code prettyprint">
+ mkdir -p ~/Work/couchdbkit/example/_design/greeting/views/all
+</pre>
 
-	<h2>Breaking changes</h2>
+	<p>In this folder we edit a file `map.js`:</p>
 
-	<p>I introduced a <strong>breaking change</strong> in latest version of couchdbkit. Now id and rev members of `schema.Document` aren&#8217;t alias to _id and _rev. It allows you to use id and rev like you want in CouchDB. It also means that you need to set yourdoc._id to set the id of a document. I made this change since it seems that a lot of you need it. So here it is. </p>
+<pre class="code prettyprint">
+ function(doc) { 
+   if (doc.doc_type == &#8220;Greeting&#8221;) 
+    emit(doc._id, doc); 
+ }
+</pre>
 
-	<p>Please test it and let me know if anything is wrong.</p>
+	<h2>Synchronize design documents on the database</h2>
 
-	<p>A little example :</p>
+	<p>Then we use `FileSystemDocsLoader` object to send the design document to CouchDB:</p>
 
 	<p><pre class="code prettyprint">
- In [1]: from couchdbkit import *</p>
+ from couchdbkit.loaders import FileSystemDocsLoader</p>
 
- In [2]: class A(Document):
-   ...:     pass
-   ...:
-
- In [3]: a = A()
-
- In [4]: a._id = &#8220;myid&#8221;
-
- In [5]: a.id = &#8220;idofapplication&#8221;
-
- In [6]: a._doc
- Out<sup class="footnote"><a href="#fn2cc26993-f198-4eb8-8ea9-cdd7e4f5b0c9">6</a></sup>: {&#8217;_id&#8217;: 'myid&#8217;, 'doc_type&#8217;: 'A&#8217;, 'id&#8217;: u&#8217;idofapplication&#8217;}
-
- In [7]: a._id
- Out<sup class="footnote"><a href="#fneb337e23-1f3c-4000-9731-63d184b62d6d">7</a></sup>: 'myid&#8217;
-
- In [8]: a.id
- Out<sup class="footnote"><a href="#fn6a3c960f-ea91-43ea-8f3d-d145e214ca04">8</a></sup>: 'idofapplication&#8217;
-
- In [9]: s = Server()
-
- In [10]: db = s['couchdbkit_test3&#8217;]
-
- In [11]: A._db = db
-
- In [12]: a.save()
-
- In [13]: a._doc
- Out<sup class="footnote"><a href="#fn1776ad90-7b75-4b48-95a4-b531a4f4561b">13</a></sup>:
- {&#8217;_id&#8217;: u&#8217;myid&#8217;,
- '_rev&#8217;: u&#8217;1-676990679&#8217;,
- 'doc_type&#8217;: 'A&#8217;,
- 'id&#8217;: u&#8217;idofapplication&#8217;}
-
- In [14]: b = A.get('myid&#8217;)
-
- In [15]: b.id
- Out<sup class="footnote"><a href="#fn6edd16aa-f38e-4a4f-b9db-67453d5a7af6">15</a></sup>: u&#8217;idofapplication&#8217;
-
- In [16]: b._id
- Out<sup class="footnote"><a href="#fnb5281582-0062-4548-9b29-49617c32b009">16</a></sup>: u&#8217;myid&#8217;
+ loader = FileSystemDocsLoader(&#8217;/path/to/example/_design&#8217;)
+ loader.sync(db, verbose=True)
 </pre>
-        <footer>
-             <p><span class='comments'><a href='/blog/2009-06-25-Couchdbkit-0.1.7-released.html#disqus_thread'>View Comments</a></span></p>
-        </footer>
+
+	<p>The design doc is now in the `greetings` database and you can get all greets :</p>
+
+<pre class="code prettyprint">
+ greets = Greeting.view('greeting/all&#8217;)
+</pre>
+
+	<p>You can automate this when you start your application. This what <a href="http://friendpaste.com">Friendpaste</a> do by running <code>python manage.py setup</code> on first bootstrap.</p>
     </article>
-    <div id="disqus_thread"></div><script type="text/javascript" src="http://disqus.com/forums/couchdbkit/embed.js"></script><noscript><a href="http://couchdbkit.disqus.com/?url=ref">View the discussion thread.</a></noscript><a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
 </section>
 
         
@@ -174,22 +131,5 @@
     
     
     
-    <script>
-    //<![CDATA[
-    (function() {
-            
-    		var links = document.getElementsByTagName('a');
-    		var query = '?';
-    		for(var i = 0; i < links.length; i++) {
-    			if(links[i].href.indexOf('#disqus_thread') >= 0) {
-    				query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
-    			}
-    		}
-    		document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/couchdbkit/get_num_replies.js' + query + '&disqus_developer=1"></' + 'script>');
-    	})();
-    //]]>
-    </script>
-    
-
 </body>
 </html>

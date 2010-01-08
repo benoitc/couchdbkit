@@ -2,9 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
-    <title>Couchdbkit - 
-    Couchdbkit version 0.1.7 released
-</title>
+    <title>Couchdbkit - Listen to database changes</title>
     <!--[if IE]>
 
     <script>
@@ -75,92 +73,73 @@
         
     
         
-
 <section id="content">
     <article>
-        <header>
-            <h1>Couchdbkit version 0.1.7 released</h1>
-        </header>
-        	<p>Just released Couchdbkit 0.1.7. </p>
+        <h1>Listen to database changes</h1>
+        	<p>Since the <a href="http://couchdb.apache.org/downloads.html">0.10 release</a> of CouchDB, it&#8217;s possible to listen on <a href="http://wiki.apache.org/couchdb/HTTP_database_API#Changes">db changes</a> via the <span class="caps">REST</span> api. The `couchdbkit.Consumer` object provides you a way to listen on these changes asynchronously (continuous changes) or just wait for one change (longpolling). You can of course just fetch changes since the last update sequence.</p>
 
-	<p>Next version will be 0.2 and will have some new features :</p>
+	<h2>Create a consumer</h2>
 
-	<ul>
-		<li>Dump/Loads utilities</li>
-		<li>New view iterator system that would allow us to use less <span class="caps">CPU</span></li>
-		<li>Aggregation : A way to combine multiple views in one</li>
-		<li>ReferenceProperty: Link documents between themselves</li>
-		<li>...</li>
-	</ul>
+	<p>To create a consumer, instantiate the `couchdbkit.Consumer` object like this.</p>
 
-	<p>Changes for this version are following:</p>
+<pre class="code prettyprint">
+	>>> from couchdbkit import Server, Consumer
+	>>> s = Server()
+	>>> db = s.create_db(&#8220;mydb&#8221;)
+	>>> c = Consumer(db)
+</pre>
 
-	<h2>Fixes</h2>
+	<p>A consumer object is initialized with the db instance on which you want to listen changes.</p>
 
-	<ul>
-		<li>documentation typos</li>
-		<li>database name encoding. </li>
-		<li>list are correctly handled in DictProperty</li>
-	</ul>
+	<h2>Fetch changes</h2>
 
-	<h2>Breaking changes</h2>
+<pre class="code prettyprint">
+	>>> db.save_doc({})
+	{'rev&#8217;: &#8217;1-967a00dff5e02add41819138abb3284d&#8217;, 'ok&#8217;: True, 'id&#8217;: 'e3453543865212eede756809f71436c5&#8217;}
+	>>> db.save_doc({})
+	{'rev&#8217;: &#8217;1-967a00dff5e02add41819138abb3284d&#8217;, 'ok&#8217;: True, 'id&#8217;: 'b0ec8a9287cc53b00c1d621720e8144d&#8217;}
+	>>> c.fetch(since=0)
+	{'last_seq&#8217;: 2, 'results&#8217;: [{'changes&#8217;: [{'rev&#8217;: &#8217;1-967a00dff5e02add41819138abb3284d&#8217;}], 'id&#8217;: 'e3453543865212eede756809f71436c5&#8217;, 'seq&#8217;: 1}, {'changes&#8217;: [{'rev&#8217;: &#8217;1-967a00dff5e02add41819138abb3284d&#8217;}], 'id&#8217;: 'b0ec8a9287cc53b00c1d621720e8144d&#8217;, 'seq&#8217;: 2}]}
+</pre>
 
-	<p>I introduced a <strong>breaking change</strong> in latest version of couchdbkit. Now id and rev members of `schema.Document` aren&#8217;t alias to _id and _rev. It allows you to use id and rev like you want in CouchDB. It also means that you need to set yourdoc._id to set the id of a document. I made this change since it seems that a lot of you need it. So here it is. </p>
+	<p>Here we get all changes since the db has been created via `fetch` method of `Consumer` instance.</p>
 
-	<p>Please test it and let me know if anything is wrong.</p>
+	<h3>Listen for changes</h3>
 
-	<p>A little example :</p>
+	<p>There are 2 possibilities in CouchDB to listen for changes. You can wait until a change happen in the db (longpolling) and close connection or you can just listen on each changes events and handle them in one function.</p>
+
+	<p>To wait for a change you may want to use the `wait_once` function. To wait a change since the last sequence: </p>
 
 	<p><pre class="code prettyprint">
- In [1]: from couchdbkit import *</p>
+	>>> c.wait_once(since=2)
+	{'last_seq&#8217;: 3, 'results&#8217;: [{'changes&#8217;: [{'rev&#8217;: &#8217;1-967a00dff5e02add41819138abb3284d&#8217;}], 'id&#8217;: '70958b546d1f214d221c6a16648d3a2b&#8217;, 'seq&#8217;: 3}]}</p>
 
- In [2]: class A(Document):
-   ...:     pass
-   ...:
+	<p></pre></p>
 
- In [3]: a = A()
+	<p>`wait_once` will wait until a change happen or until connection timeout. Using `timeout` args or `heartbeat` you can set timeout or keep connection open.</p>
 
- In [4]: a._id = &#8220;myid&#8221;
+	<p>To listen on changes asynchronously and react on them, you have to use the `wait` method. This method using Python `asyncore` module, will wait on new changes lines and send these lines to the functions you registered as callaback :</p>
 
- In [5]: a.id = &#8220;idofapplication&#8221;
-
- In [6]: a._doc
- Out<sup class="footnote"><a href="#fn2cc26993-f198-4eb8-8ea9-cdd7e4f5b0c9">6</a></sup>: {&#8217;_id&#8217;: 'myid&#8217;, 'doc_type&#8217;: 'A&#8217;, 'id&#8217;: u&#8217;idofapplication&#8217;}
-
- In [7]: a._id
- Out<sup class="footnote"><a href="#fneb337e23-1f3c-4000-9731-63d184b62d6d">7</a></sup>: 'myid&#8217;
-
- In [8]: a.id
- Out<sup class="footnote"><a href="#fn6a3c960f-ea91-43ea-8f3d-d145e214ca04">8</a></sup>: 'idofapplication&#8217;
-
- In [9]: s = Server()
-
- In [10]: db = s['couchdbkit_test3&#8217;]
-
- In [11]: A._db = db
-
- In [12]: a.save()
-
- In [13]: a._doc
- Out<sup class="footnote"><a href="#fn1776ad90-7b75-4b48-95a4-b531a4f4561b">13</a></sup>:
- {&#8217;_id&#8217;: u&#8217;myid&#8217;,
- '_rev&#8217;: u&#8217;1-676990679&#8217;,
- 'doc_type&#8217;: 'A&#8217;,
- 'id&#8217;: u&#8217;idofapplication&#8217;}
-
- In [14]: b = A.get('myid&#8217;)
-
- In [15]: b.id
- Out<sup class="footnote"><a href="#fn6edd16aa-f38e-4a4f-b9db-67453d5a7af6">15</a></sup>: u&#8217;idofapplication&#8217;
-
- In [16]: b._id
- Out<sup class="footnote"><a href="#fnb5281582-0062-4548-9b29-49617c32b009">16</a></sup>: u&#8217;myid&#8217;
+<pre class="code prettyprint">
+	>>> def print_line(line):
+	...     print &#8220;got %s&#8221; % line
+	... 
+	>>> c.register_callback(print_line)
+	>>> c.wait() # Go into receive loop
 </pre>
-        <footer>
-             <p><span class='comments'><a href='/blog/2009-06-25-Couchdbkit-0.1.7-released.html#disqus_thread'>View Comments</a></span></p>
-        </footer>
+
+	<p>By default it will wait infinitely, connection is kept alive.</p>
+
+	<h2>Filter changes</h2>
+
+	<p>`wait_once` and `wait` method allow you to use design docs filter&#8217;s functions to filter changes. Ex:</p>
+
+<pre class="code prettyprint">
+	>>> c.wait(filter_name=&#8220;mydesign/filtername&#8221;)
+</pre>
+
+	<p>`filter_name` argument take the design doc name and filter function name as string.</p>
     </article>
-    <div id="disqus_thread"></div><script type="text/javascript" src="http://disqus.com/forums/couchdbkit/embed.js"></script><noscript><a href="http://couchdbkit.disqus.com/?url=ref">View the discussion thread.</a></noscript><a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
 </section>
 
         
@@ -174,22 +153,5 @@
     
     
     
-    <script>
-    //<![CDATA[
-    (function() {
-            
-    		var links = document.getElementsByTagName('a');
-    		var query = '?';
-    		for(var i = 0; i < links.length; i++) {
-    			if(links[i].href.indexOf('#disqus_thread') >= 0) {
-    				query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
-    			}
-    		}
-    		document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/couchdbkit/get_num_replies.js' + query + '&disqus_developer=1"></' + 'script>');
-    	})();
-    //]]>
-    </script>
-    
-
 </body>
 </html>
