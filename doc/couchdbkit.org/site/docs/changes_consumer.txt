@@ -14,7 +14,7 @@ To create a consumer, instantiate the `couchdbkit.Consumer` object like this.
 	>>> c = Consumer(db)
 </pre>
 
-A consumer object is initialised with the db instance on which you want to listen changes.
+A consumer object is initialized with the db instance on which you want to listen changes.
 
 h2. Fetch changes
 
@@ -29,7 +29,6 @@ h2. Fetch changes
 
 
 Here we get all changes since the db has been created via `fetch` method of `Consumer` instance.
-
 
 h3. Listen for changes
 
@@ -67,4 +66,3 @@ h2. Filter changes
 </pre>
 
 `filter_name` argument take the design doc name and filter function name as string.
-	

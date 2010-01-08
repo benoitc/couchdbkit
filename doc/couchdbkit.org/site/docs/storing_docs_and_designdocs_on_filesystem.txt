@@ -1,0 +1,46 @@
+title: Storing design documents and views on the filesystem
+page_type: blog
+
+Couchdbkit allows you to manage you design docs and docs on the file system.
+
+!/images/gettingstarted.png(couchdbkit textmate screen)!
+
+A system will be provided to manage view creation and other things. As some noticed, this system works like "couchapp":http://github.com/couchapp/couchapp/tree/.
+
+
+h2. Create a design document
+
+Let's create a folder that contains the design doc, and then the folder for the view. On unix :
+
+<pre class="code prettyprint">
+ mkdir -p ~/Work/couchdbkit/example/_design/greeting/views/all
+</pre>
+
+In this folder we edit a file `map.js`:
+
+<pre class="code prettyprint">
+ function(doc) { 
+   if (doc.doc_type == "Greeting") 
+    emit(doc._id, doc); 
+ }
+</pre>
+
+h2. Synchronize design documents on the database
+
+Then we use `FileSystemDocsLoader` object to send the design document to CouchDB:
+
+<pre class="code prettyprint">
+ from couchdbkit.loaders import FileSystemDocsLoader
+ 
+ loader = FileSystemDocsLoader('/path/to/example/_design')
+ loader.sync(db, verbose=True)
+</pre>
+
+The design doc is now in the `greetings` database and you can get all greets :
+
+<pre class="code prettyprint">
+ greets = Greeting.view('greeting/all')
+</pre>
+
+
+You can automate this when you start your application. This what "Friendpaste":http://friendpaste.com do by running <code>python manage.py setup</code> on first bootstrap.
