@@ -9,7 +9,7 @@ You can download latest release on "Pypi":http://pypi.python.org/pypi/couchdbkit
 
 h2. New features :
 
-* `External` module. This module allows you to create easily "external handler":http://wiki.apache.org/couchdb/ExternalProcesses for couchdb. There is a little "tutorial':../docs/external.html about it. There is also in contrib an external allowing you to use "wsgi":http://www.python.org/dev/peps/pep-0333/ applications as external handler. See "example":http://bitbucket.org/benoitc/couchdbkit/src/tip/examples/wsgi/test.py .
+* `External` module. This module allows you to create easily "external handler":http://wiki.apache.org/couchdb/ExternalProcesses for couchdb. There is a little "tutorial":../docs/external.html about it. There is also in contrib an external allowing you to use "wsgi":http://www.python.org/dev/peps/pep-0333/ applications as external handler. See "example":http://bitbucket.org/benoitc/couchdbkit/src/tip/examples/wsgi/test.py .
 * *_changes* Consumer. With this modules you can listen on "db changes":http://wiki.apache.org/couchdb/HTTP_database_API#Changes, simple changes call, longpolling and continuous changes are supported. See the "doc":../docs/changes_consumer.html about it.
 
 h2. Fixes :
