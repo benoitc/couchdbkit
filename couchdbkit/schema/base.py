@@ -577,22 +577,19 @@ class QueryMixin(object):
         def default_wrapper(row):
             data = row.get('value')
             docid = row.get('id')
-
-            if not data or data is None:
-                doc = row.get('doc', False)
-                if doc:
-                    return cls.wrap(doc)
+            doc = row.get('doc')
+            if doc is not None:
+                return cls.wrap(doc)
+            elif not data or data is None:
                 return row
-                
-            if not isinstance(data, dict) or not docid:
+            elif not isinstance(data, dict) or not docid:
                 return row
-                
-            data['_id'] = docid
-            if 'rev' in data:
-                data['_rev'] = data.pop('rev')
-            cls._allow_dynamic_properties = dynamic_properties
-            obj = cls.wrap(data)
-            return obj
+            else:
+                data['_id'] = docid
+                if 'rev' in data:
+                    data['_rev'] = data.pop('rev')
+                cls._allow_dynamic_properties = dynamic_properties
+                return cls.wrap(data)
         
         if wrapper is None:
             wrapper = default_wrapper
