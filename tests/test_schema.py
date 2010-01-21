@@ -947,6 +947,10 @@ class PropertyTestCase(unittest.TestCase):
         self.assert_(b1.ls == [u'hello', u'123'])
         self.assert_(b1._doc['ls'] == [u'hello', u'123'])
 
+        self.assert_(b1.ls.index(u'hello') == 0)
+        b1.ls.remove(u'hello')
+        self.assert_(u'hello' not in b1.ls)
+
          
     def testDictProperty(self):
         from datetime import datetime

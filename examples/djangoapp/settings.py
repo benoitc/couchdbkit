@@ -17,7 +17,7 @@ DATABASE_ENGINE = 'sqlite3'
 DATABASE_NAME = os.path.join(PROJECT_PATH,'test.db')
 
 COUCHDB_DATABASES = (
-    ('djangoapp.greeting', 'http://127.0.0.1:5984/greeting'),
+    ('djangoapp.greeting', 'http://benoitc:test@127.0.0.1:5984/greeting'),
 )
 
 # Local time zone for this installation. Choices can be found here:

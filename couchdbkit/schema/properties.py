@@ -619,7 +619,7 @@ class LazyList(list):
     def __delitem__(self, index):
         del self.doc[index]
         list.__delitem__(self, index)
-
+        
     def __setitem__(self, index, value):
         if isinstance(value, dict):
             self.doc[index] = {}
@@ -630,7 +630,25 @@ class LazyList(list):
         else:
             self.doc[index] = value_to_json(value, item_type=self.item_type)
         list.__setitem__(self, index, value)
+        
 
+    def __delslice__(self, i, j):
+        del self.doc[i:j]
+        list.__delslice__(self, i, j)
+
+    def __getslice__(self, i, j):
+        return LazyList(self.doc[i:j], self.item_type)
+
+    def __setslice__(self, i, j, seq):
+        self.doc[i:j] = (value_to_json(v, item_type=self.item_type) for v in seq)
+        list.__setslice__(self, i, j, seq)
+        
+    def __contains__(self, value):
+        jvalue = value_to_json(value)
+        for m in self.doc:
+            if m == value: return True
+        return False
+        
     def append(self, *args, **kwargs):
         if args:
             assert len(args) == 1
@@ -649,6 +667,22 @@ class LazyList(list):
             self.doc.append(value_to_json(value, item_type=self.item_type))
         super(LazyList, self).append(value)
         
+    def index(self, x, *args):
+        x = value_to_json(x, item_type=self.item_type)
+        return self.doc.index(x)
+        
+    def remove(self, x):
+        del self[self.index(x)]
+        
+    def sort(self, cmp=None, key=None, reverse=False):
+        self.doc.sort(cmp, key, reverse)
+        list.sort(self, cmp, key, reverse)
+        
+    def reverse(self):
+        self.doc.reverse()
+        list.reverse(self)
+        
+    
 # some mapping
  
 MAP_TYPES_PROPERTIES = {
