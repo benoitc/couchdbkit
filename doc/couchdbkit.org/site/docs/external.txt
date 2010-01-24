@@ -1,10 +1,9 @@
 title: Build an external handler
 page_type: blog
 
-Building an "external handler":http://wiki.apache.org/couchdb/ExternalProcesses with couchdbkit is easy. The only thing you have to do is to create an object inheriting from `couchdbkit.external` module. 
+Building an "external handler":http://wiki.apache.org/couchdb/ExternalProcesse with couchdbkit is easy. The only thing you have to do is to create an object inheriting from `couchdbkit.external` module. 
 
 Here is a little snippet that shows you how to handle the "example external process from CouchDB wiki":http://wiki.apache.org/couchdb/ExternalProcesse#Example_External_Process with couchdbkit.
-
 
 <pre class="code prettyprint">
  from couchdbkit.external import External
