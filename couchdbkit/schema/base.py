@@ -573,12 +573,13 @@ class QueryMixin(object):
     
     @classmethod
     def __view(cls, view_type=None, data=None, wrapper=None, 
-    dynamic_properties=True, **params):
+    dynamic_properties=True, wrap_doc=True, **params):
         def default_wrapper(row):
             data = row.get('value')
             docid = row.get('id')
             doc = row.get('doc')
-            if doc is not None:
+            if doc is not None and wrap_doc:
+                cls._allow_dynamic_properties = dynamic_properties
                 return cls.wrap(doc)
             elif not data or data is None:
                 return row
@@ -609,35 +610,46 @@ class QueryMixin(object):
             
     @classmethod
     def view(cls, view_name, wrapper=None, dynamic_properties=True, 
-    **params):
+    wrap_doc=True, **params):
         """ Get documents associated view a view.
         Results of view are automatically wrapped
         to Document object.
 
         @params view_name: str, name of view
+        @params wrapper: override default wrapper by your own
+        @dynamic_properties: do we handle properties which aren't in
+        the schema ? Default is True.
+        @wrap_doc: If True, if a doc is present in the row it will be
+        used for wrapping. Default is True.
         @params params:  params of view
 
         @return: :class:`simplecouchdb.core.ViewResults` instance. All
         results are wrapped to current document instance.
         """
         return cls.__view(view_type="view", data=view_name, wrapper=wrapper, 
-            dynamic_properties=dynamic_properties, **params) 
+            dynamic_properties=dynamic_properties, wrap_doc=wrap_doc,
+            **params) 
         
     @classmethod
     def temp_view(cls, design, wrapper=None, dynamic_properties=True, 
-    **params):
+    wrap_doc=True, **params):
         """ Slow view. Like in view method,
         results are automatically wrapped to 
         Document object.
 
         @params design: design object, See `simplecouchd.client.Database`
+        @dynamic_properties: do we handle properties which aren't in
+            the schema ?
+        @wrap_doc: If True, if a doc is present in the row it will be
+            used for wrapping. Default is True.
         @params params:  params of view
 
         @return: Like view, return a :class:`simplecouchdb.core.ViewResults` 
         instance. All results are wrapped to current document instance.
         """
         return cls.__view(view_type="temp_view", data=design, wrapper=wrapper, 
-            dynamic_properties=dynamic_properties, **params) 
+            dynamic_properties=dynamic_properties, wrap_doc=wrap_doc,
+            **params) 
         
 class Document(DocumentBase, QueryMixin, AttachmentMixin):
     """

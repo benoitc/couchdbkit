@@ -46,6 +46,7 @@ import cgi
 from itertools import groupby
 from mimetypes import guess_type
 import re
+import time
 
 import anyjson
 from restkit.utils import url_quote
@@ -286,6 +287,9 @@ class Database(object):
         
         # delete db
         self.server.delete_db(self.dbname)
+        
+        # we let a chance to the system to sync
+        time.sleep(0.2)
         
         # recreate db + ddocs
         self.server.create_db(self.dbname)
