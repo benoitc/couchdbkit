@@ -1,0 +1,14 @@
+title: Couchdbkit version 0.4 1 released 
+content_type: textile
+page_type: blog
+template: blog/post.html
+
+New release for "Couchdbkit":http://couchdbkit.org. More fixes
+
+You can download latest release on "Pypi":http://pypi.python.org/pypi/couchdbkit/0.4 or check "download page":../download.html for other ways.
+
+h2. Fixes :
+
+* use "doc" in view result for default wrapper used by `schema.Document.view` until "wrap_doc" argument is set to False. 
+* Add sleep for db.flush which remove CouchDB traces on some systems.
+* some typos fixed in doc
