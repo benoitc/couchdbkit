@@ -108,7 +108,7 @@ class ClientDatabaseTestCase(unittest.TestCase):
     def testDbFromUri(self):
         db = self.Server.create_db('couchdbkit_test')
         
-        db1 = Database.from_uri("http://127.0.0.1:5984/couchdbkit_test", "couchdbkit_test")
+        db1 = Database("http://127.0.0.1:5984/couchdbkit_test")
         self.assert_(hasattr(db1, "dbname") == True)
         self.assert_(db1.dbname == "couchdbkit_test")
         info = db1.info()

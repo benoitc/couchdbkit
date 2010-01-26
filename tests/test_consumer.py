@@ -18,6 +18,7 @@ __author__ = 'benoitc@e-engura.com (Benoît Chesneau)'
 
 import threading
 import unittest
+import time
 
 from couchdbkit import *
 
@@ -79,9 +80,9 @@ class ClientServerTestCase(unittest.TestCase):
         self.assert_(self.lines[4]["id"] == "test4")
         doc = {"_id": "test5"}
         self.db.save_doc(doc)
+        time.sleep(0.5)
         self.assert_(len(self.lines) == 6)
         self.assert_(self.lines[5]["id"] == "test5")
-        
         
 if __name__ == '__main__':
     unittest.main()

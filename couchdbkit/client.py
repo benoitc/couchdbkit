@@ -47,6 +47,8 @@ from itertools import groupby
 from mimetypes import guess_type
 import re
 import time
+import urlparse
+import warnings
 
 import anyjson
 from restkit.utils import url_quote
@@ -114,11 +116,8 @@ class Server(object):
 
         @return: Database instance if it's ok or dict message
         """
-        _dbname = url_quote(validate_dbname(dbname), safe=":")
-        res = self.res.put('/%s/' % _dbname)
-        if res.json_body['ok']:
-            return Database(self, dbname)
-        return False
+        return Database(self._db_uri(dbname), create=True,
+                    server=self)
 
     def get_or_create_db(self, dbname):
         """
@@ -126,10 +125,8 @@ class Server(object):
         database doest't exist, it will be created.
         
         """
-        try:
-            return self[dbname]
-        except resource.ResourceNotFound:
-            return self.create_db(dbname)
+        return Database(self._db_uri(dbname), create=True,
+                    server=self)
         
     def delete_db(self, dbname):
         """
@@ -188,9 +185,8 @@ class Server(object):
         """
         self.res.add_authorization(obj_auth)
           
-    def __getitem__(self, dbname):
-        self.res.head('/%s/' % url_quote(dbname, safe=":"))
-        return Database(self, dbname)
+    def __getitem__(self, dbname):        
+        return Database(self._db_uri(dbname), server=self)
         
     def __delitem__(self, dbname):
         return self.res.delete('/%s/' % url_quote(dbname, safe=":"))
@@ -204,7 +200,7 @@ class Server(object):
         
     def __iter__(self):
         for dbname in self.all_dbs():
-            yield Database(self, dbname)
+            yield Database(self._db_uri(dbname), server=self)
 
     def __len__(self):
         return len(self.all_dbs())
@@ -212,24 +208,49 @@ class Server(object):
     def __nonzero__(self):
         return (len(self) > 0)
         
+    def _db_uri(self, dbname):
+        if dbname.startswith("/"):
+            dbname = dbname[1:]
+        return "/".join([self.uri, dbname])
+        
 class Database(object):
     """ Object that abstract access to a CouchDB database
     A Database object can act as a Dict object.
     """
 
-    def __init__(self, server, dbname):
+    def __init__(self, uri, create=False, server=None):
         """Constructor for Database
 
+        @param uri: str, Database uri
+        @param create: boolean, False by default, 
+        if True try to create the database.
         @param server: Server instance
-        @param dbname: str, name of database
+        
         """
-
-        if not hasattr(server, 'next_uuid'):
-            raise TypeError('%s is not a couchdbkit.server instance' % 
+        
+        uri_parsed = urlparse.urlparse(uri)
+        server_uri = "%s://%s" % (uri_parsed.scheme, uri_parsed.netloc)
+        dbname = uri_parsed.path[1:]
+        if dbname.endswith("/"):
+            dbname = dbname[:-1]
+        self.dbname = dbname
+                
+        if server is not None:
+            if not hasattr(server, 'next_uuid'):
+                raise TypeError('%s is not a couchdbkit.server instance' % 
                             server.__class__.__name__)
-                            
-        self.dbname = validate_dbname(dbname)
-        self.server = server
+            self.server = server
+        else:
+            self.server = server = Server(server_uri)
+                     
+        try:    
+            server.res.head('/%s/' % url_quote(dbname, safe=":"))
+        except resource.ResourceNotFound:
+            if create:
+                server.res.put('/%s/' % url_quote(dbname, safe=":"))
+            else:
+                raise
+                
         self.res = server.res.clone()
         if "/" in dbname:
             self.res.safe = ":/%"
@@ -239,13 +260,10 @@ class Database(object):
         return "<%s %s>" % (self.__class__.__name__, self.dbname)
         
     @classmethod
-    def from_uri(cls, uri, dbname, uuid_batch_count=DEFAULT_UUID_BATCH_COUNT, 
-                resource_instance=None):
+    def from_uri(cls, uri, *args, **kwargs):
         """ Create a database from its url. """
-        server_uri = uri.split(dbname)[0][:-1]
-        server = Server(server_uri, uuid_batch_count=uuid_batch_count, 
-            resource_instance=resource_instance)
-        return cls(server, dbname)
+        warnings.warn("from_uri is deprecated", DeprecationWarning)
+        return cls(uri)
         
     def info(self, _raw_json=False):
         """
