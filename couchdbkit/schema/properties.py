@@ -100,13 +100,13 @@ class Property(object):
 
         value = document_instance._doc.get(self.name)
         if value is not None:
-            value = self.to_python(value)
+            value = self._to_python(value)
         
         return value
 
     def __set__(self, document_instance, value):
         value = self.validate(value, required=False)
-        document_instance._doc[self.name] = self.to_json(value)
+        document_instance._doc[self.name] = self._to_json(value)
 
     def __delete__(self, document_instance):
         pass
@@ -146,6 +146,16 @@ class Property(object):
     def empty(self, value):
         """ test if value is empty """
         return not value or value is None
+        
+    def _to_python(self, value):
+        if value == None:
+            return value    
+        return self.to_python(value)
+        
+    def _to_json(self, value):
+        if value == None:
+            return value    
+        return self.to_json(value)
 
     def to_python(self, value):
         """ convert to python type """
