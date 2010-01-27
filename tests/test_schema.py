@@ -715,6 +715,18 @@ class PropertyTestCase(unittest.TestCase):
             a.i = "essai"
 
         self.assertRaises(BadValueError, bad_value)
+        
+    def testValueNone(self):
+        class A(Document):
+            s = StringProperty()
+        a = A()
+        a.s = None
+        self.assert_(a._doc['s'] is None)
+        A._db = self.db
+        a.save()
+        b = A.get(a._id)
+        self.assert_(b.s is None)
+        self.assert_(b._doc['s'] is None)
 
     def testSchemaBuild(self):
         schema = DocumentSchema(i = IntegerProperty())
