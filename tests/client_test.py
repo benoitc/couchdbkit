@@ -19,7 +19,8 @@ __author__ = 'benoitc@e-engura.com (Benoît Chesneau)'
 import copy
 import unittest
 
-from couchdbkit import ResourceNotFound, RequestFailed
+from couchdbkit import ResourceNotFound, RequestFailed, \
+ResourceConflict
 
 from couchdbkit import *
 
@@ -181,6 +182,30 @@ class ClientDatabaseTestCase(unittest.TestCase):
         db.save_doc(doc)
         self.assert_( "_design/a" in db)
         del self.Server['couchdbkit_test']
+        
+    def testGetRev(self):
+        db = self.Server.create_db('couchdbkit_test')
+        doc = {}
+        db.save_doc(doc)
+        rev = db.get_rev(doc['_id'])
+        self.assert_(rev == doc['_rev'])
+        
+    def testForceUpdate(self):
+        db = self.Server.create_db('couchdbkit_test')
+        doc = {}
+        db.save_doc(doc)
+        doc1 = doc.copy()
+        db.save_doc(doc)
+        self.assertRaises(ResourceConflict, db.save_doc, doc1)
+        
+        is_conflict = False
+        try:
+            db.save_doc(doc1, force_update=True)
+        except ResourceConflict:
+            is_conflict = True
+
+        self.assert_(is_conflict == False)
+        
     
     def testMultipleDocWithSlashes(self):
         db = self.Server.create_db('couchdbkit_test')

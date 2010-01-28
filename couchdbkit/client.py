@@ -416,7 +416,17 @@ class Database(object):
             return None
         return doc_with_revs
         
-    def save_doc(self, doc, encode_attachments=True, _raw_json=False, **params):
+    def get_rev(self, docid):
+        """ Get last revision from docid (the '_rev' member)
+        @param docid: str, undecoded document id.
+        
+        @return rev: str, the last revision of document.
+        """
+        response = self.res.head(resource.escape_docid(docid))
+        return response.headers['etag'].strip('"')
+
+    def save_doc(self, doc, encode_attachments=True, force_update=False,
+            _raw_json=False, **params):
         """ Save a document. It will use the `_id` member of the document 
         or request a new uuid from CouchDB. IDs are attached to
         documents on the client side because POST has the curious property of
@@ -426,6 +436,8 @@ class Database(object):
         @param doc: dict.  doc is updated 
         with doc '_id' and '_rev' properties returned 
         by CouchDB server when you save.
+        @param force_update: boolean, if there is conlict, try to update
+        with latest revision
         @param _raw_json: return raw json instead deserializing it
         @param params, list of optionnal params, like batch="ok"
         
@@ -441,8 +453,18 @@ class Database(object):
             doc['_attachments'] = resource.encode_attachments(doc['_attachments'])
             
         if '_id' in doc:
-            docid = resource.escape_docid(doc['_id'])
-            res = maybe_raw(self.res.put(docid, payload=doc, **params), raw=_raw_json)
+            docid = doc['_id']
+            docid1 = resource.escape_docid(doc['_id'])
+            try:
+                res = maybe_raw(self.res.put(docid1, payload=doc, 
+                            **params), raw=_raw_json)
+            except resource.ResourceConflict:
+                if force_update:
+                    doc['_rev'] = self.get_rev(docid)
+                    res = maybe_raw(self.res.put(docid1, payload=doc, 
+                                **params), raw=_raw_json)
+                else:
+                    raise
         else:
             try:
                 doc['_id'] = self.server.next_uuid()
@@ -554,10 +576,10 @@ class Database(object):
             result = maybe_raw(self.res.delete(docid, rev=doc['_rev']), 
                         raw=_raw_json)
         elif isinstance(doc, basestring): # we get a docid
+            rev = self.get_rev(doc)
             docid = resource.escape_docid(doc)
-            response = self.res.head(docid)
-            result = maybe_raw(self.res.delete(docid, rev=response.headers['etag'].strip('"')), 
-                        raw=_raw_json)
+            result = maybe_raw(self.res.delete(docid, rev=rev), 
+                            raw=_raw_json)
         return result
         
     def copy_doc(self, doc, dest=None, _raw_json=False):
