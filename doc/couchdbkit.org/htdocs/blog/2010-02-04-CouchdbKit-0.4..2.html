@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <title>Couchdbkit - 
-    Couchdbkit news
+    Couchdbkit version 0.4.2 released
 </title>
     <!--[if IE]>
 
@@ -77,35 +77,39 @@
         
 
 <section id="content">
-    <ul>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2010-02-04-CouchdbKit-0.4.2.html">Couchdbkit version 0.4.2 released</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2009-09-07-Couchdbkit-0.1.9.html">Couchdbkit version 0.1.9 released</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2009-11-05-Couchdbkit-0.2.2.html">Couchdbkit version 0.2.2 released</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2009-11-22-Couchdbkit-0.2.4.html">Couchdbkit version 0.2.4 released</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2010-01-08-Couchdbkit-0.4.html">Couchdbkit version 0.4 released</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2010-01-25-Couchdbkit-0.4.1.html">Couchdbkit version 0.4 1 released</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/1009-06-26-Couchdbkit-0.1.7.1.html">Couchdbkit version 0.1.7.1 released</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2009-06-16-Couchdbkit-site-launched.html">Couchdbkit website launched</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2009-06-25-Couchdbkit-0.1.7-released.html">Couchdbkit version 0.1.7 released</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2009-06-26-Couchdbkit-0.1.7.1.html">Couchdbkit version 0.1.7.1 released</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2009-07-07-Couchdbkit-0.1.8.html">Couchdbkit version 0.1.8 released</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2009-09-11-Couchdbkit-0.2.html">Couchdbkit version 0.2 released</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2009-12-07-Couchdbkit-0.3.html">Couchdbkit version 0.3 released - pre-awesome</a></li>
-    
-    </ul>
+    <article>
+        <header>
+            <h1>Couchdbkit version 0.4.2 released</h1>
+        </header>
+        	<p>New release for <a href="http://couchdbkit.org">Couchdbkit</a>. More fixes</p>
+
+	<p>You can download latest release on <a href="http://pypi.python.org/pypi/couchdbkit/0.4">Pypi</a> or check <a href="../download.html">download page</a> for other ways.</p>
+
+	<h2>New features :</h2>
+
+	<ul>
+		<li>Database.from_uri is deprecated. Insteade use `Database.<i>init</i>`: </li>
+	</ul>
+
+	db = Database(&#8220;http://127.0.0.1:5984/somedb&#8221;)
+
+	<p>	<ul>
+		<li>Add `Database.get_rev` method allowing you to get last revision of a document.</li>
+		<li>Add add force_update option to `Database.save_doc`, if a conflict is raised and force_update </li>
+	</ul><br />is True, it will get latest rev and place it inyour doc object and will try to save.</p>
+
+	<h2>Fixes :</h2>
+
+	<ul>
+		<li>Fix None value in `Schema` properties</li>
+		<li>Validate against basestring in `Schema.StringListProperty`</li>
+		<li>Fix packages install. Remove tests from installed packages.</li>
+	</ul>
+        <footer>
+             <p><span class='comments'><a href='/blog/2010-02-04-CouchdbKit-0.4..2.html#disqus_thread'>View Comments</a></span></p>
+        </footer>
+    </article>
+    <div id="disqus_thread"></div><script type="text/javascript" src="http://disqus.com/forums/couchdbkit/embed.js"></script><noscript><a href="http://couchdbkit.disqus.com/?url=ref">View the discussion thread.</a></noscript><a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
 </section>
 
         
@@ -119,5 +123,22 @@
     
     
     
+    <script>
+    //<![CDATA[
+    (function() {
+            
+    		var links = document.getElementsByTagName('a');
+    		var query = '?';
+    		for(var i = 0; i < links.length; i++) {
+    			if(links[i].href.indexOf('#disqus_thread') >= 0) {
+    				query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+    			}
+    		}
+    		document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/couchdbkit/get_num_replies.js' + query + '&disqus_developer=1"></' + 'script>');
+    	})();
+    //]]>
+    </script>
+    
+
 </body>
 </html>

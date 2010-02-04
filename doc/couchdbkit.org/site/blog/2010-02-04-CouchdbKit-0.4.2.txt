@@ -1,0 +1,26 @@
+title: Couchdbkit version 0.4.2 released 
+content_type: textile
+page_type: blog
+template: blog/post.html
+
+New release for "Couchdbkit":http://couchdbkit.org. More fixes
+
+You can download latest release on "Pypi":http://pypi.python.org/pypi/couchdbkit/0.4 or check "download page":../download.html for other ways.
+
+
+h2. New features :
+
+* Database.from_uri is deprecated. Insteade use `Database.__init__`: 
+
+	db = Database("http://127.0.0.1:5984/somedb")
+	
+* Add `Database.get_rev` method allowing you to get last revision of a document.
+* Add add force_update option to `Database.save_doc`, if a conflict is raised and force_update 
+is True, it will get latest rev and place it inyour doc object and will try to save.
+
+
+h2. Fixes :
+
+* Fix None value in `Schema` properties
+* Validate against basestring in `Schema.StringListProperty`
+* Fix packages install. Remove tests from installed packages.
