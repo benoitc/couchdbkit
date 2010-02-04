@@ -31,7 +31,7 @@ except ImportError:
 
 setup(
     name = 'couchdbkit',
-    version = '0.4.1',
+    version = '0.4.2',
 
     description = 'Python couchdb kit',
     long_description = \
@@ -53,7 +53,7 @@ to keep its simplicity when you manage it in python""",
         'Topic :: Utilities',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
-    packages = find_packages(),
+    packages = find_packages(exclude=['tests']),
         
     zip_safe = False,
 
