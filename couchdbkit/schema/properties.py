@@ -517,7 +517,7 @@ class StringListProperty(ListProperty):
     def __init__(self, verbose_name=None, default=None, 
             required=False, **kwds):
         super(StringListProperty, self).__init__(verbose_name=verbose_name, 
-            default=default, required=required, item_type=unicode,**kwds)
+            default=default, required=required, item_type=basestring,**kwds)
 
 # structures proxy
 
@@ -743,7 +743,7 @@ def validate_content(value, item_type=None):
         value = validate_list_content(value, item_type=item_type)
     elif isinstance(value, dict):
         value = validate_dict_content(value, item_type=item_type)
-    elif item_type is not None and type(value) != item_type:
+    elif item_type is not None and not isinstance(value, item_type):
         raise BadValueError(
             'Items  must all be in %s' % item_type)
     elif type(value) not in ALLOWED_PROPERTY_TYPES:
