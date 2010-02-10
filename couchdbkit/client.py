@@ -82,6 +82,9 @@ class Server(object):
         if not uri or uri is None:
             raise ValueError("Server uri is missing")
 
+        if uri.endswith("/"):
+            uri = uri[:-1]
+
         self.uri = uri
         self.uuid_batch_count = uuid_batch_count
         self._uuid_batch_count = uuid_batch_count
