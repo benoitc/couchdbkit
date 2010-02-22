@@ -1,0 +1,15 @@
+Source: couchdbkit
+Maintainer: Benoit Chesneau <benoitc@e-engura.com>
+Section: python
+Priority: optional
+Build-Depends: python-setuptools (>= 0.6b3), debhelper (>= 7), python-support (>= 0.8.4)
+Standards-Version: 3.7.2
+
+Package: python-couchdbkit
+Architecture: all
+Depends: ${python:Depends}  python-restkit (>=0.9.4), python-anyjson
+XB-Python-Version: ${python:Versions}
+Provides: ${python:Provides}
+Description: Python couchdb kit
+ CouchDB is document oriented database. Couchdbkit framework try
+ to keep its simplicity when you manage it in python

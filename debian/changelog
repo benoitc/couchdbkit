@@ -1,0 +1,5 @@
+couchdbkit (0.4.2-1) karmic; urgency=low
+
+  * Initial release 
+
+ -- Benoit Chesneau <benoitc@e-engura.com>  Mon, 22 Feb 2010 08:22:05 +0100
