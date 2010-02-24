@@ -6,6 +6,6 @@ template: blog/post.html
 Since I worked more and more with git and "github":http://github.com/benoitc, I decided to move Couchdbkit and Restkit to it:
 
 * "couchdbkit":http://github.com/benoitc/couchdbkit
-* "restkit": http://github.com/benoitc/restkit
+* "restkit":http://github.com/benoitc/restkit
 
 All the history have been imported and new development will take place there.
