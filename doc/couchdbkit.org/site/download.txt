@@ -31,7 +31,7 @@ To install Couchdbkit from source, simply use the normal procedure for installin
 
 h4. Fetch sources
 
-You could download latest sources from "Bitbucket Downloads":http://github.com/benoitc/couchdbkit/downloads
+You could download latest sources from "Github Downloads":http://github.com/benoitc/couchdbkit/downloads
 
 Or fetch them with hg. Therefore we have to "install git":http://git-scm.com/ and then run :
 
