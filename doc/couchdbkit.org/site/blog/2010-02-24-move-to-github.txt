@@ -9,4 +9,3 @@ Since I worked more and more with git and "github":http://github.com/benoitc, I 
 * "restkit": http://github.com/benoitc/restkit
 
 All the history have been imported and new development will take place there.
-
