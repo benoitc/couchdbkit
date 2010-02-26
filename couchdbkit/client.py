@@ -51,7 +51,7 @@ import urlparse
 import warnings
 
 import anyjson
-from restkit.utils import url_quote
+from restkit.util import url_quote
 
 from couchdbkit.exceptions import *
 import couchdbkit.resource as resource

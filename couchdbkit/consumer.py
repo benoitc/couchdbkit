@@ -143,8 +143,9 @@ class continuous_changes_handler(asynchat.async_chat):
         self.resp = resp
         self.callbacks = callbacks
         self.chunked = chunked
-        self.buf = []
-        sock = resp.body_file.resp.fp._sock
+        self.buf = [resp._body.buf]
+        print self.buf
+        sock = resp.http_client.socket
         asynchat.async_chat.__init__(self, sock=sock)
         if self.chunked:
             self.set_terminator("\r\n")

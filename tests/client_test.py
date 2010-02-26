@@ -52,7 +52,6 @@ class ClientServerTestCase(unittest.TestCase):
         
     def testGetOrCreateDb(self):
         # create the database
-        self.assertFalse("get_or_create_db" in self.Server)
         gocdb = self.Server.get_or_create_db("get_or_create_db")
         self.assert_(gocdb.dbname == "get_or_create_db")
         self.assert_("get_or_create_db" in self.Server)

@@ -31,9 +31,6 @@ Example:
 
 """
 import base64
-import httplib
-import restkit
-from restkit.utils import url_quote
 import re
 import socket
 import sys
@@ -41,63 +38,51 @@ import time
 import types
 
 import anyjson
-        
+
+from restkit import Resource, HttpResponse
+from restkit.errors import ResourceError, RequestFailed, RequestError
+from restkit.util import url_quote
+  
 from couchdbkit import __version__
 
 USER_AGENT = 'couchdbkit/%s' % __version__
 
-class ResourceNotFound(restkit.ResourceError):
+class ResourceNotFound(ResourceError):
     """ Exception raised when resource is not found"""
 
-class ResourceConflict(restkit.ResourceError):
+class ResourceConflict(ResourceError):
     """ Exception raised when there is conflict while updating"""
 
-class PreconditionFailed(restkit.ResourceError):
+class PreconditionFailed(ResourceError):
     """ Exception raised when 412 HTTP error is received in response
     to a request """
 
-RequestFailed = restkit.RequestFailed
+RequestFailed = RequestFailed
 
-class CouchDBResponse(restkit.httpc.HTTPResponse):
+class CouchDBResponse(HttpResponse):
     
     @property
     def json_body(self):
-        body = self.get_body()
         try:
-            return anyjson.deserialize(body)
+            return anyjson.deserialize(self.body)
         except ValueError:
-            return body
+            return self.body
 
 
-class CouchdbResource(restkit.Resource):
+class CouchdbResource(Resource):
 
-    def __init__(self, uri="http://127.0.0.1:5984", transport=None, 
-            response_class=None, **client_opts):
+    def __init__(self, uri="http://127.0.0.1:5984", **client_opts):
         """Constructor for a `CouchdbResource` object.
 
         CouchdbResource represent an HTTP resource to CouchDB.
 
         @param uri: str, full uri to the server.
-        @param transport: any http instance of object based on 
-                `restkit.transport.HTTPTransportBase`. By 
-                default it will use a client based on 
-                `pycurl <http://pycurl.sourceforge.net/>`_ if 
-                installed or `restkit.transport.HTTPLib2Transport`,
-                a client based on `Httplib2 <http://code.google.com/p/httplib2/>`_ 
-                or make your own depending on the options you need to access the 
-                server (authentification, proxy, ....).
-        @param use_proxy: boolean, default is False, if you want to use a proxy
-        @param timeout: connection timeour, delay after a connection should be released
-        @param min_size: minimum number of connections in the pool
-        @param max_size: maximum number of connection in the pool
-        @param pool_class: custom pool class
         """
         
-        if response_class is None:
-            response_class = CouchDBResponse
+        response_class = client_opts.get('response_class', CouchDBResponse)
+        client_opts['response_class'] = response_class
         
-        restkit.Resource.__init__(self, uri=uri, transport=transport, 
-                response_class=response_class, **client_opts)
+        Resource.__init__(self, uri=uri, **client_opts)
         self.safe = ":/%"
         
     def copy(self, path=None, headers=None, **params):
@@ -149,10 +134,10 @@ class CouchdbResource(restkit.Resource):
         params = encode_params(params)
         
         try:
-            resp = restkit.Resource.request(self, method, path=path,
+            resp = Resource.request(self, method, path=path,
                              payload=body, headers=headers, **params)
                              
-        except restkit.ResourceError, e:
+        except ResourceError, e:
             msg = getattr(e, 'msg', '')
             
             if e.response and msg:
@@ -178,7 +163,9 @@ class CouchdbResource(restkit.Resource):
                 raise PreconditionFailed(error, http_code=412,
                         response=e.response)
             else:
-                raise 
+                raise
+        except RequestError, e:
+            raise RequestFailed(str(e))
         except:
             raise
         
