@@ -31,7 +31,7 @@ except ImportError:
 
 setup(
     name = 'couchdbkit',
-    version = '0.4.2',
+    version = '0.4.3',
 
     description = 'Python couchdb kit',
     long_description = \
@@ -58,7 +58,7 @@ to keep its simplicity when you manage it in python""",
     zip_safe = False,
 
     install_requires = [
-        'restkit>=0.9.2',
+        'restkit>=1.0',
         'anyjson'
     ],
         
