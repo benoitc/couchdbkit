@@ -76,6 +76,7 @@ class ClientServerTestCase(unittest.TestCase):
             doc = {"_id": "test%s" % str(i)}
             self.db.save_doc(doc)
             
+        time.sleep(0.5)
         self.assert_(len(self.lines) == 5)
         self.assert_(self.lines[4]["id"] == "test4")
         doc = {"_id": "test5"}
