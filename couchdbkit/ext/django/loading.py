@@ -32,7 +32,7 @@ from django.conf import settings
 from django.db.models import signals, get_app
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.datastructures import SortedDict
-from restkit.httpc import HttpClient, BasicAuth
+from restkit import BasicAuth
 
 COUCHDB_DATABASES = getattr(settings, "COUCHDB_DATABASES", [])
 COUCHDB_TIMEOUT = getattr(settings, "COUCHDB_TIMEOUT", 300)
@@ -79,8 +79,8 @@ class CouchdbkitHandler(object):
                 server_uri = '%s://%s' % (parts[0], parts[1])
                 username = password = ""
                 
-            res = CouchdbResource(server_uri, timeout=COUCHDB_TIMEOUT)
-            res.add_authorization(BasicAuth(username, password))
+            res = CouchdbResource(server_uri, timeout=COUCHDB_TIMEOUT,
+                                filters=[bauth])
             
             server = Server(server_uri, resource_instance=res)
             app_label = app_name.split('.')[-1]
