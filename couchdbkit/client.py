@@ -89,7 +89,8 @@ class Server(object):
         self.uuid_batch_count = uuid_batch_count
         self._uuid_batch_count = uuid_batch_count
 
-        if resource_instance and isinstance(resource_instance, resource.CouchdbResource):
+        if resource_instance and isinstance(resource_instance, 
+                                resource.CouchdbResource):
             resource_instance.uri = uri
             self.res = resource_instance.clone()
         else:

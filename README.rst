@@ -1,10 +1,10 @@
 About
-=====
+-----
 
 `Couchdbkit <http://www.couchdbkit.org>`_ provides you a full featured and easy client to access and manage CouchDB. It allows you to manage a CouchDB server, databases, doc managements and view access. All objects mostly reflect python objects for convenience. Server and Databases objects could be used for example as easy as using a dict.
 
 Installation
-============
+------------
 
 Couchdbkit requires Python 2.x superior to 2.5.
 
@@ -17,36 +17,37 @@ Or from Pypi::
   $ easy_install -U couchdbkit
   
 Getting started
-===============
+---------------
 
 This tutorial exposes key features of this library mainly through code
 examples. For in-depth description of the modules, you'll want to read 
 the `API <http://couchdbkit.org/doc/api/>`_ documentation.
 
 Write your first CouchDB document
----------------------------------
++++++++++++++++++++++++++++++++++
 
 ::
 
   import datetime
   from couchdbkit import *
- 
+  
   class Greeting(Document):
       author = StringProperty()
       content = StringProperty()
       date = DateTimeProperty()
 
+
 Store the submitted Greetings
------------------------------
++++++++++++++++++++++++++++++
 
 Here is the code to save a greet on `Greeting` database. We also see how to create a database::
 
   # server object
   server = Server()
- 
+  
   # create database
   db = server.get_or_create_db("greeting")
- 
+  
   # associate Greeting to the db
   Greeting.set_db(db)
 
@@ -56,7 +57,7 @@ Here is the code to save a greet on `Greeting` database. We also see how to crea
       content="Welcome to couchdbkit world",
       date=datetime.datetime.utcnow()
   )
- 
+  
   # save it 
   greet.save()
 
@@ -75,9 +76,9 @@ Now that you saved your document, you can update it::
 Here we updated the author name.
 
 Dynamic properties
-------------------
+++++++++++++++++++
 
-Mmm ok, but isn't CouchDB storing documents schema less? Do you want to add a property ? Easy:
+Mmm ok, but isn't CouchDB storing documents schema less? Do you want to add a property ? Easy::
 
   greet.homepage = "http://www.e-engura.org"
   greet.save()
@@ -85,7 +86,7 @@ Mmm ok, but isn't CouchDB storing documents schema less? Do you want to add a pr
 Now you have just added an homepage property to the document.
 
 Get all greetings
------------------
++++++++++++++++++
 
 You first have to create a view and save it in the db. We will call it `greeting/all`. To do this we will use the loader system of couchdbkit that allows you to send views to CouchDB.
 
@@ -112,7 +113,7 @@ A system will be provided to manage view creation and other things. As some noti
 Then we use `FileSystemDocsLoader` object to send the design document to CouchDB::
 
   from couchdbkit.loaders import FileSystemDocsLoader
- 
+  
   loader = FileSystemDocsLoader('/path/to/example/_design')
   loader.sync(db, verbose=True)
 
