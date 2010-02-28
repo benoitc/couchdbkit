@@ -54,18 +54,18 @@ class CouchdbkitHandler(object):
 
         # create databases sessions
         for app_name, uri in databases:
-            if isinstance(uri, tuple):
-                # case when you want to specify server uri 
-                # and database name specifically. usefull
-                # when you proxy couchdb on some path 
-                server_part, dbname = uri
-                parts = urlparse.urlsplit(urllib.unquote(server_part))
-            else:
-                parts = urlparse.urlsplit(urllib.unquote(uri))
-                dbname = parts[2].split("/")[1]
-
-            if parts[0] != 'http' and parts[0] != 'https':
-                raise ValueError('Invalid dbstring')
+            
+            try:
+                if isinstance(uri, tuple):
+                    # case when you want to specify server uri 
+                    # and database name specifically. usefull
+                    # when you proxy couchdb on some path 
+                    server_uri, dbname = uri
+                else:
+                    server_uri, dbname = uri.rsplit("/", 1)
+            except ValueError:
+                raise ValueError("couchdb uri [%s:%s] invalid" % (
+                            app_name, uri))
                 
             res = CouchdbResource(server_uri, timeout=COUCHDB_TIMEOUT)
             
