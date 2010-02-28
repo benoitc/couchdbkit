@@ -1,7 +1,11 @@
 About
 -----
 
-`Couchdbkit <http://www.couchdbkit.org>`_ provides you a full featured and easy client to access and manage CouchDB. It allows you to manage a CouchDB server, databases, doc managements and view access. All objects mostly reflect python objects for convenience. Server and Databases objects could be used for example as easy as using a dict.
+`Couchdbkit <http://www.couchdbkit.org>`_ provides you a full featured and 
+easyclient to access and manage CouchDB. It allows you to manage a CouchDB 
+server, databases, doc managements and view access. All objects mostly 
+reflect python objects for convenience. Server and Databases objects could 
+be used for example as easy as using a dict.
 
 Installation
 ------------
@@ -40,7 +44,8 @@ Write your first CouchDB document
 Store the submitted Greetings
 +++++++++++++++++++++++++++++
 
-Here is the code to save a greet on `Greeting` database. We also see how to create a database::
+Here is the code to save a greet on `Greeting` database. We also see how to 
+create a database::
 
   # server object
   server = Server()
@@ -61,12 +66,15 @@ Here is the code to save a greet on `Greeting` database. We also see how to crea
   # save it 
   greet.save()
 
-Note: Here we use `contain` to associate the db to the `Greeting` object. This function could be use to associate multiple dcouemnt objects to one db::   
+Note: Here we use `contain` to associate the db to the `Greeting` object. 
+This function could be use to associate multiple dcouemnt objects to one db::
 
   contain(db, Doc1, ...)
 
 
-Your document `greet` is now in the `greetings` db. Each document is saved with a `doc_type` field that allow you to find easily each kind of document with the views. By default `doc_type` is the name of the class.
+Your document `greet` is now in the `greetings` db. Each document is saved 
+witha `doc_type` field that allow you to find easily each kind of document 
+with the views. By default `doc_type` is the name of the class.
 
 Now that you saved your document, you can update it::
 
@@ -78,7 +86,8 @@ Here we updated the author name.
 Dynamic properties
 ++++++++++++++++++
 
-Mmm ok, but isn't CouchDB storing documents schema less? Do you want to add a property ? Easy::
+Mmm ok, but isn't CouchDB storing documents schema less? Do you want to add a 
+property ? Easy::
 
   greet.homepage = "http://www.e-engura.org"
   greet.save()
@@ -88,10 +97,12 @@ Now you have just added an homepage property to the document.
 Get all greetings
 +++++++++++++++++
 
-You first have to create a view and save it in the db. We will call it `greeting/all`. To do this we will use the loader system of couchdbkit that allows you to send views to CouchDB.
+You first have to create a view and save it in the db. We will call it 
+`greeting/all`. To do this we will use the loader system of couchdbkit that 
+allows you to send views to CouchDB.
 
-Let's create a folder that contains the design doc, and then the folder for the view. On unix :
-
+Let's create a folder that contains the design doc, and then the folder for 
+the view. On unix::
 
   mkdir -p ~/Work/couchdbkit/example/_design/greeting/views/all
 
@@ -111,12 +122,17 @@ Here is a folder structure::
   ---- greetings
   ------ view
 
-  Here is a  `screenshot <http://couchdbkit.org/images/gettingstarted.png>`_.
+Here is a  screenshot:
+  
+.. image:: http://couchdbkit.org/images/gettingstarted.png
 
 
-A system will be provided to manage view creation and other things. As some noticed, this system works like `couchapp <http://github.com/couchapp/couchapp/tree/>`_.
+A system will be provided to manage view creation and other things. As some 
+noticed, this system works like 
+`couchapp <http://github.com/couchapp/couchapp/tree/>`_.
 
-Then we use `FileSystemDocsLoader` object to send the design document to CouchDB::
+Then we use `FileSystemDocsLoader` object to send the design document to 
+CouchDB::
 
   from couchdbkit.loaders import FileSystemDocsLoader
   
