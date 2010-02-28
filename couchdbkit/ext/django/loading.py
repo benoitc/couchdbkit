@@ -66,21 +66,8 @@ class CouchdbkitHandler(object):
 
             if parts[0] != 'http' and parts[0] != 'https':
                 raise ValueError('Invalid dbstring')
-            
-            if "@" in parts[1]:
-                server_parts = parts[1].split('@')
-                if ":" in server_parts[0]:
-                    username, password = server_parts[0].split(":")
-                else:
-                    username = server_parts[0]
-                    password = ''
-                server_uri = "%s://%s" % (parts[0], server_parts[1])
-            else:
-                server_uri = '%s://%s' % (parts[0], parts[1])
-                username = password = ""
                 
-            res = CouchdbResource(server_uri, timeout=COUCHDB_TIMEOUT,
-                                filters=[bauth])
+            res = CouchdbResource(server_uri, timeout=COUCHDB_TIMEOUT)
             
             server = Server(server_uri, resource_instance=res)
             app_label = app_name.split('.')[-1]
