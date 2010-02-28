@@ -1,11 +1,11 @@
 About
 -----
 
-`Couchdbkit <http://www.couchdbkit.org>`_ provides you a full featured and 
-easyclient to access and manage CouchDB. It allows you to manage a CouchDB 
-server, databases, doc managements and view access. All objects mostly 
-reflect python objects for convenience. Server and Databases objects could 
-be used for example as easy as using a dict.
+`Couchdbkit`_ provides you a full featured and easy client to access and 
+manage CouchDB. It allows you to manage a CouchDBserver, databases, doc 
+managements and view access. All objects mostly reflect python objects for 
+convenience. Server and Databases objects could be used for example as easy 
+as using a dict.
 
 Installation
 ------------
@@ -25,7 +25,7 @@ Getting started
 
 This tutorial exposes key features of this library mainly through code
 examples. For in-depth description of the modules, you'll want to read 
-the `API <http://couchdbkit.org/doc/api/>`_ documentation.
+the `API`_ documentation.
 
 Write your first CouchDB document
 +++++++++++++++++++++++++++++++++
@@ -129,7 +129,7 @@ Here is a  screenshot:
 
 A system will be provided to manage view creation and other things. As some 
 noticed, this system works like 
-`couchapp <http://github.com/couchapp/couchapp/tree/>`_.
+`couchapp`_.
 
 Then we use `FileSystemDocsLoader` object to send the design document to 
 CouchDB::
@@ -143,3 +143,6 @@ The design doc is now in the `greetings` database and you can get all greets::
 
   greets = Greeting.view('greeting/all')
 
+.. _Couchdbkit: http://couchdbkit.org
+.. _API: http://couchdbkit.org/doc/api/
+.. _couchapp:  http://github.com/couchapp/couchapp/tree/
