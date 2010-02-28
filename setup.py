@@ -20,27 +20,23 @@ import sys
 if not hasattr(sys, 'version_info') or sys.version_info < (2, 5, 0, 'final'):
     raise SystemExit("Couchapp requires Python 2.5 or later.")
 
-
-extra = {}
-try:
-    from setuptools import setup, find_packages
-except ImportError:
-    from distribute_setup import use_setuptools
-    use_setuptools()
-    from setuptools import setup, find_packages
+from setuptools import setup, find_packages
 
 setup(
     name = 'couchdbkit',
     version = '0.4.3',
 
     description = 'Python couchdb kit',
-    long_description = \
-"""CouchDB is document oriented database. Couchdbkit framework try
-to keep its simplicity when you manage it in python""",
+    long_description = file(
+        os.path.join(
+            os.path.dirname(__file__),
+            'README.rst'
+        )
+    ).read(),
     author = 'Benoit Chesneau',
     author_email = 'benoitc@e-engura.com',
     license = 'Apache License 2',
-    url = 'http://hg.e-engura.org/couchdbkit',
+    url = 'http://couchdbkit.org',
 
     classifiers = [
         'Development Status :: 4 - Beta',
@@ -63,7 +59,4 @@ to keep its simplicity when you manage it in python""",
     ],
         
     test_suite='tests',
-    
-    **extra
-
 )
