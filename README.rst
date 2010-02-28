@@ -100,12 +100,18 @@ In this folder we edit a file `map.js`::
   function(doc) { 
     if (doc.doc_type == "Greeting") 
       emit(doc._id, doc); 
+      }
   }
-  
-On `Textmate <http://macromates.com>`_, you have:
 
-.. image:: http://couchdbkit.org/images/gettingstarted.png
-   :alt: couchdbkit textmate screen
+Here is a folder structure::
+
+  /Work/couchdbkit/example/:
+
+  --_design/
+  ---- greetings
+  ------ view
+
+  Here is a  `screenshot <http://couchdbkit.org/images/gettingstarted.png>`_.
 
 
 A system will be provided to manage view creation and other things. As some noticed, this system works like `couchapp <http://github.com/couchapp/couchapp/tree/>`_.
@@ -120,3 +126,4 @@ Then we use `FileSystemDocsLoader` object to send the design document to CouchDB
 The design doc is now in the `greetings` database and you can get all greets::
 
   greets = Greeting.view('greeting/all')
+
