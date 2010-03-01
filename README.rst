@@ -78,7 +78,7 @@ with the views. By default `doc_type` is the name of the class.
 
 Now that you saved your document, you can update it::
 
-  greet.author = u"Benoît Chesneau"
+  greet.author = u"Benoit Chesneau"
   greet.save()
 
 Here we updated the author name.
