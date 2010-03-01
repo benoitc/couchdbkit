@@ -166,8 +166,8 @@ class CouchdbResource(Resource):
                 raise
         except RequestError, e:
             raise RequestFailed(str(e))
-        except:
-            raise
+        except Exception, e:
+            raise RequestFailed(str(e))
         
         return resp
 
