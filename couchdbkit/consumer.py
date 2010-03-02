@@ -122,7 +122,7 @@ class Consumer(object):
     def close(self):
         if self._resp is None:
             return
-        self._resp.close()
+        self._resp.http_client.maybe_close()
         self._resp = None
         
         
@@ -142,7 +142,7 @@ class continuous_changes_handler(asynchat.async_chat):
         self.chunk_left = False
         
     def handle_close(self):
-        self.resp.close()
+        self.resp.http_client.maybe_close()
         
     def collect_incoming_data(self, data):
         if self.chunked:
