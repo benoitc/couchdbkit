@@ -153,8 +153,6 @@ class CouchdbResource(Resource):
                         response=e.response)
             else:
                 raise
-        except RequestError, e:
-            raise RequestFailed(str(e))
         except Exception, e:
             raise RequestFailed(str(e))
         
