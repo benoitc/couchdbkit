@@ -67,9 +67,7 @@ class CouchdbResource(Resource):
 
         @param uri: str, full uri to the server.
         """
-        
-        response_class = client_opts.get('response_class', CouchDBResponse)
-        client_opts['response_class'] = response_class
+        client_opts['response_class'] = CouchDBResponse
         
         Resource.__init__(self, uri=uri, **client_opts)
         self.safe = ":/%"
