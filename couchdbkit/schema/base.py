@@ -226,7 +226,7 @@ class DocumentSchema(object):
         """
         if self._dynamic_properties and key in self._dynamic_properties:
             return self._dynamic_properties[key]
-        elif key == "_id" or key == "_rev":
+        elif key  in ('_id', '_rev', '_attachments'):
             return self._doc.get(key)
         return getattr(super(DocumentSchema, self), key)
 
@@ -428,7 +428,7 @@ class DocumentBase(DocumentSchema):
         doc = self.to_json()
         self._db.save_doc(doc, **params)
         if '_id' in doc and '_rev' in doc:
-            self._doc.update({'_id': doc['_id'], '_rev': doc['_rev']})
+            self._doc.update(doc)
         elif '_id' in doc:
             self._doc.update({'_id': doc['_id']})
 

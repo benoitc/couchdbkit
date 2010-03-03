@@ -734,7 +734,8 @@ class Database(object):
                 headers=headers, rev=doc1['_rev']).json_body
 
         if res['ok']:
-            doc1.update({ '_rev': res['rev']})
+            new_doc = self.get(docid, rev=res['rev'])
+            doc1.update(new_doc)
         return res['ok']
 
     def delete_attachment(self, doc, name):
@@ -750,7 +751,8 @@ class Database(object):
 
         res = self.res(docid).delete(name, rev=doc['_rev']).json_body
         if res['ok']:
-            doc.update({ '_rev': res['rev']})
+            new_doc = self.get(docid, rev=res['rev'])
+            doc1.update(new_doc)
         return res['ok']
 
 
