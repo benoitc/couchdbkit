@@ -104,12 +104,12 @@ def document_to_dict(instance, properties=None, exclude=None):
     Returns a dict containing the data in ``instance`` suitable for passing as
     a Form's ``initial`` keyword argument.
 
-    ``properties`` is an optional list of properties names. If provided, only the named
-    properties will be included in the returned dict.
+    ``properties`` is an optional list of properties names. If provided, 
+    only the named properties will be included in the returned dict.
 
     ``exclude`` is an optional list of properties names. If provided, the named
-    properties will be excluded from the returned dict, even if they are listed in
-    the ``properties`` argument.
+    properties will be excluded from the returned dict, even if they are listed 
+    in the ``properties`` argument.
     """
     # avoid a circular import
     data = {}
@@ -125,18 +125,19 @@ def fields_for_document(document, properties=None, exclude=None):
     """
     Returns a ``SortedDict`` containing form fields for the given document.
 
-    ``properties`` is an optional list of properties names. If provided, only the named
-    properties will be included in the returned properties.
+    ``properties`` is an optional list of properties names. If provided, 
+    only the named properties will be included in the returned properties.
 
     ``exclude`` is an optional list of properties names. If provided, the named
-    properties will be excluded from the returned properties, even if they are listed
-    in the ``properties`` argument.
+    properties will be excluded from the returned properties, even if 
+    they are listed in the ``properties`` argument.
     """
     field_list = []
     
     values = []
     if properties:
-        values = [document._properties[prop] for prop in properties if prop in document._properties]
+        values = [document._properties[prop] for prop in properties if \
+                                                prop in document._properties]
     else:
         values = document._properties.values()
         values.sort(lambda a, b: cmp(a.creation_counter, b.creation_counter))
@@ -158,10 +159,12 @@ def fields_for_document(document, properties=None, exclude=None):
                 
             if prop.choices:
                 if prop.default:
-                    defaults['choices'] = prop.default_value() + list(prop.choices)
+                    defaults['choices'] = prop.default_value() + list(
+                                    prop.choices)
                     defaults['coerce'] = prop.to_python
                 
-            field_list.append((prop.name, FIELDS_PROPERTES_MAPPING[property_class_name](**defaults)))
+            field_list.append((prop.name, 
+                FIELDS_PROPERTES_MAPPING[property_class_name](**defaults)))
     return SortedDict(field_list)
 
 class DocumentFormOptions(object):
@@ -188,14 +191,15 @@ class DocumentFormMetaClass(type):
         if 'media' not in attrs:
             new_class.media = media_property(new_class)
     
-        opts = new_class._meta = DocumentFormOptions(getattr(new_class, 'Meta', None))
+        opts = new_class._meta = DocumentFormOptions(getattr(new_class, 
+                                                'Meta', None))
         
         if opts.document:
             # If a document is defined, extract form fields from it.
             fields = fields_for_document(opts.document, opts.properties,
                                          opts.exclude)
-                # Override default docuemnt fields with any custom declared ones
-                # (plus, include all the other declared fields).
+            # Override default docuemnt fields with any custom declared ones
+        # (plus, include all the other declared fields).
             fields.update(declared_fields)
         else:
             fields = declared_fields
@@ -218,13 +222,15 @@ class BaseDocumentForm(BaseForm):
             object_data = {}
         else:
             self.instance = instance
-            object_data = document_to_dict(instance, opts.properties, opts.exclude) 
+            object_data = document_to_dict(instance, opts.properties, 
+                                        opts.exclude) 
     
         if initial is not None:
             object_data.update(initial)
             
-        super(BaseDocumentForm, self).__init__(data, files, auto_id, prefix, object_data,
-                                            error_class, label_suffix, empty_permitted)
+        super(BaseDocumentForm, self).__init__(data, files, auto_id, prefix, 
+                                            object_data, error_class, 
+                                            label_suffix, empty_permitted)
                                             
     def save(self, commit=True, dynamic=True):
         """
