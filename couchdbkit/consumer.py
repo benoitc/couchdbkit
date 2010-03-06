@@ -113,7 +113,8 @@ class Consumer(object):
             chunked = False
         
         try:
-            change_handler = continuous_changes_handler(resp, self.callbacks, chunked)
+            change_handler = continuous_changes_handler(resp, 
+                                            self.callbacks, chunked)
             asyncore.loop()
         except:
             self.close()
@@ -132,8 +133,8 @@ class continuous_changes_handler(asynchat.async_chat):
         self.resp = resp
         self.callbacks = callbacks
         self.chunked = chunked
-        self.buf = [resp._body.buf]
-        sock = resp.http_client.socket
+        self.buf = [resp._body.tmp.read()]
+        sock = resp.http_client._sock
         asynchat.async_chat.__init__(self, sock=sock)
         if self.chunked:
             self.set_terminator("\r\n")
