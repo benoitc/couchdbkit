@@ -220,13 +220,9 @@ class Database(object):
         @param server: Server instance
 
         """
-
         uri_parsed = urlparse.urlparse(uri)
-        server_uri = "%s://%s" % (uri_parsed.scheme, uri_parsed.netloc)
-        dbname = uri_parsed.path[1:]
-        if dbname.endswith("/"):
-            dbname = dbname[:-1]
-        self.dbname = dbname
+        self.server_uri = "%s://%s" % (uri_parsed.scheme, uri_parsed.netloc)
+        self.dbname = uri_parsed.path.strip("/")
 
         if server is not None:
             if not hasattr(server, 'next_uuid'):
@@ -234,20 +230,20 @@ class Database(object):
                             server.__class__.__name__)
             self.server = server
         else:
-            self.server = server = Server(server_uri)
+            self.server = server = Server(self.server_uri)
 
         try:
-            server.res.head('/%s/' % url_quote(dbname, safe=":"))
+            server.res.head('/%s/' % url_quote(self.dbname, safe=":"))
         except resource.ResourceNotFound:
             if create:
-                server.res.put('/%s/' % url_quote(dbname, safe=":"))
+                server.res.put('/%s/' % url_quote(self.dbname, safe=":"))
             else:
                 raise
 
         self.res = server.res.clone()
-        if "/" in dbname:
+        if "/" in self.dbname:
             self.res.safe = ":/%"
-        self.res.update_uri('/%s' % url_quote(dbname, safe=":"))
+        self.res.update_uri('/%s' % url_quote(self.dbname, safe=":"))
 
     def __repr__(self):
         return "<%s %s>" % (self.__class__.__name__, self.dbname)
