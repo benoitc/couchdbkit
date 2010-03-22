@@ -534,13 +534,18 @@ class AttachmentMixin(object):
     def delete_attachment(self, name):
         """ delete document attachment
 
-        @param name: name of attachement
+        @param name: name of attachment
 
-        @return: dict, withm member ok setto True if delete was ok.
+        @return: dict, with member ok set to True if delete was ok.
         """
         if not hasattr(self, '_db'):
             raise TypeError("doc database required to save document")
-        return self.__class__._db.delete_attachment(self._doc, name)
+        result = self.__class__._db.delete_attachment(self._doc, name)
+        try:
+            self._doc['_attachments'].pop(name)
+        except KeyError:
+            pass
+        return result
 
     def fetch_attachment(self, name, stream=False):
         """ get attachment in a adocument

@@ -478,11 +478,11 @@ class DocumentTestCase(unittest.TestCase):
         a.save()
         
         text_attachment = "un texte attaché"
-        old_rev = a._rev
         
         a.put_attachment(text_attachment, "test", "text/plain")
         a.delete_attachment('test')
         self.assertRaises(ResourceNotFound, a.fetch_attachment, 'test')
+        self.assertFalse('test' in a._doc['_attachments'])
         
         self.server.delete_db('couchdbkit_test')
 
