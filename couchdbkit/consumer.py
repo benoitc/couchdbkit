@@ -40,14 +40,14 @@ class Consumer(object):
             raise TypeError("callback isn't a callable")
         self.callbacks.append(callback)
 
-    def _make_params(self, feed, since, heartbeat, timeout, filter):
+    def _make_params(self, feed, since, heartbeat, timeout, filter_name):
         params = {"feed": feed}
         if since: params["since"] = since
         if heartbeat:
             params["heartbeat"] = heartbeat
         elif timeout:
             params["timeout"] = timeout
-        if filter: params["filter"] = filter_name
+        if filter_name: params["filter"] = filter_name
         return params
         
     def fetch(self, since=None, filter_name=None):
