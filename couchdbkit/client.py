@@ -232,7 +232,6 @@ class Database(object):
         else:
             self.server = server = Server(self.server_uri)
 
-        print '/%s/' % url_quote(self.dbname, safe=":")
         try:
             self.server.res.head('/%s/' % url_quote(self.dbname, safe=":"))
         except resource.ResourceNotFound:
