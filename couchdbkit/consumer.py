@@ -40,46 +40,30 @@ class Consumer(object):
             raise TypeError("callback isn't a callable")
         self.callbacks.append(callback)
 
-    def _make_params(self, feed, since, heartbeat, timeout, filter_name):
-        params = {"feed": feed}
-        if since: params["since"] = since
-        if heartbeat:
-            params["heartbeat"] = heartbeat
-        elif timeout:
-            params["timeout"] = timeout
-        if filter_name: params["filter"] = filter_name
-        return params
-        
-    def fetch(self, since=None, filter_name=None):
+    def fetch(self, **params):
         """ Fetch all changes and return. If since is specified, fetch all changes
         since this doc sequence
         
         Args:
-        @param since: str or int, sequence from which you want to get changes
-        @param filter_name: filter_name to use
+        @param params: kwargs
+        See Changes API (http://wiki.apache.org/couchdb/HTTP_database_API#Changes)
         
         @return: dict, change result
         
         """
-        params = {}
-        if since: params['since'] = since
-        if filter_name: params["filter"] = filter_name
         resp = self.db.res.get("_changes", **params)
         return resp.json_body
         
-    def wait_once(self, since=None, heartbeat=False, timeout=60000, filter_name=None):
+    def wait_once(self, **params):
         """Wait for one change and return (longpoll feed) 
         
         Args:
-        @param since: str or int, sequence from which you want to get changes
-        @param heartbeat: boolean, try to maintain connection by sending '\n'
-        @param timeout: int, timeout in ms
-        @param filter_name: filter_name to use
+        @param params: kwargs
+        See Changes API (http://wiki.apache.org/couchdb/HTTP_database_API#Changes)
         
         @return: dict, change result
         """
-        params = self._make_params("longpoll", since, heartbeat, 
-                            timeout, filter_name)
+        params.update({"feed": "longpoll"})
         resp = self.db.res.get("_changes", **params)
         buf = ""
         while True:
@@ -92,19 +76,16 @@ class Consumer(object):
             callback(ret)
         return ret
         
-    def wait(self, since=None, heartbeat=True, timeout=None, filter_name=None):
+    def wait(self, **params):
         """ Wait for changes until the connection close (continuous feed)
         
         Args:
-        @param since: str or int, sequence from which you want to get changes
-        @param heartbeat: boolean, try to maintain connection by sending '\n'
-        @param timeout: int, timeout in ms
-        @param filter_name: str, filter_name to use
+        @param params: kwargs
+        See Changes API (http://wiki.apache.org/couchdb/HTTP_database_API#Changes)
         
         @return: dict, line of change
         """
-        params = self._make_params("continuous", since, heartbeat, 
-                            timeout, filter_name)
+        params.update({"feed": "continuous"})
         self.resp = resp = self.db.res.get("_changes", **params)
         
         if resp.headers.get('transfer-encoding') == "chunked":
