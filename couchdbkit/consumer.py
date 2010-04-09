@@ -114,17 +114,22 @@ class continuous_changes_handler(asynchat.async_chat):
         self.resp = resp
         self.callbacks = callbacks
         self.chunked = chunked
-        self.buf = [resp._body.tmp.read()]
+        
+        
+        self.buf = []
         sock = resp.http_client._sock
         asynchat.async_chat.__init__(self, sock=sock)
         if self.chunked:
             self.set_terminator("\r\n")
         else:
             self.set_terminator("\n")
+            
+        data = resp._body.tmp.read()
+        self.buf.append(data)
         self.chunk_left = False
         
     def handle_close(self):
-        self.resp.http_client.maybe_close()
+        self.resp.body_file.close()
         
     def collect_incoming_data(self, data):
         if self.chunked:
@@ -134,6 +139,11 @@ class continuous_changes_handler(asynchat.async_chat):
             self.buf.append(data)
         else:
             self.buf.append(data)
+            
+    def emit_line(self, line):
+        line = anyjson.deserialize(line)
+        for callback in self.callbacks:
+            callback(line)
             
     def found_terminator(self):
         if self.chunked and not self.chunk_left:
@@ -149,6 +159,4 @@ class continuous_changes_handler(asynchat.async_chat):
             line = line.strip()
 
         if line:
-            line = anyjson.deserialize(line)
-            for callback in self.callbacks:
-                callback(line)
+            self.emit_line(line)
