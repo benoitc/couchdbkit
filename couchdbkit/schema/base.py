@@ -107,7 +107,7 @@ class DocumentSchema(object):
 
         doc_type = getattr(self, '_doc_type', self.__class__.__name__)
         self._doc['doc_type'] = doc_type
-
+        
         for prop in self._properties.values():
             if prop.name in properties:
                 value = properties.pop(prop.name)
@@ -226,7 +226,7 @@ class DocumentSchema(object):
         """
         if self._dynamic_properties and key in self._dynamic_properties:
             return self._dynamic_properties[key]
-        elif key  in ('_id', '_rev', '_attachments'):
+        elif key  in ('_id', '_rev', '_attachments', 'doc_type'):
             return self._doc.get(key)
         return getattr(super(DocumentSchema, self), key)
 

@@ -199,7 +199,7 @@ class DocumentFormMetaClass(type):
             fields = fields_for_document(opts.document, opts.properties,
                                          opts.exclude)
             # Override default docuemnt fields with any custom declared ones
-        # (plus, include all the other declared fields).
+            # (plus, include all the other declared fields).
             fields.update(declared_fields)
         else:
             fields = declared_fields
@@ -240,7 +240,6 @@ class BaseDocumentForm(BaseForm):
         If commit=True, then the changes to ``instance`` will be saved to the
         database. Returns ``instance``.
         """
-        
         
         opts = self._meta
         cleaned_data = self.cleaned_data.copy()
