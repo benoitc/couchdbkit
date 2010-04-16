@@ -396,12 +396,15 @@ class DocumentBase(DocumentSchema):
     _db = None
 
     def __init__(self, _d=None, **kwargs):
-        docid = None
-        if '_id' in kwargs:
-            docid = kwargs.pop('_id')
+        _d = _d or {}
+        
+        docid = kwargs.pop('_id', _d.pop("_id", ""))
+        docrev = kwargs.pop('_rev', _d.pop("_rev", ""))
+        
         DocumentSchema.__init__(self, _d, **kwargs)
-        if docid is not None:
-            self._doc['_id'] = valid_id(docid)
+        
+        if docid: self._doc['_id'] = valid_id(docid)
+        if docrev: self._doc['_rev'] = docrev            
 
     @classmethod
     def set_db(cls, db):
