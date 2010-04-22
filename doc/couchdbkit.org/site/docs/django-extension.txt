@@ -25,6 +25,7 @@ couchdbkit documents.
  INSTALLED_APPS = (
      ....
      'couchdbkit.ext.django',
+     'djangoapp.greeting',
      ....
  )
 </pre>
