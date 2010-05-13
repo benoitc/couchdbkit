@@ -88,6 +88,11 @@ class CouchdbkitHandler(object):
                 pass
                 
             app_path = os.path.abspath(os.path.join(sys.modules[app.__name__].__file__, ".."))
+			design_path = "%s/%s" % (app_path, "_design")
+			if not os.path.isdir(design_path):
+				if settings.DEBUG:
+					print >>sys.stderr, "%s don't exists, no ddoc synchronized" % design_path
+				return
             loader = FileSystemDocLoader(app_path, "_design", design_name=app_label)
             loader.sync(db)
                 
