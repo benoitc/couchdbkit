@@ -36,7 +36,7 @@ You could download latest sources from "Github Downloads":http://github.com/beno
 Or fetch them with hg. Therefore we have to "install git":http://git-scm.com/ and then run :
 
 <pre class="code prettyprint">
-$ git clone git@github.com:benoitc/couchdbkit.git
+$ git clone http://github.com/benoitc/couchdbkit.git
 </pre>
 
 h4. install Couchdbkit
