@@ -39,13 +39,13 @@ COUCHDB_TIMEOUT = getattr(settings, "COUCHDB_TIMEOUT", 300)
 
 class CouchdbkitHandler(object):
     """ The couchdbkit handler for django """
-    
+
     # share state between instances
     __shared_state__ = dict(
-        _databases = {},
-        app_schema = SortedDict()
-    )    
-       
+            _databases = {},
+            app_schema = SortedDict()
+            )    
+
     def __init__(self, databases):
         """ initialize couchdbkit handler with COUCHDB_DATABASES
         settings """
@@ -54,7 +54,7 @@ class CouchdbkitHandler(object):
 
         # create databases sessions
         for app_name, uri in databases:
-            
+
             try:
                 if isinstance(uri, tuple):
                     # case when you want to specify server uri 
@@ -65,17 +65,18 @@ class CouchdbkitHandler(object):
                     server_uri, dbname = uri.rsplit("/", 1)
             except ValueError:
                 raise ValueError("couchdb uri [%s:%s] invalid" % (
-                            app_name, uri))
-                
+                    app_name, uri))
+
             res = CouchdbResource(server_uri, timeout=COUCHDB_TIMEOUT)
-            
+
             server = Server(server_uri, resource_instance=res)
             app_label = app_name.split('.')[-1]
             self._databases[app_label] = server.get_or_create_db(dbname)
     
     def sync(self, app, verbosity=2):
         """ used to sync views of all applications and eventually create
-        database """
+        database.
+        """
         app_name = app.__name__.rsplit('.', 1)[0]
         app_label = app_name.split('.')[-1]
         if app_label in self._databases:
@@ -86,13 +87,13 @@ class CouchdbkitHandler(object):
                 db.server.create_db(db.dbname)
             except:
                 pass
-                
+
             app_path = os.path.abspath(os.path.join(sys.modules[app.__name__].__file__, ".."))
-			design_path = "%s/%s" % (app_path, "_design")
-			if not os.path.isdir(design_path):
-				if settings.DEBUG:
-					print >>sys.stderr, "%s don't exists, no ddoc synchronized" % design_path
-				return
+            design_path = "%s/%s" % (app_path, "_design")
+            if not os.path.isdir(design_path):
+                if settings.DEBUG:
+                    print >>sys.stderr, "%s don't exists, no ddoc synchronized" % design_path
+                return
             loader = FileSystemDocLoader(app_path, "_design", design_name=app_label)
             loader.sync(db)
                 
