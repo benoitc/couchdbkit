@@ -1,0 +1,17 @@
+{% extends "admin/base_site.html" %}
+
+
+{% block content %}
+<div id="content-main">
+	<h1>Couchdb NODES</h1>
+	<p>Choose a node to administrate</p>
+	{% if nodes %}
+	<ul class="module">
+		{% for n in nodes %}
+			<li><a href="{% url couchdb-node n.0 %}">{{ n.0 }} ({{ n.1 }})</a></li>
+		{% endfor %}
+	</ul>
+	{% endif %}
+	
+</div>
+{% endblock %}
