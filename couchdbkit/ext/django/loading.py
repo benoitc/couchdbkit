@@ -56,9 +56,9 @@ class CouchdbkitHandler(object):
 
     # share state between instances
     __shared_state__ = dict(
-            _databases = {},
-            app_schema = SortedDict()
-            )    
+        _databases = {},
+        app_schema = SortedDict()
+    )    
 
     def __init__(self, databases):
         """ initialize couchdbkit handler with COUCHDB_DATABASES

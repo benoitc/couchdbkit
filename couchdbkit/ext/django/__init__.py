@@ -77,6 +77,9 @@ exemple :
 To create databases and sync views, just run the usual `syncdb` command.
 It won't destroy your datas, just synchronize views.
 """
+# patch the admin when we are added as app.
+from couchdbkit.ext.django.patching import patch_admin
+patch_admin()
 
 from django.db.models import signals
 

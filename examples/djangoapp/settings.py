@@ -68,11 +68,12 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
+    'couchdbkit.ext.django',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
-    'couchdbkit.ext.django',
+    
     'djangoapp.greeting'
 )
