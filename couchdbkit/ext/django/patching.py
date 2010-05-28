@@ -1,0 +1,49 @@
+# -*- coding: utf-8 -
+#
+# This file is part of couchdbkit released under the MIT license. 
+# See the NOTICE for more information.
+
+import sys
+
+from django.db.models.base import ModelBase
+from django.contrib.admin import ModelAdmin
+import django.contrib.admin.sites
+
+from couchdbkit.ext.django.admin import DocumentAdmin
+from couchdbkit.ext.django.schema import Document
+
+def patch_admin():
+    sites = sys.modules.pop('django.contrib.admin.sites')
+    old_register = sites.AdminSite.register
+    
+    def register(self, model_or_iterable, admin_class=None, **options):
+        if admin_class is not None and issubclass(admin_class, ModelAdmin):
+            # no need to continue.
+            return old_register(self, model_or_iterable, 
+                admin_class=admin_class, **options)
+        
+        if isinstance(model_or_iterable, (ModelBase, Document)):
+            model_or_iterable = [model_or_iterable]
+        
+        if not admin_class or issubclass(admin_class, ModelAdmin):
+            document_class = DocumentAdmin
+        else:
+            document_class = admin_class
+            admin_class = None
+            
+        for document in documents:
+            if documents in self._registry:
+                raise AlreadyRegistered(
+                'The document %s is already registered' % document.__name__)
+                
+            if options:
+                options['__module__'] = __name__
+                document_class = type("%sAdmin" % model.__name__, 
+                    (document_class,), options)
+            self._registry[document] = document_class(model, self)
+        
+        return old_register(self, models, admin_class=admin_class, 
+                            **options)
+
+    sites.AdminSite.register = register
+    sys.modules['django.contrib.admin.sites'] = sites
