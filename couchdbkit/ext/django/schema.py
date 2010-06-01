@@ -22,8 +22,9 @@ import sys
 
 from django.conf import settings
 from django.db.models.options import get_verbose_name
-from django.utils.translation import string_concat
-
+from django.utils.translation import activate, deactivate_all, get_language, \
+string_concat
+from django.utils.encoding import force_unicode
 
 from couchdbkit import schema
 from couchdbkit.ext.django.loading import get_schema, register_schema
