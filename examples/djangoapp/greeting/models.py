@@ -7,3 +7,6 @@ class Greeting(Document):
     author = StringProperty()
     content = StringProperty(required=True)
     date = DateTimeProperty(default=datetime.utcnow)
+    
+    class Meta:
+        app_label = "greeting"
