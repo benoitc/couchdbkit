@@ -20,6 +20,7 @@ class DocumentAdmin(object):
     def __init__(self, document, admin_site):
         self.document = document
         self.admin_site = admin_site
+        self.opts = document._meta
 
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url
@@ -29,5 +30,38 @@ class DocumentAdmin(object):
                 return self.admin_site.admin_view(view)(*args, **kwargs)
             return update_wrapper(wrapper, view)
             
-            
+        info = self.model._meta.app_label, self.model._meta.module_name
         
+        urlpatterns = patterns('',
+            url(r'^$',
+                wrap(self.changelist_view),
+                name='%s_%s_changelist' % info),
+            url(r'^add/$',
+                wrap(self.add_view),
+                name='%s_%s_add' % info),
+            url(r'^(.+)/history/$',
+                wrap(self.history_view),
+                name='%s_%s_history' % info),
+            url(r'^(.+)/delete/$',
+                wrap(self.delete_view),
+                name='%s_%s_delete' % info),
+            url(r'^(.+)/$',
+                wrap(self.change_view),
+                name='%s_%s_change' % info),
+        )
+        return urlpatterns
+            
+    def changelist_view(self, request, extra_context=None):
+        raise NotImplementedError
+        
+    def add_view(self, request, extra_context=None):
+        raise NotImplementedError
+        
+    def history_view(self, request, extra_context=None):
+        raise NotImplementedError
+
+    def delete_view(self, request, extra_context=None):
+        raise NotImplementedError
+
+    def change_view(self, request, extra_context=None):
+        raise NotImplementedError

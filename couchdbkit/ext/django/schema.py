@@ -93,6 +93,15 @@ class Options(object):
         activate(lang)
         return raw
     verbose_name_raw = property(verbose_name_raw)
+    
+    def get_add_permission(self):
+        return 'add_%s' % self.object_name.lower()
+
+    def get_change_permission(self):
+        return 'change_%s' % self.object_name.lower()
+
+    def get_delete_permission(self):
+        return 'delete_%s' % self.object_name.lower()
 
 class DocumentMeta(schema.SchemaProperties):
     def __new__(cls, name, bases, attrs):
