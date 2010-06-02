@@ -10,7 +10,7 @@ from django.contrib.admin import ModelAdmin
 import django.contrib.admin.sites
 
 from couchdbkit.ext.django.admin import DocumentAdmin
-from couchdbkit.ext.django.schema import Document
+from couchdbkit.ext.django.schema import DocumentMeta
 
 def patch_admin():
     sites = sys.modules.pop('django.contrib.admin.sites')
@@ -22,7 +22,7 @@ def patch_admin():
             return old_register(self, model_or_iterable, 
                 admin_class=admin_class, **options)
         
-        if isinstance(model_or_iterable, (ModelBase, Document)):
+        if isinstance(model_or_iterable, (ModelBase, DocumentMeta)):
             model_or_iterable = [model_or_iterable]
         
         if not admin_class or issubclass(admin_class, ModelAdmin):
@@ -31,8 +31,16 @@ def patch_admin():
             document_class = admin_class
             admin_class = None
             
+        documents = []
+        models = []
+        for m in model_or_iterable:
+            if isinstance(m, ModelBase):
+                models.append(m)
+            else:
+                documents.append(m)
+            
         for document in documents:
-            if documents in self._registry:
+            if document in self._registry:
                 raise AlreadyRegistered(
                 'The document %s is already registered' % document.__name__)
                 
@@ -40,7 +48,7 @@ def patch_admin():
                 options['__module__'] = __name__
                 document_class = type("%sAdmin" % model.__name__, 
                     (document_class,), options)
-            self._registry[document] = document_class(model, self)
+            self._registry[document] = document_class(document, self)
         
         return old_register(self, models, admin_class=admin_class, 
                             **options)
