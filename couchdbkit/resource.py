@@ -53,9 +53,9 @@ class CouchDBResponse(HttpResponse):
     @property
     def json_body(self):
         try:
-            return anyjson.deserialize(self.body)
+            return anyjson.deserialize(self.body_string())
         except ValueError:
-            return self.body
+            return self.body_string()
 
 
 class CouchdbResource(Resource):
