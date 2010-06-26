@@ -117,15 +117,14 @@ class continuous_changes_handler(asynchat.async_chat):
         
         
         self.buf = []
-        sock = resp.http_client._sock
+        sock = resp.response.body.reader.unreader.sock
         asynchat.async_chat.__init__(self, sock=sock)
         if self.chunked:
             self.set_terminator("\r\n")
         else:
             self.set_terminator("\n")
             
-        data = resp._body.tmp.read()
-        self.buf.append(data)
+
         self.chunk_left = False
         
     def handle_close(self):
