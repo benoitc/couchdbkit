@@ -35,7 +35,7 @@ __all__ = ['Property', 'StringProperty', 'IntegerProperty',
             'dict_to_json', 'list_to_json', 'value_to_json', 
             'value_to_python', 'dict_to_python', 'list_to_python', 
             'convert_property', 'DocumentSchema', 'Document', 
-            'SchemaProperty', 'ListProperty', 
+            'SchemaProperty', 'SchemaListProperty', 'ListProperty', 
             'DictProperty', 'StringListProperty']
             
 
@@ -158,9 +158,11 @@ DateTimeProperty = schema.DateTimeProperty
 DateProperty = schema.DateProperty
 TimeProperty = schema.TimeProperty
 SchemaProperty = schema.SchemaProperty
+SchemaListProperty = schema.SchemaListProperty
 ListProperty = schema.ListProperty
 DictProperty = schema.DictProperty
 StringListProperty = schema.StringListProperty
+
 
 
 # some utilities
