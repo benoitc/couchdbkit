@@ -772,7 +772,7 @@ class Database(object):
         resp = self.res(docid).get(name)
         if stream:
             return resp.body_file
-        return resp.unicode_body
+        return resp.body_string(charset="utf-8")
 
 
     def ensure_full_commit(self, _raw_json=False):
