@@ -3,6 +3,8 @@
 # This file is part of couchdbkit released under the MIT license. 
 # See the NOTICE for more information.
 
+from __future__ import with_statement
+
 import anyjson
 import asyncore
 import asynchat
@@ -66,15 +68,17 @@ class Consumer(object):
         params.update({"feed": "longpoll"})
         resp = self.db.res.get("_changes", **params)
         buf = ""
-        while True:
-            data = resp.body_file.read()
-            if not data: break
-            buf += data
+        with resp.body_stream() as body:
+            while True:
+                data = body.read()
+                if not data: 
+                    break
+                buf += data
             
-        ret = anyjson.deserialize(buf)
-        for callback in self.callbacks:
-            callback(ret)
-        return ret
+            ret = anyjson.deserialize(buf)
+            for callback in self.callbacks:
+                callback(ret)
+            return ret
         
     def wait(self, **params):
         """ Wait for changes until the connection close (continuous feed)
