@@ -60,7 +60,8 @@ class Server(object):
 
     def __init__(self, uri='http://127.0.0.1:5984',
             uuid_batch_count=DEFAULT_UUID_BATCH_COUNT, resource_instance=None,
-            pool_instance=None):
+            pool_instance=None,
+            filters=None):
         """ constructor for Server object
 
         @param uri: uri of CouchDb host
@@ -85,9 +86,11 @@ class Server(object):
             self.res = resource_instance.clone()
             if pool_instance is not None:
                 self.res.client_opts['pool_instance'] = pool_instance
+                
         else:
             self.res = resource.CouchdbResource(uri, 
-                                pool_instance=pool_instance)
+                                pool_instance=pool_instance,
+                                filters=filters)
         self._uuids = []
 
     def info(self, _raw_json=False):
@@ -228,7 +231,8 @@ class Database(object):
     A Database object can act as a Dict object.
     """
 
-    def __init__(self, uri, create=False, server=None, pool_instance=None):
+    def __init__(self, uri, create=False, server=None, pool_instance=None,
+            filters=None):
         """Constructor for Database
 
         @param uri: str, Database uri
@@ -248,7 +252,8 @@ class Database(object):
             self.server = server
         else:
             self.server = server = Server(self.server_uri, 
-                                    pool_instance=pool_instance)
+                                    pool_instance=pool_instance,
+                                    filters=filters)
 
         try:
             self.server.res.head('/%s/' % url_quote(self.dbname, safe=":"))
