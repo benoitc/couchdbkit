@@ -1,4 +1,4 @@
-title: Couchdbkit version 0.4.2 released 
+title: Couchdbkit version 0.4.7 released 
 content_type: textile
 page_type: blog
 template: blog/post.html
