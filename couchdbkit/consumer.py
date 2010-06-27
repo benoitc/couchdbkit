@@ -128,6 +128,8 @@ class continuous_changes_handler(asynchat.async_chat):
         else:
             self.set_terminator("\n")
             
+        data = resp.response.body.reader.buf.getvalue()
+        self.buf.append(data)
 
         self.chunk_left = False
         
