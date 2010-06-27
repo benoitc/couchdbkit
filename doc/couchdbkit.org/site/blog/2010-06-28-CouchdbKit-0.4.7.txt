@@ -1,0 +1,12 @@
+title: Couchdbkit version 0.4.2 released 
+content_type: textile
+page_type: blog
+template: blog/post.html
+
+New release for "Couchdbkit":http://couchdbkit.org. More fixes
+
+You can download latest release on "Pypi":http://pypi.python.org/pypi/couchdbkit/0.4.7 or check "download page":../download.html for other ways.
+
+Couchdbkit 0.4.7 has lot of fixes since last reported version and is compatible with 0.10.2, 0.11.0 and trunk. In particularly, Server.replication method has now all new parameters. Couchdbkit 0.4.7 also rely on restkit 0.2.0 which give you a lot of performance improvmenets.
+
+You can find a summary of changes on "github": http://github.com/benoitc/couchdbkit/compare/0.4.2...0.4.7 .

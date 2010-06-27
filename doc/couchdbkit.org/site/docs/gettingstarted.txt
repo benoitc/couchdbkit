@@ -9,6 +9,8 @@ If you have not installed couchdbkit yet, follow instructions on "download page"
 
 <pre class="code prettyprint">
  import datetime
+ from restkit import SimplePool
+ 
  from couchdbkit import *
  
  class Greeting(Document):
@@ -22,8 +24,12 @@ h2. Store the submitted Greetings
 Here is the code to save a greet on `Greeting` database. We also see how to create a database.
 
 <pre class="code prettyprint">
+ 
+ # set a threadsafe pool to keep 2 connections alives
+ pool = SimplePool(keepalive=2)
+
  # server object
- server = Server()
+ server = Server(pool_instance=pool)
  
  # create database
  db = server.get_or_create_db("greeting")

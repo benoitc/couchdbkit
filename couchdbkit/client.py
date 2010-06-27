@@ -27,7 +27,7 @@ Example:
 
 """
 
-
+UNKOWN_INFO = {}
 
 
 import base64
@@ -59,7 +59,8 @@ class Server(object):
     """
 
     def __init__(self, uri='http://127.0.0.1:5984',
-            uuid_batch_count=DEFAULT_UUID_BATCH_COUNT, resource_instance=None):
+            uuid_batch_count=DEFAULT_UUID_BATCH_COUNT, resource_instance=None,
+            pool_instance=None):
         """ constructor for Server object
 
         @param uri: uri of CouchDb host
@@ -82,8 +83,11 @@ class Server(object):
                                 resource.CouchdbResource):
             resource_instance.uri = uri
             self.res = resource_instance.clone()
+            if pool_instance is not None:
+                self.res.client_opts['pool_instance'] = pool_instance
         else:
-            self.res = resource.CouchdbResource(uri)
+            self.res = resource.CouchdbResource(uri, 
+                                pool_instance=pool_instance)
         self._uuids = []
 
     def info(self, _raw_json=False):
@@ -93,7 +97,14 @@ class Server(object):
         @return: dict
 
         """
-        return maybe_raw(self.res.get(), raw=_raw_json)
+        try:
+            resp = self.res.get()
+        except Exception, e:
+            if _raw_json:
+                return resp
+            return UNKOWN_INFO
+        
+        return maybe_raw(resp, raw=_raw_json)
 
     def all_dbs(self, _raw_json=False):
         """ get list of databases in CouchDb host
@@ -128,23 +139,29 @@ class Server(object):
         del self[dbname]
 
     #TODO: maintain list of replications
-    def replicate(self, source, target, continuous=False):
+    def replicate(self, source, target, doc_ids=None, 
+            continuous=False, create_target=False):
         """
         simple handler for replication
 
         @param source: str, URI or dbname of the source
         @param target: str, URI or dbname of the target
+        @param doc_ids: list, default is None, replicate only these ids.
         @param continuous: boolean, default is False, set the type of replication
-
+        @param create_target: boolean, default is False, create the target db
+        
         More info about replication here :
         http://wiki.apache.org/couchdb/Replication
 
         """
-        res = self.res.post('/_replicate', payload={
+        resp = self.res.post('/_replicate', payload={
             "source": source,
             "target": target,
-            "continuous": continuous
+            "doc_ids": doc_ids,
+            "continuous": continuous,
+            "create_target": create_target
         })
+        return resp.json_body
 
     def uuids(self, count=1, raw=False):
         return maybe_raw(self.res.get('/_uuids', count=count))
@@ -211,7 +228,7 @@ class Database(object):
     A Database object can act as a Dict object.
     """
 
-    def __init__(self, uri, create=False, server=None):
+    def __init__(self, uri, create=False, server=None, pool_instance=None):
         """Constructor for Database
 
         @param uri: str, Database uri
@@ -230,7 +247,8 @@ class Database(object):
                             server.__class__.__name__)
             self.server = server
         else:
-            self.server = server = Server(self.server_uri)
+            self.server = server = Server(self.server_uri, 
+                                    pool_instance=pool_instance)
 
         try:
             self.server.res.head('/%s/' % url_quote(self.dbname, safe=":"))
