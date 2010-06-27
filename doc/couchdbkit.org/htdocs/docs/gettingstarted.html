@@ -82,7 +82,9 @@
 
 	<p><pre class="code prettyprint">
  import datetime
- from couchdbkit import *</p>
+ from restkit import SimplePool</p>
+
+ from couchdbkit import *
 
  class Greeting(Document):
       author = StringProperty()
@@ -94,9 +96,13 @@
 
 	<p>Here is the code to save a greet on `Greeting` database. We also see how to create a database.</p>
 
-	<p><pre class="code prettyprint">
+	<p><pre class="code prettyprint"></p>
+
+ # set a threadsafe pool to keep 2 connections alives
+ pool = SimplePool(keepalive=2)
+
  # server object
- server = Server()</p>
+ server = Server(pool_instance=pool)
 
  # create database
  db = server.get_or_create_db(&#8220;greeting&#8221;)

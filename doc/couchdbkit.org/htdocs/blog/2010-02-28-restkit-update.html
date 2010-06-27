@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <title>Couchdbkit - 
-    Couchdbkit version 0.1.7 released
+    Couchdbkit version 0.4.2 released
 </title>
     <!--[if IE]>
 
@@ -79,85 +79,15 @@
 <section id="content">
     <article>
         <header>
-            <h1>Couchdbkit version 0.1.7 released</h1>
+            <h1>Couchdbkit version 0.4.2 released</h1>
         </header>
-        	<p>Just released Couchdbkit 0.1.7. </p>
+        	<p>New release for <a href="http://couchdbkit.org">Couchdbkit</a>. CouchDBKit have been updated to support <a href="http://benoitc.github.com/restkit">restkit</a> 1.0.</p>
 
-	<p>Next version will be 0.2 and will have some new features :</p>
+	<p>You can download latest release on <a href="http://pypi.python.org/pypi/couchdbkit/0.4.3">Pypi</a> or check <a href="../download.html">download page</a> for other ways.</p>
 
-	<ul>
-		<li>Dump/Loads utilities</li>
-		<li>New view iterator system that would allow us to use less <span class="caps">CPU</span></li>
-		<li>Aggregation : A way to combine multiple views in one</li>
-		<li>ReferenceProperty: Link documents between themselves</li>
-		<li>...</li>
-	</ul>
 
-	<p>Changes for this version are following:</p>
-
-	<h2>Fixes</h2>
-
-	<ul>
-		<li>documentation typos</li>
-		<li>database name encoding. </li>
-		<li>list are correctly handled in DictProperty</li>
-	</ul>
-
-	<h2>Breaking changes</h2>
-
-	<p>I introduced a <strong>breaking change</strong> in latest version of couchdbkit. Now id and rev members of `schema.Document` aren&#8217;t alias to _id and _rev. It allows you to use id and rev like you want in CouchDB. It also means that you need to set yourdoc._id to set the id of a document. I made this change since it seems that a lot of you need it. So here it is. </p>
-
-	<p>Please test it and let me know if anything is wrong.</p>
-
-	<p>A little example :</p>
-
-	<p><pre class="code prettyprint">
- In [1]: from couchdbkit import *</p>
-
- In [2]: class A(Document):
-   ...:     pass
-   ...:
-
- In [3]: a = A()
-
- In [4]: a._id = &#8220;myid&#8221;
-
- In [5]: a.id = &#8220;idofapplication&#8221;
-
- In [6]: a._doc
- Out<sup class="footnote"><a href="#fna76aa630-ed0c-49a5-9281-623603ac13c0">6</a></sup>: {&#8217;_id&#8217;: 'myid&#8217;, 'doc_type&#8217;: 'A&#8217;, 'id&#8217;: u&#8217;idofapplication&#8217;}
-
- In [7]: a._id
- Out<sup class="footnote"><a href="#fndc781439-9e7d-4b5e-a8e0-1f06a4d35e96">7</a></sup>: 'myid&#8217;
-
- In [8]: a.id
- Out<sup class="footnote"><a href="#fnd25695ea-eda9-4478-97df-c8db59ec0774">8</a></sup>: 'idofapplication&#8217;
-
- In [9]: s = Server()
-
- In [10]: db = s['couchdbkit_test3&#8217;]
-
- In [11]: A._db = db
-
- In [12]: a.save()
-
- In [13]: a._doc
- Out<sup class="footnote"><a href="#fnb470e045-68e0-42ad-94f4-da353df38c07">13</a></sup>:
- {&#8217;_id&#8217;: u&#8217;myid&#8217;,
- '_rev&#8217;: u&#8217;1-676990679&#8217;,
- 'doc_type&#8217;: 'A&#8217;,
- 'id&#8217;: u&#8217;idofapplication&#8217;}
-
- In [14]: b = A.get('myid&#8217;)
-
- In [15]: b.id
- Out<sup class="footnote"><a href="#fn1ee6fdd5-a750-4aba-9e72-fc4db318c9d2">15</a></sup>: u&#8217;idofapplication&#8217;
-
- In [16]: b._id
- Out<sup class="footnote"><a href="#fne92eff79-0ee7-4f54-9ff9-23378ae3a91c">16</a></sup>: u&#8217;myid&#8217;
-</pre>
         <footer>
-             <p><span class='comments'><a href='/blog/2009-06-25-Couchdbkit-0.1.7-released.html#disqus_thread'>View Comments</a></span></p>
+             <p><span class='comments'><a href='/blog/2010-02-28-restkit-update.html#disqus_thread'>View Comments</a></span></p>
         </footer>
     </article>
     <div id="disqus_thread"></div><script type="text/javascript" src="http://disqus.com/forums/couchdbkit/embed.js"></script><noscript><a href="http://couchdbkit.disqus.com/?url=ref">View the discussion thread.</a></noscript><a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
