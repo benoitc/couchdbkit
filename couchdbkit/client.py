@@ -142,28 +142,24 @@ class Server(object):
         del self[dbname]
 
     #TODO: maintain list of replications
-    def replicate(self, source, target, doc_ids=None, 
-            continuous=False, create_target=False):
+    def replicate(self, source, target, **params):
         """
         simple handler for replication
 
         @param source: str, URI or dbname of the source
         @param target: str, URI or dbname of the target
-        @param doc_ids: list, default is None, replicate only these ids.
-        @param continuous: boolean, default is False, set the type of replication
-        @param create_target: boolean, default is False, create the target db
+        @param params: replication options
         
         More info about replication here :
         http://wiki.apache.org/couchdb/Replication
 
         """
-        resp = self.res.post('/_replicate', payload={
+        payload = {
             "source": source,
             "target": target,
-            "doc_ids": doc_ids,
-            "continuous": continuous,
-            "create_target": create_target
-        })
+        }
+        payload.update(params)
+        resp = self.res.post('/_replicate', payload=payload)
         return resp.json_body
 
     def uuids(self, count=1, raw=False):
