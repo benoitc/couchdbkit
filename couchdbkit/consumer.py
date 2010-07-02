@@ -97,19 +97,10 @@ class Consumer(object):
         else:
             chunked = False
         
-        try:
-            change_handler = continuous_changes_handler(resp, 
-                                            self.callbacks, chunked)
-            asyncore.loop()
-        except:
-            self.close()
-            raise
-            
-    def close(self):
-        if self._resp is None:
-            return
-        self._resp.http_client.maybe_close()
-        self._resp = None
+        change_handler = continuous_changes_handler(resp, self.callbacks, 
+                                                    chunked)
+        asyncore.loop()
+
         
         
 class continuous_changes_handler(asynchat.async_chat):
@@ -121,8 +112,9 @@ class continuous_changes_handler(asynchat.async_chat):
         
         
         self.buf = []
-        sock = resp.response.body.reader.unreader.sock
+        self.sock = sock = resp.response.body.reader.unreader.sock
         asynchat.async_chat.__init__(self, sock=sock)
+        
         if self.chunked:
             self.set_terminator("\r\n")
         else:
@@ -131,12 +123,14 @@ class continuous_changes_handler(asynchat.async_chat):
         data = resp.response.body.reader.buf.getvalue()
         self.buf.append(data)
 
-        self.chunk_left = False
+        self.chunk_left = False        
         
     def handle_close(self):
-        self.resp.close()
+    
+        self.close()
         
     def collect_incoming_data(self, data):
+        if not data: return
         if self.chunked:
             if not self.chunk_left:
                 return
