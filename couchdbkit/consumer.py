@@ -134,7 +134,7 @@ class continuous_changes_handler(asynchat.async_chat):
         self.chunk_left = False
         
     def handle_close(self):
-        self.resp.body_file.close()
+        self.resp.close()
         
     def collect_incoming_data(self, data):
         if self.chunked:
