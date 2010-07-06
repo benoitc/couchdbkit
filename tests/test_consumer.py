@@ -19,7 +19,6 @@ class ClientServerTestCase(unittest.TestCase):
         self.consumer = Consumer(self.db)
         
     def tearDown(self):
-        self.consumer.close()
         try:
             del self.server['couchdbkit_test']
         except:
