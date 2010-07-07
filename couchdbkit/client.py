@@ -161,6 +161,11 @@ class Server(object):
         payload.update(params)
         resp = self.res.post('/_replicate', payload=payload)
         return resp.json_body
+        
+    def active_tasks(self):
+        """ return active tasks """
+        resp = self.res.get('/_active_tasks')
+        return resp.json_body
 
     def uuids(self, count=1, raw=False):
         return maybe_raw(self.res.get('/_uuids', count=count))
