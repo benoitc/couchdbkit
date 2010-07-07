@@ -225,6 +225,8 @@ class Server(object):
     def _db_uri(self, dbname):
         if dbname.startswith("/"):
             dbname = dbname[1:]
+            
+        dbname = url_quote(dbname, safe=":")
         return "/".join([self.uri, dbname])
 
 class Database(object):
@@ -242,13 +244,12 @@ class Database(object):
         @param server: Server instance
 
         """
-        uri_parsed = urlparse.urlparse(uri)
-        self.server_uri = "%s://%s" % (uri_parsed.scheme, uri_parsed.netloc)
-        self.dbname = uri_parsed.path.strip("/")
+        self.uri = uri
+        self.server_uri, self.dbname = uri.rsplit("/", 1)
 
         if server is not None:
             if not hasattr(server, 'next_uuid'):
-                raise TypeError('%s is not a couchdbkit.server instance' %
+                raise TypeError('%s is not a couchdbkit.Server instance' %
                             server.__class__.__name__)
             self.server = server
         else:
@@ -256,18 +257,15 @@ class Database(object):
                                     pool_instance=pool_instance,
                                     filters=filters)
 
-        try:
-            self.server.res.head('/%s/' % url_quote(self.dbname, safe=":"))
-        except resource.ResourceNotFound:
-            if create:
-                self.server.res.put('/%s/' % url_quote(self.dbname, safe=":"))
-            else:
-                raise
+        if create:
+            try:
+                self.server.res.head('/%s/' % self.dbname)
+            except resource.ResourceNotFound:
+                self.server.res.put('/%s/' % self.dbname)
+
 
         self.res = server.res.clone()
-        if "/" in self.dbname:
-            self.res.safe = ":/%"
-        self.res.update_uri('/%s' % url_quote(self.dbname, safe=":"))
+        self.res.uri = uri
 
     def __repr__(self):
         return "<%s %s>" % (self.__class__.__name__, self.dbname)
