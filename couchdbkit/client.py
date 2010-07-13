@@ -185,20 +185,6 @@ class Server(object):
             self._uuids = self.uuids(count=self._uuid_batch_count)["uuids"]
         return self._uuids.pop()
 
-    def add_authorization(self, obj_auth):
-        """
-        Allow you to add basic authentication or any authentication
-        object inherited from `restkit`.
-
-        ex:
-
-            >>> from couchdbkit import Server
-            >>> from restkit import BasicAuth
-            >>> server = Server()
-            >>> server.add_authorization(BasicAuth(username, password))
-        """
-        self.res.add_filter(obj_auth)
-
     def __getitem__(self, dbname):
         return Database(self._db_uri(dbname), server=self)
 
