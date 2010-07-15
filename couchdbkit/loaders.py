@@ -393,7 +393,7 @@ class FileSystemDocsLoader(BaseDocsLoader):
                 except UnicodeDecodeError, e:
                     if verbose >= 2:
                         print >>sys.stderr, "%s isn't encoded in utf8" % current_path
-                    content = self.ui.read(current_path, utf8=False)
+                    content = read_file(current_path, utf8=False)
                     try:
                         content.encode('utf-8')
                     except UnicodeError, e:
