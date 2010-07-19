@@ -1,0 +1,15 @@
+title: Couchdbkit version 0.4.9 released 
+content_type: textile
+page_type: blog
+template: blog/post.html
+
+New release for "Couchdbkit":http://couchdbkit.org. 
+
+* Added Server.close() and Database.close() method. clear the connections pool
+* Allows any parameters to be used in replication
+* Fix consumer
+* Fix loader
+
+You can download latest release on "Pypi":http://pypi.python.org/pypi/couchdbkit/0.4.9 or check "download page":../download.html for other ways.
+
+You can find a summary of changes on "github":http://github.com/benoitc/couchdbkit/comp
