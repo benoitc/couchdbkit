@@ -92,7 +92,10 @@ class Server(object):
                                 pool_instance=pool_instance,
                                 filters=filters)
         self._uuids = []
-
+        
+    def close(self):
+        self.res.close()
+        
     def info(self, _raw_json=False):
         """ info of server
         @param _raw_json: return raw json instead deserializing it
@@ -261,6 +264,9 @@ class Database(object):
         """ Create a database from its url. """
         warnings.warn("from_uri is deprecated", DeprecationWarning)
         return cls(uri)
+        
+    def close(self):
+        self.res.close()
 
     def info(self, _raw_json=False):
         """
