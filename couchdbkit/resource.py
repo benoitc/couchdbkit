@@ -161,6 +161,9 @@ def encode_params(params):
     _params = {}
     if params:
         for name, value in params.items():
+            if value is None:
+                continue
+            
             if name in ('key', 'startkey', 'endkey') \
                     or not isinstance(value, basestring):
                 value = anyjson.serialize(value)

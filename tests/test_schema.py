@@ -11,9 +11,14 @@ import unittest
 
 from couchdbkit import *
 
+
+from restkit import SimplePool
+pool = SimplePool()
+
+
 class DocumentTestCase(unittest.TestCase):
     def setUp(self):
-        self.server = Server()
+        self.server = Server(pool_instance=pool)
 
     def tearDown(self):
         try:
@@ -510,7 +515,7 @@ class DocumentTestCase(unittest.TestCase):
 class PropertyTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.server = Server()
+        self.server = Server(pool_instance=pool)
         try:
             self.db = self.server.create_db('couchdbkit_test')
         except: 

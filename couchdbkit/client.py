@@ -329,32 +329,38 @@ class Database(object):
             return False
         return True
 
-    def get(self, docid, rev=None, wrapper=None, _raw_json=False):
+    def open_doc(self, docid, **params):
         """Get document from database
 
         Args:
         @param docid: str, document id to retrieve
-        @param rev: if specified, allows you to retrieve
-        a specific revision of document
         @param wrapper: callable. function that takes dict as a param.
         Used to wrap an object.
         @param _raw_json: return raw json instead deserializing it
+        @param **params: See doc api for parameters to use:
+        http://wiki.apache.org/couchdb/HTTP_Document_API
 
         @return: dict, representation of CouchDB document as
          a dict.
         """
+        wrapper = None
+        raw_json = False
+        if "wrapper" in params:
+            wrapper = params.pop("wrapper")
+            
+        if "_raw_json" in params:
+            raw_json = params.pop("_raw_json")
+        
         docid = resource.escape_docid(docid)
-        if rev is not None:
-            doc = maybe_raw(self.res.get(docid, rev=rev), raw=_raw_json)
-        else:
-            doc = maybe_raw(self.res.get(docid), raw=_raw_json)
-
+        
+        doc = maybe_raw(self.res.get(docid, **params), raw=raw_json)        
         if wrapper is not None:
             if not callable(wrapper):
                 raise TypeError("wrapper isn't a callable")
             return wrapper(doc)
 
         return doc
+    get = open_doc
 
     def all_docs(self, by_seq=False, _raw_json=False, **params):
         """Get all documents from a database

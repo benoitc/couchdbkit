@@ -13,10 +13,13 @@ ResourceConflict
 
 from couchdbkit import *
 
+from restkit import SimplePool
+pool = SimplePool()
+
 class ClientServerTestCase(unittest.TestCase):
     def setUp(self):
         self.couchdb = CouchdbResource()
-        self.Server = Server()
+        self.Server = Server(pool_instance=pool)
         
     def tearDown(self):
         try:
@@ -24,6 +27,7 @@ class ClientServerTestCase(unittest.TestCase):
             del self.Server['couchdbkit/test']
         except:
             pass
+        self.Server.close()
 
     def testGetInfo(self):
         info = self.Server.info()
@@ -204,10 +208,10 @@ class ClientDatabaseTestCase(unittest.TestCase):
         self.assert_( "a/b" in db) 
         self.assert_( "http://a" in db)
         self.assert_( "_design/a" in db)
+
         def not_found():
             doc = db.get('http:%2F%2Fa')
         self.assertRaises(ResourceNotFound, not_found)
-        del self.Server['couchdbkit_test']
 
     def testFlush(self):
         db = self.Server.create_db('couchdbkit_test')
