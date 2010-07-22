@@ -253,8 +253,7 @@ class Database(object):
                 self.server.res.put('/%s/' % self.dbname)
 
 
-        self.res = server.res.clone()
-        self.res.uri =  "/".join([self.res.uri, self.dbname])
+        self.res = server.res(self.dbname)
 
     def __repr__(self):
         return "<%s %s>" % (self.__class__.__name__, self.dbname)
