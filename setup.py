@@ -56,7 +56,7 @@ setup(
     zip_safe = False,
 
     install_requires = [
-        'restkit>=2.0.5',
+        'restkit>=2.1.0',
         'anyjson'
     ],
         
