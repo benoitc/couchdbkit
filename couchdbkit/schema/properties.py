@@ -299,8 +299,7 @@ class DateTimeProperty(Property):
             try:
                 value = value.split('.', 1)[0] # strip out microseconds
                 value = value.rstrip('Z') # remove timezone separator
-                timestamp = timegm(time.strptime(value, '%Y-%m-%dT%H:%M:%S'))
-                value = datetime.datetime.utcfromtimestamp(timestamp)
+                value = datetime.datetime.strptime(value, '%Y-%m-%dT%H:%M:%S')
             except ValueError, e:
                 raise ValueError('Invalid ISO date/time %r' % value)
         return value

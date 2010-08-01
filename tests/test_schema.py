@@ -573,10 +573,19 @@ class PropertyTestCase(unittest.TestCase):
             test.field = "essai"
 
         self.assertRaises(BadValueError, ftest)
-        test.field = datetime.datetime(2008, 11, 10, 8, 0, 0)
-        self.assert_(test._doc['field'] == "2008-11-10T08:00:00Z")
-        value = test.field
-        self.assert_(isinstance(value, datetime.datetime))
+        test_dates = [
+            ([2008, 11, 10, 8, 0, 0], "2008-11-10T08:00:00Z"),
+            ([9999, 12, 31, 23, 59, 59], '9999-12-31T23:59:59Z'),
+            ([0001, 1, 1, 0, 0, 1], '0001-01-01T00:00:01Z'),
+
+        ]
+        for date, date_str in test_dates:
+            test.field = datetime.datetime(*date)
+            self.assertEquals(test._doc['field'], date_str)
+            value = test.field
+            self.assert_(isinstance(value, datetime.datetime))
+
+
         
     def testDateProperty(self):
         class Test(Document):
