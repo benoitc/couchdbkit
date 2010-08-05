@@ -286,11 +286,13 @@ class Database(object):
         path = "/_compact"
         if dname is not None:
             path = "%s/%s" % (path, resource.escape_docid(dname))
-        res = self.res.post(path)
+        res = self.res.post(path, headers={"Content-Type": 
+            "application/json"})
         return res.json_body
 
     def view_cleanup(self):
-        res = self.res.post('/_view_cleanup')
+        res = self.res.post('/_view_cleanup', headers={"Content-Type":
+            "application/json"})
         return res.json_body
 
     def flush(self):
