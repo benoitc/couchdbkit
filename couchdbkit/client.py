@@ -82,7 +82,7 @@ class Server(object):
 
         if resource_instance and isinstance(resource_instance, 
                                 resource.CouchdbResource):
-            resource_instance.uri = uri
+            resource_instance.initial['uri'] = uri
             self.res = resource_instance.clone()
             if pool_instance is not None:
                 self.res.client_opts['pool_instance'] = pool_instance
