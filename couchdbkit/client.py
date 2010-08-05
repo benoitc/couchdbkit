@@ -798,7 +798,8 @@ class Database(object):
 
     def ensure_full_commit(self, _raw_json=False):
         """ commit all docs in memory """
-        return maybe_raw(self.res.post('_ensure_full_commit'), raw=_raw_json)
+        return maybe_raw(self.res.post('_ensure_full_commit', 
+            headers={"Content-Type": "application/json"}), raw=_raw_json)
 
     def __len__(self):
         return self.info()['doc_count']
