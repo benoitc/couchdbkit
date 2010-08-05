@@ -41,6 +41,7 @@ import warnings
 
 import anyjson
 from restkit.util import url_quote
+from restkit.util.misc import deprecated_property
 
 from couchdbkit.exceptions import *
 import couchdbkit.resource as resource
@@ -389,7 +390,7 @@ class Database(object):
 
         return self.view('_all_docs', _raw_json=_raw_json, **params)
 
-    def doc_revisions(self, docid, with_doc=True, _raw_json=False):
+    def _doc_revisions(self, docid, with_doc=True, _raw_json=False):
         """ retrieve revisions of a doc
 
         @param docid: str, id of document
@@ -425,6 +426,10 @@ class Database(object):
         except resource.ResourceNotFound:
             return None
         return doc_with_revs
+
+    doc_revisions = deprecated_property(_doc_revisions,
+            "_doc_revisions", "doc_revisions is deprecated use "
+            "Database.open_docs with the right parameters", False)
 
     def get_rev(self, docid):
         """ Get last revision from docid (the '_rev' member)
