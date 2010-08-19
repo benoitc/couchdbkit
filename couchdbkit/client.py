@@ -680,7 +680,7 @@ class Database(object):
             wrapper = obj.wrap
         return TempView(self, design, wrapper=wrapper)(**params)
 
-    def search( self, view_name, handler='_fti', wrapper=None, **params):
+    def search( self, view_name, handler='_fti/_design', wrapper=None, **params):
         """ Search. Return results from search. Use couchdb-lucene
         with its default settings by default."""
         return View(self, "/%s/%s" % (handler, view_name), wrapper=wrapper)(**params)
