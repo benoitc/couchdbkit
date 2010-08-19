@@ -378,6 +378,17 @@ class ClientDatabaseTestCase(unittest.TestCase):
         fetch_attachment = db.fetch_attachment(doc, "test")
         self.assert_(text_attachment == fetch_attachment)
         del self.Server['couchdbkit_test']
+        
+    def testFetchAttachmentStream(self):
+        db = self.Server.create_db('couchdbkit_test')
+        doc = { 'string': 'test', 'number': 4 }
+        db.save_doc(doc)        
+        text_attachment = u"a text attachment"
+        db.put_attachment(doc, text_attachment, "test", "text/plain")
+        stream = db.fetch_attachment(doc, "test", stream=True)
+        fetch_attachment = stream.read()
+        self.assert_(text_attachment == fetch_attachment)
+        del self.Server['couchdbkit_test']
    
     def testEmptyAttachment(self):
         db = self.Server.create_db('couchdbkit_test')

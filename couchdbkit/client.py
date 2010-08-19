@@ -797,7 +797,7 @@ class Database(object):
 
         resp = self.res(docid).get(name)
         if stream:
-            return resp.body_file
+            return resp.body_stream()
         return resp.body_string(charset="utf-8")
 
 
