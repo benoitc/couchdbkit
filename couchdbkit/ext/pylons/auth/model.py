@@ -36,7 +36,7 @@ class User(Document):
         return hashed_password
 
     def set_password(self, password):
-        self._password = self._hash_password(password)
+        self.password = self._hash_password(password)
 
     @staticmethod
     def authenticate(login, password):
