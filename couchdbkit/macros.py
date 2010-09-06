@@ -38,9 +38,7 @@ import re
 import sys
 from hashlib import md5
 
-import anyjson
-
-from couchdbkit.utils import read_file, read_json, to_bytestring
+from couchdbkit.utils import read_file, read_json, to_bytestring, json
 
 def package_shows(doc, funcs, app_dir, objs, verbose=False):
     """ take a list of funcs un return them processed """
@@ -164,6 +162,6 @@ def run_json_macros(doc, f_string, app_dir, verbose=False):
         return f_string
 
     for k, v in included.iteritems():
-        varstrings.append("var %s = %s;" % (k, anyjson.serialize(v)))
+        varstrings.append("var %s = %s;" % (k, json.dumps(v)))
 
     return re_json.sub(rjson2, f_string)

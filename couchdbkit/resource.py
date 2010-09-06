@@ -26,13 +26,13 @@ import sys
 import time
 import types
 
-import anyjson
 
 from restkit import Resource, HttpResponse
 from restkit.errors import ResourceError, RequestFailed, RequestError
 from restkit.util import url_quote
   
 from couchdbkit import __version__
+from couchdbkit.utils import json
 
 USER_AGENT = 'couchdbkit/%s' % __version__
 
@@ -53,7 +53,7 @@ class CouchDBResponse(HttpResponse):
     @property
     def json_body(self):
         try:
-            return anyjson.deserialize(self.body_string())
+            return json.loads(self.body_string())
         except ValueError:
             return self.body_string()
 
@@ -113,7 +113,7 @@ class CouchdbResource(Resource):
         if payload is not None:
             #TODO: handle case we want to put in payload json file.
             if not hasattr(payload, 'read') and not isinstance(payload, basestring):
-                body = anyjson.serialize(payload).encode('utf-8')
+                body = json.dumps(payload).encode('utf-8')
                 headers.setdefault('Content-Type', 'application/json')
             else:
                 body = payload
@@ -130,7 +130,7 @@ class CouchdbResource(Resource):
             if e.response and msg:
                 if e.response.headers.get('content-type') == 'application/json':
                     try:
-                        msg = anyjson.deserialize(msg)
+                        msg = json.loads(msg)
                     except ValueError:
                         pass
                     
@@ -166,7 +166,7 @@ def encode_params(params):
             
             if name in ('key', 'startkey', 'endkey') \
                     or not isinstance(value, basestring):
-                value = anyjson.serialize(value)
+                value = json.dumps(value)
             _params[name] = value
     return _params
 

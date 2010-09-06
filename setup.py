@@ -56,8 +56,7 @@ setup(
     zip_safe = False,
 
     install_requires = [
-        'restkit>=2.1.1',
-        'anyjson'
+        'restkit>=2.1.5',
     ],
         
     test_suite='noses',

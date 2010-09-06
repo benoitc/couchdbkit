@@ -22,7 +22,19 @@ import sys
 import time
 
 
-import anyjson
+try:
+    import json
+except ImportError:
+    try:
+        from simplejson import json
+    except ImportError:
+        raise ImportErro("""simplejson isn't installed
+
+Install it with the command:
+
+    pip install simplejson
+""")
+ 
 
 # backport relpath from python2.6
 if not hasattr(os.path, 'relpath'):
@@ -153,7 +165,7 @@ def write_json(filename, content):
     :attr content: string
     
     """
-    write_content(filename, anyjson.serialize(content))
+    write_content(filename, json.dumps(content))
 
 def read_json(filename, use_environment=False):
     """ read a json file and deserialize
@@ -176,7 +188,7 @@ def read_json(filename, use_environment=False):
         data = string.Template(data).substitute(os.environ)
 
     try:
-        data = anyjson.deserialize(data)
+        data = json.loads(data)
     except ValueError:
         print >>sys.stderr, "Json is invalid, can't load %s" % filename
         raise

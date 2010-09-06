@@ -5,11 +5,12 @@
 
 from __future__ import with_statement
 
-import anyjson
 import asyncore
 import asynchat
 import socket
 import sys
+
+from couchdbkit.utils import json
 
 class Consumer(object):
     """ Database change consumer
@@ -75,7 +76,7 @@ class Consumer(object):
                     break
                 buf += data
             
-            ret = anyjson.deserialize(buf)
+            ret = json.loads(buf)
             for callback in self.callbacks:
                 callback(ret)
             return ret
@@ -140,7 +141,7 @@ class continuous_changes_handler(asynchat.async_chat):
             self.buf.append(data)
             
     def emit_line(self, line):
-        line = anyjson.deserialize(line)
+        line = json.loads(line)
         for callback in self.callbacks:
             callback(line)
             

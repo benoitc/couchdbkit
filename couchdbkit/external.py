@@ -3,9 +3,10 @@
 # This file is part of couchdbkit released under the MIT license. 
 # See the NOTICE for more information.
 
-import anyjson
 import sys
-        
+
+from couchdbkit.utils import json
+
 class External(object):
     """ simple class to handle an external
     ans send the response.
@@ -13,13 +14,13 @@ class External(object):
     example:
     
         from couchdbkit.external import External
-        import anyjson
+        from couchdbkit.utils import json 
 
         class Test(External):
 
             def handle_line(self, line):
                 self.send_response(200, 
-                    "got message external object %s" % anyjson.serialize(line),
+                    "got message external object %s" % json.dumps(line),
                     {"Content-type": "text/plain"})
 
         if __name__ == "__main__":
@@ -41,7 +42,7 @@ class External(object):
     def lines(self):
         line = self.stdin.readline()
         while line:
-            yield anyjson.deserialize(line)
+            yield json.loads(line)
             line = self.stdin.readline()
     
     def run(self):
@@ -54,4 +55,4 @@ class External(object):
             'body': body, 
             'headers': headers
         }
-        self.write(anyjson.serialize(resp))
+        self.write(json.dumps(resp))

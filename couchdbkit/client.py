@@ -39,13 +39,13 @@ import time
 import urlparse
 import warnings
 
-import anyjson
 from restkit.util import url_quote
 from restkit.util.misc import deprecated_property
 
 from couchdbkit.exceptions import *
 import couchdbkit.resource as resource
-from couchdbkit.utils import validate_dbname
+from couchdbkit.utils import validate_dbname, json
+
 
 DEFAULT_UUID_BATCH_COUNT = 1000
 
@@ -633,7 +633,7 @@ class Database(object):
 
         result = { 'ok': False }
         if _raw_json:
-            return anyjson.serialize(result)
+            return json.dumps(result)
         return result
 
 
