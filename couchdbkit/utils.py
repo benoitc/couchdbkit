@@ -28,7 +28,7 @@ except ImportError:
     try:
         from simplejson import json
     except ImportError:
-        raise ImportErro("""simplejson isn't installed
+        raise ImportError("""simplejson isn't installed
 
 Install it with the command:
 
