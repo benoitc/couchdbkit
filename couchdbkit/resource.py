@@ -109,24 +109,19 @@ class CouchdbResource(Resource):
         headers.setdefault('Accept', 'application/json')
         headers.setdefault('User-Agent', USER_AGENT)
 
-        body = None
         if payload is not None:
             #TODO: handle case we want to put in payload json file.
             if not hasattr(payload, 'read') and not isinstance(payload, basestring):
-                body = json.dumps(payload).encode('utf-8')
+                payload = json.dumps(payload).encode('utf-8')
                 headers.setdefault('Content-Type', 'application/json')
-            else:
-                body = payload
 
         params = encode_params(params)
-        
         try:
             resp = Resource.request(self, method, path=path,
-                             payload=body, headers=headers, **params)
+                             payload=payload, headers=headers, **params)
                              
         except ResourceError, e:
             msg = getattr(e, 'msg', '')
-            
             if e.response and msg:
                 if e.response.headers.get('content-type') == 'application/json':
                     try:
