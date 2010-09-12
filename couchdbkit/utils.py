@@ -26,7 +26,7 @@ try:
     import json
 except ImportError:
     try:
-        from simplejson import json
+        import simplejson as json
     except ImportError:
         raise ImportError("""simplejson isn't installed
 
