@@ -538,6 +538,15 @@ class PropertyTestCase(unittest.TestCase):
             test.string = ""
         self.assertRaises(BadValueError, test.save)
 
+    def testRequiredBoolean(self):
+        class Test(Document):
+            boolean = BooleanProperty(required=True)
+        Test._db = self.db
+
+        test = Test()
+        test.boolean = False
+        test.save()
+
     def testValidator(self):
         def test_validator(value):
             if value == "test":

@@ -251,6 +251,10 @@ class BooleanProperty(Property):
         
         return value
 
+    def empty(self, value):
+        """test if boolean is empty"""
+        return value is None
+
 class DecimalProperty(Property):
     """ Decimal property, map to Decimal python object
     
