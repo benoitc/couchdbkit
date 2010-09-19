@@ -38,6 +38,14 @@ class AsyncConsumer(ConsumerBase):
             pass
         cb(line)
 
+    def fetch(self, cb, **params):
+        resp = self.db.res.get("_changes", **params)
+        if cb is not None:
+            check_callable(cb)
+            self.spawn(cb, resp.json_body)
+            self.sleep(0.1)
+        else:
+            return resp.json_body 
 
     def wait_once(self, cb=None, **params):
         if cb is not None:
