@@ -3,7 +3,7 @@
 # This file is part of couchdbkit released under the MIT license. 
 # See the NOTICE for more information.
 
-version_info = (0, 4, 11)
+version_info = (0, 5, 0)
 __version__ =  ".".join(map(str, version_info))
 
 try:

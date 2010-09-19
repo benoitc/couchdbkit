@@ -43,8 +43,8 @@ class ClientServerTestCase(unittest.TestCase):
             self.assert_(line["last_seq"] == 1)
             self.assert_(len(line["results"]) == 1)
             
-        self.consumer.register_callback(test_line)
-        t =  threading.Thread(target=self.consumer.wait_once)
+        t =  threading.Thread(target=self.consumer.wait_once,
+                kwargs=dict(cb=test_line))
         t.daemon = True
         t.start()
         doc = {}
@@ -55,8 +55,8 @@ class ClientServerTestCase(unittest.TestCase):
         def test_line(line):
             self.lines.append(line)
             
-        self.consumer.register_callback(test_line)
-        t =  threading.Thread(target=self.consumer.wait)
+        t =  threading.Thread(target=self.consumer.wait,
+                kwargs=dict(cb=test_line))
         t.daemon = True
         t.start()
         
