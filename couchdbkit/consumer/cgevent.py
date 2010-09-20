@@ -79,7 +79,7 @@ class GeventConsumer(SyncConsumer):
     def fetch(self, cb=None, **params):
         if cb is None:
             return super(GeventConsumer, self).wait_once(**params)
-        gevent.spawn(self._fetch, cb, **params)
+        return gevent.spawn(self._fetch, cb, **params)
         
     def wait_once(self, cb=None, **params):
         if cb is None:
