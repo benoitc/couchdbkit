@@ -5,17 +5,12 @@
 
 import traceback
 
+import gevent
+from gevent import monkey 
 
 from couchdbkit.consumer.base import check_callable
 from couchdbkit.consumer.sync import SyncConsumer
 from couchdbkit.utils import json
-
-import gevent
-from gevent import monkey 
-
-from gevent import socket
-from gevent import select
-
 
 class ChangeConsumer(gevent.Greenlet):
     def __init__(self, db, callback=None, **params):
@@ -50,6 +45,8 @@ class ContinuousChangeConsumer(ChangeConsumer):
                     line = line[:-2]
                 else:
                     line = line[:-1]
+                if not line:
+                    continue
                 self.process_change(line)
 
 class LongPollChangeConsumer(ChangeConsumer):
@@ -62,7 +59,6 @@ class LongPollChangeConsumer(ChangeConsumer):
                 if not data:
                     break
                 buf.append(data)
-                gevent.sleep(0.1)
             change = "".join(buf)
             try:
                 change = json.loads(change)
@@ -80,7 +76,8 @@ class GeventConsumer(SyncConsumer):
         if cb is None:
             return super(GeventConsumer, self).wait_once(**params)
         resp = self.db.res.get("_changes", **params)
-        gevent.spawn(cb, resp.json_body).join()
+        gevent.spawn(cb, resp.json_body)
+        gevent.sleep(0.1)
         
     def wait_once(self, cb=None, **params):
         if cb is None:

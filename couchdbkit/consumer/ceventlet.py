@@ -5,14 +5,14 @@
 
 import traceback
 
+import eventlet
+from eventlet.greenthread import GreenThread
+from eventlet import event
 
 from couchdbkit.consumer.base import check_callable
 from couchdbkit.consumer.sync import SyncConsumer
 from couchdbkit.utils import json
 
-import eventlet
-from eventlet.greenthread import GreenThread
-from eventlet import event
 
 class ChangeConsumer(object):
     def __init__(self, db, callback, **params):
@@ -55,6 +55,8 @@ class ContinuousChangeConsumer(ChangeConsumer):
                     line = line[:-2]
                 else:
                     line = line[:-1]
+                if not line:
+                    continue
                 self.process_change(line)
             self.stop_event.send(True)
 
