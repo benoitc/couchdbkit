@@ -3,10 +3,10 @@
 # This file is part of couchdbkit released under the MIT license. 
 # See the NOTICE for more information.
 
+from restkit.errors import NoMoreData
 
 from couchdbkit.consumer.base import ConsumerBase, check_callable
 from couchdbkit.utils import json
-
 
 class AsyncConsumer(ConsumerBase):
 
@@ -76,7 +76,9 @@ class AsyncConsumer(ConsumerBase):
                                 return json.loads(ret)
                             except ValueError:
                                 return ret
-                        break 
+                        break
+            except NoMoreData:
+                pass
             except (SystemExit, KeyboardInterrupt):
                 pass
                         
