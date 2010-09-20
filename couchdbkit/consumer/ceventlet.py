@@ -25,8 +25,10 @@ class ChangeConsumer(object):
         _ = eventlet.spawn_n(self._run)
         self.stop_event.wait()
 
-    def _run(self):
+    def wait_async(self):
+        _ = eventlet.spawn_n(self._run)
 
+    def _run(self):
         while True:
             try:
                 resp = self.db.res.get("_changes", **self.params)
@@ -85,12 +87,14 @@ class EventletConsumer(SyncConsumer):
         eventlet.monkey_patch(socket=True)
         super(EventletConsumer, self).__init__(db)
 
+    def _fetch(self, cb, **params):
+        resp = self.db.res.get("_changes", **params)
+        cb(resp.json_body)
+
     def fetch(self, cb=None, **params):
         if cb is None:
             return super(EventletConsumer, self).wait_once(**params)
-        resp = self.db.res.get("_changes", **params)
-        eventlet.spawn_n(cb, resp.json_body)
-        eventlet.sleep(0.1)
+        eventlet.spawn_n(self._fetch, cb, **params)
         
     def wait_once(self, cb=None, **params):
         if cb is None:
@@ -107,4 +111,18 @@ class EventletConsumer(SyncConsumer):
         consumer = ContinuousChangeConsumer(self.db, callback=cb, 
                 **params)
         consumer.wait()
+
+    def wait_once_async(self, cb, **params):
+        check_callable(cb)
+        params.update({"feed": "longpoll"})
+        consumer = LongPollChangeConsumer(self.db, callback=cb,
+                **params)
+        return consumer.wait_async()
+
+    def wait_async(self, cb, **params):
+        check_callable(cb)
+        params.update({"feed": "continuous"})
+        consumer = ContinuousChangeConsumer(self.db, callback=cb, 
+                **params)
+        return consumer.wait_async()
 

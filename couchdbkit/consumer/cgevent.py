@@ -72,12 +72,14 @@ class GeventConsumer(SyncConsumer):
         monkey.patch_socket()
         super(GeventConsumer, self).__init__(db)
 
+    def _fetch(self, cb, **params):
+        resp = self.db.res.get("_changes", **params)
+        cb(resp.json_body)
+
     def fetch(self, cb=None, **params):
         if cb is None:
             return super(GeventConsumer, self).wait_once(**params)
-        resp = self.db.res.get("_changes", **params)
-        gevent.spawn(cb, resp.json_body)
-        gevent.sleep(0.1)
+        gevent.spawn(self._fetch, cb, **params)
         
     def wait_once(self, cb=None, **params):
         if cb is None:
@@ -85,14 +87,23 @@ class GeventConsumer(SyncConsumer):
 
         check_callable(cb)
         params.update({"feed": "longpoll"})
-        ret = LongPollChangeConsumer.spawn(self.db, callback=cb,
+        LongPollChangeConsumer.spawn(self.db, callback=cb,
                 **params).join()
-        if cb is None:
-            return ret
 
     def wait(self, cb, **params):
+        check_callable(cb)
         params.update({"feed": "continuous"})
         ContinuousChangeConsumer.spawn(self.db, callback=cb, 
                 **params).join()
-        
 
+    def wait_once_async(self, cb, **params):
+        check_callable(cb)
+        params.update({"feed": "longpoll"})
+        return LongPollChangeConsumer.spawn(self.db, callback=cb,
+                **params)
+        
+    def wait_async(self, cb, **params):
+        check_callable(cb)
+        params.update({"feed": "continuous"})
+        return ContinuousChangeConsumer.spawn(self.db, callback=cb, 
+                **params)

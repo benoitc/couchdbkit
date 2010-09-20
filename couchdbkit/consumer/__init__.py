@@ -110,3 +110,11 @@ class Consumer(object):
         @return: dict, line of change
         """
         return self._consumer.wait(cb, **params)
+
+    def wait_once_async(self, cb, **params):
+        """ like wait_once but doesn't return anything. """
+        return self._consumer.wait_once_async(cb=cb, **params)
+
+    def wait_async(self, cb, **params):
+        """ like wait but doesn't return anything. """
+        return self._consumer.wait_async(cb, **params)

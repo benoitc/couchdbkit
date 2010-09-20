@@ -25,3 +25,9 @@ class ConsumerBase(object):
 
     def wait(self, cb, **params):
         raise NotImplementedError
+    
+    def wait_once_async(self, cb, **params):
+        raise NotImplementedError
+
+    def wait_async(cb, **params):
+        raise NotImplementedError
