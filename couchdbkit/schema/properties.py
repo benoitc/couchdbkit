@@ -13,15 +13,15 @@ import time
 
 from couchdbkit.exceptions import *
 
-__all__ = ['ALLOWED_PROPERTY_TYPES', 'Property', 'StringProperty', 
-        'IntegerProperty','DecimalProperty', 'BooleanProperty', 
-        'FloatProperty','DateTimeProperty', 'DateProperty', 
-        'TimeProperty','DictProperty', 'ListProperty', 
-        'StringListProperty', 'dict_to_json', 'list_to_json', 
-        'value_to_json', 'MAP_TYPES_PROPERTIES', 'value_to_python', 
+__all__ = ['ALLOWED_PROPERTY_TYPES', 'Property', 'StringProperty',
+        'IntegerProperty', 'DecimalProperty', 'BooleanProperty',
+        'FloatProperty', 'DateTimeProperty', 'DateProperty',
+        'TimeProperty', 'DictProperty', 'ListProperty',
+        'StringListProperty', 'dict_to_json', 'list_to_json',
+        'value_to_json', 'MAP_TYPES_PROPERTIES', 'value_to_python',
         'dict_to_python', 'list_to_python', 'convert_property',
         'value_to_property', 'LazyDict', 'LazyList']
-        
+
 ALLOWED_PROPERTY_TYPES = set([
     basestring,
     str,
@@ -49,7 +49,7 @@ class Property(object):
     inherit."""
     creation_counter = 0
 
-    def __init__(self, verbose_name=None, name=None, 
+    def __init__(self, verbose_name=None, name=None,
             default=None, required=False, validators=None,
             choices=None):
         """ Default constructor for a property. 
@@ -90,7 +90,7 @@ class Property(object):
         value = document_instance._doc.get(self.name)
         if value is not None:
             value = self._to_python(value)
-        
+
         return value
 
     def __set__(self, document_instance, value):
@@ -115,14 +115,13 @@ class Property(object):
                 raise BadValueError("Property %s is required." % self.name)
         else:
             if self.choices:
-                match = False
-                for choice in self.choices:
-                    if choice == value:
-                        match = True
-                        break
-                if not match:
+                if isinstance(self.choices, list):      choice_list = self.choices
+                if isinstance(self.choices, dict):      choice_list = self.choices.keys()
+                if isinstance(self.choices, tuple):     choice_list = [key for (key, name) in self.choices]
+
+                if value not in choice_list:
                     raise BadValueError('Property %s is %r; must be one of %r' % (
-                        self.name, value, self.choices))
+                        self.name, value, choice_list))
         if self.validators:
             if isinstance(self.validators, (list, tuple,)):
                 for validator in self.validators:
@@ -135,15 +134,15 @@ class Property(object):
     def empty(self, value):
         """ test if value is empty """
         return not value or value is None
-        
+
     def _to_python(self, value):
         if value == None:
-            return value    
+            return value
         return self.to_python(value)
-        
+
     def _to_json(self, value):
         if value == None:
-            return value    
+            return value
         return self.to_json(value)
 
     def to_python(self, value):
@@ -162,7 +161,7 @@ class StringProperty(Property):
     *Value type*: unicode
     """
 
-    to_python = unicode 
+    to_python = unicode
 
     def validate(self, value, required=True):
         value = super(StringProperty, self).validate(value,
@@ -170,7 +169,7 @@ class StringProperty(Property):
 
         if value is None:
             return value
-        
+
         if not isinstance(value, basestring):
             raise BadValueError(
                 'Property %s must be unicode or str instance, not a %s' % (self.name, type(value).__name__))
@@ -198,10 +197,10 @@ class IntegerProperty(Property):
         if value is not None and not isinstance(value, (int, long,)):
             raise BadValueError(
                 'Property %s must be %s or long instance, not a %s'
-                % (self.name, type(self.data_type).__name__, 
-                    type(value).__name__)) 
+                % (self.name, type(self.data_type).__name__,
+                    type(value).__name__))
 
-        return value 
+        return value
 
     data_type = int
 LongProperty = IntegerProperty
@@ -215,7 +214,7 @@ class FloatProperty(Property):
     data_type = float
 
     def validate(self, value, required=True):
-        value = super(FloatProperty, self).validate(value, 
+        value = super(FloatProperty, self).validate(value,
                 required=required)
 
         if value is None:
@@ -225,7 +224,7 @@ class FloatProperty(Property):
             raise BadValueError(
                 'Property %s must be float instance, not a %s'
                 % (self.name, type(value).__name__))
-        
+
         return value
 Number = FloatProperty
 
@@ -238,7 +237,7 @@ class BooleanProperty(Property):
     data_type = bool
 
     def validate(self, value, required=True):
-        value = super(BooleanProperty, self).validate(value, 
+        value = super(BooleanProperty, self).validate(value,
                 required=required)
 
         if value is None:
@@ -248,7 +247,7 @@ class BooleanProperty(Property):
             raise BadValueError(
                 'Property %s must be bool instance, not a %s'
                 % (self.name, type(value).__name__))
-        
+
         return value
 
     def empty(self, value):
@@ -311,7 +310,7 @@ class DateTimeProperty(Property):
     def to_json(self, value):
         if self.auto_now:
             value = self.now()
-        
+
         if value is None:
             return value
         return value.replace(microsecond=0).isoformat() + 'Z'
@@ -373,12 +372,12 @@ class TimeProperty(DateTimeProperty):
         if value is None:
             return value
         return value.replace(microsecond=0).isoformat()
-        
+
 
 class DictProperty(Property):
     """ A property that stores a dict of things"""
-    
-    def __init__(self, verbose_name=None, default=None, 
+
+    def __init__(self, verbose_name=None, default=None,
         required=False, **kwds):
         """
         :args verbose_name: Optional verbose name.
@@ -387,15 +386,15 @@ class DictProperty(Property):
 
         Note that the only permissible value for 'required' is True.
         """
-           
+
         if default is None:
             default = {}
-            
+
         Property.__init__(self, verbose_name, default=default,
             required=required, **kwds)
-            
+
     data_type = dict
-    
+
     def validate(self, value, required=True):
         value = super(DictProperty, self).validate(value, required=required)
         if value and value is not None:
@@ -403,7 +402,7 @@ class DictProperty(Property):
                 raise BadValueError('Property %s must be a dict' % self.name)
             value = self.validate_dict_contents(value)
         return value
-        
+
     def validate_dict_contents(self, value):
         try:
             value = validate_dict_content(value)
@@ -412,7 +411,7 @@ class DictProperty(Property):
                 'Items of %s dict must all be in %s' %
                     (self.name, ALLOWED_PROPERTY_TYPES))
         return value
-        
+
     def default_value(self):
         """Default value for list.
 
@@ -427,20 +426,20 @@ class DictProperty(Property):
         if value is None:
             value = {}
         return dict(value)
-        
+
     def to_python(self, value):
         return LazyDict(value)
-        
+
     def to_json(self, value):
         return value_to_json(value)
-        
-        
+
+
 
 class ListProperty(Property):
     """A property that stores a list of things.
 
       """
-    def __init__(self, verbose_name=None, default=None, 
+    def __init__(self, verbose_name=None, default=None,
             required=False, item_type=None, **kwds):
         """Construct ListProperty.
 
@@ -453,16 +452,16 @@ class ListProperty(Property):
         """
         if default is None:
             default = []
-            
+
         if item_type is not None and item_type not in ALLOWED_PROPERTY_TYPES:
             raise ValueError('item_type %s not in %s' % (item_type, ALLOWED_PROPERTY_TYPES))
         self.item_type = item_type
 
         Property.__init__(self, verbose_name, default=default,
             required=required, **kwds)
-        
+
     data_type = list
-        
+
     def validate(self, value, required=True):
         value = super(ListProperty, self).validate(value, required=required)
         if value and value is not None:
@@ -470,7 +469,7 @@ class ListProperty(Property):
                 raise BadValueError('Property %s must be a list' % self.name)
             value = self.validate_list_contents(value)
         return value
-        
+
     def validate_list_contents(self, value):
         value = validate_list_content(value, item_type=self.item_type)
         try:
@@ -480,7 +479,7 @@ class ListProperty(Property):
                 'Items of %s list must all be in %s' %
                     (self.name, ALLOWED_PROPERTY_TYPES))
         return value
-        
+
     def default_value(self):
         """Default value for list.
 
@@ -495,21 +494,21 @@ class ListProperty(Property):
         if value is None:
             value = []
         return list(value)
-        
+
     def to_python(self, value):
         return LazyList(value, item_type=self.item_type)
-        
+
     def to_json(self, value):
         return value_to_json(value, item_type=self.item_type)
 
 
 class StringListProperty(ListProperty):
     """ shorthand for list that should containe only unicode"""
-    
-    def __init__(self, verbose_name=None, default=None, 
+
+    def __init__(self, verbose_name=None, default=None,
             required=False, **kwds):
-        super(StringListProperty, self).__init__(verbose_name=verbose_name, 
-            default=default, required=required, item_type=basestring,**kwds)
+        super(StringListProperty, self).__init__(verbose_name=verbose_name,
+            default=default, required=required, item_type=basestring, **kwds)
 
 # structures proxy
 
@@ -565,7 +564,7 @@ class LazyDict(dict):
 
     def setdefault(self, key, default):
         if key in self:
-            return self[key]  
+            return self[key]
         self.doc.setdefault(key, value_to_json(default, item_type=self.item_type))
         super(LazyDict, self).setdefault(key, default)
         return default
@@ -595,7 +594,7 @@ class LazyList(list):
 
     def __init__(self, doc, item_type=None, init_vals=None):
         list.__init__(self)
-        
+
         self.item_type = item_type
         self.doc = doc
         if init_vals is None:
@@ -621,7 +620,7 @@ class LazyList(list):
     def __delitem__(self, index):
         del self.doc[index]
         list.__delitem__(self, index)
-        
+
     def __setitem__(self, index, value):
         if isinstance(value, dict):
             self.doc[index] = {}
@@ -632,7 +631,7 @@ class LazyList(list):
         else:
             self.doc[index] = value_to_json(value, item_type=self.item_type)
         list.__setitem__(self, index, value)
-        
+
 
     def __delslice__(self, i, j):
         del self.doc[i:j]
@@ -644,13 +643,13 @@ class LazyList(list):
     def __setslice__(self, i, j, seq):
         self.doc[i:j] = (value_to_json(v, item_type=self.item_type) for v in seq)
         list.__setslice__(self, i, j, seq)
-        
+
     def __contains__(self, value):
         jvalue = value_to_json(value)
         for m in self.doc:
             if m == value: return True
         return False
-        
+
     def append(self, *args, **kwargs):
         if args:
             assert len(args) == 1
@@ -668,25 +667,25 @@ class LazyList(list):
         else:
             self.doc.append(value_to_json(value, item_type=self.item_type))
         super(LazyList, self).append(value)
-        
+
     def index(self, x, *args):
         x = value_to_json(x, item_type=self.item_type)
         return self.doc.index(x)
-        
+
     def remove(self, x):
         del self[self.index(x)]
-        
+
     def sort(self, cmp=None, key=None, reverse=False):
         self.doc.sort(cmp, key, reverse)
         list.sort(self, cmp, key, reverse)
-        
+
     def reverse(self):
         self.doc.reverse()
         list.reverse(self)
-        
-    
+
+
 # some mapping
- 
+
 MAP_TYPES_PROPERTIES = {
         decimal.Decimal: DecimalProperty,
         datetime.datetime: DateTimeProperty,
@@ -700,8 +699,8 @@ MAP_TYPES_PROPERTIES = {
         float: FloatProperty,
         list: ListProperty,
         dict: DictProperty
-}           
-            
+}
+
 def convert_property(value):
     """ convert a value to json from Property._to_json """
     if type(value) in MAP_TYPES_PROPERTIES:
@@ -723,12 +722,12 @@ def value_to_property(value):
 def validate_list_content(value, item_type=None):
     """ validate type of values in a list """
     return [validate_content(item, item_type=item_type) for item in value]
-    
+
 def validate_dict_content(value, item_type=None):
     """ validate type of values in a dict """
-    return dict([(k, validate_content(v, 
+    return dict([(k, validate_content(v,
                 item_type=item_type)) for k, v in value.iteritems()])
-           
+
 def validate_content(value, item_type=None):
     """ validate a value. test if value is in supported types """
     if isinstance(value, list):
@@ -747,11 +746,11 @@ def validate_content(value, item_type=None):
 def dict_to_json(value, item_type=None):
     """ convert a dict to json """
     return dict([(k, value_to_json(v, item_type=item_type)) for k, v in value.iteritems()])
-    
+
 def list_to_json(value, item_type=None):
     """ convert a list to json """
     return [value_to_json(item, item_type=item_type) for item in value]
-    
+
 def value_to_json(value, item_type=None):
     """ convert a value to json using appropriate regexp.
     For Dates we use ISO 8601. Decimal are converted to string.
@@ -764,17 +763,17 @@ def value_to_json(value, item_type=None):
     elif isinstance(value, datetime.time) and is_type_ok(item_type, datetime.time):
         value = value.replace(microsecond=0).isoformat()
     elif isinstance(value, decimal.Decimal) and is_type_ok(item_type, decimal.Decimal):
-        value = unicode(value) 
+        value = unicode(value)
     elif isinstance(value, list):
         value = list_to_json(value, item_type)
     elif isinstance(value, dict):
         value = dict_to_json(value, item_type)
     return value
-    
+
 def is_type_ok(item_type, value_type):
     return item_type is None or item_type == value_type
-    
-    
+
+
 def value_to_python(value, item_type=None):
     """ convert a json value to python type using regexp. values converted
     have been put in json via `value_to_json` .
@@ -791,21 +790,21 @@ def value_to_python(value, item_type=None):
             data_type = decimal.Decimal
         if data_type is not None:
             prop = MAP_TYPES_PROPERTIES[data_type]()
-            try: 
+            try:
                 #sometimes regex fail so return value
                 value = prop.to_python(value)
             except:
-                pass           
+                pass
     elif isinstance(value, list):
         value = list_to_python(value, item_type=item_type)
     elif isinstance(value, dict):
         value = dict_to_python(value, item_type=item_type)
     return value
-    
+
 def list_to_python(value, item_type=None):
     """ convert a list of json values to python list """
     return [value_to_python(item, item_type=item_type) for item in value]
-    
+
 def dict_to_python(value, item_type=None):
     """ convert a json object values to python dict """
     return dict([(k, value_to_python(v, item_type=item_type)) for k, v in value.iteritems()])
