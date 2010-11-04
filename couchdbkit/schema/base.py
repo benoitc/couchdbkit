@@ -426,11 +426,10 @@ class DocumentBase(DocumentSchema):
         @params db: couchdbkit.core.Database instance
         """
         self.validate()
-        if self._db is None:
-            raise TypeError("doc database required to save document")
+        db = self.get_db()
 
         doc = self.to_json()
-        self._db.save_doc(doc, **params)
+        db.save_doc(doc, **params)
         if '_id' in doc and '_rev' in doc:
             self._doc.update(doc)
         elif '_id' in doc:
@@ -439,7 +438,7 @@ class DocumentBase(DocumentSchema):
     store = save
 
     @classmethod
-    def bulk_save(cls, docs, use_uuids=True, all_or_nothing=False):
+    def save_docs(cls, docs, use_uuids=True, all_or_nothing=False):
         """ Save multiple documents in database.
 
         @params docs: list of couchdbkit.schema.Document instance
@@ -456,24 +455,24 @@ class DocumentBase(DocumentSchema):
         if not len(docs_to_save) == len(docs):
             raise ValueError("one of your documents does not have the correct type")
         cls._db.bulk_save(docs_to_save, use_uuids=use_uuids, all_or_nothing=all_or_nothing)
+    
+    bulk_save = save_docs
 
     @classmethod
     def get(cls, docid, rev=None, db=None, dynamic_properties=True):
         """ get document with `docid`
         """
-        if db is not None:
-            cls._db = db
+        if not db:
+            db = cls.get_db()
         cls._allow_dynamic_properties = dynamic_properties
-        if cls._db is None:
-            raise TypeError("doc database required to save document")
-        return cls._db.get(docid, rev=rev, wrapper=cls.wrap)
+        return db.get(docid, rev=rev, wrapper=cls.wrap)
 
     @classmethod
     def get_or_create(cls, docid=None, db=None, dynamic_properties=True, **params):
         """ get  or create document with `docid` """
-        if db is not None:
+       
+        if db:
             cls._db = db
-
         cls._allow_dynamic_properties = dynamic_properties
 
         if cls._db is None:
@@ -500,13 +499,10 @@ class DocumentBase(DocumentSchema):
         """ Delete document from the database.
         @params db: couchdbkit.core.Database instance
         """
-        if self._db is None:
-            raise TypeError("doc database required to save document")
-
         if self.new_document:
             raise TypeError("the document is not saved")
-
-        self._db.delete_doc(self._id)
+        
+        db = self.get_db()
 
         # reinit document
         del self._doc['_id']
@@ -530,9 +526,8 @@ class AttachmentMixin(object):
 
         @return: bool, True if everything was ok.
         """
-        if not hasattr(self, '_db'):
-            raise TypeError("doc database required to save document")
-        return self.__class__._db.put_attachment(self._doc, content, name=name,
+        db = self.get_db() 
+        return db.put_attachment(self._doc, content, name=name,
             content_type=content_type, content_length=content_length)
 
     def delete_attachment(self, name):
@@ -542,9 +537,9 @@ class AttachmentMixin(object):
 
         @return: dict, with member ok set to True if delete was ok.
         """
-        if not hasattr(self, '_db'):
-            raise TypeError("doc database required to save document")
-        result = self.__class__._db.delete_attachment(self._doc, name)
+
+        db = self.get_db()
+        result = db.delete_attachment(self._doc, name)
         try:
             self._doc['_attachments'].pop(name)
         except KeyError:
@@ -560,10 +555,8 @@ class AttachmentMixin(object):
 
         @return: str or unicode, attachment
         """
-        if not hasattr(self, '_db'):
-            raise TypeError("doc database required to save document")
-        return self.__class__._db.fetch_attachment(self._doc, name,
-                                            stream=stream)
+        db = self.get_db()
+        return db.fetch_attachment(self._doc, name, stream=stream)
 
 
 class QueryMixin(object):

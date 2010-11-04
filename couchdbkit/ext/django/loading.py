@@ -44,7 +44,7 @@ class CouchdbkitHandler(object):
     __shared_state__ = dict(
             _databases = {},
             app_schema = SortedDict()
-            )    
+    )    
 
     def __init__(self, databases):
         """ initialize couchdbkit handler with COUCHDB_DATABASES
@@ -67,11 +67,12 @@ class CouchdbkitHandler(object):
                 raise ValueError("couchdb uri [%s:%s] invalid" % (
                     app_name, uri))
 
+                
             res = CouchdbResource(server_uri, timeout=COUCHDB_TIMEOUT)
 
             server = Server(server_uri, resource_instance=res)
             app_label = app_name.split('.')[-1]
-            self._databases[app_label] = server.get_or_create_db(dbname)
+            self._databases[app_label] = (server, dbname)
     
     def sync(self, app, verbosity=2):
         """ used to sync views of all applications and eventually create
@@ -82,11 +83,7 @@ class CouchdbkitHandler(object):
         if app_label in self._databases:
             if verbosity >=1:
                 print "sync `%s` in CouchDB" % app_name
-            db = self._databases[app_label]
-            try:
-                db.server.create_db(db.dbname)
-            except:
-                pass
+            db = self.get_db(app_label)
 
             app_path = os.path.abspath(os.path.join(sys.modules[app.__name__].__file__, ".."))
             design_path = "%s/%s" % (app_path, "_design")
@@ -98,9 +95,17 @@ class CouchdbkitHandler(object):
             push(os.path.join(app_path, "_design"), db, force=True,
                     docid="_design/%s" % app_label)
                 
-    def get_db(self, app_label):
+    def get_db(self, app_label, register=False):
         """ retrieve db session for a django application """
-        return self._databases[app_label]
+        if register:
+            return
+
+        db = self._databases[app_label]
+        if isinstance(db, tuple):
+            server, dbname = db
+            db = server.get_or_create_db(dbname)
+            self._databases[app_label] = db
+        return db
                 
     def register_schema(self, app_label, *schema):
         """ register a Document object"""
@@ -113,7 +118,6 @@ class CouchdbkitHandler(object):
                 if os.path.splitext(fname1)[0] == os.path.splitext(fname2)[0]:
                     continue
             schema_dict[schema_name] = s
-            s._db = self.get_db(app_label)
 
     def get_schema(self, app_label, schema_name):
         """ retriev Document object from its name and app name """

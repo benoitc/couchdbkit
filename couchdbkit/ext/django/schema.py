@@ -27,7 +27,8 @@ string_concat
 from django.utils.encoding import force_unicode
 
 from couchdbkit import schema
-from couchdbkit.ext.django.loading import get_schema, register_schema
+from couchdbkit.ext.django.loading import get_schema, register_schema, \
+get_db
 
 __all__ = ['Property', 'StringProperty', 'IntegerProperty', 
             'DecimalProperty', 'BooleanProperty', 'FloatProperty', 
@@ -143,7 +144,15 @@ class Document(schema.Document):
     
     get_id = property(lambda self: self['_id'])
     get_rev = property(lambda self: self['_rev'])
-    
+
+    @classmethod
+    def get_db(cls):
+        db = getattr(cls, '_db', None)
+        if db is None:
+            app_label = getattr(cls._meta, "app_label")
+            db = get_db(app_label)
+            cls._db = db
+        return db
     
 DocumentSchema = schema.DocumentSchema    
 
