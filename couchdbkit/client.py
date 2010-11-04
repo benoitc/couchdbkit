@@ -250,7 +250,7 @@ class Database(object):
         if create:
             try:
                 self.server.res.head('/%s/' % self.dbname)
-            except resource.ResourceNotFound:
+            except ResourceNotFound:
                 self.server.res.put('/%s/' % self.dbname)
 
 
@@ -327,7 +327,7 @@ class Database(object):
 
         try:
             self.res.head(resource.escape_docid(docid))
-        except resource.ResourceNotFound:
+        except ResourceNotFound:
             return False
         return True
 
@@ -384,7 +384,7 @@ class Database(object):
         if by_seq:
             try:
                 return self.view('_all_docs_by_seq', _raw_json=_raw_json, **params)
-            except resource.ResourceNotFound:
+            except ResourceNotFound:
                 # CouchDB 0.11 or sup
                 raise AttributeError("_all_docs_by_seq isn't supported on Couchdb %s" % self.server.info()[1])
 
@@ -423,7 +423,7 @@ class Database(object):
             else:
                 doc_with_revs = maybe_raw(self.res.get(docid, revs_info=True),
                                     raw=_raw_json)
-        except resource.ResourceNotFound:
+        except ResourceNotFound:
             return None
         return doc_with_revs
 
@@ -473,7 +473,7 @@ class Database(object):
             try:
                 res = maybe_raw(self.res.put(docid1, payload=doc,
                             **params), raw=_raw_json)
-            except resource.ResourceConflict:
+            except ResourceConflict:
                 if force_update:
                     doc['_rev'] = self.get_rev(docid)
                     res = maybe_raw(self.res.put(docid1, payload=doc,
@@ -498,7 +498,7 @@ class Database(object):
 
         return res
 
-    def bulk_save(self, docs, use_uuids=True, all_or_nothing=False, _raw_json=False):
+    def save_docs(self, docs, use_uuids=True, all_or_nothing=False, _raw_json=False):
         """ bulk save. Modify Multiple Documents With a Single Request
 
         @param docs: list of docs
@@ -555,9 +555,9 @@ class Database(object):
                 docs[i].update({'_id': res['id'], '_rev': res['rev']})
         if errors:
             raise BulkSaveError(errors)
+    bulk_save = save_docs
 
-
-    def bulk_delete(self, docs, all_or_nothing=False, _raw_json=False):
+    def delete_docs(self, docs, all_or_nothing=False, _raw_json=False):
         """ bulk delete.
         It adds '_deleted' member to doc then uses bulk_save to save them.
 
@@ -571,6 +571,8 @@ class Database(object):
             doc['_deleted'] = True
         return self.bulk_save(docs, use_uuids=False, all_or_nothing=all_or_nothing,
                     _raw_json=_raw_json)
+
+    bulk_delete = delete_docs
 
     def delete_doc(self, doc, _raw_json=False):
         """ delete a document or a list of documents

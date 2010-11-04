@@ -106,6 +106,15 @@ if not hasattr(os.path, 'relpath'):
 else:
     relpath = os.path.relpath
 
+def split_path(path):
+    parts = []
+    while True:
+        head, tail = os.path.split(path)
+        parts = [tail] + parts
+        path = head
+        if not path: break
+    return parts
+
 VALID_DB_NAME = re.compile(r'^[a-z0-9_$()+-/]+$')
 def validate_dbname(name):
     """ validate dbname """
@@ -193,3 +202,5 @@ def read_json(filename, use_environment=False):
         print >>sys.stderr, "Json is invalid, can't load %s" % filename
         raise
     return data
+
+

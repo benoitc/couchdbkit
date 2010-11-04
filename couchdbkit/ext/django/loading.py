@@ -26,7 +26,7 @@ import urllib
 import urlparse
 
 from couchdbkit import Server, contain, ResourceConflict
-from couchdbkit.loaders import FileSystemDocLoader
+from couchdbkit import push
 from couchdbkit.resource import CouchdbResource, PreconditionFailed
 from django.conf import settings
 from django.db.models import signals, get_app
@@ -94,8 +94,9 @@ class CouchdbkitHandler(object):
                 if settings.DEBUG:
                     print >>sys.stderr, "%s don't exists, no ddoc synchronized" % design_path
                 return
-            loader = FileSystemDocLoader(app_path, "_design", design_name=app_label)
-            loader.sync(db)
+
+            push(os.path.join(app_path, "_design"), db, force=True,
+                    docid="_design/%s" % app_label)
                 
     def get_db(self, app_label):
         """ retrieve db session for a django application """

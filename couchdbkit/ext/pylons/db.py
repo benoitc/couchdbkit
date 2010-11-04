@@ -1,4 +1,4 @@
-from couchdbkit import Document, Server, FileSystemDocsLoader
+from couchdbkit import Document, Server, push 
 import os.path
 
 def init_from_config(config):
@@ -27,7 +27,7 @@ def init_db(uri, dbname, main_db=True):
 
 def sync_design(db, path):
     """Synchronizes the design documents with the database passed in."""
-    FileSystemDocsLoader(path).sync(db, verbose=True)
+    push(path, db, force=true)
 
 def default_design_path(config):
     """Returns full path to the default design documents path, it's _design in

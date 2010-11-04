@@ -5,6 +5,7 @@
 #
 __author__ = 'benoitc@e-engura.com (Benoît Chesneau)'
 
+import base64
 import os
 import shutil
 import tempfile
@@ -27,6 +28,8 @@ class LoaderTestCase(unittest.TestCase):
         self.template_dir = os.path.join(os.path.dirname(__file__), 'data/app-template')
         self.app_dir = os.path.join(self.tempdir, "couchdbkit-test")
         shutil.copytree(self.template_dir, self.app_dir)
+        write_content(os.path.join(self.app_dir, "_id"),
+                "_design/couchdbkit-test")
         self.server = Server()
         self.db = self.server.create_db('couchdbkit_test')
         
@@ -77,8 +80,8 @@ class LoaderTestCase(unittest.TestCase):
         self.assert_('index.html' in design_doc['_attachments'])
         self.assert_('style/main.css' in design_doc['_attachments'])
         
-        content = open(design_doc['_attachments']['style/main.css'], 'rb').read()
-        self.assert_(content == "/* add styles here */")
+        content = design_doc['_attachments']['style/main.css']
+        self.assert_(base64.b64decode(content['data']) == "/* add styles here */")
         
     def testGetDocSignatures(self):
         l = FileSystemDocsLoader(self.tempdir)

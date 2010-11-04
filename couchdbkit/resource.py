@@ -32,19 +32,11 @@ from restkit.errors import ResourceError, RequestFailed, RequestError
 from restkit.util import url_quote
   
 from couchdbkit import __version__
+from couchdbkit.exceptions import ResourceNotFound, ResourceConflict, \
+PreconditionFailed
 from couchdbkit.utils import json
 
 USER_AGENT = 'couchdbkit/%s' % __version__
-
-class ResourceNotFound(ResourceError):
-    """ Exception raised when resource is not found"""
-
-class ResourceConflict(ResourceError):
-    """ Exception raised when there is conflict while updating"""
-
-class PreconditionFailed(ResourceError):
-    """ Exception raised when 412 HTTP error is received in response
-    to a request """
 
 RequestFailed = RequestFailed
 
