@@ -57,6 +57,14 @@ class ClientServerTestCase(unittest.TestCase):
         self.assert_(db.dbname == gocdb.dbname)
         self.Server.delete_db("get_or_create_db")
         
+
+    def testCreateInvalidDbName(self):
+
+        def create_invalid():
+            res = self.Server.create_db('123ab')
+
+        self.assertRaises(ValueError, create_invalid) 
+    
     def testBadResourceClassType(self):
         self.assertRaises(TypeError, Server, resource_class=None)
         

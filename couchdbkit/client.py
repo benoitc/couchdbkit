@@ -237,6 +237,7 @@ class Database(object):
                                     pool_instance=pool_instance,
                                     filters=filters)
 
+        validate_dbname(self.dbname)
         if create:
             try:
                 self.server.res.head('/%s/' % self.dbname)

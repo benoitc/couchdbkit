@@ -20,6 +20,7 @@ import os
 import re
 import sys
 import time
+import urllib
 
 
 try:
@@ -115,13 +116,12 @@ def split_path(path):
         if not path: break
     return parts
 
-VALID_DB_NAME = re.compile(r'^[a-z0-9_$()+-/]+$')
+VALID_DB_NAME = re.compile(r'^[a-z][a-z0-9_$()+-/]*$')
 def validate_dbname(name):
     """ validate dbname """
-    if not VALID_DB_NAME.match(name):
-        raise ValueError('Invalid database name')
-    return name
-    
+    if not VALID_DB_NAME.match(urllib.unquote(name)):
+        raise ValueError("Invalid db name: '%s'" % name)
+
 def to_bytestring(s):
     """ convert to bytestring an unicode """
     if not isinstance(s, basestring):
