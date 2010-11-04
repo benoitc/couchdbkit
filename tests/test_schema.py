@@ -716,7 +716,23 @@ class PropertyTestCase(unittest.TestCase):
             pass
         b1.b.name = u"test"
 
+    def testSchemaProperty2(self):
+        class DocOne(Document):
+            name = StringProperty()
 
+        class DocTwo(Document):
+            name = StringProperty()
+            one = SchemaProperty(DocOne())
+
+        class DocThree(Document):
+            name = StringProperty()
+            two = SchemaProperty(DocTwo())
+
+        one = DocOne(name='one')
+        two = DocTwo(name='two', one=one)
+        three = DocThree(name='three', two=two)
+        self.assert_(three.two.one.name == 'one')
+        
     def testSchemaWithPythonTypes(self):
         class A(Document):
             c = unicode()

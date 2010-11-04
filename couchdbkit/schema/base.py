@@ -116,6 +116,7 @@ class DocumentSchema(object):
             else:
                 value = prop.default_value()
             prop.__property_init__(self, value)
+            self.__dict__[prop.name] = value
 
         _dynamic_properties = properties.copy()
         for attr_name, value in _dynamic_properties.iteritems():
@@ -228,7 +229,7 @@ class DocumentSchema(object):
             return self._dynamic_properties[key]
         elif key  in ('_id', '_rev', '_attachments', 'doc_type'):
             return self._doc.get(key)
-        return getattr(super(DocumentSchema, self), key)
+        return self.__dict__[key]
 
     def __getitem__(self, key):
         """ get property value
@@ -344,7 +345,7 @@ class DocumentSchema(object):
                 pass
 
         kwargs.update(self._dynamic_properties)
-        obj = type(self)(**kwargs)
+        obj = self.__class__(**kwargs)
         obj._doc = self._doc
 
         return obj

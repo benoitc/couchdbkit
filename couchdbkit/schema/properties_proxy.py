@@ -107,6 +107,11 @@ class SchemaProperty(Property):
             schema = self._schema()
         else:
             schema = self._schema.clone()
+
+        if not self._use_instance:
+            schema = self._schema
+        else:
+            schema = self._schema.__class__
         return schema.wrap(value)
 
     def to_json(self, value):
@@ -119,6 +124,7 @@ class SchemaProperty(Property):
             if not isinstance(value, dict):
                 raise BadValueError("%s is not a dict" % str(value))
             value = schema(**value)
+
         return value._doc
 
 class SchemaListProperty(Property):
