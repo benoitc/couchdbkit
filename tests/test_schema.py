@@ -65,6 +65,10 @@ class DocumentTestCase(unittest.TestCase):
         self.assert_(not hasattr(doc, "bar"))
         self.assert_(doc._doc['foo'] == "test")
 
+        doc1 = Test(foo="doc1")
+        db.save_doc(doc1)
+        self.assert_(doc1._doc['foo'] == "doc1")
+
         self.server.delete_db('couchdbkit_test')
 
 
@@ -144,6 +148,10 @@ class DocumentTestCase(unittest.TestCase):
         doc3 = db.get(doc2._id)
         self.assert_(doc3['string3'] == "test")
 
+        doc4 = Test(string="doc4")
+        db.save_doc(doc4)
+        self.assert_(doc4._id is not None)
+
         self.server.delete_db('couchdbkit_test')
 
     def testBulkSave(self):
@@ -184,6 +192,16 @@ class DocumentTestCase(unittest.TestCase):
         self.assert_(doc2.string == "test2")
         self.assert_(doc3.string == "test3")
 
+        doc4 = Test(string="doc4")
+        doc5 = Test(string="doc5")
+        db.save_docs([doc4, doc5])
+        self.assert_(doc4._id is not None)
+        self.assert_(doc4._rev is not None)
+        self.assert_(doc5._id is not None)
+        self.assert_(doc5._rev is not None)
+        self.assert_(doc4.string == "doc4")
+        self.assert_(doc5.string == "doc5")
+    
         self.server.delete_db('couchdbkit_test')
 
  
@@ -205,7 +223,11 @@ class DocumentTestCase(unittest.TestCase):
         doc2.string3 = "blah"
         doc2.save()
         doc3 = db.get(doc2._id)
-        self.assert_(doc3)
+        self.assert_(doc3['string3'] == "blah")
+
+        doc4 = db.open_doc(doc2._id, schema=Test)
+        self.assert_(isinstance(doc4, Test) == True)
+        self.assert_(doc4.string3 == "blah")
 
         self.server.delete_db('couchdbkit_test')
 

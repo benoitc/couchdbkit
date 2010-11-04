@@ -49,6 +49,14 @@ from couchdbkit.utils import validate_dbname, json
 
 DEFAULT_UUID_BATCH_COUNT = 1000
 
+def _maybe_serialize(doc):
+    if hasattr(doc, "to_json"):
+        return doc.to_json(), True
+    elif isinstance(doc, dict):
+        return doc.copy(), False
+
+    return doc, False
+
 class Server(object):
     """ Server object that allows you to access and manage a couchdb node.
     A Server object can be used like any `dict` object.
@@ -331,13 +339,18 @@ class Database(object):
         raw_json = False
         if "wrapper" in params:
             wrapper = params.pop("wrapper")
-            
+        elif "schema" in params:
+            schema = params.pop("schema")
+            if not hasattr(schema, "wrap"):
+                raise TypeError("invalid schema")
+            wrapper = schema.wrap
+
         docid = resource.escape_docid(docid)
-        
         doc = self.res.get(docid, **params).json_body        
         if wrapper is not None:
             if not callable(wrapper):
                 raise TypeError("wrapper isn't a callable")
+
             return wrapper(doc)
 
         return doc
@@ -396,37 +409,44 @@ class Database(object):
         @return res: result of save. doc is updated in the mean time
         """
         if doc is None:
-            doc = {}
+            doc1 = {}
+        else:
+            doc1, schema = _maybe_serialize(doc)
 
-        if '_attachments' in doc and encode_attachments:
-            doc['_attachments'] = resource.encode_attachments(doc['_attachments'])
+        if '_attachments' in doc1 and encode_attachments:
+            doc1['_attachments'] = resource.encode_attachments(doc['_attachments'])
 
         if '_id' in doc:
-            docid = doc['_id']
-            docid1 = resource.escape_docid(doc['_id'])
+            docid = doc1['_id']
+            docid1 = resource.escape_docid(doc1['_id'])
             try:
-                res = self.res.put(docid1, payload=doc,
+                res = self.res.put(docid1, payload=doc1,
                         **params).json_body
             except ResourceConflict:
                 if force_update:
-                    doc['_rev'] = self.get_rev(docid)
-                    res =self.res.put(docid1, payload=doc,
+                    doc1['_rev'] = self.get_rev(docid)
+                    res =self.res.put(docid1, payload=doc1,
                             **params).json_body
                 else:
                     raise
         else:
             try:
                 doc['_id'] = self.server.next_uuid()
-                res =  self.res.put(doc['_id'], payload=doc,
+                res =  self.res.put(doc['_id'], payload=doc1,
                         **params).json_body
             except:
-                res = self.res.post(payload=doc, **params).json_body
+                res = self.res.post(payload=doc1, **params).json_body
 
         if 'batch' in params and 'id' in res:
-            doc.update({ '_id': res['id']})
+            doc1.update({ '_id': res['id']})
         else:
-            doc.update({'_id': res['id'], '_rev': res['rev']})
+            doc1.update({'_id': res['id'], '_rev': res['rev']})
+       
 
+        if schema:
+            doc._doc = doc1
+        else:
+            doc.update(doc1)
         return res
 
     def save_docs(self, docs, use_uuids=True, all_or_nothing=False):
@@ -441,8 +461,13 @@ class Database(object):
         .. seealso:: `HTTP Bulk Document API <http://wiki.apache.org/couchdb/HTTP_Bulk_Document_API>`
 
         """
-        # we definitely need a list here, not any iterable, or groupby will fail
-        docs = list(docs)
+        
+        docs1 = []
+        docs_schema = []
+        for doc in docs:
+            doc1, schema = _maybe_serialize(doc)
+            docs1.append(doc1)
+            docs_schema.append(schema)
 
         def is_id(doc):
             return '_id' in doc
@@ -450,7 +475,7 @@ class Database(object):
         if use_uuids:
             ids = []
             noids = []
-            for k, g in groupby(docs, is_id):
+            for k, g in groupby(docs1, is_id):
                 if not k:
                     noids = list(g)
                 else:
@@ -462,7 +487,7 @@ class Database(object):
                 if nextid:
                     doc['_id'] = nextid
 
-        payload = { "docs": docs }
+        payload = { "docs": docs1 }
         if all_or_nothing:
             payload["all_or_nothing"] = True
 
@@ -475,7 +500,16 @@ class Database(object):
             if 'error' in res:
                 errors.append(res)
             else:
-                docs[i].update({'_id': res['id'], '_rev': res['rev']})
+                if docs_schema[i]:
+                    docs[i]._doc.update({
+                        '_id': res['id'],
+                        '_rev': res['rev']
+                    })
+                else:
+                    docs[i].update({
+                        '_id': res['id'],
+                        '_rev': res['rev']
+                    })
         if errors:
             raise BulkSaveError(errors)
     bulk_save = save_docs
@@ -502,16 +536,29 @@ class Database(object):
             {"ok":true,"rev":"2839830636"}
         """
         result = { 'ok': False }
-        if isinstance(doc, dict):
-            if not '_id' or not '_rev' in doc:
+
+        doc1, schema = _maybe_serialize(doc)
+        if isinstance(doc1, dict):
+            if not '_id' or not '_rev' in doc1:
                 raise KeyError('_id and _rev are required to delete a doc')
 
-            docid = resource.escape_docid(doc['_id'])
-            result = self.res.delete(docid, rev=doc['_rev']).json_body
-        elif isinstance(doc, basestring): # we get a docid
-            rev = self.get_rev(doc)
-            docid = resource.escape_docid(doc)
+            docid = resource.escape_docid(doc1['_id'])
+            result = self.res.delete(docid, rev=doc1['_rev']).json_body
+        elif isinstance(doc1, basestring): # we get a docid
+            rev = self.get_rev(doc1)
+            docid = resource.escape_docid(doc1)
             result = self.res.delete(docid, rev=rev).json_body
+
+        if schema:
+            doc._doc.update({
+                "_rev": result['rev'],
+                "_deleted": True
+            })
+        elif isinstance(doc, dict):
+            doc.update({
+                "_rev": result['rev'],
+                "_deleted": True
+            })
         return result
 
     def copy_doc(self, doc, dest=None):
@@ -519,12 +566,14 @@ class Database(object):
         @param doc: dict or string, document or document id
         @param dest: basestring or dict. if _rev is specified in dict it will override the doc
         """
-        if isinstance(doc, basestring):
-            docid = doc
+
+        doc1, schema = _maybe_serialize(doc)
+        if isinstance(doc1, basestring):
+            docid = doc1
         else:
-            if not '_id' in doc:
+            if not '_id' in doc1:
                 raise KeyError('_id is required to copy a doc')
-            docid = doc['_id']
+            docid = doc1['_id']
 
         if dest is None:
             destination = self.server.next_uuid(count=1)
@@ -550,7 +599,7 @@ class Database(object):
         return { 'ok': False }
 
 
-    def view(self, view_name, obj=None, wrapper=None, **params):
+    def view(self, view_name, schema=None, wrapper=None, **params):
         """ get view results from database. viewname is generally
         a string like `designname/viewname". It return an ViewResults
         object on which you could iterate, list, ... . You could wrap
@@ -562,7 +611,7 @@ class Database(object):
         @param view_name, string could be '_all_docs', '_all_docs_by_seq',
         'designname/viewname' if view_name start with a "/" it won't be parsed
         and beginning slash will be removed. Usefull with c-l for example.
-        @param obj, Object with a wrapper function
+        @param schema, Object with a wrapper function
         @param wrapper: function used to wrap results
         @param params: params of the view
 
@@ -578,19 +627,19 @@ class Database(object):
             dname = view_name.pop(0)
             vname = '/'.join(view_name)
             view_path = '_design/%s/_view/%s' % (dname, vname)
-        if obj is not None:
-            if not hasattr(obj, 'wrap'):
-                raise AttributeError(" no 'wrap' method found in obj %s)" % str(obj))
-            wrapper = obj.wrap
+        if schema is not None:
+            if not hasattr(schema, 'wrap'):
+                raise AttributeError(" no 'wrap' method found in obj %s)" % str(schemma))
+            wrapper = schema.wrap
 
         return View(self, view_path, wrapper=wrapper)(**params)
 
-    def temp_view(self, design, obj=None, wrapper=None, **params):
+    def temp_view(self, design, schema=None, wrapper=None, **params):
         """ get adhoc view results. Like view it reeturn a ViewResult object."""
-        if obj is not None:
-            if not hasattr(obj, 'wrap'):
-                raise AttributeError(" no 'wrap' method found in obj %s)" % str(obj))
-            wrapper = obj.wrap
+        if schema is not None:
+            if not hasattr(schema, 'wrap'):
+                raise AttributeError("no 'wrap' method found in obj %s)" % str(schema))
+            wrapper = schema.wrap
         return TempView(self, design, wrapper=wrapper)(**params)
 
     def search( self, view_name, handler='_fti/_design', wrapper=None, **params):
@@ -659,10 +708,7 @@ class Database(object):
         if content_length and content_length is not None:
             headers['Content-Length'] = content_length
 
-        if hasattr(doc, 'to_json'):
-            doc1 = doc.to_json()
-        else:
-            doc1 = doc
+        doc1, schema = _maybe_serialize(doc)
 
         docid = resource.escape_docid(doc1['_id'])
         res = self.res(docid).put(name, payload=content,
@@ -681,12 +727,14 @@ class Database(object):
 
         @return: dict, with member ok set to True if delete was ok.
         """
-        docid = resource.escape_docid(doc['_id'])
+        doc1, schema = _maybe_serialize(doc)
+
+        docid = resource.escape_docid(doc1['_id'])
         name = url_quote(name, safe="")
 
-        res = self.res(docid).delete(name, rev=doc['_rev']).json_body
+        res = self.res(docid).delete(name, rev=doc1['_rev']).json_body
         if res['ok']:
-            new_doc = self.get(doc['_id'], rev=res['rev'])
+            new_doc = self.get(doc1['_id'], rev=res['rev'])
             doc.update(new_doc)
         return res['ok']
 
@@ -703,7 +751,8 @@ class Database(object):
         if isinstance(id_or_doc, basestring):
             docid = id_or_doc
         else:
-            docid = id_or_doc['_id']
+            doc, schema = _maybe_serialize(id_or_doc)
+            docid = doc['_id']
 
         docid = resource.escape_docid(docid)
         name = url_quote(name, safe="")
