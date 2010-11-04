@@ -49,11 +49,6 @@ from couchdbkit.utils import validate_dbname, json
 
 DEFAULT_UUID_BATCH_COUNT = 1000
 
-def maybe_raw(response, raw=False):
-    if raw:
-        return response
-    return response.json_body
-
 class Server(object):
     """ Server object that allows you to access and manage a couchdb node.
     A Server object can be used like any `dict` object.
@@ -97,9 +92,8 @@ class Server(object):
     def close(self):
         self.res.close()
         
-    def info(self, _raw_json=False):
+    def info(self):
         """ info of server
-        @param _raw_json: return raw json instead deserializing it
 
         @return: dict
 
@@ -107,18 +101,15 @@ class Server(object):
         try:
             resp = self.res.get()
         except Exception, e:
-            if _raw_json:
-                return resp
             return UNKOWN_INFO
         
-        return maybe_raw(resp, raw=_raw_json)
+        return resp.json_body
 
-    def all_dbs(self, _raw_json=False):
+    def all_dbs(self):
         """ get list of databases in CouchDb host
 
-        @param _raw_json: return raw json instead deserializing it
         """
-        return maybe_raw(self.res.get('/_all_dbs'), raw=_raw_json)
+        return self.res.get('/_all_dbs').json_body
 
     def create_db(self, dbname):
         """ Create a database on CouchDb host
@@ -171,9 +162,8 @@ class Server(object):
         resp = self.res.get('/_active_tasks')
         return resp.json_body
 
-    def uuids(self, count=1, raw=False):
-        return maybe_raw(self.res.get('/_uuids', count=count))
-
+    def uuids(self, count=1):
+        return self.res.get('/_uuids', count=count).json_body
 
     def next_uuid(self, count=None):
         """
@@ -259,24 +249,16 @@ class Database(object):
     def __repr__(self):
         return "<%s %s>" % (self.__class__.__name__, self.dbname)
 
-    @classmethod
-    def from_uri(cls, uri, *args, **kwargs):
-        """ Create a database from its url. """
-        warnings.warn("from_uri is deprecated", DeprecationWarning)
-        return cls(uri)
-        
     def close(self):
         self.res.close()
 
-    def info(self, _raw_json=False):
+    def info(self):
         """
         Get database information
 
-        @param _raw_json: return raw json instead deserializing it
-
         @return: dict
         """
-        return maybe_raw(self.res.get(), raw=_raw_json)
+        return self.res.get().json_body
 
 
     def compact(self, dname=None):
@@ -338,7 +320,6 @@ class Database(object):
         @param docid: str, document id to retrieve
         @param wrapper: callable. function that takes dict as a param.
         Used to wrap an object.
-        @param _raw_json: return raw json instead deserializing it
         @param **params: See doc api for parameters to use:
         http://wiki.apache.org/couchdb/HTTP_Document_API
 
@@ -350,12 +331,9 @@ class Database(object):
         if "wrapper" in params:
             wrapper = params.pop("wrapper")
             
-        if "_raw_json" in params:
-            raw_json = params.pop("_raw_json")
-        
         docid = resource.escape_docid(docid)
         
-        doc = maybe_raw(self.res.get(docid, **params), raw=raw_json)        
+        doc = self.res.get(docid, **params).json_body        
         if wrapper is not None:
             if not callable(wrapper):
                 raise TypeError("wrapper isn't a callable")
@@ -364,7 +342,7 @@ class Database(object):
         return doc
     get = open_doc
 
-    def all_docs(self, by_seq=False, _raw_json=False, **params):
+    def all_docs(self, by_seq=False, **params):
         """Get all documents from a database
 
         This method has the same behavior as a view.
@@ -383,53 +361,12 @@ class Database(object):
         """
         if by_seq:
             try:
-                return self.view('_all_docs_by_seq', _raw_json=_raw_json, **params)
+                return self.view('_all_docs_by_seq', **params)
             except ResourceNotFound:
                 # CouchDB 0.11 or sup
                 raise AttributeError("_all_docs_by_seq isn't supported on Couchdb %s" % self.server.info()[1])
 
-        return self.view('_all_docs', _raw_json=_raw_json, **params)
-
-    def _doc_revisions(self, docid, with_doc=True, _raw_json=False):
-        """ retrieve revisions of a doc
-
-        @param docid: str, id of document
-        @param with_doc: bool, if True return document
-        dict with revisions as member, if false return
-        only revisions
-        @param _raw_json: return raw json instead deserializing it
-
-        @return: dict: '_rev_infos' member if you have set with_doc
-        to True :
-
-
-                {
-                    "_revs_info": [
-                        {"rev": "123456", "status": "disk"},
-                            {"rev": "234567", "status": "missing"},
-                            {"rev": "345678", "status": "deleted"},
-                    ]
-                }
-
-        If False, return current revision of the document, but with
-        an additional field, _revs, the value being a list of
-        the available revision IDs.
-        """
-        docid = resource.escape_docid(docid)
-        try:
-            if with_doc:
-                doc_with_revs = maybe_raw(self.res.get(docid, revs=True),
-                                    raw=_raw_json)
-            else:
-                doc_with_revs = maybe_raw(self.res.get(docid, revs_info=True),
-                                    raw=_raw_json)
-        except ResourceNotFound:
-            return None
-        return doc_with_revs
-
-    doc_revisions = deprecated_property(_doc_revisions,
-            "_doc_revisions", "doc_revisions is deprecated use "
-            "Database.open_docs with the right parameters", False)
+        return self.view('_all_docs', **params)
 
     def get_rev(self, docid):
         """ Get last revision from docid (the '_rev' member)
@@ -441,7 +378,7 @@ class Database(object):
         return response.headers['etag'].strip('"')
 
     def save_doc(self, doc, encode_attachments=True, force_update=False,
-            _raw_json=False, **params):
+            **params):
         """ Save a document. It will use the `_id` member of the document
         or request a new uuid from CouchDB. IDs are attached to
         documents on the client side because POST has the curious property of
@@ -453,11 +390,7 @@ class Database(object):
         by CouchDB server when you save.
         @param force_update: boolean, if there is conlict, try to update
         with latest revision
-        @param _raw_json: return raw json instead deserializing it
         @param params, list of optionnal params, like batch="ok"
-
-        with `_raw_json=True` It return raw response. If False it update
-        doc instance with new revision (if batch=False).
 
         @return res: result of save. doc is updated in the mean time
         """
@@ -471,25 +404,22 @@ class Database(object):
             docid = doc['_id']
             docid1 = resource.escape_docid(doc['_id'])
             try:
-                res = maybe_raw(self.res.put(docid1, payload=doc,
-                            **params), raw=_raw_json)
+                res = self.res.put(docid1, payload=doc,
+                        **params).json_body
             except ResourceConflict:
                 if force_update:
                     doc['_rev'] = self.get_rev(docid)
-                    res = maybe_raw(self.res.put(docid1, payload=doc,
-                                **params), raw=_raw_json)
+                    res =self.res.put(docid1, payload=doc,
+                            **params).json_body
                 else:
                     raise
         else:
             try:
                 doc['_id'] = self.server.next_uuid()
-                res =  maybe_raw(self.res.put(doc['_id'], payload=doc, **params),
-                            raw=_raw_json)
+                res =  self.res.put(doc['_id'], payload=doc,
+                        **params).json_body
             except:
-                res = maybe_raw(self.res.post(payload=doc, **params), raw=_raw_json)
-
-        if _raw_json:
-            return res
+                res = self.res.post(payload=doc, **params).json_body
 
         if 'batch' in params and 'id' in res:
             doc.update({ '_id': res['id']})
@@ -498,7 +428,7 @@ class Database(object):
 
         return res
 
-    def save_docs(self, docs, use_uuids=True, all_or_nothing=False, _raw_json=False):
+    def save_docs(self, docs, use_uuids=True, all_or_nothing=False):
         """ bulk save. Modify Multiple Documents With a Single Request
 
         @param docs: list of docs
@@ -506,11 +436,6 @@ class Database(object):
         @param all_or_nothing: In the case of a power failure, when the database
         restarts either all the changes will have been saved or none of them.
         However, it does not do conflict checking, so the documents will
-        @param _raw_json: return raw json instead deserializing it
-        be committed even if this creates conflicts.
-
-        With `_raw_json=True` it return raw response. When False it return anything
-        but update list of docs with new revisions and members (like deleted)
 
         .. seealso:: `HTTP Bulk Document API <http://wiki.apache.org/couchdb/HTTP_Bulk_Document_API>`
 
@@ -541,11 +466,8 @@ class Database(object):
             payload["all_or_nothing"] = True
 
         # update docs
-        results = maybe_raw(self.res.post('/_bulk_docs', payload=payload),
-                        raw=_raw_json)
-
-        if _raw_json:
-            return results
+        results = self.res.post('/_bulk_docs',
+                payload=payload).json_body
 
         errors = []
         for i, res in enumerate(results):
@@ -557,27 +479,21 @@ class Database(object):
             raise BulkSaveError(errors)
     bulk_save = save_docs
 
-    def delete_docs(self, docs, all_or_nothing=False, _raw_json=False):
+    def delete_docs(self, docs, all_or_nothing=False):
         """ bulk delete.
         It adds '_deleted' member to doc then uses bulk_save to save them.
-
-        @param _raw_json: return raw json instead deserializing it
-
-        With `_raw_json=True` it return raw response. When False it return anything
-        but update list of docs with new revisions and members.
 
         """
         for doc in docs:
             doc['_deleted'] = True
-        return self.bulk_save(docs, use_uuids=False, all_or_nothing=all_or_nothing,
-                    _raw_json=_raw_json)
+        return self.bulk_save(docs, use_uuids=False,
+                all_or_nothing=all_or_nothing)
 
     bulk_delete = delete_docs
 
-    def delete_doc(self, doc, _raw_json=False):
+    def delete_doc(self, doc):
         """ delete a document or a list of documents
         @param doc: str or dict,  document id or full doc.
-        @param _raw_json: return raw json instead deserializing it
         @return: dict like:
 
         .. code-block:: python
@@ -590,20 +506,17 @@ class Database(object):
                 raise KeyError('_id and _rev are required to delete a doc')
 
             docid = resource.escape_docid(doc['_id'])
-            result = maybe_raw(self.res.delete(docid, rev=doc['_rev']),
-                        raw=_raw_json)
+            result = self.res.delete(docid, rev=doc['_rev']).json_body
         elif isinstance(doc, basestring): # we get a docid
             rev = self.get_rev(doc)
             docid = resource.escape_docid(doc)
-            result = maybe_raw(self.res.delete(docid, rev=rev),
-                            raw=_raw_json)
+            result = self.res.delete(docid, rev=rev).json_body
         return result
 
-    def copy_doc(self, doc, dest=None, _raw_json=False):
+    def copy_doc(self, doc, dest=None):
         """ copy an existing document to a new id. If dest is None, a new uuid will be requested
         @param doc: dict or string, document or document id
         @param dest: basestring or dict. if _rev is specified in dict it will override the doc
-        @param _raw_json: return raw json instead deserializing it
         """
         if isinstance(doc, basestring):
             docid = doc
@@ -628,15 +541,12 @@ class Database(object):
                 raise KeyError("dest doesn't exist or this not a document ('_id' or '_rev' missig).")
 
         if destination:
-            result = maybe_raw(self.res.copy('/%s' % docid,
-                        headers={ "Destination": str(destination) }),
-                        raw=_raw_json)
+            result = self.res.copy('/%s' % docid, headers={ 
+                "Destination": str(destination)
+            }).json_body
             return result
 
-        result = { 'ok': False }
-        if _raw_json:
-            return json.dumps(result)
-        return result
+        return { 'ok': False }
 
 
     def view(self, view_name, obj=None, wrapper=None, **params):
@@ -803,10 +713,11 @@ class Database(object):
         return resp.body_string(charset="utf-8")
 
 
-    def ensure_full_commit(self, _raw_json=False):
+    def ensure_full_commit(self):
         """ commit all docs in memory """
-        return maybe_raw(self.res.post('_ensure_full_commit', 
-            headers={"Content-Type": "application/json"}), raw=_raw_json)
+        return self.res.post('_ensure_full_commit', headers={
+            "Content-Type": "application/json"
+        }).json_body
 
     def __len__(self):
         return self.info()['doc_count']
