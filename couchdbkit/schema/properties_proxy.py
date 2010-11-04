@@ -16,7 +16,7 @@ from couchdbkit.schema.properties import Property
 
 from couchdbkit.schema.base import DocumentSchema, ALLOWED_PROPERTY_TYPES
 
-__all__ = ['SchemaProperty', 'SchemaListProperty']
+__all__ = ['SchemaProperty', 'SchemaListProperty', 'SchemaDictProperty']
 
 class SchemaProperty(Property):
     """ Schema property. It allows you add a DocumentSchema instance 
@@ -225,6 +225,97 @@ class LazySchemaList(list):
         super(LazySchemaList, self).append(value)
         
         
+class SchemaDictProperty(Property):
+    """A property that stores a dict of things.
+
+      """
+    def __init__(self, schema, verbose_name=None, default=None,
+            required=False, **kwds):
+
+        Property.__init__(self, verbose_name, default=default,
+            required=required, **kwds)
+
+        use_instance = True
+        if isinstance(schema, type):
+            use_instance = False
+
+        elif not isinstance(schema, DocumentSchema):
+            raise TypeError('schema should be a DocumentSchema instance')
+
+        elif schema.__class__.__name__ == 'DocumentSchema':
+            use_instance = False
+            properties = schema._dynamic_properties.copy()
+            schema = DocumentSchema.build(**properties)
+
+        self._use_instance = use_instance
+        self._schema = schema
+
+    def validate(self, value, required=True):
+        value = super(SchemaDictProperty, self).validate(value, required=required)
+        if value and value is not None:
+            if not isinstance(value, dict):
+                raise BadValueError('Property %s must be a dict' % self.name)
+            value = self.validate_dict_schema(value, required=required)
+        return value
+
+    def validate_dict_schema(self, value, required=True):
+        for v in value.values():
+             v.validate(required=required)
+        return value
+
+    def default_value(self):
+        return {}
+
+    def to_python(self, value):
+        return LazySchemaDict(value, self._schema, self._use_instance)
+
+    def to_json(self, value):
+        return dict([(k, svalue_to_json(v, self._schema, self._use_instance)) for k, v in value.items()])
+
+
+class LazySchemaDict(dict):
+
+    def __init__(self, doc, schema, use_instance, init_vals=None):
+        dict.__init__(self)
+
+        self.schema = schema
+        self.use_instance = use_instance
+        self.doc = doc
+        if init_vals is None:
+            # just wrap the current values
+            self._wrap()
+        else:
+            # initialize this dict and the underlying dict
+            # with the values given.
+            del self.doc[:]
+            for k, v in init_vals:
+                self[k] = v
+
+    def _wrap(self):
+        for k, v in self.doc.items():
+            if not self.use_instance:
+                schema = self.schema()
+            else:
+                schema = self.schema.clone()
+
+            value = schema.wrap(v)
+            dict.__setitem__(self, k, value)
+
+    def __delitem__(self, index):
+        index = repr(index)
+        del self.doc[index]
+        dict.__delitem__(self, index)
+
+    def __getitem(self, index):
+        index = repr(index)
+        return dict__getitem__(self, repr(index))
+
+    def __setitem__(self, index, value):
+        index = repr(index)
+        self.doc[index] = svalue_to_json(value, self.schema,
+                                    self.use_instance)
+        dict.__setitem__(self, index, value)
+
         
 def svalue_to_json(value, schema, use_instance):
     if not isinstance(value, DocumentSchema):
