@@ -289,7 +289,7 @@ class LazySchemaDict(dict):
             # with the values given.
             del self.doc[:]
             for k, v in init_vals:
-                self[k] = v
+                self[k] = self._wrap(v)
 
     def _wrap(self):
         for k, v in self.doc.items():
@@ -302,16 +302,16 @@ class LazySchemaDict(dict):
             dict.__setitem__(self, k, value)
 
     def __delitem__(self, index):
-        index = repr(index)
+        index = str(index)
         del self.doc[index]
         dict.__delitem__(self, index)
 
-    def __getitem(self, index):
-        index = repr(index)
-        return dict__getitem__(self, repr(index))
+    def __getitem__(self, index):
+        index = str(index)
+        return dict.__getitem__(self, index)
 
     def __setitem__(self, index, value):
-        index = repr(index)
+        index = str(index)
         self.doc[index] = svalue_to_json(value, self.schema,
                                     self.use_instance)
         dict.__setitem__(self, index, value)
