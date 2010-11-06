@@ -918,6 +918,35 @@ class PropertyTestCase(unittest.TestCase):
         self.assert_(b1.slm[0].s == "test")
         
 
+    def testSchemaDictProperty(self):
+        class A(DocumentSchema):
+            i = IntegerProperty()
+
+        class B(Document):
+            d = SchemaDictProperty(A)
+
+        a1 = A()
+        a1.i = 123
+        self.assert_(a1._doc == {'i': 123, 'doc_type': 'A'})
+
+        a2 = A()
+        a2.i = 42
+        self.assert_(a2._doc == {'i': 42, 'doc_type': 'A'})
+
+        b = B()
+        b.d['v1'] = a1
+        b.d[23]   = a2
+        self.assert_(b._doc == {'doc_type': 'B', 'd': {"v1": {'i': 123, 'doc_type': 'A'}, '23': {'i': 42, 'doc_type': 'A'}}})
+
+        b.set_db(self.db)
+        b.save()
+
+        b1 = B.get(b._id)
+        self.assert_(len(b1.d) == 2)
+        self.assert_(b1.d['v1'].i == 123)
+        self.assert_(b1.d[23].i == 42)
+
+
     def testListProperty(self):
         from datetime import datetime
         class A(Document):
