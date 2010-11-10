@@ -336,7 +336,6 @@ class Database(object):
          a dict.
         """
         wrapper = None
-        raw_json = False
         if "wrapper" in params:
             wrapper = params.pop("wrapper")
         elif "schema" in params:
