@@ -301,7 +301,7 @@ class DateTimeProperty(Property):
         if isinstance(value, basestring):
             try:
                 value = value.split('.', 1)[0] # strip out microseconds
-                value = value.rstrip('Z') # remove timezone separator
+                value = value[0:19] # remove timezone
                 value = datetime.datetime.strptime(value, '%Y-%m-%dT%H:%M:%S')
             except ValueError, e:
                 raise ValueError('Invalid ISO date/time %r' % value)
