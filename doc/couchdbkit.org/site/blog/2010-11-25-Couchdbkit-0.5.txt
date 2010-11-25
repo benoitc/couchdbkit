@@ -44,9 +44,6 @@ will help you to use couchdbkit in pylons
 * Fixed BooleanProperty
 * support for ISO-8601 DateTime format with a timezone offset 	
 
-
-
-
 You can download latest release on "Pypi":http://pypi.python.org/pypi/couchdbkit/0.5 or check "download page":../download.html for other ways.
 
 You can find a summary of changes on "github":http://github.com/benoitc/couchdbkit/comp
