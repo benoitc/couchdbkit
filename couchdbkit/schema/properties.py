@@ -114,7 +114,7 @@ class Property(object):
             if self.required:
                 raise BadValueError("Property %s is required." % self.name)
         else:
-            if self.choices:
+            if self.choices and value is not None:
                 if isinstance(self.choices, list):      choice_list = self.choices
                 if isinstance(self.choices, dict):      choice_list = self.choices.keys()
                 if isinstance(self.choices, tuple):     choice_list = [key for (key, name) in self.choices]
