@@ -45,7 +45,7 @@ setup(
 
     install_requires = [
         'setuptools',
-        'restkit>=2.1.5',
+        'restkit>=2.3.0',
     ],
     
     entry_points="""

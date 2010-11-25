@@ -191,7 +191,9 @@ class Server(object):
         return Database(self._db_uri(dbname), server=self)
 
     def __delitem__(self, dbname):
-        return self.res.delete('/%s/' % url_quote(dbname, safe=":"))
+        ret = self.res.delete('/%s/' % url_quote(dbname,
+            safe=":")).json_body
+        return ret
 
     def __contains__(self, dbname):
         try:
@@ -250,7 +252,7 @@ class Database(object):
             try:
                 self.server.res.head('/%s/' % self.dbname)
             except ResourceNotFound:
-                self.server.res.put('/%s/' % self.dbname)
+                self.server.res.put('/%s/' % self.dbname).json_body
 
 
         self.res = server.res(self.dbname)
