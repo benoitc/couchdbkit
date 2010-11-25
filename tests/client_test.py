@@ -13,13 +13,11 @@ ResourceConflict
 
 from couchdbkit import *
 
-from restkit import SimplePool
-pool = SimplePool()
 
 class ClientServerTestCase(unittest.TestCase):
     def setUp(self):
         self.couchdb = CouchdbResource()
-        self.Server = Server(pool_instance=pool)
+        self.Server = Server()
         
     def tearDown(self):
         try:
