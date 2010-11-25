@@ -396,7 +396,7 @@ def push(path, dbs, atomic=True, force=False, docid=None):
     if os.path.exists(docspath):
         pushdocs(docspath, dbs, atomic=atomic)
 
-def pushapps(path, dbs, atomic=True, export=False):
+def pushapps(path, dbs, atomic=True, export=False, couchapprc=False):
     """ push all couchapps in one folder like couchapp pushapps command
     line """
     if not isinstance(dbs, (list, tuple)):
@@ -405,8 +405,10 @@ def pushapps(path, dbs, atomic=True, export=False):
     apps = []
     for d in os.listdir(path):
         appdir = os.path.join(path, d)
-        if os.path.isdir(appdir) and os.path.isfile(os.path.join(appdir, 
+        if os.path.isdir(appdir):
+            if couchapprc and not os.path.isfile(os.path.join(appdir, 
                 '.couchapprc')):
+                continue
             doc = document(appdir)
             if not atomic:
                 doc.push(dbs, atomic=False)
@@ -414,8 +416,7 @@ def pushapps(path, dbs, atomic=True, export=False):
                 apps.append(doc)
     if apps:
         if export:
-            docs = []
-            docs.append([doc.doc() for doc in apps])
+            docs= [doc.doc() for doc in apps]
             jsonobj = {'docs': docs}
             return jsonobj
         else:

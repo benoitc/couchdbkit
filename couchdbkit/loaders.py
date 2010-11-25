@@ -28,7 +28,7 @@ import os
 import socket
 import sys
 
-from couchdbkit.designer import push, pushdocs
+from couchdbkit.designer import push, pushapps, pushdocs
 
 class BaseDocsLoader(object):
     """Baseclass for all doc loaders. """
@@ -56,29 +56,36 @@ class FileSystemDocsLoader(BaseDocsLoader):
     def __init__(self, designpath, docpath=None):
         paths = []
         if isinstance(designpath, basestring):
-            paths = [designpath]
+            self.designpaths = [designpath]
         else:
-            paths = designpath
+            self.designpaths = designpath
 
         docpath = docpath or []
         if isinstance(docpath, basestring):
             docpath = [docpath]
-        paths.extend(docpath)
-            
-        self.paths = paths
+        self.docpaths = docpath            
+        
 
     def get_docs(self):
         docs = []
-        for path in self.paths:
+        for path in self.docpaths:
             ret = pushdocs(path, [], export=True)
+            docs.extend(ret['docs'])
+
+        for path in self.designpaths:
+            ret = pushapps(path, [], export=True)
             docs.extend(ret['docs'])
         return docs
 
         
     def sync(self, dbs, atomic=True, **kwargs):
-        for path in self.paths:
-            pushdocs(path, dbs, atomic=atomic)
-          
+        for path in self.docpaths:
+            ret = pushdocs(path, dbs, atomic=atomic)
+            docs.extend(ret['docs'])
+
+        for path in self.designpaths:
+            pushapps(path, dbs, atomic=atomic)
+ 
 class FileSystemDocLoader(BaseDocsLoader):
     """ Load only one design doc from a path on the filesystem.
         
