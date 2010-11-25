@@ -91,7 +91,11 @@
 	>>> c = Consumer(db)
 </pre>
 
-	<p>A consumer object is initialized with the db instance on which you want to listen changes.</p>
+	<p>A consumer object is initialized with the db instance on which you want<br />to listen changes. The default backend use standard library asyncore,<br />but you can also use gevent and eventlet backend:</p>
+
+<pre class="code prettyprint">
+    >>>  c = Consumer(db, backend='gevent&#8217;)
+</pre>
 
 	<h2>Fetch changes</h2>
 

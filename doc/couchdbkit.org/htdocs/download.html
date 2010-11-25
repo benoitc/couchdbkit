@@ -80,13 +80,13 @@
 
 	<h2>1. Installing CouchDB</h2>
 
-	<p>Couchdbkit requires couchdb 0.10 or later to use it.</p>
+	<p>Couchdbkit requires couchdb 0.11 or later to use it.</p>
 
 	<p>To install Couchdb follow the documentation on  <a href="http://wiki.apache.org/couchdb/Installation">CouchDB wiki</a> .</p>
 
 	<h2>2. Installing Couchdbkit</h2>
 
-	<p>Couchdbkit <b>requires python2.5x/2.6x</b> to work. python 3.x will be supported soon. </p>
+	<p>Couchdbkit <b>requires python2.x >= 2.5.4</b> to work. python 3.x will be supported soon. </p>
 
 	<h3>2.1 Installing with easy_install</h3>
 
@@ -112,7 +112,7 @@ $ sudo python ez_setup.py -U setuptools
 	<p>Or fetch them with hg. Therefore we have to <a href="http://git-scm.com/">install git</a> and then run :</p>
 
 <pre class="code prettyprint">
-$ git clone git@github.com:benoitc/couchdbkit.git
+$ git clone http://github.com/benoitc/couchdbkit.git
 </pre>
 
 	<h4>install Couchdbkit</h4>
@@ -129,12 +129,10 @@ $ python setup.py develop
 
 	<p>3. Install requirements</p>
 
-	<p>If you don&#8217;t use python 2.6x or want to use a faster solution, you will need to install a json serializer. Supported json serializers are : cjson, jsonlib2, jsonlib, simplejson, and django.utils.json. </p>
-
-	<p>To install simplejson :</p>
+	<p>If you don&#8217;t use python 2.6x or want to use a faster solution, you will<br />need to install a simplejson, a json serializer: </p>
 
 <pre class="code prettyprint">
-$ easy_install simplejson
+$ easy_install -U simplejson
 </pre>
     </article>
 </section>

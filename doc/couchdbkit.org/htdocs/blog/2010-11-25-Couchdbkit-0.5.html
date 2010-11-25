@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
-    <title>Couchdbkit - Frequently Asked questions</title>
+    <title>Couchdbkit - 
+    Couchdbkit version 0.5 released
+</title>
     <!--[if IE]>
 
     <script>
@@ -73,17 +75,67 @@
         
     
         
+
 <section id="content">
     <article>
-        <h1>Frequently Asked questions</h1>
-        	<h2>What is CouchdbKit?</h2>
+        <header>
+            <h1>Couchdbkit version 0.5 released</h1>
+        </header>
+        	<p>New release for <a href="http://couchdbkit.org">Couchdbkit</a>. Lot of change in this release. It&#8217;s now based on latest <a href="http://benoitc.github.com/restkit">restkit</a> 2.3.0 so make sure to upgrade it before upgrading.</p>
 
-	<p>Couchdbkit&#8217;s goal is to provide a framework for your Python application to access and manage Couchdb. It provides you a full featured and easy client to access and manage CouchDB. It allow you to manage a CouchDB server, databases, doc managements and view access. All objects mostly reflect python objects for convenience. Server and Databases objects could be used for example as easy as using a dict.</p>
+	<h2>What&#8217;s new ?</h2>
 
-	<h2>What about other libraries?</h2>
+	<ul>
+		<li>new `couchdbkit.designer` module. the `couchdbkit.loaders` module is now deprecated. Instead use push, pushapps, pushdocs & clone functions. They are all compatible with couchapp. </li>
+		<li>Use the Database instances to save Documents objects.</li>
+	</ul>
 
-	<p>I&#8217;m not trying to compare them to mine. Couchdbkit follows its own way.</p>
+	<p><pre class="code prettyprint">
+ import datetime</p>
+
+ from couchdbkit import *
+
+ s = Server()
+ db = s['mydb&#8217;]
+
+ class Greeting(Document):
+      author = StringProperty()
+      content = StringProperty()
+      date = DateTimeProperty()
+
+ greet = Greeting(
+     author=&#8220;Benoit&#8221;,
+     content=&#8220;Welcome to couchdbkit world&#8221;,
+     date=datetime.datetime.utcnow()
+ )
+ db.save(greet)
+</pre>
+
+	<ul>
+		<li>new pylons extension, thanks to Alfred Hall. Like django extension it</li>
+	</ul>
+will help you to use couchdbkit in pylons
+	<ul>
+		<li>Added gevent & eventlet consumers. The</li>
+		<li><a href="http://couchdbkit.org/docs/changes_consumer.html">doc</a> has been</li>
+		<li>updated.</li>
+		<li>New SchemaDict property</li>
+		<li>Added oauth support via restkit</li>
+		<li>Lazy db loading in django extension</li>
+		<li>No more _raw_json function. For proxying use the CouchdbResource object.</li>
+		<li>breaking changes. We are now using simplejson instead of simplejson. Simplejson give us better <span class="caps">JSON</span> serialisation.</li>
+		<li>Fixed BooleanProperty</li>
+		<li>support for ISO-8601 DateTime format with a timezone offset 	</li>
+	</ul>
+
+	<p>You can download latest release on <a href="http://pypi.python.org/pypi/couchdbkit/0.5">Pypi</a> or check <a href="../download.html">download page</a> for other ways.</p>
+
+	<p>You can find a summary of changes on <a href="http://github.com/benoitc/couchdbkit/comp">github</a></p>
+        <footer>
+             <p><span class='comments'><a href='/blog/2010-11-25-Couchdbkit-0.5.html#disqus_thread'>View Comments</a></span></p>
+        </footer>
     </article>
+    <div id="disqus_thread"></div><script type="text/javascript" src="http://disqus.com/forums/couchdbkit/embed.js"></script><noscript><a href="http://couchdbkit.disqus.com/?url=ref">View the discussion thread.</a></noscript><a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
 </section>
 
         
@@ -97,5 +149,22 @@
     
     
     
+    <script>
+    //<![CDATA[
+    (function() {
+            
+    		var links = document.getElementsByTagName('a');
+    		var query = '?';
+    		for(var i = 0; i < links.length; i++) {
+    			if(links[i].href.indexOf('#disqus_thread') >= 0) {
+    				query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+    			}
+    		}
+    		document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/couchdbkit/get_num_replies.js' + query + '&disqus_developer=1"></' + 'script>');
+    	})();
+    //]]>
+    </script>
+    
+
 </body>
 </html>
