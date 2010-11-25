@@ -16,7 +16,7 @@ h2. What's new ?
  from couchdbkit import *
 
  s = Server()
- db = s['mydb']
+ db = s["mydb"]
 
  class Greeting(Document):
       author = StringProperty()
