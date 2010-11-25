@@ -16,7 +16,14 @@ To create a consumer, instantiate the `couchdbkit.Consumer` object like this.
 	>>> c = Consumer(db)
 </pre>
 
-A consumer object is initialized with the db instance on which you want to listen changes.
+A consumer object is initialized with the db instance on which you want
+to listen changes. The default backend use standard library asyncore,
+but you can also use gevent and eventlet backend:
+
+<pre class="code prettyprint">
+    >>>  c = Consumer(db, backend='gevent')
+</pre>
+
 
 h2. Fetch changes
 

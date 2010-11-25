@@ -9,7 +9,6 @@ If you have not installed couchdbkit yet, follow instructions on "download page"
 
 <pre class="code prettyprint">
  import datetime
- from restkit import SimplePool
  
  from couchdbkit import *
  
@@ -25,11 +24,8 @@ Here is the code to save a greet on `Greeting` database. We also see how to crea
 
 <pre class="code prettyprint">
  
- # set a threadsafe pool to keep 2 connections alives
- pool = SimplePool(keepalive=2)
-
  # server object
- server = Server(pool_instance=pool)
+ server = Server()
  
  # create database
  db = server.get_or_create_db("greeting")
@@ -101,10 +97,9 @@ A system will be provided to manage view creation and other things. As some noti
 Then we use `FileSystemDocsLoader` object to send the design document to CouchDB:
 
 <pre class="code prettyprint">
- from couchdbkit.loaders import FileSystemDocsLoader
- 
- loader = FileSystemDocsLoader('/path/to/example/_design')
- loader.sync(db, verbose=True)
+ from couchdbkit.designer import push
+
+ push('/path/to/example/_design/greeting', db)
 </pre>
 
 The design doc is now in the `greetings` database and you can get all greets :

@@ -6,4 +6,4 @@ Couchdbkit's goal is to provide a framework for your Python application to acces
 
 h2. What about other libraries?
 
-There are other python library for CouchDB like couchdb-python. I preferred to write my own because I was/am comfortable with it . I'm not trying to compare them to mine. Couchdbkit follows its own way.
+I'm not trying to compare them to mine. Couchdbkit follows its own way.

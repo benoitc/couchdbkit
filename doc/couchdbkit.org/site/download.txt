@@ -4,13 +4,13 @@ This is a manual for installing Couchdbkit and its dependencies.
 
 h2. 1. Installing CouchDB
 
-Couchdbkit requires couchdb 0.10 or later to use it.
+Couchdbkit requires couchdb 0.11 or later to use it.
 
 To install Couchdb follow the documentation on  "CouchDB wiki":http://wiki.apache.org/couchdb/Installation .
 
 h2. 2. Installing Couchdbkit
 
-Couchdbkit <b>requires python2.5x/2.6x</b> to work. python 3.x will be supported soon. 
+Couchdbkit <b>requires python2.x >= 2.5.4</b> to work. python 3.x will be supported soon. 
 
 h3. 2.1 Installing with easy_install
 
@@ -53,10 +53,9 @@ $ python setup.py develop
 
 3. Install requirements
 
-If you don't use python 2.6x or want to use a faster solution, you will need to install a json serializer. Supported json serializers are : cjson, jsonlib2, jsonlib, simplejson, and django.utils.json. 
-
-To install simplejson :
+If you don't use python 2.6x or want to use a faster solution, you will
+need to install a simplejson, a json serializer: 
 
 <pre class="code prettyprint">
-$ easy_install simplejson
+$ easy_install -U simplejson
 </pre>
