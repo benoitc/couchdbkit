@@ -40,7 +40,7 @@ will help you to use couchdbkit in pylons
 * Added oauth support via restkit
 * Lazy db loading in django extension
 * No more _raw_json function. For proxying use the CouchdbResource object.
-* breaking changes. We are now using simplejson instead of simplejson. Simplejson give us better JSON serialisation.
+* breaking changes. We are now using simplejson instead of anyjson. Simplejson give us better JSON serialisation.
 * Fixed BooleanProperty
 * support for ISO-8601 DateTime format with a timezone offset 	
 
