@@ -339,6 +339,49 @@ class DocumentTestCase(unittest.TestCase):
         doc3 = list(results)[0]
         self.assert_(hasattr(doc3, "field1"))
         self.server.delete_db('couchdbkit_test')
+
+    def testMultiWrap(self):
+        """
+        Tests wrapping of view results to multiple
+        classes using a Document class' wrap method
+        """
+
+        class A(Document):
+            pass
+        class B(Document):
+            pass
+
+        design_doc = {
+            '_id': '_design/test',
+            'language': 'javascript',
+            'views': {
+                'all': {
+                    "map": """function(doc) { emit(doc._id, doc); }"""
+                }
+            }
+        }
+        a = A()
+        a._id = "1"
+        b = B()
+        b._id = "2"
+
+        db = self.server.create_db('couchdbkit_test')
+        A._db = db
+        B._db = db
+
+        a.save()
+        b.save()
+        db.save_doc(design_doc)
+        # provide classes as a list
+        results = list(A.view('test/all', classes=[A, B]))
+        self.assert_(results[0].__class__ == A)
+        self.assert_(results[1].__class__ == B)
+        # provide classes as a dict
+        results = list(A.view('test/all', classes={'A': A, 'B': B}))
+        self.assert_(results[0].__class__ == A)
+        self.assert_(results[1].__class__ == B)
+        self.server.delete_db('couchdbkit_test')
+
     
     def testViewNoneValue(self):
         class TestDoc(Document):

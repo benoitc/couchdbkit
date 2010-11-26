@@ -567,25 +567,38 @@ class QueryMixin(object):
     """ Mixin that add query methods """
 
     @classmethod
-    def __view(cls, view_type=None, data=None, wrapper=None,
-    dynamic_properties=True, wrap_doc=True, **params):
+    def __view(cl, view_type=None, data=None, wrapper=None,
+    dynamic_properties=True, wrap_doc=True, classes=None, **params):
+        """
+        The default wrapper can distinguish between multiple Document
+        classes and wrap the result accordingly. The known classes are
+        passed either as classes={<doc_type>: <Document-class>, ...} or
+        classes=[<Document-class1>, <Document-class2>, ...]
+        """
+
         def default_wrapper(row):
             data = row.get('value')
             docid = row.get('id')
             doc = row.get('doc')
             if doc is not None and wrap_doc:
+                cls = classes.get(doc.get('doc_type')) if classes else cl
                 cls._allow_dynamic_properties = dynamic_properties
                 return cls.wrap(doc)
+
             elif not data or data is None:
                 return row
             elif not isinstance(data, dict) or not docid:
                 return row
             else:
+                cls = classes.get(data.get('doc_type')) if classes else cl
                 data['_id'] = docid
                 if 'rev' in data:
                     data['_rev'] = data.pop('rev')
                 cls._allow_dynamic_properties = dynamic_properties
                 return cls.wrap(data)
+
+        if isinstance(classes, list):
+            classes = dict([(c._doc_type, c) for c in classes])
 
         if wrapper is None:
             wrapper = default_wrapper
@@ -595,7 +608,7 @@ class QueryMixin(object):
         elif not callable(wrapper):
             raise TypeError("wrapper is not a callable")
 
-        db = cls.get_db()
+        db = cl.get_db()
         if view_type == 'view':
             return db.view(data, wrapper=wrapper, **params)
         elif view_type == 'temp_view':
@@ -605,7 +618,7 @@ class QueryMixin(object):
 
     @classmethod
     def view(cls, view_name, wrapper=None, dynamic_properties=True,
-    wrap_doc=True, **params):
+    wrap_doc=True, classes=None, **params):
         """ Get documents associated view a view.
         Results of view are automatically wrapped
         to Document object.
@@ -623,11 +636,11 @@ class QueryMixin(object):
         """
         return cls.__view(view_type="view", data=view_name, wrapper=wrapper,
             dynamic_properties=dynamic_properties, wrap_doc=wrap_doc,
-            **params)
+            classes=classes, **params)
 
     @classmethod
     def temp_view(cls, design, wrapper=None, dynamic_properties=True,
-    wrap_doc=True, **params):
+    wrap_doc=True, classes=None, **params):
         """ Slow view. Like in view method,
         results are automatically wrapped to
         Document object.
@@ -644,7 +657,7 @@ class QueryMixin(object):
         """
         return cls.__view(view_type="temp_view", data=design, wrapper=wrapper,
             dynamic_properties=dynamic_properties, wrap_doc=wrap_doc,
-            **params)
+            classes=classes, **params)
 
 class Document(DocumentBase, QueryMixin, AttachmentMixin):
     """
