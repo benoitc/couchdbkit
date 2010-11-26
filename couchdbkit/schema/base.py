@@ -503,6 +503,9 @@ class DocumentBase(DocumentSchema):
             raise TypeError("the document is not saved")
         
         db = self.get_db()
+        
+        # delete doc
+        db.delete_doc(self._id)
 
         # reinit document
         del self._doc['_id']
