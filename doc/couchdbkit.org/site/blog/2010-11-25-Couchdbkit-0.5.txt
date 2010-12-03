@@ -28,7 +28,7 @@ h2. What's new ?
      content="Welcome to couchdbkit world",
      date=datetime.datetime.utcnow()
  )
- db.save(greet)
+ db.save_doc(greet)
 </pre>
 
 * new pylons extension, thanks to Alfred Hall. Like django extension it will help you to use couchdbkit in pylons
