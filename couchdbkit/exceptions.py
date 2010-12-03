@@ -37,8 +37,9 @@ class BulkSaveError(Exception):
     """ exception raised when bulk save contain errors.
     error are saved in `errors` property.
     """
-    def __init__(self, errors, *args):
+    def __init__(self, errors, results, *args):
         self.errors = errors
+        self.results = results
 
 class ViewServerError(Exception):
     """ exception raised by view server"""

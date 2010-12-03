@@ -512,7 +512,8 @@ class Database(object):
                         '_rev': res['rev']
                     })
         if errors:
-            raise BulkSaveError(errors)
+            raise BulkSaveError(errors, results)
+        return results
     bulk_save = save_docs
 
     def delete_docs(self, docs, all_or_nothing=False):
