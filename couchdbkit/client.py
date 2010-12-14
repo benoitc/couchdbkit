@@ -119,24 +119,30 @@ class Server(object):
         """
         return self.res.get('/_all_dbs').json_body
 
-    def create_db(self, dbname):
+    def create_db(self, dbname, **params):
         """ Create a database on CouchDb host
 
         @param dname: str, name of db
+        @param param: custom parameters to pass to create a db. For
+        example if you use couchdbkit to access to cloudant or bigcouch:
+            
+            Ex: q=12 or n=4
+
+        See https://github.com/cloudant/bigcouch for more info.
 
         @return: Database instance if it's ok or dict message
         """
         return Database(self._db_uri(dbname), create=True,
-                    server=self)
+                    server=self, i**params)
 
-    def get_or_create_db(self, dbname):
+    def get_or_create_db(self, dbname, **params):
         """
         Try to return a Database object for dbname. If
         database doest't exist, it will be created.
 
         """
         return Database(self._db_uri(dbname), create=True,
-                    server=self)
+                    server=self, **params)
 
     def delete_db(self, dbname):
         """
@@ -225,7 +231,7 @@ class Database(object):
     """
 
     def __init__(self, uri, create=False, server=None, pool_instance=None,
-            filters=None):
+            filters=None, **params):
         """Constructor for Database
 
         @param uri: str, Database uri
@@ -252,7 +258,7 @@ class Database(object):
             try:
                 self.server.res.head('/%s/' % self.dbname)
             except ResourceNotFound:
-                self.server.res.put('/%s/' % self.dbname).json_body
+                self.server.res.put('/%s/' % self.dbname, **params).json_body
 
 
         self.res = server.res(self.dbname)
