@@ -133,7 +133,7 @@ class Server(object):
         @return: Database instance if it's ok or dict message
         """
         return Database(self._db_uri(dbname), create=True,
-                    server=self, i**params)
+                    server=self, **params)
 
     def get_or_create_db(self, dbname, **params):
         """
