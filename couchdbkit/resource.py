@@ -148,11 +148,11 @@ def encode_params(params):
     _params = {}
     if params:
         for name, value in params.items():
-            if value is None:
+            if name in ('key', 'startkey', 'endkey'):
+                value = json.dumps(value)
+            elif value is None:
                 continue
-            
-            if name in ('key', 'startkey', 'endkey') \
-                    or not isinstance(value, basestring):
+            elif not isinstance(value, basestring):
                 value = json.dumps(value)
             _params[name] = value
     return _params
