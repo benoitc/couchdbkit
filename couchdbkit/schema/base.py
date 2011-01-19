@@ -142,9 +142,10 @@ class DocumentSchema(object):
             return {}
         return self._dynamic_properties.copy()
 
-    def properties(self):
+    @classmethod
+    def properties(cls):
         """ get dict of defined properties """
-        return self._properties.copy()
+        return cls._properties.copy()
 
     def all_properties(self):
         """ get all properties.
