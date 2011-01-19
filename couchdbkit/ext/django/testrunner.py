@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -
+#
+# This file is part of couchdbkit released under the MIT license. 
+# See the NOTICE for more information.
+
 from django.test.simple import DjangoTestSuiteRunner
 from django.conf import settings
 from couchdbkit.ext.django import loading as loading
