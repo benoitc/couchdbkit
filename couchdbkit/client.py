@@ -619,6 +619,29 @@ class Database(object):
         @param params: params of the view
 
         """
+        def get_multi_wrapper(classes, **params):
+            def wrapper(row):
+                data = row.get('value')
+                docid = row.get('id')
+                doc = row.get('doc')
+                if doc is not None and params.get('wrap_doc', True):
+                    cls = classes.get(doc.get('doc_type'))
+                    cls._allow_dynamic_properties = params.get('dynamic_properties', True)
+                    return cls.wrap(doc)
+
+                elif not data or data is None:
+                    return row
+                elif not isinstance(data, dict) or not docid:
+                    return row
+                else:
+                    cls = classes.get(data.get('doc_type'))
+                    data['_id'] = docid
+                    if 'rev' in data:
+                        data['_rev'] = data.pop('rev')
+                    cls._allow_dynamic_properties = params.get('dynamic_properties', True)
+                    return cls.wrap(data)
+            return wrapper
+
         if view_name.startswith('/'):
             view_name = view_name[1:]
         if view_name == '_all_docs':
@@ -631,9 +654,15 @@ class Database(object):
             vname = '/'.join(view_name)
             view_path = '_design/%s/_view/%s' % (dname, vname)
         if schema is not None:
-            if not hasattr(schema, 'wrap'):
-                raise AttributeError(" no 'wrap' method found in obj %s)" % str(schemma))
-            wrapper = schema.wrap
+            if hasattr(schema, 'wrap'):
+                wrapper = schema.wrap
+            elif isinstance(schema, dict):
+                wrapper = get_multi_wrapper(schema, **params)
+            elif isinstance(schema, list):
+                classes = dict( (c._doc_type, c) for c in schema)
+                wrapper = get_multi_wrapper(classes, **params)
+            else:
+                raise AttributeError("schema argument %s must either have a 'wrap' method, or be a dict or list)" % str(schema))
 
         return View(self, view_path, wrapper=wrapper)(**params)
 
