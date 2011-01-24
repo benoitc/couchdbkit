@@ -27,7 +27,7 @@ def init_db(uri, dbname, main_db=True):
 
 def sync_design(db, path):
     """Synchronizes the design documents with the database passed in."""
-    pushapps(path, db, force=true)
+    pushapps(path, db)
 
 def default_design_path(config):
     """Returns full path to the default design documents path, it's _design in
