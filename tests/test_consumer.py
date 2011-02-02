@@ -42,6 +42,7 @@ class ClientServerTestCase(unittest.TestCase):
         def test_line(line):
             self.assert_(line["last_seq"] == 1)
             self.assert_(len(line["results"]) == 1)
+            return
             
         t =  threading.Thread(target=self.consumer.wait_once,
                 kwargs=dict(cb=test_line))
@@ -49,6 +50,7 @@ class ClientServerTestCase(unittest.TestCase):
         t.start()
         doc = {}
         self.db.save_doc(doc)
+        t.join()
 
     def test_continuous(self):
         self.lines = []
@@ -72,6 +74,8 @@ class ClientServerTestCase(unittest.TestCase):
         time.sleep(0.5)
         self.assert_(len(self.lines) == 6)
         self.assert_(self.lines[5]["id"] == "test5")
+        t.join()
+
         
 if __name__ == '__main__':
     unittest.main()

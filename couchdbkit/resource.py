@@ -27,7 +27,7 @@ import time
 import types
 
 
-from restkit import Resource, HttpResponse
+from restkit import Resource, ClientResponse
 from restkit.errors import ResourceError, RequestFailed, RequestError
 from restkit.util import url_quote
   
@@ -40,7 +40,7 @@ USER_AGENT = 'couchdbkit/%s' % __version__
 
 RequestFailed = RequestFailed
 
-class CouchDBResponse(HttpResponse):
+class CouchDBResponse(ClientResponse):
     
     @property
     def json_body(self):

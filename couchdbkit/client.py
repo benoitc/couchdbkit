@@ -40,7 +40,6 @@ import urlparse
 import warnings
 
 from restkit.util import url_quote
-from restkit.util.misc import deprecated_property
 
 from couchdbkit.exceptions import *
 import couchdbkit.resource as resource
@@ -96,9 +95,6 @@ class Server(object):
                                 pool_instance=pool_instance,
                                 filters=filters)
         self._uuids = []
-        
-    def close(self):
-        self.res.close()
         
     def info(self):
         """ info of server
@@ -266,9 +262,6 @@ class Database(object):
     def __repr__(self):
         return "<%s %s>" % (self.__class__.__name__, self.dbname)
 
-    def close(self):
-        self.res.close()
-
     def info(self):
         """
         Get database information
@@ -396,7 +389,7 @@ class Database(object):
         @return rev: str, the last revision of document.
         """
         response = self.res.head(resource.escape_docid(docid))
-        return response.headers['etag'].strip('"')
+        return response['etag'].strip('"')
 
     def save_doc(self, doc, encode_attachments=True, force_update=False,
             **params):

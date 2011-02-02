@@ -42,71 +42,20 @@ class SyncConsumer(ConsumerBase):
         check_callable(cb)
         params.update({"feed": "continuous"})
         resp = self.db.res.get("_changes", **params)
-        
-        if resp.headers.get('transfer-encoding') == "chunked":
-            chunked = True
-        else:
-            chunked = False
-        
-        change_handler = continuous_changes_handler(resp, cb, 
-                chunked)
-        asyncore.loop()
 
-        
-        
-class continuous_changes_handler(asynchat.async_chat):
-    
-    def __init__(self, resp, callback, chunked):
-        self.resp = resp
-        self.callback = callback
-        self.chunked = chunked
+        with resp.body_stream() as body:
+            while True:
+                try:
+                    line = body.readline()
+                    if not line:
+                        break
+                    if line.endswith("\r\n"):
+                        line = line[:-2]
+                    else:
+                        line = line[:-1]
+                    if not line:
+                        continue
 
-        buf = resp.response.body.reader.unreader.buf.getvalue()
-
-        self.buf = [buf]
-        self.sock = sock = resp.response.body.reader.unreader.sock
-        asynchat.async_chat.__init__(self, sock=sock)
-        
-        if self.chunked:
-            self.set_terminator("\r\n")
-        else:
-            self.set_terminator("\n")
-            
-        data = resp.response.body.reader.buf.getvalue()
-        self.buf.append(data)
-
-        self.chunk_left = False        
-        
-    def handle_close(self):
-    
-        self.close()
-        
-    def collect_incoming_data(self, data):
-        if not data: return
-        if self.chunked:
-            if not self.chunk_left:
-                return
-                
-            self.buf.append(data)
-        else:
-            self.buf.append(data)
-            
-    def emit_line(self, line):
-        line = json.loads(line)
-        self.callback(line)
-            
-    def found_terminator(self):
-        if self.chunked and not self.chunk_left:
-            # we got the length
-            self.chunk_left = True
-            self.buf = []
-            return
-            
-        line = "".join(self.buf)
-        self.buf = []
-        if self.chunked: 
-            self.chunk_left = False
-            line = line.strip()
-
-        if line:
-            self.emit_line(line)
+                    cb(line)
+                except (KeyboardInterrupt, SystemExit,):
+                    break

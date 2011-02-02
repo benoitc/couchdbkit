@@ -25,7 +25,6 @@ class ClientServerTestCase(unittest.TestCase):
             del self.Server['couchdbkit/test']
         except:
             pass
-        self.Server.close()
 
     def testGetInfo(self):
         info = self.Server.info()
