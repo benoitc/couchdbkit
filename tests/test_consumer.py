@@ -15,14 +15,19 @@ class ClientServerTestCase(unittest.TestCase):
     
     def setUp(self):
         self.server = Server()
+        self._delete_db()
         self.db = self.server.create_db("couchdbkit_test")
         self.consumer = Consumer(self.db)
-        
+
     def tearDown(self):
+        self._delete_db()
+        
+    def _delete_db(self):
         try:
             del self.server['couchdbkit_test']
         except:
             pass
+
       
     def test_fetch(self):
         res1 = self.consumer.fetch()
@@ -50,7 +55,6 @@ class ClientServerTestCase(unittest.TestCase):
         t.start()
         doc = {}
         self.db.save_doc(doc)
-        t.join()
 
     def test_continuous(self):
         self.lines = []
@@ -74,7 +78,6 @@ class ClientServerTestCase(unittest.TestCase):
         time.sleep(0.5)
         self.assert_(len(self.lines) == 6)
         self.assert_(self.lines[5]["id"] == "test5")
-        t.join()
 
         
 if __name__ == '__main__':

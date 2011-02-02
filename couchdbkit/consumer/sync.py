@@ -56,6 +56,6 @@ class SyncConsumer(ConsumerBase):
                     if not line:
                         continue
 
-                    cb(line)
+                    cb(json.loads(line))
                 except (KeyboardInterrupt, SystemExit,):
                     break
