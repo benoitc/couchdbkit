@@ -1,3 +1,5 @@
+from __future__ import with_statement
+
 from couchdbkit import BaseDocsLoader, ResourceNotFound
 from couchdbkit.ext.pylons.db import init_db, sync_design, default_design_path
 import os, json, unittest
