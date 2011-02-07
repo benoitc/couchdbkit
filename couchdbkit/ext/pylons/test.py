@@ -1,8 +1,11 @@
 from __future__ import with_statement
 
+import os
+import unittest
+
 from couchdbkit import BaseDocsLoader, ResourceNotFound
 from couchdbkit.ext.pylons.db import init_db, sync_design, default_design_path
-import os, json, unittest
+from couchdbkit.utils import json
 
 class FixtureLoader(BaseDocsLoader):
     def __init__(self, directory):
