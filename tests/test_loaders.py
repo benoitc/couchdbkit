@@ -20,11 +20,7 @@ from couchdbkit.utils import *
 class LoaderTestCase(unittest.TestCase):
     
     def setUp(self):
-        f, fname = tempfile.mkstemp()
-        os.unlink(fname)
-        self.tempdir = fname
-        os.makedirs(self.tempdir)
-        
+        self.tempdir = tempfile.mkdtemp()
         self.template_dir = os.path.join(os.path.dirname(__file__), 'data/app-template')
         self.app_dir = os.path.join(self.tempdir, "couchdbkit-test")
         shutil.copytree(self.template_dir, self.app_dir)
@@ -39,6 +35,8 @@ class LoaderTestCase(unittest.TestCase):
                 os.remove(os.path.join(root, name))
             for name in dirs:
                 os.rmdir(os.path.join(root, name))
+
+        os.rmdir(self.tempdir)
         del self.server['couchdbkit_test']
                 
     def testGetDoc(self):
