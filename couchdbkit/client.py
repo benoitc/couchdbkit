@@ -35,6 +35,7 @@ import cgi
 from itertools import groupby
 from mimetypes import guess_type
 import re
+import threading
 import time
 import urlparse
 import warnings
@@ -95,6 +96,7 @@ class Server(object):
                                 pool_instance=pool_instance,
                                 filters=filters)
         self._uuids = []
+        self._lock = threading.Lock()
         
     def info(self):
         """ info of server
@@ -179,15 +181,19 @@ class Server(object):
         """
         return an available uuid from couchdbkit
         """
-        if count is not None:
-            self._uuid_batch_count = count
-        else:
-            self._uuid_batch_count = self.uuid_batch_count
+        self._lock.acquire()
+        try:
+            if count is not None:
+                self._uuid_batch_count = count
+            else:
+                self._uuid_batch_count = self.uuid_batch_count
 
-        self.uuids = self.uuids or []
-        if not self._uuids:
-            self._uuids = self.uuids(count=self._uuid_batch_count)["uuids"]
-        return self._uuids.pop()
+            self.uuids = self.uuids or []
+            if not self._uuids:
+                self._uuids = self.uuids(count=self._uuid_batch_count)["uuids"]
+            return self._uuids.pop()
+        finally:
+            self._lock.release()
 
     def __getitem__(self, dbname):
         return Database(self._db_uri(dbname), server=self)
