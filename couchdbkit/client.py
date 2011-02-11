@@ -32,10 +32,10 @@ UNKOWN_INFO = {}
 
 import base64
 import cgi
+from collections import deque
 from itertools import groupby
 from mimetypes import guess_type
 import re
-import threading
 import time
 import urlparse
 import warnings
@@ -95,8 +95,7 @@ class Server(object):
             self.res = resource.CouchdbResource(uri, 
                                 pool_instance=pool_instance,
                                 filters=filters)
-        self._uuids = []
-        self._lock = threading.Lock()
+        self._uuids = deque()
         
     def info(self):
         """ info of server
@@ -181,19 +180,16 @@ class Server(object):
         """
         return an available uuid from couchdbkit
         """
-        self._lock.acquire()
-        try:
-            if count is not None:
-                self._uuid_batch_count = count
-            else:
-                self._uuid_batch_count = self.uuid_batch_count
+        if count is not None:
+            self._uuid_batch_count = count
+        else:
+            self._uuid_batch_count = self.uuid_batch_count
 
-            self.uuids = self.uuids or []
-            if not self._uuids:
-                self._uuids = self.uuids(count=self._uuid_batch_count)["uuids"]
+        try:
             return self._uuids.pop()
-        finally:
-            self._lock.release()
+        except IndexError:
+            self._uuids.extend(self.uuids(count=self._uuid_batch_count)["uuids"])
+            return self._uuids.pop()
 
     def __getitem__(self, dbname):
         return Database(self._db_uri(dbname), server=self)
