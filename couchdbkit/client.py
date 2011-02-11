@@ -62,10 +62,13 @@ class Server(object):
     A Server object can be used like any `dict` object.
     """
 
+    resource_class = resource.CouchdbResource 
+
     def __init__(self, uri='http://127.0.0.1:5984',
-            uuid_batch_count=DEFAULT_UUID_BATCH_COUNT, resource_instance=None,
-            pool_instance=None,
-            filters=None):
+            uuid_batch_count=DEFAULT_UUID_BATCH_COUNT,
+            resource_class=None, resource_instance=None, 
+            **client_opts):
+
         """ constructor for Server object
 
         @param uri: uri of CouchDb host
@@ -84,17 +87,17 @@ class Server(object):
         self.uuid_batch_count = uuid_batch_count
         self._uuid_batch_count = uuid_batch_count
 
+        if resource_class is not None:
+            self.resource_class = resource_class
+
         if resource_instance and isinstance(resource_instance, 
                                 resource.CouchdbResource):
             resource_instance.initial['uri'] = uri
             self.res = resource_instance.clone()
-            if pool_instance is not None:
-                self.res.client_opts['pool_instance'] = pool_instance
-                
+            if client_opts:
+                self.res.client_opts.update(client_opts)
         else:
-            self.res = resource.CouchdbResource(uri, 
-                                pool_instance=pool_instance,
-                                filters=filters)
+            self.res = self.resource_class(uri, **client_opts)
         self._uuids = deque()
         
     def info(self):
@@ -228,8 +231,7 @@ class Database(object):
     A Database object can act as a Dict object.
     """
 
-    def __init__(self, uri, create=False, server=None, pool_instance=None,
-            filters=None, **params):
+    def __init__(self, uri, create=False, server=None, **params):
         """Constructor for Database
 
         @param uri: str, Database uri
@@ -247,9 +249,7 @@ class Database(object):
                             server.__class__.__name__)
             self.server = server
         else:
-            self.server = server = Server(self.server_uri, 
-                                    pool_instance=pool_instance,
-                                    filters=filters)
+            self.server = server = Server(self.server_uri, **params)
 
         validate_dbname(self.dbname)
         if create:

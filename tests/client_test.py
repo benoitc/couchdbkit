@@ -62,9 +62,6 @@ class ClientServerTestCase(unittest.TestCase):
 
         self.assertRaises(ValueError, create_invalid) 
     
-    def testBadResourceClassType(self):
-        self.assertRaises(TypeError, Server, resource_class=None)
-        
     def testServerLen(self):
         res = self.Server.create_db('couchdbkit_test')
         self.assert_(len(self.Server) >= 1)
