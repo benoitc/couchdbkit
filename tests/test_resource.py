@@ -46,7 +46,7 @@ class ServerTestCase(unittest.TestCase):
 
     def testRequestFailed(self):
         bad = CouchdbResource('http://localhost:10000')
-        self.assertRaises(RequestFailed, bad.get)
+        self.assertRaises(RequestError, bad.get)
         
 if __name__ == '__main__':
     unittest.main()
