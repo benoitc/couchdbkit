@@ -38,7 +38,7 @@ import time
 from restkit.util import url_quote
 
 from .exceptions import InvalidAttachment, NoResultFound, \
-ResourceNotFound, ResourceConflict, BulkSaveError 
+ResourceNotFound, ResourceConflict, BulkSaveError, MultipleResultsFound 
 from . import resource
 from .utils import validate_dbname
 
