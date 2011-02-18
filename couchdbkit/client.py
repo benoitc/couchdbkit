@@ -30,22 +30,17 @@ Example:
 UNKOWN_INFO = {}
 
 
-import base64
-import cgi
 from collections import deque
 from itertools import groupby
 from mimetypes import guess_type
-import re
 import time
-import urlparse
-import warnings
 
 from restkit.util import url_quote
 
 from .exceptions import InvalidAttachment, NoResultFound, \
-ResourceNotFound, ResourceConflict 
+ResourceNotFound, ResourceConflict, BulkSaveError 
 from . import resource
-from .utils import validate_dbname, json
+from .utils import validate_dbname
 
 
 DEFAULT_UUID_BATCH_COUNT = 1000
@@ -109,7 +104,7 @@ class Server(object):
         """
         try:
             resp = self.res.get()
-        except Exception, e:
+        except Exception:
             return UNKOWN_INFO
         
         return resp.json_body
@@ -476,13 +471,10 @@ class Database(object):
             return '_id' in doc
 
         if use_uuids:
-            ids = []
             noids = []
             for k, g in groupby(docs1, is_id):
                 if not k:
                     noids = list(g)
-                else:
-                    ids = list(g)
 
             uuid_count = max(len(noids), self.server.uuid_batch_count)
             for doc in noids:

@@ -21,11 +21,6 @@ Example:
 """
 import base64
 import re
-import socket
-import sys
-import time
-import types
-
 
 from restkit import Resource, ClientResponse
 from restkit.errors import ResourceError, RequestFailed, RequestError

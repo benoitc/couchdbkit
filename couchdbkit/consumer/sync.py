@@ -5,11 +5,6 @@
 
 from __future__ import with_statement
 
-import asyncore
-import asynchat
-import socket
-import sys
-
 from .base import ConsumerBase, check_callable
 from ..utils import json
 

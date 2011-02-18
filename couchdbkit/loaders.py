@@ -20,15 +20,7 @@ It's replaced by couchdbkit.designer module and push* functions.
 """
 from __future__ import with_statement
 
-import base64
-import copy
-import httplib
-import mimetypes
-import os
-import socket
-import sys
-
-from .designer import push, pushapps, pushdocs
+from .designer import document, push, pushapps, pushdocs
 
 class BaseDocsLoader(object):
     """Baseclass for all doc loaders. """
@@ -54,7 +46,6 @@ class FileSystemDocsLoader(BaseDocsLoader):
     """
 
     def __init__(self, designpath, docpath=None):
-        paths = []
         if isinstance(designpath, basestring):
             self.designpaths = [designpath]
         else:

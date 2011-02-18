@@ -3,7 +3,6 @@
 # This file is part of couchdbkit released under the MIT license. 
 # See the NOTICE for more information.
 
-import re
 import sys
 import StringIO
 import traceback

@@ -12,14 +12,10 @@ from __future__ import with_statement
 
 import codecs
 import string
-from calendar import timegm
-import datetime
-import decimal
 from hashlib import md5
 import os
 import re
 import sys
-import time
 import urllib
 
 
@@ -85,7 +81,7 @@ if not hasattr(os.path, 'relpath'):
 
             rel_list = [os.path.pardir] * (len(start_list)-i) + path_list[i:]
             if not rel_list:
-                return curdir
+                return os.path.curdir
             return os.path.join(*rel_list)
     else:
         def relpath(path, start=os.path.curdir):
@@ -102,7 +98,7 @@ if not hasattr(os.path, 'relpath'):
 
             rel_list = [os.path.pardir] * (len(start_list)-i) + path_list[i:]
             if not rel_list:
-                return curdir
+                return os.path.curdir
             return os.path.join(*rel_list)
 else:
     relpath = os.path.relpath
@@ -137,7 +133,7 @@ def read_file(fname, utf8=True, force_read=False):
         try:
             with codecs.open(fname, 'rb', "utf-8") as f:
                 data = f.read()
-        except UnicodeError, e:
+        except UnicodeError:
             if force_read:
                 return read_file(fname, utf8=False)
     else:

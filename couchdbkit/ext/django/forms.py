@@ -80,13 +80,10 @@ More fields types will be supported soon.
 
 from django.utils.text import capfirst
 from django.utils.datastructures import SortedDict
-from django.forms.util import ValidationError, ErrorList
+from django.forms.util import ErrorList
 from django.forms.forms import BaseForm, get_declared_fields
 from django.forms import fields as f
 from django.forms.widgets import media_property
-
-from . import schema
-from ...schema import value_to_python
 
 FIELDS_PROPERTES_MAPPING = {
     "StringProperty": f.CharField,

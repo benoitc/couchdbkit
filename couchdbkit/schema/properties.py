@@ -5,13 +5,12 @@
 
 """ properties used by Document object """
 
-from calendar import timegm
 import decimal
 import datetime
 import re
 import time
 
-from couchdbkit.exceptions import *
+from couchdbkit.exceptions import BadValueError 
 
 __all__ = ['ALLOWED_PROPERTY_TYPES', 'Property', 'StringProperty',
         'IntegerProperty', 'DecimalProperty', 'BooleanProperty',
@@ -304,7 +303,8 @@ class DateTimeProperty(Property):
                 value = value[0:19] # remove timezone
                 value = datetime.datetime.strptime(value, '%Y-%m-%dT%H:%M:%S')
             except ValueError, e:
-                raise ValueError('Invalid ISO date/time %r' % value)
+                raise ValueError('Invalid ISO date/time %r [%s]' %
+                        (value, str(e)))
         return value
 
     def to_json(self, value):
@@ -338,7 +338,8 @@ class DateProperty(DateTimeProperty):
             try:
                 value = datetime.date(*time.strptime(value, '%Y-%m-%d')[:3])
             except ValueError, e:
-                raise ValueError('Invalid ISO date %r' % value)
+                raise ValueError('Invalid ISO date %r [%s]' % (value,
+                    str(e)))
         return value
 
     def to_json(self, value):
@@ -365,7 +366,8 @@ class TimeProperty(DateTimeProperty):
                 value = value.split('.', 1)[0] # strip out microseconds
                 value = datetime.time(*time.strptime(value, '%H:%M:%S')[3:6])
             except ValueError, e:
-                raise ValueError('Invalid ISO time %r' % value)
+                raise ValueError('Invalid ISO time %r [%s]' % (value,
+                    str(e)))
         return value
 
     def to_json(self, value):
@@ -647,7 +649,7 @@ class LazyList(list):
     def __contains__(self, value):
         jvalue = value_to_json(value)
         for m in self.doc:
-            if m == value: return True
+            if m == jvalue: return True
         return False
 
     def append(self, *args, **kwargs):

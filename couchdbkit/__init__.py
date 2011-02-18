@@ -7,7 +7,7 @@ version_info = (0, 5, 4)
 __version__ =  ".".join(map(str, version_info))
 
 try:
-    from .resource import RequestFailed,CouchdbResource
+    from .resource import  RequestFailed, CouchdbResource
 
     from .exceptions import InvalidAttachment, DuplicatePropertyError,\
 BadValueError, MultipleResultsFound, NoResultFound, ReservedWordError,\

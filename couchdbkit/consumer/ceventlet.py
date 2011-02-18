@@ -6,7 +6,6 @@
 import traceback
 
 import eventlet
-from eventlet.greenthread import GreenThread
 from eventlet import event
 
 from .base import check_callable
@@ -22,11 +21,11 @@ class ChangeConsumer(object):
         self.stop_event = event.Event()
 
     def wait(self):
-        _ = eventlet.spawn_n(self._run)
+        eventlet.spawn_n(self._run)
         self.stop_event.wait()
 
     def wait_async(self):
-        _ = eventlet.spawn_n(self._run)
+        eventlet.spawn_n(self._run)
 
     def _run(self):
         while True:

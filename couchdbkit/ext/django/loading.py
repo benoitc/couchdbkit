@@ -22,17 +22,11 @@ and manage db sessions
 import sys
 import os
 
-import urllib
-import urlparse
-
-from couchdbkit import Server, contain, ResourceConflict
+from couchdbkit import Server
 from couchdbkit import push
-from couchdbkit.resource import CouchdbResource, PreconditionFailed
+from couchdbkit.resource import CouchdbResource
 from django.conf import settings
-from django.db.models import signals, get_app
-from django.core.exceptions import ImproperlyConfigured
 from django.utils.datastructures import SortedDict
-from restkit import BasicAuth
 
 COUCHDB_DATABASES = getattr(settings, "COUCHDB_DATABASES", [])
 COUCHDB_TIMEOUT = getattr(settings, "COUCHDB_TIMEOUT", 300)

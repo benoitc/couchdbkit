@@ -24,7 +24,7 @@ from django.conf import settings
 from django.db.models.options import get_verbose_name
 from django.utils.translation import activate, deactivate_all, get_language, \
 string_concat
-from django.utils.encoding import force_unicode
+from django.utils.encoding import smart_str, force_unicode
 
 from couchdbkit import schema
 from couchdbkit.ext.django.loading import get_schema, register_schema, \
@@ -55,8 +55,6 @@ class Options(object):
         self.admin = None
     
     def contribute_to_class(self, cls, name):
-        from django.db.backends.util import truncate_name
-
         cls._meta = self
         self.installed = re.sub('\.models$', '', cls.__module__) in settings.INSTALLED_APPS
         # First, construct the default values for these options.

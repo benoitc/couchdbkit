@@ -28,7 +28,7 @@ class CouchdbProxy(object):
         return proxy response. Can be overrided to add authentification and 
         such. It's better to override do_proxy method than the __call__
         """
-        return req.get_response(proxy)
+        return req.get_response(self.proxy)
 
     def __call__(self, environ, start_response):
         req = Request(environ)
