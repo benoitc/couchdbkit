@@ -572,6 +572,26 @@ class DocumentTestCase(unittest.TestCase):
         b = A.get_or_create()
         self.assert_(a._id is not None)
         self.server.delete_db('couchdbkit_test')
+    
+    def testBulkDelete(self):
+        db = self.server.create_db('couchdbkit_test')
+        class Test(Document):
+            string = StringProperty()
+
+        doc1 = Test(string="test")
+        doc2 = Test(string="test2")
+        doc3 = Test(string="test3")
+
+        Test.set_db(db)
+        Test.bulk_save([doc1, doc2, doc3])
+
+        db.bulk_delete([doc1, doc2, doc3])
+
+        print list(db.all_docs(include_docs=True))
+        self.assert_(len(db) == 0)
+        self.assert_(db.info()['doc_del_count'] == 3)
+
+        self.server.delete_db('couchdbkit_test')
 
 
 class PropertyTestCase(unittest.TestCase):

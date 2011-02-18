@@ -172,6 +172,8 @@ class DocumentSchema(object):
 
         if key == "_id" and valid_id(value):
             self._doc['_id'] = value
+        elif key == "_deleted":
+            self._doc["_deleted"] = value
         else:
             check_reserved_words(key)
             if not hasattr( self, key ) and not self._allow_dynamic_properties:

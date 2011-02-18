@@ -524,6 +524,7 @@ class Database(object):
         """
         for doc in docs:
             doc['_deleted'] = True
+
         return self.bulk_save(docs, use_uuids=False,
                 all_or_nothing=all_or_nothing)
 
