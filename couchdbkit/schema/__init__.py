@@ -84,14 +84,14 @@ Similarly, the request will only return entities with that property set.
 
     p1 = Person()
     p1.favorite = 42
-    p1.save(db)
+    db.save_doc(p1) 
 
     p2 = Person()
     p2.favorite = "blue"
-    p2.save(db)
+    db.save_doc(p2)
 
     p3 = Person()
-    p3.save(db)
+    db.save_doc(p3)
 
     people = Person.view(db, "person/favorite", startkey=0, endkey=50)
     # people has p1, but not p2 or p3
@@ -133,6 +133,26 @@ Couchdb supports all Javascript types, including Unicode strings, integers,
 floating point numbers. We also added support for dates and decimal types. Each
 of the CouchDB value type has a corresponding Property class provided by the
 :mod:`simplecouchdb.schema` module.
+
+
+Other way to save on the db.
+----------------------------
+
+If you don't want to use the db object to save doc each time and save
+àla "ORM" you can fix a db to a Document class::
+
+    class A(Dcoument):
+        s = StringProperty()
+
+    A.set_db(db)
+
+    a = A()
+    a.save()
+
+This method isn't really threadsafe since once class will share a db
+reference across threads, changing a db to a class will be applied to
+all threads. It's better to use the db object methods if you want to be
+threadsafe.
 
 """
 
