@@ -10,10 +10,10 @@ import datetime
 import decimal
 import time
 
-from ..exceptions import *
-from .properties import Property
+from ..exceptions import BadValueError 
 
 from .base import DocumentSchema, ALLOWED_PROPERTY_TYPES
+from .properties import Property
 
 __all__ = ['SchemaProperty', 'SchemaListProperty', 'SchemaDictProperty']
 

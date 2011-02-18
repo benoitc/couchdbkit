@@ -42,7 +42,8 @@ import warnings
 
 from restkit.util import url_quote
 
-from .exceptions import *
+from .exceptions import InvalidAttachment, NoResultFound, \
+ResourceNotFound, ResourceConflict 
 from . import resource
 from .utils import validate_dbname, json
 

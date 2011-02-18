@@ -9,7 +9,7 @@ import StringIO
 import traceback
 from urllib import unquote
 
-from restkit.utils import url_encode
+from restkit.util import url_encode
 
 from .. import __version__
 from ..external import External

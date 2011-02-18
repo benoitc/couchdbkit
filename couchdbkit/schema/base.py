@@ -17,8 +17,8 @@ from . import properties as p
 from .properties import value_to_python, \
 convert_property, MAP_TYPES_PROPERTIES, ALLOWED_PROPERTY_TYPES, \
 LazyDict, LazyList, value_to_json
-from ..exceptions import *
-from ..exceptions import ResourceNotFound
+from ..exceptions import DuplicatePropertyError, ResourceNotFound, \
+ReservedWordError 
 
 
 __all__ = ['ReservedWordError', 'ALLOWED_PROPERTY_TYPES', 'DocumentSchema',

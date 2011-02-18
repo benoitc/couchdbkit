@@ -7,7 +7,7 @@ from hashlib import sha256
 import os
 
 
-from ...schema import Document, SchemaListProperty, StringProperty, \
+from .... import Document, SchemaListProperty, StringProperty, \
 StringListProperty
 
 class Permission(Document):
