@@ -1,5 +1,13 @@
-from couchdbkit import Document, Server, pushapps
+# -*- coding: utf-8 -
+#
+# This file is part of couchdbkit released under the MIT license. 
+# See the NOTICE for more information.
+
 import os.path
+
+from ...client import Server
+from ...designer import pushapps
+from ...schema import Document
 
 def init_from_config(config):
     """Initialize the database given a pylons config. This assumes the

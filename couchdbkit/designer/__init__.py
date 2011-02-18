@@ -3,4 +3,4 @@
 # This file is part of couchdbkit released under the MIT license. 
 # See the NOTICE for more information.
 
-from couchdbkit.designer.fs import FSDoc, document, push, pushdocs, pushapps, clone
+from .fs import FSDoc, document, push, pushdocs, pushapps, clone

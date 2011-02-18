@@ -5,8 +5,9 @@
 
 from django.test.simple import DjangoTestSuiteRunner
 from django.conf import settings
-from couchdbkit.ext.django import loading as loading
-from couchdbkit.resource import ResourceNotFound
+
+from . import loading
+from ...exceptions import ResourceNotFound
 
 class CouchDbKitTestSuiteRunner(DjangoTestSuiteRunner):
     """

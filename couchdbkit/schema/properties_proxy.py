@@ -10,11 +10,10 @@ import datetime
 import decimal
 import time
 
-import couchdbkit
-from couchdbkit.exceptions import *
-from couchdbkit.schema.properties import Property
+from ..exceptions import *
+from .properties import Property
 
-from couchdbkit.schema.base import DocumentSchema, ALLOWED_PROPERTY_TYPES
+from .base import DocumentSchema, ALLOWED_PROPERTY_TYPES
 
 __all__ = ['SchemaProperty', 'SchemaListProperty', 'SchemaDictProperty']
 

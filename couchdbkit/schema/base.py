@@ -12,13 +12,13 @@ import decimal
 import re
 import warnings
 
-from couchdbkit.client import Database
-from couchdbkit.schema import properties as p
-from couchdbkit.schema.properties import value_to_python, \
+from ..client import Database
+from . import properties as p
+from .properties import value_to_python, \
 convert_property, MAP_TYPES_PROPERTIES, ALLOWED_PROPERTY_TYPES, \
 LazyDict, LazyList, value_to_json
-from couchdbkit.exceptions import *
-from couchdbkit.resource import ResourceNotFound
+from ..exceptions import *
+from ..exceptions import ResourceNotFound
 
 
 __all__ = ['ReservedWordError', 'ALLOWED_PROPERTY_TYPES', 'DocumentSchema',

@@ -42,9 +42,9 @@ import warnings
 
 from restkit.util import url_quote
 
-from couchdbkit.exceptions import *
-import couchdbkit.resource as resource
-from couchdbkit.utils import validate_dbname, json
+from .exceptions import *
+from . import resource
+from .utils import validate_dbname, json
 
 
 DEFAULT_UUID_BATCH_COUNT = 1000

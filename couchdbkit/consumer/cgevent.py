@@ -8,9 +8,9 @@ import traceback
 import gevent
 from gevent import monkey 
 
-from couchdbkit.consumer.base import check_callable
-from couchdbkit.consumer.sync import SyncConsumer
-from couchdbkit.utils import json
+from .base import check_callable
+from .sync import SyncConsumer
+from ..utils import json
 
 class ChangeConsumer(gevent.Greenlet):
     def __init__(self, db, callback=None, **params):

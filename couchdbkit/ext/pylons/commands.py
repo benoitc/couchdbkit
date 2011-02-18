@@ -1,7 +1,13 @@
+# -*- coding: utf-8 -
+#
+# This file is part of couchdbkit released under the MIT license. 
+# See the NOTICE for more information.
+
 import os
 from paste.deploy import loadapp
 from paste.script.command import Command
-from couchdbkit.ext.pylons.db import sync_design, default_design_path
+
+from .db import sync_design, default_design_path
 
 class SyncDbCommand(Command):
     """Syncs the CouchDB views on disk with the database.

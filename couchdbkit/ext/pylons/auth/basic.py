@@ -1,5 +1,8 @@
-from couchdbkit.ext.pylons.auth.adapters import GroupAdapter, PermissionAdapter, \
-                                                Authenticator, MDPlugin
+# -*- coding: utf-8 -
+#
+# This file is part of couchdbkit released under the MIT license. 
+# See the NOTICE for more information.
+
 import logging
 from paste.request import parse_dict_querystring, parse_formvars
 from paste.httpexceptions import HTTPUnauthorized
@@ -10,6 +13,10 @@ from repoze.who.interfaces import IChallenger, IIdentifier
 
 import sys
 from zope.interface import implements
+
+from .adapters import GroupAdapter, PermissionAdapter, \
+Authenticator, MDPlugin
+
 
 class BasicAuth(object):
     """A basic challenger and identifier"""

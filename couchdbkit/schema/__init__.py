@@ -156,9 +156,9 @@ threadsafe.
 
 """
 
-from couchdbkit.schema.properties import *
-from couchdbkit.schema.base import *
-from couchdbkit.schema.properties_proxy import *
+from .properties import *
+from .base import *
+from .properties_proxy import *
 
 def contain(db, *docs):
     """ associate a db to multiple `Document` class"""

@@ -1,11 +1,16 @@
+# -*- coding: utf-8 -
+#
+# This file is part of couchdbkit released under the MIT license. 
+# See the NOTICE for more information.
+
 from __future__ import with_statement
 
 import os
 import unittest
 
-from couchdbkit import BaseDocsLoader, ResourceNotFound
-from couchdbkit.ext.pylons.db import init_db, sync_design, default_design_path
-from couchdbkit.utils import json
+from ... import BaseDocsLoader, ResourceNotFound
+from .db import init_db, sync_design, default_design_path
+from ...utils import json
 
 class FixtureLoader(BaseDocsLoader):
     def __init__(self, directory):

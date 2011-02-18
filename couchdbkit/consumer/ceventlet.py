@@ -9,9 +9,9 @@ import eventlet
 from eventlet.greenthread import GreenThread
 from eventlet import event
 
-from couchdbkit.consumer.base import check_callable
-from couchdbkit.consumer.sync import SyncConsumer
-from couchdbkit.utils import json
+from .base import check_callable
+from .sync import SyncConsumer
+from ..utils import json
 
 
 class ChangeConsumer(object):

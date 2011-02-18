@@ -4,7 +4,7 @@
 # See the NOTICE for more information.
 
 
-from couchdbkit.consumer.base import ConsumerBase
+from .base import ConsumerBase
 
 import pkg_resources
 

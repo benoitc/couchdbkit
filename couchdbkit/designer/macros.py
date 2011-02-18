@@ -37,8 +37,8 @@ import logging
 import os
 import re
 
-from couchdbkit.exceptions import MacroError
-from couchdbkit.utils import read_file, read_json, to_bytestring, json
+from ..exceptions import MacroError
+from ..utils import read_file, read_json, to_bytestring, json
 
 logger = logging.getLogger(__name__)
 

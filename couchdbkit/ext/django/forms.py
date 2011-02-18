@@ -85,8 +85,8 @@ from django.forms.forms import BaseForm, get_declared_fields
 from django.forms import fields as f
 from django.forms.widgets import media_property
 
-from couchdbkit.ext.django import schema
-from couchdbkit.schema import value_to_python
+from . import schema
+from ...schema import value_to_python
 
 FIELDS_PROPERTES_MAPPING = {
     "StringProperty": f.CharField,

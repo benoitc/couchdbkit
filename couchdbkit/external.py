@@ -5,7 +5,7 @@
 
 import sys
 
-from couchdbkit.utils import json
+from .utils import json
 
 class External(object):
     """ simple class to handle an external

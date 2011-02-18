@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -
+#
+# This file is part of couchdbkit released under the MIT license. 
+# See the NOTICE for more information.
+
 """Pylons extension to simplify using couchdbkit with pylons. This features the
 following:
  * Simple configuration
@@ -82,4 +87,4 @@ and load fixtures, this is not done yet and is TBC.
 
 """
 
-from couchdbkit.ext.pylons.db import init_from_config
+from .db import init_from_config

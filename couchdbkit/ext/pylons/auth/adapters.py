@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -
+#
+# This file is part of couchdbkit released under the MIT license. 
+# See the NOTICE for more information.
+
 from repoze.what.adapters import BaseSourceAdapter
 from repoze.who.interfaces import IAuthenticator
 from repoze.who.interfaces import IMetadataProvider

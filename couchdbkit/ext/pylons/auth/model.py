@@ -1,6 +1,14 @@
-from couchdbkit import Document, SchemaListProperty, StringProperty, StringListProperty
+# -*- coding: utf-8 -
+#
+# This file is part of couchdbkit released under the MIT license. 
+# See the NOTICE for more information.
+
 from hashlib import sha256
 import os
+
+
+from ...schema import Document, SchemaListProperty, StringProperty, \
+StringListProperty
 
 class Permission(Document):
     name = StringProperty(required=True)

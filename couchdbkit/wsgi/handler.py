@@ -11,8 +11,8 @@ from urllib import unquote
 
 from restkit.utils import url_encode
 
-from couchdbkit import __version__
-from couchdbkit.external import External
+from .. import __version__
+from ..external import External
 
 def _normalize_name(name):
     return  "-".join([w.lower().capitalize() for w in name.split("-")])

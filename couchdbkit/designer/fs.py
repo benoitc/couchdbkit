@@ -13,11 +13,11 @@ import os
 import os.path
 import re
 
-from couchdbkit import client
-from couchdbkit.exceptions import ResourceNotFound, DesignerError, \
+from .. import client
+from ..exceptions import ResourceNotFound, DesignerError, \
 BulkSaveError
-from couchdbkit.designer.macros import package_shows, package_views
-from couchdbkit import utils
+from .macros import package_shows, package_views
+from .. import utils
 
 if os.name == 'nt':
     def _replace_backslash(name):

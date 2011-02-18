@@ -28,7 +28,7 @@ import os
 import socket
 import sys
 
-from couchdbkit.designer import push, pushapps, pushdocs
+from .designer import push, pushapps, pushdocs
 
 class BaseDocsLoader(object):
     """Baseclass for all doc loaders. """
