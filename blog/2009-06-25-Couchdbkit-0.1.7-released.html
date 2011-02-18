@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>Couchdbkit - 
+    Couchdbkit version 0.1.7 released
+</title>
+    <!--[if IE]>
+
+    <script>
+        // allow IE to recognize HTMl5 elements
+        document.createElement('section');
+        document.createElement('article');
+        document.createElement('aside');
+        document.createElement('footer');
+        document.createElement('header');
+        document.createElement('nav');
+        document.createElement('time');
+
+    </script>
+    <![endif]-->
+
+    <link rel="stylesheet" href="/css/couchdbkit.css?20090615" type="text/css" media="screen, projection" />
+    <link rel="stylesheet" href="/static/css/print.css?20090615" type="text/css" media="print" />
+    <script type="text/javascript" src="/js/prettify.js"></script>
+    
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/feed.xml" />
+    
+
+    
+        
+</head>
+<body onload="prettyPrint()">
+    
+    <div class="container">
+        <header id="site_header">
+            <h1><a href="/"><span>couchdbkit</span></a></h1>
+            <ul id="main_nav">
+                <li><a href="/">home</a></li>
+                <li><a href="/blog/">news</a></li>
+                <li><a href="/download.html">download</a></li>
+                <li><a href="/docs/">documentation</a></li>
+                <li><a href="/docs/api/">API</a></li>
+            </ul>
+
+        </header>
+        
+        
+        
+        
+        <aside id="sidebar">
+            <ul class="sidenav">
+                <li><a href="/blog/">Latest news</a></li>
+                <li><a href="/download.html">Download latest</a></li>
+                <li><a href="/docs/gettingstarted.html">Getting started</a></li>
+                <li><a href="/docs/faq.html">Frequently Asked Questions</a></li>
+                <li><a href="/docs/about.html">About couchdbkit</a></li>
+                <li><a href="/contact.html">Getting help with couchdbkit</a></li>
+            </ul>
+            <div class="info">
+                <h3>Getting started</h3>
+                <p>See the <a href="/download.html">download instructions</a> for information on getting couchdbkit, and read the <a href="/docs/gettingstarted.html">getting started</a> instructions to start programming CouchDB in your own application in less than 10 minutes.</p>
+            </div>
+            <div class="info">
+                <h3>Get involved</h3>
+                <ul>
+                    <li><p><a href="http://webchat.freenode.net/?channels=couchdbkit">#couchdbkit IRC channel</a>: chat with other couchdbkit users</p></li>
+                    <li><p><a href="http://github.com/benoitc/couchdbkit/issues">Ticket system</a>: report bugs and make feature requests</p></li>
+                    <li><p><a href="http://groups.google.com/group/couchdbkit">Mailing-List</a>: The main list for help and follow changes.</p></li>
+                </ul>
+                        
+            </div>
+           
+        </aside>
+        
+    
+        
+
+<section id="content">
+    <article>
+        <header>
+            <h1>Couchdbkit version 0.1.7 released</h1>
+        </header>
+        	<p>Just released Couchdbkit 0.1.7. </p>
+
+	<p>Next version will be 0.2 and will have some new features :</p>
+
+	<ul>
+		<li>Dump/Loads utilities</li>
+		<li>New view iterator system that would allow us to use less <span class="caps">CPU</span></li>
+		<li>Aggregation : A way to combine multiple views in one</li>
+		<li>ReferenceProperty: Link documents between themselves</li>
+		<li>...</li>
+	</ul>
+
+	<p>Changes for this version are following:</p>
+
+	<h2>Fixes</h2>
+
+	<ul>
+		<li>documentation typos</li>
+		<li>database name encoding. </li>
+		<li>list are correctly handled in DictProperty</li>
+	</ul>
+
+	<h2>Breaking changes</h2>
+
+	<p>I introduced a <strong>breaking change</strong> in latest version of couchdbkit. Now id and rev members of `schema.Document` aren&#8217;t alias to _id and _rev. It allows you to use id and rev like you want in CouchDB. It also means that you need to set yourdoc._id to set the id of a document. I made this change since it seems that a lot of you need it. So here it is. </p>
+
+	<p>Please test it and let me know if anything is wrong.</p>
+
+	<p>A little example :</p>
+
+	<p><pre class="code prettyprint">
+ In [1]: from couchdbkit import *</p>
+
+ In [2]: class A(Document):
+   ...:     pass
+   ...:
+
+ In [3]: a = A()
+
+ In [4]: a._id = &#8220;myid&#8221;
+
+ In [5]: a.id = &#8220;idofapplication&#8221;
+
+ In [6]: a._doc
+ Out<sup class="footnote"><a href="#fnd3589f0e-f4ca-4974-be5b-918fbd3bc50f">6</a></sup>: {&#8217;_id&#8217;: 'myid&#8217;, 'doc_type&#8217;: 'A&#8217;, 'id&#8217;: u&#8217;idofapplication&#8217;}
+
+ In [7]: a._id
+ Out<sup class="footnote"><a href="#fn380f2512-d3fa-4b97-a590-5ad032e20608">7</a></sup>: 'myid&#8217;
+
+ In [8]: a.id
+ Out<sup class="footnote"><a href="#fnfd97b816-2c8b-4be3-9e2d-6a2322be43f7">8</a></sup>: 'idofapplication&#8217;
+
+ In [9]: s = Server()
+
+ In [10]: db = s['couchdbkit_test3&#8217;]
+
+ In [11]: A._db = db
+
+ In [12]: a.save()
+
+ In [13]: a._doc
+ Out<sup class="footnote"><a href="#fn68b77057-92bc-4452-ac5b-b3f6d61a415e">13</a></sup>:
+ {&#8217;_id&#8217;: u&#8217;myid&#8217;,
+ '_rev&#8217;: u&#8217;1-676990679&#8217;,
+ 'doc_type&#8217;: 'A&#8217;,
+ 'id&#8217;: u&#8217;idofapplication&#8217;}
+
+ In [14]: b = A.get('myid&#8217;)
+
+ In [15]: b.id
+ Out<sup class="footnote"><a href="#fne304cf4c-25d2-42e0-9960-bac100b7729f">15</a></sup>: u&#8217;idofapplication&#8217;
+
+ In [16]: b._id
+ Out<sup class="footnote"><a href="#fn195ed4b6-13ef-4f0b-85c9-a5fcbab5e028">16</a></sup>: u&#8217;myid&#8217;
+</pre>
+        <footer>
+             <p><span class='comments'><a href='/blog/2009-06-25-Couchdbkit-0.1.7-released.html#disqus_thread'>View Comments</a></span></p>
+        </footer>
+    </article>
+    <div id="disqus_thread"></div><script type="text/javascript" src="http://disqus.com/forums/couchdbkit/embed.js"></script><noscript><a href="http://couchdbkit.disqus.com/?url=ref">View the discussion thread.</a></noscript><a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+        
+        <footer id="bottom">
+            <p class="copyright">2008-2009 &copy; <a href="http://benoitc.org">Benoît Chesneau</a> - Some rights reserved.</p>
+            <div id="cc"><a rel="license" href="http://creativecommons.org/licenses/by/2.0/fr/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/2.0/fr/80x15.png" /></a> This <span xmlns:dc="http://purl.org/dc/elements/1.1/" href="http://purl.org/dc/dcmitype/InteractiveResource" rel="dc:type">website</span> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/2.0/fr/">Creative Commons Attribution 2.0 France License</a>.</div>
+        </footer>
+        
+    </div>
+
+    
+    
+    
+    <script>
+    //<![CDATA[
+    (function() {
+            
+    		var links = document.getElementsByTagName('a');
+    		var query = '?';
+    		for(var i = 0; i < links.length; i++) {
+    			if(links[i].href.indexOf('#disqus_thread') >= 0) {
+    				query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+    			}
+    		}
+    		document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/couchdbkit/get_num_replies.js' + query + '&disqus_developer=1"></' + 'script>');
+    	})();
+    //]]>
+    </script>
+    
+
+</body>
+</html>

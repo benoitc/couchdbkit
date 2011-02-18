@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>couchdbkit.ext.pylons.auth.adapters</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="couchdbkit-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="couchdbkit-module.html">Package&nbsp;couchdbkit</a> ::
+        <a href="couchdbkit.ext-module.html">Package&nbsp;ext</a> ::
+        <a href="couchdbkit.ext.pylons-module.html">Package&nbsp;pylons</a> ::
+        <a href="couchdbkit.ext.pylons.auth-module.html">Package&nbsp;auth</a> ::
+        Module&nbsp;adapters
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="couchdbkit.ext.pylons.auth.adapters-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="couchdbkit.ext.pylons.auth.adapters-module.html">Module couchdbkit.ext.pylons.auth.adapters</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-comment"># -*- coding: utf-8 -</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-comment"># This file is part of couchdbkit released under the MIT license. </tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-comment"># See the NOTICE for more information.</tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">repoze</tt><tt class="py-op">.</tt><tt class="py-name">what</tt><tt class="py-op">.</tt><tt id="link-0" class="py-name" targets="Module couchdbkit.ext.pylons.auth.adapters=couchdbkit.ext.pylons.auth.adapters-module.html"><a title="couchdbkit.ext.pylons.auth.adapters" class="py-name" href="#" onclick="return doclink('link-0', 'adapters', 'link-0');">adapters</a></tt> <tt class="py-keyword">import</tt> <tt class="py-name">BaseSourceAdapter</tt> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">repoze</tt><tt class="py-op">.</tt><tt class="py-name">who</tt><tt class="py-op">.</tt><tt class="py-name">interfaces</tt> <tt class="py-keyword">import</tt> <tt class="py-name">IAuthenticator</tt> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">repoze</tt><tt class="py-op">.</tt><tt class="py-name">who</tt><tt class="py-op">.</tt><tt class="py-name">interfaces</tt> <tt class="py-keyword">import</tt> <tt class="py-name">IMetadataProvider</tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">zope</tt><tt class="py-op">.</tt><tt class="py-name">interface</tt> <tt class="py-keyword">import</tt> <tt class="py-name">implements</tt> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"> </tt>
+<a name="GroupAdapter"></a><div id="GroupAdapter-def"><a name="L11"></a><tt class="py-lineno">11</tt> <a class="py-toggle" href="#" id="GroupAdapter-toggle" onclick="return toggle('GroupAdapter');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.auth.adapters.GroupAdapter-class.html">GroupAdapter</a><tt class="py-op">(</tt><tt class="py-base-class">BaseSourceAdapter</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GroupAdapter-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="GroupAdapter-expanded"><a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line">    <tt class="py-docstring">"""Group adapter. Use 'auth/group_users' to retrieve group's users"""</tt> </tt>
+<a name="GroupAdapter.__init__"></a><div id="GroupAdapter.__init__-def"><a name="L13"></a><tt class="py-lineno">13</tt> <a class="py-toggle" href="#" id="GroupAdapter.__init__-toggle" onclick="return toggle('GroupAdapter.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.auth.adapters.GroupAdapter-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">user_class</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GroupAdapter.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="GroupAdapter.__init__-expanded"><a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">user_class</tt> <tt class="py-op">=</tt> <tt class="py-name">user_class</tt> </tt>
+</div><a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line"> </tt>
+<a name="GroupAdapter._get_all_sections"></a><div id="GroupAdapter._get_all_sections-def"><a name="L16"></a><tt class="py-lineno">16</tt> <a class="py-toggle" href="#" id="GroupAdapter._get_all_sections-toggle" onclick="return toggle('GroupAdapter._get_all_sections');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.auth.adapters.GroupAdapter-class.html#_get_all_sections">_get_all_sections</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GroupAdapter._get_all_sections-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="GroupAdapter._get_all_sections-expanded"><a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt class="py-name">NotImplementedError</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line"> </tt>
+<a name="GroupAdapter._get_section_items"></a><div id="GroupAdapter._get_section_items-def"><a name="L19"></a><tt class="py-lineno">19</tt> <a class="py-toggle" href="#" id="GroupAdapter._get_section_items-toggle" onclick="return toggle('GroupAdapter._get_section_items');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.auth.adapters.GroupAdapter-class.html#_get_section_items">_get_section_items</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">section</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GroupAdapter._get_section_items-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="GroupAdapter._get_section_items-expanded"><a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt class="py-name">NotImplementedError</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line"> </tt>
+<a name="GroupAdapter._find_sections"></a><div id="GroupAdapter._find_sections-def"><a name="L22"></a><tt class="py-lineno">22</tt> <a class="py-toggle" href="#" id="GroupAdapter._find_sections-toggle" onclick="return toggle('GroupAdapter._find_sections');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.auth.adapters.GroupAdapter-class.html#_find_sections">_find_sections</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">hint</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GroupAdapter._find_sections-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="GroupAdapter._find_sections-expanded"><a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line"><tt class="py-docstring">        Returns the group ids that the user is part of.</tt> </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line">        <tt class="py-name">user</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">user_class</tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Class Method couchdbkit.schema.base.DocumentBase.get()=couchdbkit.schema.base.DocumentBase-class.html#get"><a title="couchdbkit.schema.base.DocumentBase.get" class="py-name" href="#" onclick="return doclink('link-1', 'get', 'link-1');">get</a></tt><tt class="py-op">(</tt><tt class="py-name">hint</tt><tt class="py-op">[</tt><tt class="py-string">'repoze.what.userid'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">user</tt><tt class="py-op">.</tt><tt id="link-2" class="py-name" targets="Variable couchdbkit.ext.pylons.auth.model.User.groups=couchdbkit.ext.pylons.auth.model.User-class.html#groups"><a title="couchdbkit.ext.pylons.auth.model.User.groups" class="py-name" href="#" onclick="return doclink('link-2', 'groups', 'link-2');">groups</a></tt> </tt>
+</div><a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line"> </tt>
+<a name="GroupAdapter._include_items"></a><div id="GroupAdapter._include_items-def"><a name="L29"></a><tt class="py-lineno">29</tt> <a class="py-toggle" href="#" id="GroupAdapter._include_items-toggle" onclick="return toggle('GroupAdapter._include_items');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.auth.adapters.GroupAdapter-class.html#_include_items">_include_items</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">section</tt><tt class="py-op">,</tt> <tt class="py-param">items</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GroupAdapter._include_items-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="GroupAdapter._include_items-expanded"><a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt class="py-name">NotImplementedError</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line"> </tt>
+<a name="GroupAdapter._item_is_included"></a><div id="GroupAdapter._item_is_included-def"><a name="L32"></a><tt class="py-lineno">32</tt> <a class="py-toggle" href="#" id="GroupAdapter._item_is_included-toggle" onclick="return toggle('GroupAdapter._item_is_included');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.auth.adapters.GroupAdapter-class.html#_item_is_included">_item_is_included</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">section</tt><tt class="py-op">,</tt> <tt class="py-param">item</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GroupAdapter._item_is_included-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="GroupAdapter._item_is_included-expanded"><a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt class="py-name">NotImplementedError</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line"> </tt>
+<a name="GroupAdapter._section_exists"></a><div id="GroupAdapter._section_exists-def"><a name="L35"></a><tt class="py-lineno">35</tt> <a class="py-toggle" href="#" id="GroupAdapter._section_exists-toggle" onclick="return toggle('GroupAdapter._section_exists');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.auth.adapters.GroupAdapter-class.html#_section_exists">_section_exists</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">section</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GroupAdapter._section_exists-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="GroupAdapter._section_exists-expanded"><a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt class="py-name">NotImplementedError</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line"> </tt>
+<a name="PermissionAdapter"></a><div id="PermissionAdapter-def"><a name="L38"></a><tt class="py-lineno">38</tt> <a class="py-toggle" href="#" id="PermissionAdapter-toggle" onclick="return toggle('PermissionAdapter');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.auth.adapters.PermissionAdapter-class.html">PermissionAdapter</a><tt class="py-op">(</tt><tt class="py-base-class">BaseSourceAdapter</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="PermissionAdapter-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="PermissionAdapter-expanded"><a name="PermissionAdapter.__init__"></a><div id="PermissionAdapter.__init__-def"><a name="L39"></a><tt class="py-lineno">39</tt> <a class="py-toggle" href="#" id="PermissionAdapter.__init__-toggle" onclick="return toggle('PermissionAdapter.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.auth.adapters.PermissionAdapter-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">db</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="PermissionAdapter.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="PermissionAdapter.__init__-expanded"><a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-3" class="py-name" targets="Module couchdbkit.ext.pylons.db=couchdbkit.ext.pylons.db-module.html"><a title="couchdbkit.ext.pylons.db" class="py-name" href="#" onclick="return doclink('link-3', 'db', 'link-3');">db</a></tt> <tt class="py-op">=</tt> <tt id="link-4" class="py-name"><a title="couchdbkit.ext.pylons.db" class="py-name" href="#" onclick="return doclink('link-4', 'db', 'link-3');">db</a></tt> </tt>
+</div><a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line"> </tt>
+<a name="PermissionAdapter._get_all_sections"></a><div id="PermissionAdapter._get_all_sections-def"><a name="L42"></a><tt class="py-lineno">42</tt> <a class="py-toggle" href="#" id="PermissionAdapter._get_all_sections-toggle" onclick="return toggle('PermissionAdapter._get_all_sections');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.auth.adapters.PermissionAdapter-class.html#_get_all_sections">_get_all_sections</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="PermissionAdapter._get_all_sections-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="PermissionAdapter._get_all_sections-expanded"><a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt class="py-name">NotImplementedError</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line"> </tt>
+<a name="PermissionAdapter._get_section_items"></a><div id="PermissionAdapter._get_section_items-def"><a name="L45"></a><tt class="py-lineno">45</tt> <a class="py-toggle" href="#" id="PermissionAdapter._get_section_items-toggle" onclick="return toggle('PermissionAdapter._get_section_items');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.auth.adapters.PermissionAdapter-class.html#_get_section_items">_get_section_items</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">section</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="PermissionAdapter._get_section_items-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="PermissionAdapter._get_section_items-expanded"><a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt class="py-name">NotImplementedError</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line"> </tt>
+<a name="PermissionAdapter._find_sections"></a><div id="PermissionAdapter._find_sections-def"><a name="L48"></a><tt class="py-lineno">48</tt> <a class="py-toggle" href="#" id="PermissionAdapter._find_sections-toggle" onclick="return toggle('PermissionAdapter._find_sections');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.auth.adapters.PermissionAdapter-class.html#_find_sections">_find_sections</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">hint</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="PermissionAdapter._find_sections-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="PermissionAdapter._find_sections-expanded"><a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line">        <tt class="py-name">results</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-5" class="py-name"><a title="couchdbkit.ext.pylons.db" class="py-name" href="#" onclick="return doclink('link-5', 'db', 'link-3');">db</a></tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Method couchdbkit.client.Database.view()=couchdbkit.client.Database-class.html#view,Class Method couchdbkit.schema.base.QueryMixin.view()=couchdbkit.schema.base.QueryMixin-class.html#view"><a title="couchdbkit.client.Database.view
+couchdbkit.schema.base.QueryMixin.view" class="py-name" href="#" onclick="return doclink('link-6', 'view', 'link-6');">view</a></tt><tt class="py-op">(</tt><tt class="py-string">'group/show_permissions'</tt><tt class="py-op">,</tt> <tt class="py-name">startkey</tt><tt class="py-op">=</tt><tt class="py-name">hint</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-7" class="py-name" targets="Method couchdbkit.client.ViewResults.all()=couchdbkit.client.ViewResults-class.html#all"><a title="couchdbkit.client.ViewResults.all" class="py-name" href="#" onclick="return doclink('link-7', 'all', 'link-7');">all</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L50"></a><tt class="py-lineno">50</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-op">[</tt><tt class="py-name">x</tt><tt class="py-op">[</tt><tt class="py-string">"value"</tt><tt class="py-op">]</tt> <tt class="py-keyword">for</tt> <tt class="py-name">x</tt> <tt class="py-keyword">in</tt> <tt class="py-name">results</tt><tt class="py-op">]</tt> </tt>
+</div><a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line"> </tt>
+<a name="PermissionAdapter._include_items"></a><div id="PermissionAdapter._include_items-def"><a name="L52"></a><tt class="py-lineno">52</tt> <a class="py-toggle" href="#" id="PermissionAdapter._include_items-toggle" onclick="return toggle('PermissionAdapter._include_items');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.auth.adapters.PermissionAdapter-class.html#_include_items">_include_items</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">section</tt><tt class="py-op">,</tt> <tt class="py-param">items</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="PermissionAdapter._include_items-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="PermissionAdapter._include_items-expanded"><a name="L53"></a><tt class="py-lineno">53</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt class="py-name">NotImplementedError</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L54"></a><tt class="py-lineno">54</tt>  <tt class="py-line"> </tt>
+<a name="PermissionAdapter._item_is_included"></a><div id="PermissionAdapter._item_is_included-def"><a name="L55"></a><tt class="py-lineno">55</tt> <a class="py-toggle" href="#" id="PermissionAdapter._item_is_included-toggle" onclick="return toggle('PermissionAdapter._item_is_included');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.auth.adapters.PermissionAdapter-class.html#_item_is_included">_item_is_included</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">section</tt><tt class="py-op">,</tt> <tt class="py-param">item</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="PermissionAdapter._item_is_included-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="PermissionAdapter._item_is_included-expanded"><a name="L56"></a><tt class="py-lineno">56</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt class="py-name">NotImplementedError</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L57"></a><tt class="py-lineno">57</tt>  <tt class="py-line"> </tt>
+<a name="PermissionAdapter._section_exists"></a><div id="PermissionAdapter._section_exists-def"><a name="L58"></a><tt class="py-lineno">58</tt> <a class="py-toggle" href="#" id="PermissionAdapter._section_exists-toggle" onclick="return toggle('PermissionAdapter._section_exists');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.auth.adapters.PermissionAdapter-class.html#_section_exists">_section_exists</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">section</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="PermissionAdapter._section_exists-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="PermissionAdapter._section_exists-expanded"><a name="L59"></a><tt class="py-lineno">59</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt class="py-name">NotImplementedError</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L60"></a><tt class="py-lineno">60</tt>  <tt class="py-line"> </tt>
+<a name="Authenticator"></a><div id="Authenticator-def"><a name="L61"></a><tt class="py-lineno">61</tt> <a class="py-toggle" href="#" id="Authenticator-toggle" onclick="return toggle('Authenticator');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.auth.adapters.Authenticator-class.html">Authenticator</a><tt class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Authenticator-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="Authenticator-expanded"><a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line">    <tt class="py-name">implements</tt><tt class="py-op">(</tt><tt class="py-name">IAuthenticator</tt><tt class="py-op">)</tt> </tt>
+<a name="L63"></a><tt class="py-lineno">63</tt>  <tt class="py-line"> </tt>
+<a name="Authenticator.__init__"></a><div id="Authenticator.__init__-def"><a name="L64"></a><tt class="py-lineno">64</tt> <a class="py-toggle" href="#" id="Authenticator.__init__-toggle" onclick="return toggle('Authenticator.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.auth.adapters.Authenticator-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">user_class</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Authenticator.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="Authenticator.__init__-expanded"><a name="L65"></a><tt class="py-lineno">65</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">user_class</tt> <tt class="py-op">=</tt> <tt class="py-name">user_class</tt> </tt>
+</div><a name="L66"></a><tt class="py-lineno">66</tt>  <tt class="py-line"> </tt>
+<a name="Authenticator.authenticate"></a><div id="Authenticator.authenticate-def"><a name="L67"></a><tt class="py-lineno">67</tt> <a class="py-toggle" href="#" id="Authenticator.authenticate-toggle" onclick="return toggle('Authenticator.authenticate');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.auth.adapters.Authenticator-class.html#authenticate">authenticate</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">environ</tt><tt class="py-op">,</tt> <tt class="py-param">identity</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Authenticator.authenticate-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="Authenticator.authenticate-expanded"><a name="L68"></a><tt class="py-lineno">68</tt>  <tt class="py-line">        <tt id="link-8" class="py-name" targets="Variable couchdbkit.ext.pylons.auth.model.User.login=couchdbkit.ext.pylons.auth.model.User-class.html#login"><a title="couchdbkit.ext.pylons.auth.model.User.login" class="py-name" href="#" onclick="return doclink('link-8', 'login', 'link-8');">login</a></tt> <tt class="py-op">=</tt> <tt class="py-name">identity</tt><tt class="py-op">.</tt><tt id="link-9" class="py-name"><a title="couchdbkit.schema.base.DocumentBase.get" class="py-name" href="#" onclick="return doclink('link-9', 'get', 'link-1');">get</a></tt><tt class="py-op">(</tt><tt class="py-string">'login'</tt><tt class="py-op">,</tt> <tt class="py-string">''</tt><tt class="py-op">)</tt> </tt>
+<a name="L69"></a><tt class="py-lineno">69</tt>  <tt class="py-line">        <tt id="link-10" class="py-name" targets="Variable couchdbkit.ext.pylons.auth.model.User.password=couchdbkit.ext.pylons.auth.model.User-class.html#password"><a title="couchdbkit.ext.pylons.auth.model.User.password" class="py-name" href="#" onclick="return doclink('link-10', 'password', 'link-10');">password</a></tt> <tt class="py-op">=</tt> <tt class="py-name">identity</tt><tt class="py-op">.</tt><tt id="link-11" class="py-name"><a title="couchdbkit.schema.base.DocumentBase.get" class="py-name" href="#" onclick="return doclink('link-11', 'get', 'link-1');">get</a></tt><tt class="py-op">(</tt><tt class="py-string">'password'</tt><tt class="py-op">,</tt> <tt class="py-string">''</tt><tt class="py-op">)</tt> </tt>
+<a name="L70"></a><tt class="py-lineno">70</tt>  <tt class="py-line"> </tt>
+<a name="L71"></a><tt class="py-lineno">71</tt>  <tt class="py-line">        <tt class="py-name">user</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">user_class</tt><tt class="py-op">.</tt><tt id="link-12" class="py-name" targets="Method couchdbkit.ext.pylons.auth.adapters.Authenticator.authenticate()=couchdbkit.ext.pylons.auth.adapters.Authenticator-class.html#authenticate,Static Method couchdbkit.ext.pylons.auth.model.User.authenticate()=couchdbkit.ext.pylons.auth.model.User-class.html#authenticate"><a title="couchdbkit.ext.pylons.auth.adapters.Authenticator.authenticate
+couchdbkit.ext.pylons.auth.model.User.authenticate" class="py-name" href="#" onclick="return doclink('link-12', 'authenticate', 'link-12');">authenticate</a></tt><tt class="py-op">(</tt><tt id="link-13" class="py-name"><a title="couchdbkit.ext.pylons.auth.model.User.login" class="py-name" href="#" onclick="return doclink('link-13', 'login', 'link-8');">login</a></tt><tt class="py-op">,</tt> <tt id="link-14" class="py-name"><a title="couchdbkit.ext.pylons.auth.model.User.password" class="py-name" href="#" onclick="return doclink('link-14', 'password', 'link-10');">password</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L72"></a><tt class="py-lineno">72</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">user</tt><tt class="py-op">:</tt> </tt>
+<a name="L73"></a><tt class="py-lineno">73</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">None</tt> </tt>
+<a name="L74"></a><tt class="py-lineno">74</tt>  <tt class="py-line">        <tt class="py-name">identity</tt><tt class="py-op">[</tt><tt class="py-string">'login'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">user</tt><tt class="py-op">.</tt><tt id="link-15" class="py-name"><a title="couchdbkit.ext.pylons.auth.model.User.login" class="py-name" href="#" onclick="return doclink('link-15', 'login', 'link-8');">login</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L75"></a><tt class="py-lineno">75</tt>  <tt class="py-line">        <tt class="py-name">identity</tt><tt class="py-op">[</tt><tt class="py-string">'user'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">user</tt> </tt>
+<a name="L76"></a><tt class="py-lineno">76</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">user</tt><tt class="py-op">.</tt><tt class="py-name">_id</tt> </tt>
+</div></div><a name="L77"></a><tt class="py-lineno">77</tt>  <tt class="py-line"> </tt>
+<a name="MDPlugin"></a><div id="MDPlugin-def"><a name="L78"></a><tt class="py-lineno">78</tt> <a class="py-toggle" href="#" id="MDPlugin-toggle" onclick="return toggle('MDPlugin');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.auth.adapters.MDPlugin-class.html">MDPlugin</a><tt class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="MDPlugin-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="MDPlugin-expanded"><a name="L79"></a><tt class="py-lineno">79</tt>  <tt class="py-line">    <tt class="py-name">implements</tt><tt class="py-op">(</tt><tt class="py-name">IMetadataProvider</tt><tt class="py-op">)</tt> </tt>
+<a name="L80"></a><tt class="py-lineno">80</tt>  <tt class="py-line"> </tt>
+<a name="MDPlugin.__init__"></a><div id="MDPlugin.__init__-def"><a name="L81"></a><tt class="py-lineno">81</tt> <a class="py-toggle" href="#" id="MDPlugin.__init__-toggle" onclick="return toggle('MDPlugin.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.auth.adapters.MDPlugin-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">user_class</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="MDPlugin.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="MDPlugin.__init__-expanded"><a name="L82"></a><tt class="py-lineno">82</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">user_class</tt> <tt class="py-op">=</tt> <tt class="py-name">user_class</tt> </tt>
+</div><a name="L83"></a><tt class="py-lineno">83</tt>  <tt class="py-line"> </tt>
+<a name="MDPlugin.add_metadata"></a><div id="MDPlugin.add_metadata-def"><a name="L84"></a><tt class="py-lineno">84</tt> <a class="py-toggle" href="#" id="MDPlugin.add_metadata-toggle" onclick="return toggle('MDPlugin.add_metadata');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.auth.adapters.MDPlugin-class.html#add_metadata">add_metadata</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">environ</tt><tt class="py-op">,</tt> <tt class="py-param">identity</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="MDPlugin.add_metadata-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="MDPlugin.add_metadata-expanded"><a name="L85"></a><tt class="py-lineno">85</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-string">'user'</tt> <tt class="py-keyword">not</tt> <tt class="py-keyword">in</tt> <tt class="py-name">identity</tt><tt class="py-op">:</tt> </tt>
+<a name="L86"></a><tt class="py-lineno">86</tt>  <tt class="py-line">            <tt class="py-name">uid</tt> <tt class="py-op">=</tt> <tt class="py-name">identity</tt><tt class="py-op">[</tt><tt class="py-string">'repoze.who.userid'</tt><tt class="py-op">]</tt> </tt>
+<a name="L87"></a><tt class="py-lineno">87</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">uid</tt><tt class="py-op">:</tt> </tt>
+<a name="L88"></a><tt class="py-lineno">88</tt>  <tt class="py-line">                <tt class="py-name">user</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">user_class</tt><tt class="py-op">.</tt><tt id="link-16" class="py-name"><a title="couchdbkit.schema.base.DocumentBase.get" class="py-name" href="#" onclick="return doclink('link-16', 'get', 'link-1');">get</a></tt><tt class="py-op">(</tt><tt class="py-name">uid</tt><tt class="py-op">)</tt> </tt>
+<a name="L89"></a><tt class="py-lineno">89</tt>  <tt class="py-line">                <tt class="py-name">identity</tt><tt class="py-op">[</tt><tt class="py-string">'user'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">user</tt> </tt>
+</div></div><a name="L90"></a><tt class="py-lineno">90</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="couchdbkit-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Fri Feb 18 10:31:31 2011
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

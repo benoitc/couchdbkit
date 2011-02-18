@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>Couchdbkit - 
+    Couchdbkit version 0.5 released
+</title>
+    <!--[if IE]>
+
+    <script>
+        // allow IE to recognize HTMl5 elements
+        document.createElement('section');
+        document.createElement('article');
+        document.createElement('aside');
+        document.createElement('footer');
+        document.createElement('header');
+        document.createElement('nav');
+        document.createElement('time');
+
+    </script>
+    <![endif]-->
+
+    <link rel="stylesheet" href="/css/couchdbkit.css?20090615" type="text/css" media="screen, projection" />
+    <link rel="stylesheet" href="/static/css/print.css?20090615" type="text/css" media="print" />
+    <script type="text/javascript" src="/js/prettify.js"></script>
+    
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/feed.xml" />
+    
+
+    
+        
+</head>
+<body onload="prettyPrint()">
+    
+    <div class="container">
+        <header id="site_header">
+            <h1><a href="/"><span>couchdbkit</span></a></h1>
+            <ul id="main_nav">
+                <li><a href="/">home</a></li>
+                <li><a href="/blog/">news</a></li>
+                <li><a href="/download.html">download</a></li>
+                <li><a href="/docs/">documentation</a></li>
+                <li><a href="/docs/api/">API</a></li>
+            </ul>
+
+        </header>
+        
+        
+        
+        
+        <aside id="sidebar">
+            <ul class="sidenav">
+                <li><a href="/blog/">Latest news</a></li>
+                <li><a href="/download.html">Download latest</a></li>
+                <li><a href="/docs/gettingstarted.html">Getting started</a></li>
+                <li><a href="/docs/faq.html">Frequently Asked Questions</a></li>
+                <li><a href="/docs/about.html">About couchdbkit</a></li>
+                <li><a href="/contact.html">Getting help with couchdbkit</a></li>
+            </ul>
+            <div class="info">
+                <h3>Getting started</h3>
+                <p>See the <a href="/download.html">download instructions</a> for information on getting couchdbkit, and read the <a href="/docs/gettingstarted.html">getting started</a> instructions to start programming CouchDB in your own application in less than 10 minutes.</p>
+            </div>
+            <div class="info">
+                <h3>Get involved</h3>
+                <ul>
+                    <li><p><a href="http://webchat.freenode.net/?channels=couchdbkit">#couchdbkit IRC channel</a>: chat with other couchdbkit users</p></li>
+                    <li><p><a href="http://github.com/benoitc/couchdbkit/issues">Ticket system</a>: report bugs and make feature requests</p></li>
+                    <li><p><a href="http://groups.google.com/group/couchdbkit">Mailing-List</a>: The main list for help and follow changes.</p></li>
+                </ul>
+                        
+            </div>
+           
+        </aside>
+        
+    
+        
+
+<section id="content">
+    <article>
+        <header>
+            <h1>Couchdbkit version 0.5 released</h1>
+        </header>
+        	<p>New release for <a href="http://couchdbkit.org">Couchdbkit</a>. Lot of change in this release. It&#8217;s now based on latest <a href="http://benoitc.github.com/restkit">restkit</a> 2.3.0 so make sure to upgrade it before upgrading.</p>
+
+	<h2>What&#8217;s new ?</h2>
+
+	<ul>
+		<li>new `couchdbkit.designer` module. the `couchdbkit.loaders` module is now deprecated. Instead use push, pushapps, pushdocs & clone functions. They are all compatible with couchapp. </li>
+		<li>Use the Database instances to save Documents objects.</li>
+	</ul>
+
+	<p><pre class="code prettyprint">
+ import datetime</p>
+
+ from couchdbkit import *
+
+ s = Server()
+ db = s[&#8220;mydb&#8221;]
+
+ class Greeting(Document):
+      author = StringProperty()
+      content = StringProperty()
+      date = DateTimeProperty()
+
+ greet = Greeting(
+     author=&#8220;Benoit&#8221;,
+     content=&#8220;Welcome to couchdbkit world&#8221;,
+     date=datetime.datetime.utcnow()
+ )
+ db.save_doc(greet)
+</pre>
+
+	<ul>
+		<li>new pylons extension, thanks to Alfred Hall. Like django extension it will help you to use couchdbkit in pylons</li>
+		<li>Added gevent & eventlet consumers. The <a href="http://couchdbkit.org/docs/changes_consumer.html">doc</a> has been updated.</li>
+		<li>New <b>SchemaDict</b> property</li>
+		<li>Added oauth support via restkit</li>
+		<li>Lazy db loading in django extension</li>
+		<li>No more _raw_json function. For proxying use the CouchdbResource object.</li>
+		<li>breaking changes. We are now using simplejson instead of anyjson.</li>
+		<li>Simplejson give us better <span class="caps">JSON</span> serialization.</li>
+		<li>Fixed BooleanProperty</li>
+		<li>support for ISO-8601 DateTime format with a timezone offset 	</li>
+	</ul>
+
+	<p>You can download latest release on <a href="http://pypi.python.org/pypi/couchdbkit/0.5">Pypi</a> or check <a href="../download.html">download page</a> for other ways.</p>
+
+	<p>You can find a summary of changes on <a href="http://github.com/benoitc/couchdbkit/comp">github</a></p>
+        <footer>
+             <p><span class='comments'><a href='/blog/2010-11-25-Couchdbkit-0.5.html#disqus_thread'>View Comments</a></span></p>
+        </footer>
+    </article>
+    <div id="disqus_thread"></div><script type="text/javascript" src="http://disqus.com/forums/couchdbkit/embed.js"></script><noscript><a href="http://couchdbkit.disqus.com/?url=ref">View the discussion thread.</a></noscript><a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+        
+        <footer id="bottom">
+            <p class="copyright">2008-2009 &copy; <a href="http://benoitc.org">Benoît Chesneau</a> - Some rights reserved.</p>
+            <div id="cc"><a rel="license" href="http://creativecommons.org/licenses/by/2.0/fr/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/2.0/fr/80x15.png" /></a> This <span xmlns:dc="http://purl.org/dc/elements/1.1/" href="http://purl.org/dc/dcmitype/InteractiveResource" rel="dc:type">website</span> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/2.0/fr/">Creative Commons Attribution 2.0 France License</a>.</div>
+        </footer>
+        
+    </div>
+
+    
+    
+    
+    <script>
+    //<![CDATA[
+    (function() {
+            
+    		var links = document.getElementsByTagName('a');
+    		var query = '?';
+    		for(var i = 0; i < links.length; i++) {
+    			if(links[i].href.indexOf('#disqus_thread') >= 0) {
+    				query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+    			}
+    		}
+    		document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/couchdbkit/get_num_replies.js' + query + '&disqus_developer=1"></' + 'script>');
+    	})();
+    //]]>
+    </script>
+    
+
+</body>
+</html>

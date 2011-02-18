@@ -1,0 +1,13 @@
+* {
+	color: #000 !important;
+}
+ 
+body {
+	background: #fff !important;
+}
+ 
+header#site_header, #sidebar, #site_header * {
+	display: none;
+}
+ 
+.noprint {

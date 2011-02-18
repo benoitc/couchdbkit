@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>couchdbkit.ext.pylons.auth.basic</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="couchdbkit-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="couchdbkit-module.html">Package&nbsp;couchdbkit</a> ::
+        <a href="couchdbkit.ext-module.html">Package&nbsp;ext</a> ::
+        <a href="couchdbkit.ext.pylons-module.html">Package&nbsp;pylons</a> ::
+        <a href="couchdbkit.ext.pylons.auth-module.html">Package&nbsp;auth</a> ::
+        Module&nbsp;basic
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="couchdbkit.ext.pylons.auth.basic-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="couchdbkit.ext.pylons.auth.basic-module.html">Module couchdbkit.ext.pylons.auth.basic</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment"># -*- coding: utf-8 -</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-comment"># This file is part of couchdbkit released under the MIT license. </tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-comment"># See the NOTICE for more information.</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">logging</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">paste</tt><tt class="py-op">.</tt><tt id="link-0" class="py-name" targets="Method couchdbkit.resource.CouchdbResource.request()=couchdbkit.resource.CouchdbResource-class.html#request"><a title="couchdbkit.resource.CouchdbResource.request" class="py-name" href="#" onclick="return doclink('link-0', 'request', 'link-0');">request</a></tt> <tt class="py-keyword">import</tt> <tt class="py-name">parse_dict_querystring</tt><tt class="py-op">,</tt> <tt class="py-name">parse_formvars</tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">paste</tt><tt class="py-op">.</tt><tt class="py-name">httpexceptions</tt> <tt class="py-keyword">import</tt> <tt class="py-name">HTTPUnauthorized</tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">paste</tt><tt class="py-op">.</tt><tt class="py-name">httpheaders</tt> <tt class="py-keyword">import</tt> <tt class="py-name">CONTENT_LENGTH</tt><tt class="py-op">,</tt> <tt class="py-name">CONTENT_TYPE</tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">repoze</tt><tt class="py-op">.</tt><tt class="py-name">what</tt><tt class="py-op">.</tt><tt class="py-name">middleware</tt> <tt class="py-keyword">import</tt> <tt class="py-name">setup_auth</tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">repoze</tt><tt class="py-op">.</tt><tt class="py-name">who</tt><tt class="py-op">.</tt><tt class="py-name">plugins</tt><tt class="py-op">.</tt><tt class="py-name">auth_tkt</tt> <tt class="py-keyword">import</tt> <tt class="py-name">AuthTktCookiePlugin</tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">repoze</tt><tt class="py-op">.</tt><tt class="py-name">who</tt><tt class="py-op">.</tt><tt class="py-name">interfaces</tt> <tt class="py-keyword">import</tt> <tt class="py-name">IChallenger</tt><tt class="py-op">,</tt> <tt class="py-name">IIdentifier</tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">sys</tt> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">zope</tt><tt class="py-op">.</tt><tt class="py-name">interface</tt> <tt class="py-keyword">import</tt> <tt class="py-name">implements</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Module couchdbkit.ext.pylons.auth.adapters=couchdbkit.ext.pylons.auth.adapters-module.html"><a title="couchdbkit.ext.pylons.auth.adapters" class="py-name" href="#" onclick="return doclink('link-1', 'adapters', 'link-1');">adapters</a></tt> <tt class="py-keyword">import</tt> <tt id="link-2" class="py-name" targets="Class couchdbkit.ext.pylons.auth.adapters.GroupAdapter=couchdbkit.ext.pylons.auth.adapters.GroupAdapter-class.html"><a title="couchdbkit.ext.pylons.auth.adapters.GroupAdapter" class="py-name" href="#" onclick="return doclink('link-2', 'GroupAdapter', 'link-2');">GroupAdapter</a></tt><tt class="py-op">,</tt> <tt id="link-3" class="py-name" targets="Class couchdbkit.ext.pylons.auth.adapters.PermissionAdapter=couchdbkit.ext.pylons.auth.adapters.PermissionAdapter-class.html"><a title="couchdbkit.ext.pylons.auth.adapters.PermissionAdapter" class="py-name" href="#" onclick="return doclink('link-3', 'PermissionAdapter', 'link-3');">PermissionAdapter</a></tt><tt class="py-op">,</tt> \ </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt id="link-4" class="py-name" targets="Class couchdbkit.ext.pylons.auth.adapters.Authenticator=couchdbkit.ext.pylons.auth.adapters.Authenticator-class.html"><a title="couchdbkit.ext.pylons.auth.adapters.Authenticator" class="py-name" href="#" onclick="return doclink('link-4', 'Authenticator', 'link-4');">Authenticator</a></tt><tt class="py-op">,</tt> <tt id="link-5" class="py-name" targets="Class couchdbkit.ext.pylons.auth.adapters.MDPlugin=couchdbkit.ext.pylons.auth.adapters.MDPlugin-class.html"><a title="couchdbkit.ext.pylons.auth.adapters.MDPlugin" class="py-name" href="#" onclick="return doclink('link-5', 'MDPlugin', 'link-5');">MDPlugin</a></tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"> </tt>
+<a name="BasicAuth"></a><div id="BasicAuth-def"><a name="L21"></a><tt class="py-lineno"> 21</tt> <a class="py-toggle" href="#" id="BasicAuth-toggle" onclick="return toggle('BasicAuth');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.auth.basic.BasicAuth-class.html">BasicAuth</a><tt class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="BasicAuth-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="BasicAuth-expanded"><a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line">    <tt class="py-docstring">"""A basic challenger and identifier"""</tt> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line">    <tt class="py-name">implements</tt><tt class="py-op">(</tt><tt class="py-name">IChallenger</tt><tt class="py-op">,</tt> <tt class="py-name">IIdentifier</tt><tt class="py-op">)</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line"> </tt>
+<a name="BasicAuth.__init__"></a><div id="BasicAuth.__init__-def"><a name="L25"></a><tt class="py-lineno"> 25</tt> <a class="py-toggle" href="#" id="BasicAuth.__init__-toggle" onclick="return toggle('BasicAuth.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.auth.basic.BasicAuth-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">login_url</tt><tt class="py-op">=</tt><tt class="py-string">"/user/login"</tt><tt class="py-op">,</tt> <tt class="py-param">logout_url</tt><tt class="py-op">=</tt><tt class="py-string">"/user/logout"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="BasicAuth.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="BasicAuth.__init__-expanded"><a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_login_url</tt> <tt class="py-op">=</tt> <tt class="py-name">login_url</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_logout_url</tt> <tt class="py-op">=</tt> <tt class="py-name">logout_url</tt> </tt>
+</div><a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"> </tt>
+<a name="BasicAuth.identify"></a><div id="BasicAuth.identify-def"><a name="L29"></a><tt class="py-lineno"> 29</tt> <a class="py-toggle" href="#" id="BasicAuth.identify-toggle" onclick="return toggle('BasicAuth.identify');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.auth.basic.BasicAuth-class.html#identify">identify</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">environ</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="BasicAuth.identify-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="BasicAuth.identify-expanded"><a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line">        <tt class="py-name">path_info</tt> <tt class="py-op">=</tt> <tt class="py-name">environ</tt><tt class="py-op">[</tt><tt class="py-string">'PATH_INFO'</tt><tt class="py-op">]</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line">        <tt class="py-name">query</tt> <tt class="py-op">=</tt> <tt class="py-name">parse_dict_querystring</tt><tt class="py-op">(</tt><tt class="py-name">environ</tt><tt class="py-op">)</tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line"> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line">        <tt class="py-comment"># This will handle the logout request.</tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">path_info</tt> <tt class="py-op">==</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_logout_url</tt><tt class="py-op">:</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line">            <tt class="py-comment"># set in environ for self.challenge() to find later</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line">            <tt class="py-name">environ</tt><tt class="py-op">[</tt><tt class="py-string">'repoze.who.application'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">HTTPUnauthorized</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">None</tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line">        <tt class="py-keyword">elif</tt> <tt class="py-name">path_info</tt> <tt class="py-op">==</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_login_url</tt><tt class="py-op">:</tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line">            <tt class="py-name">form</tt> <tt class="py-op">=</tt> <tt class="py-name">parse_formvars</tt><tt class="py-op">(</tt><tt class="py-name">environ</tt><tt class="py-op">)</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line">            <tt class="py-name">form</tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Method couchdbkit.schema.properties.LazyDict.update()=couchdbkit.schema.properties.LazyDict-class.html#update"><a title="couchdbkit.schema.properties.LazyDict.update" class="py-name" href="#" onclick="return doclink('link-6', 'update', 'link-6');">update</a></tt><tt class="py-op">(</tt><tt class="py-name">query</tt><tt class="py-op">)</tt> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line">            <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line">                <tt class="py-name">credentials</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line">                    <tt class="py-string">'login'</tt><tt class="py-op">:</tt> <tt class="py-name">form</tt><tt class="py-op">[</tt><tt class="py-string">'login'</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line">                    <tt class="py-string">'password'</tt><tt class="py-op">:</tt> <tt class="py-name">form</tt><tt class="py-op">[</tt><tt class="py-string">'password'</tt><tt class="py-op">]</tt> </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line">                <tt class="py-op">}</tt> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">            <tt class="py-keyword">except</tt> <tt class="py-name">KeyError</tt><tt class="py-op">:</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line">                <tt class="py-name">credentials</tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line"> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">            <tt class="py-keyword">def</tt> <tt class="py-def-name">auth_resp</tt><tt class="py-op">(</tt><tt class="py-param">environ</tt><tt class="py-op">,</tt> <tt class="py-param">start_response</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line">                <tt class="py-keyword">import</tt> <tt class="py-name">json</tt> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">                <tt class="py-name">resp</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt> </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line">                    <tt class="py-string">"success"</tt><tt class="py-op">:</tt> <tt class="py-name">True</tt> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line">                <tt class="py-op">}</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line"> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line">                <tt class="py-name">resp_str</tt> <tt class="py-op">=</tt> <tt class="py-name">json</tt><tt class="py-op">.</tt><tt class="py-name">dumps</tt><tt class="py-op">(</tt><tt class="py-name">resp</tt><tt class="py-op">)</tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line"> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">                <tt class="py-name">content_length</tt> <tt class="py-op">=</tt> <tt class="py-name">CONTENT_LENGTH</tt><tt class="py-op">.</tt><tt class="py-name">tuples</tt><tt class="py-op">(</tt><tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">resp_str</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">                <tt class="py-name">content_type</tt> <tt class="py-op">=</tt> <tt class="py-name">CONTENT_TYPE</tt><tt class="py-op">.</tt><tt class="py-name">tuples</tt><tt class="py-op">(</tt><tt class="py-string">'application/json'</tt><tt class="py-op">)</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line">                <tt class="py-name">headers</tt> <tt class="py-op">=</tt> <tt class="py-name">content_length</tt> <tt class="py-op">+</tt> <tt class="py-name">content_type</tt> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">                <tt id="link-7" class="py-name" targets="Method couchdbkit.wsgi.handler.WSGIRequest.start_response()=couchdbkit.wsgi.handler.WSGIRequest-class.html#start_response"><a title="couchdbkit.wsgi.handler.WSGIRequest.start_response" class="py-name" href="#" onclick="return doclink('link-7', 'start_response', 'link-7');">start_response</a></tt><tt class="py-op">(</tt><tt class="py-string">'200 OK'</tt><tt class="py-op">,</tt> <tt class="py-name">headers</tt><tt class="py-op">)</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt> <tt class="py-op">[</tt><tt class="py-name">resp_str</tt><tt class="py-op">]</tt> </tt>
+</div><a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line"> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">            <tt class="py-name">environ</tt><tt class="py-op">[</tt><tt class="py-string">'repoze.who.application'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">auth_resp</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">credentials</tt> </tt>
+</div><a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line"> </tt>
+<a name="BasicAuth.challenge"></a><div id="BasicAuth.challenge-def"><a name="L66"></a><tt class="py-lineno"> 66</tt> <a class="py-toggle" href="#" id="BasicAuth.challenge-toggle" onclick="return toggle('BasicAuth.challenge');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.auth.basic.BasicAuth-class.html#challenge">challenge</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">environ</tt><tt class="py-op">,</tt> <tt class="py-param">status</tt><tt class="py-op">,</tt> <tt class="py-param">app_headers</tt><tt class="py-op">,</tt> <tt class="py-param">forget_headers</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="BasicAuth.challenge-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="BasicAuth.challenge-expanded"><a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">        <tt class="py-name">cookies</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">(</tt><tt class="py-name">h</tt><tt class="py-op">,</tt><tt class="py-name">v</tt><tt class="py-op">)</tt> <tt class="py-keyword">for</tt> <tt class="py-op">(</tt><tt class="py-name">h</tt><tt class="py-op">,</tt><tt class="py-name">v</tt><tt class="py-op">)</tt> <tt class="py-keyword">in</tt> <tt class="py-name">app_headers</tt> <tt class="py-keyword">if</tt> <tt class="py-name">h</tt><tt class="py-op">.</tt><tt class="py-name">lower</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-string">'set-cookie'</tt><tt class="py-op">]</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">forget_headers</tt><tt class="py-op">:</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">HTTPUnauthorized</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line"> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">        <tt class="py-keyword">def</tt> <tt class="py-def-name">auth_form</tt><tt class="py-op">(</tt><tt class="py-param">environ</tt><tt class="py-op">,</tt> <tt class="py-param">start_response</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">            <tt class="py-name">towrite</tt> <tt class="py-op">=</tt> <tt class="py-string">"Challenging this"</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">            <tt class="py-name">content_length</tt> <tt class="py-op">=</tt> <tt class="py-name">CONTENT_LENGTH</tt><tt class="py-op">.</tt><tt class="py-name">tuples</tt><tt class="py-op">(</tt><tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">towrite</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">            <tt class="py-name">content_type</tt> <tt class="py-op">=</tt> <tt class="py-name">CONTENT_TYPE</tt><tt class="py-op">.</tt><tt class="py-name">tuples</tt><tt class="py-op">(</tt><tt class="py-string">'text/html'</tt><tt class="py-op">)</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line">            <tt class="py-name">headers</tt> <tt class="py-op">=</tt> <tt class="py-name">content_length</tt> <tt class="py-op">+</tt> <tt class="py-name">content_type</tt> <tt class="py-op">+</tt> <tt class="py-name">forget_headers</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">            <tt id="link-8" class="py-name"><a title="couchdbkit.wsgi.handler.WSGIRequest.start_response" class="py-name" href="#" onclick="return doclink('link-8', 'start_response', 'link-7');">start_response</a></tt><tt class="py-op">(</tt><tt class="py-string">'200 OK'</tt><tt class="py-op">,</tt> <tt class="py-name">headers</tt><tt class="py-op">)</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-op">[</tt><tt class="py-name">towrite</tt><tt class="py-op">]</tt> </tt>
+</div><a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">auth_form</tt> </tt>
+</div><a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line"> </tt>
+<a name="BasicAuth.remember"></a><div id="BasicAuth.remember-def"><a name="L80"></a><tt class="py-lineno"> 80</tt> <a class="py-toggle" href="#" id="BasicAuth.remember-toggle" onclick="return toggle('BasicAuth.remember');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.auth.basic.BasicAuth-class.html#remember">remember</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">environ</tt><tt class="py-op">,</tt> <tt class="py-param">identity</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="BasicAuth.remember-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="BasicAuth.remember-expanded"><a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">environ</tt><tt class="py-op">[</tt><tt class="py-string">'repoze.who.plugins'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">'cookie'</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Method couchdbkit.ext.pylons.auth.basic.BasicAuth.remember()=couchdbkit.ext.pylons.auth.basic.BasicAuth-class.html#remember"><a title="couchdbkit.ext.pylons.auth.basic.BasicAuth.remember" class="py-name" href="#" onclick="return doclink('link-9', 'remember', 'link-9');">remember</a></tt><tt class="py-op">(</tt><tt class="py-name">environ</tt><tt class="py-op">,</tt> <tt class="py-name">identity</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line"> </tt>
+<a name="BasicAuth.forget"></a><div id="BasicAuth.forget-def"><a name="L83"></a><tt class="py-lineno"> 83</tt> <a class="py-toggle" href="#" id="BasicAuth.forget-toggle" onclick="return toggle('BasicAuth.forget');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.auth.basic.BasicAuth-class.html#forget">forget</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">environ</tt><tt class="py-op">,</tt> <tt class="py-param">identity</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="BasicAuth.forget-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="BasicAuth.forget-expanded"><a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">environ</tt><tt class="py-op">[</tt><tt class="py-string">'repoze.who.plugins'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">'cookie'</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Method couchdbkit.ext.pylons.auth.basic.BasicAuth.forget()=couchdbkit.ext.pylons.auth.basic.BasicAuth-class.html#forget"><a title="couchdbkit.ext.pylons.auth.basic.BasicAuth.forget" class="py-name" href="#" onclick="return doclink('link-10', 'forget', 'link-10');">forget</a></tt><tt class="py-op">(</tt><tt class="py-name">environ</tt><tt class="py-op">,</tt> <tt class="py-name">identity</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line"> </tt>
+<a name="AuthBasicMiddleware"></a><div id="AuthBasicMiddleware-def"><a name="L86"></a><tt class="py-lineno"> 86</tt> <a class="py-toggle" href="#" id="AuthBasicMiddleware-toggle" onclick="return toggle('AuthBasicMiddleware');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.auth.basic-module.html#AuthBasicMiddleware">AuthBasicMiddleware</a><tt class="py-op">(</tt><tt class="py-param">app</tt><tt class="py-op">,</tt> <tt class="py-param">conf</tt><tt class="py-op">,</tt> <tt class="py-param">user_class</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="AuthBasicMiddleware-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="AuthBasicMiddleware-expanded"><a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">    <tt id="link-11" class="py-name" targets="Variable couchdbkit.ext.pylons.auth.model.User.groups=couchdbkit.ext.pylons.auth.model.User-class.html#groups"><a title="couchdbkit.ext.pylons.auth.model.User.groups" class="py-name" href="#" onclick="return doclink('link-11', 'groups', 'link-11');">groups</a></tt> <tt class="py-op">=</tt> <tt id="link-12" class="py-name"><a title="couchdbkit.ext.pylons.auth.adapters.GroupAdapter" class="py-name" href="#" onclick="return doclink('link-12', 'GroupAdapter', 'link-2');">GroupAdapter</a></tt><tt class="py-op">(</tt><tt class="py-name">user_class</tt><tt class="py-op">)</tt> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line">    <tt id="link-13" class="py-name"><a title="couchdbkit.ext.pylons.auth.model.User.groups" class="py-name" href="#" onclick="return doclink('link-13', 'groups', 'link-11');">groups</a></tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-string">'all_groups'</tt><tt class="py-op">:</tt> <tt id="link-14" class="py-name"><a title="couchdbkit.ext.pylons.auth.model.User.groups" class="py-name" href="#" onclick="return doclink('link-14', 'groups', 'link-11');">groups</a></tt><tt class="py-op">}</tt> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line">    <tt id="link-15" class="py-name" targets="Variable couchdbkit.ext.pylons.auth.model.Group.permissions=couchdbkit.ext.pylons.auth.model.Group-class.html#permissions"><a title="couchdbkit.ext.pylons.auth.model.Group.permissions" class="py-name" href="#" onclick="return doclink('link-15', 'permissions', 'link-15');">permissions</a></tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-string">'all_perms'</tt><tt class="py-op">:</tt> <tt id="link-16" class="py-name"><a title="couchdbkit.ext.pylons.auth.adapters.PermissionAdapter" class="py-name" href="#" onclick="return doclink('link-16', 'PermissionAdapter', 'link-3');">PermissionAdapter</a></tt><tt class="py-op">(</tt><tt class="py-name">conf</tt><tt class="py-op">[</tt><tt class="py-string">"couchdb.db"</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">}</tt> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line"> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line">    <tt class="py-name">basicauth</tt> <tt class="py-op">=</tt> <tt id="link-17" class="py-name" targets="Class couchdbkit.ext.pylons.auth.basic.BasicAuth=couchdbkit.ext.pylons.auth.basic.BasicAuth-class.html"><a title="couchdbkit.ext.pylons.auth.basic.BasicAuth" class="py-name" href="#" onclick="return doclink('link-17', 'BasicAuth', 'link-17');">BasicAuth</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line">    <tt class="py-name">cookie</tt> <tt class="py-op">=</tt> <tt class="py-name">AuthTktCookiePlugin</tt><tt class="py-op">(</tt><tt class="py-name">conf</tt><tt class="py-op">[</tt><tt class="py-string">'cookies.secret'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line"> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">    <tt class="py-name">who_args</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">    <tt class="py-name">who_args</tt><tt class="py-op">[</tt><tt class="py-string">'authenticators'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">(</tt><tt class="py-string">'accounts'</tt><tt class="py-op">,</tt> <tt id="link-18" class="py-name"><a title="couchdbkit.ext.pylons.auth.adapters.Authenticator" class="py-name" href="#" onclick="return doclink('link-18', 'Authenticator', 'link-4');">Authenticator</a></tt><tt class="py-op">(</tt><tt class="py-name">user_class</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">]</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line">    <tt class="py-name">who_args</tt><tt class="py-op">[</tt><tt class="py-string">'challengers'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">(</tt><tt class="py-string">'basicauth'</tt><tt class="py-op">,</tt> <tt class="py-name">basicauth</tt><tt class="py-op">)</tt><tt class="py-op">]</tt> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">    <tt class="py-name">who_args</tt><tt class="py-op">[</tt><tt class="py-string">'identifiers'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">(</tt><tt class="py-string">'basicauth'</tt><tt class="py-op">,</tt> <tt class="py-name">basicauth</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-op">(</tt><tt class="py-string">'cookie'</tt><tt class="py-op">,</tt> <tt class="py-name">cookie</tt><tt class="py-op">)</tt><tt class="py-op">]</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">    <tt class="py-name">who_args</tt><tt class="py-op">[</tt><tt class="py-string">'mdproviders'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">(</tt><tt class="py-string">'accounts'</tt><tt class="py-op">,</tt> <tt id="link-19" class="py-name"><a title="couchdbkit.ext.pylons.auth.adapters.MDPlugin" class="py-name" href="#" onclick="return doclink('link-19', 'MDPlugin', 'link-5');">MDPlugin</a></tt><tt class="py-op">(</tt><tt class="py-name">user_class</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">]</tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">    <tt class="py-name">who_args</tt><tt class="py-op">[</tt><tt class="py-string">'log_stream'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">sys</tt><tt class="py-op">.</tt><tt class="py-name">stdout</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">    <tt class="py-name">who_args</tt><tt class="py-op">[</tt><tt class="py-string">'log_level'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">logging</tt><tt class="py-op">.</tt><tt class="py-name">DEBUG</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line"> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">setup_auth</tt><tt class="py-op">(</tt><tt class="py-name">app</tt><tt class="py-op">,</tt> <tt id="link-20" class="py-name"><a title="couchdbkit.ext.pylons.auth.model.User.groups" class="py-name" href="#" onclick="return doclink('link-20', 'groups', 'link-11');">groups</a></tt><tt class="py-op">,</tt> <tt id="link-21" class="py-name"><a title="couchdbkit.ext.pylons.auth.model.Group.permissions" class="py-name" href="#" onclick="return doclink('link-21', 'permissions', 'link-15');">permissions</a></tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">who_args</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="couchdbkit-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Fri Feb 18 10:31:30 2011
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
