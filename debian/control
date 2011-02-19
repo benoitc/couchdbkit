@@ -9,7 +9,7 @@ Homepage: http://couchdbkit.org/
 Package: python-couchdbkit
 Architecture: all
 Depends: ${python:Depends}, ${shlibs:Depends}, ${misc:Depends}, 
-	python-anyjson, python-restkit(>=2.1.1)
+	python-restkit(>=3.2.0)
 Provides: ${python:Provides}
 Description: Trying to improve couchdb experience in Python
  Couchdbkit provides you a full featured and easy client to access and
