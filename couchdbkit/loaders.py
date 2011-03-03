@@ -71,8 +71,7 @@ class FileSystemDocsLoader(BaseDocsLoader):
         
     def sync(self, dbs, atomic=True, **kwargs):
         for path in self.docpaths:
-            ret = pushdocs(path, dbs, atomic=atomic)
-            docs.extend(ret['docs'])
+            pushdocs(path, dbs, atomic=atomic)
 
         for path in self.designpaths:
             pushapps(path, dbs, atomic=atomic)
