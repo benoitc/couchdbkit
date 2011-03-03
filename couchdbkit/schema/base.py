@@ -325,6 +325,7 @@ class DocumentSchema(object):
                     value = value_to_python(value)
                     setattr(instance, attr_name, value)
         return instance
+    from_json = wrap
 
     def validate(self, required=True):
         """ validate a document """
