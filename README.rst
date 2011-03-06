@@ -40,7 +40,7 @@ Write your first CouchDB document
   db = server.get_or_create_db("greeting")
 
   doc = {"mydoc": "test"}
-  db.save_doc(db)
+  db.save_doc(doc)
 
 ::
 
