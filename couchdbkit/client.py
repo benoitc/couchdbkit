@@ -613,27 +613,34 @@ class Database(object):
         @param params: params of the view
 
         """
-        def get_multi_wrapper(classes, **params):
+        def get_multi_wrapper(classes, wrap_doc=True,
+                dynamic_properties=True):
             def wrapper(row):
                 data = row.get('value')
                 docid = row.get('id')
                 doc = row.get('doc')
-                if doc is not None and params.get('wrap_doc', True):
-                    cls = classes.get(doc.get('doc_type'))
-                    cls._allow_dynamic_properties = params.get('dynamic_properties', True)
-                    return cls.wrap(doc)
-
+                if doc is not None and wrap_doc:
+                    try:
+                        cls = classes[doc.get('doc_type')]
+                        cls._allow_dynamic_properties = dynamic_properties
+                        return cls.wrap(doc)
+                    except KeyError:
+                        return row
                 elif not data or data is None:
                     return row
                 elif not isinstance(data, dict) or not docid:
                     return row
                 else:
-                    cls = classes.get(data.get('doc_type'))
-                    data['_id'] = docid
-                    if 'rev' in data:
-                        data['_rev'] = data.pop('rev')
-                    cls._allow_dynamic_properties = params.get('dynamic_properties', True)
-                    return cls.wrap(data)
+                    try:
+                        cls = classes[data.get('doc_type')]
+                        data['_id'] = docid
+                        if 'rev' in data:
+                            data['_rev'] = data.pop('rev')
+                        cls._allow_dynamic_properties = dynamic_properties
+                        return cls.wrap(data)
+                    except KeyError:
+                        return row
+
             return wrapper
 
         if view_name.startswith('/'):
@@ -647,16 +654,24 @@ class Database(object):
             dname = view_name.pop(0)
             vname = '/'.join(view_name)
             view_path = '_design/%s/_view/%s' % (dname, vname)
+
         if schema is not None:
-            if hasattr(schema, 'wrap'):
-                wrapper = schema.wrap
-            elif isinstance(schema, dict):
-                wrapper = get_multi_wrapper(schema, **params)
-            elif isinstance(schema, list):
-                classes = dict( (c._doc_type, c) for c in schema)
-                wrapper = get_multi_wrapper(classes, **params)
+            wrap_doc = params.get('wrap_doc', True)
+            dynamic_properties = params.get('dynamic_properties', True)
+
+            if hasattr(schema, "wrap"):
+                if hasattr(schema, '_doc_type'):
+                    schema = {schema._doc_type: schema}
+                    wrapper = get_multi_wrapper(schema, wrap_doc=wrap_doc, 
+                            dynamic_properties=dynamic_properties)
+                else:
+                    wrapper = schema.wrap
             else:
-                raise AttributeError("schema argument %s must either have a 'wrap' method, or be a dict or list)" % str(schema))
+                if isinstance(schema, list):
+                    schema = dict([(s._doc_type, s) for s in schema])
+                
+                wrapper = get_multi_wrapper(schema, wrap_doc=wrap_doc,
+                    dynamic_properties=dynamic_properties)
 
         return View(self, view_path, wrapper=wrapper)(**params)
 
@@ -673,11 +688,12 @@ class Database(object):
         with its default settings by default."""
         return View(self, "/%s/%s" % (handler, view_name), wrapper=wrapper)(**params)
 
-    def documents(self, wrapper=None, **params):
+    def documents(self, schema=None, wrapper=None, **params):
         """ return a ViewResults objects containing all documents.
         This is a shorthand to view function.
         """
-        return View(self, '_all_docs', wrapper=wrapper)(**params)
+        return View(self, '_all_docs', schema=schema, 
+                wrapper=wrapper)(**params)
     iterdocuments = documents
 
     def put_attachment(self, doc, content, name=None, content_type=None,
