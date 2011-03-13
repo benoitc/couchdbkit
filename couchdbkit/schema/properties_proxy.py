@@ -207,6 +207,24 @@ class LazySchemaList(list):
                                     self.use_instance)
         list.__setitem__(self, index, value)
 
+    def __delslice__(self, i, j):
+        del self.doc[i:j]
+        super(LazySchemaList, self).__delslice__(i, j)
+
+    def __getslice__(self, i, j):
+        return LazySchemaList(self.doc[i:j], self.schema, self.use_instance)
+
+    def __setslice__(self, i, j, seq):
+        self.doc[i:j] = (svalue_to_json(v, self.schema, self.use_instance)
+                         for v in seq)
+        super(LazySchemaList, self).__setslice__(i, j, seq)
+
+    def __contains__(self, value):
+        for item in self.doc:
+            if item == value._doc:
+                return True
+        return False
+
     def append(self, *args, **kwargs):
         if args:
             assert len(args) == 1
@@ -217,6 +235,52 @@ class LazySchemaList(list):
         self.doc.append(svalue_to_json(value, self.schema, 
                                     self.use_instance))
         super(LazySchemaList, self).append(value)
+
+    def count(self, value):
+        return sum(1 for item in self.doc if item == value._doc)
+
+    def extend(self, x):
+        self.doc.extend([svalue_to_json(item, self.schema, self.use_instance)
+                         for item in x])
+        super(LazySchemaList, self).extend(x)
+
+    def index(self, value, *args):
+        try:
+            i = max(0, args[0])
+        except IndexError:
+            i = 0
+        try:
+            j = min(len(self.doc), args[1])
+        except IndexError:
+            j = len(self.doc)
+        if j < 0:
+            j += len(self.doc)
+        for idx, item in enumerate(self.doc[i:j]):
+            if item == value._doc:
+                return idx + i
+        else:
+            raise ValueError('list.index(x): x not in list')
+
+    def insert(self, index, value):
+        self.__setslice__(index, index, [value])
+
+    def pop(self, index=-1):
+        del self.doc[index]
+        return super(LazySchemaList, self).pop(index)
+
+    def remove(self, value):
+        try:
+            del self[self.index(value)]
+        except ValueError:
+            raise ValueError('list.remove(x): x not in list')
+
+    def reverse(self):
+        self.doc.reverse()
+        list.reverse(self)
+
+    def sort(self, cmp=None, key=None, reverse=False):
+        self.doc.sort(cmp, key, reverse)
+        list.sort(self, cmp, key, reverse)
         
         
 class SchemaDictProperty(Property):

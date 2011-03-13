@@ -7,7 +7,10 @@ __author__ = 'benoitc@e-engura.com (Benoît Chesneau)'
 
 import datetime
 import decimal
-import unittest
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
 
 from couchdbkit import *
 
@@ -976,7 +979,285 @@ class PropertyTestCase(unittest.TestCase):
         b1 = B.get(b._id)
         self.assert_(len(b1.slm) == 2)
         self.assert_(b1.slm[0].s == "test")
-        
+
+
+    def testSchemaListPropertySlice(self):
+        """SchemaListProperty slice methods
+        """
+        class A(DocumentSchema):
+            s = StringProperty()
+            
+        class B(Document):
+            slm = SchemaListProperty(A)
+
+        b = B()
+        a1 = A()
+        a1.s = 'test1'
+        a2 = A()
+        a2.s = 'test2'
+        a3 = A()
+        a3.s = 'test3'
+        b.slm[0:1] = [a1, a2]
+        self.assertEqual(len(b.slm), 2)
+        self.assertEqual([b.slm[0].s, b.slm[1].s], [a1.s, a2.s])
+        self.assertEqual(b._doc, {
+            'doc_type': 'B',
+            'slm': [{'doc_type': 'A', 's': unicode(a1.s)},
+                    {'doc_type': 'A', 's': unicode(a2.s)}]
+        })
+        b.slm.append(a3)
+        c = b.slm[1:3]
+        self.assertEqual(len(c), 2)
+        self.assertEqual([c[0].s, c[1].s], [a2.s, a3.s])
+        del b.slm[1:3]
+        self.assertEqual(len(b.slm), 1)
+        self.assertEqual(b.slm[0].s, a1.s)
+        self.assertEqual(b._doc, {
+            'doc_type': 'B',
+            'slm': [{'doc_type': 'A', 's': unicode(a1.s)}]
+        })
+
+
+    def testSchemaListPropertyContains(self):
+        """SchemaListProperty contains method
+        """
+        class A(DocumentSchema):
+            s = StringProperty()
+            
+        class B(Document):
+            slm = SchemaListProperty(A)
+
+        b = B()
+        a1 = A()
+        a1.s = 'test1'
+        a2 = A()
+        a2.s = 'test2'
+        b.slm = [a1]
+        self.assertTrue(a1 in b.slm)
+        self.assertFalse(a2 in b.slm)
+
+
+    def testSchemaListPropertyCount(self):
+        """SchemaListProperty count method
+        """
+        class A(DocumentSchema):
+            s = StringProperty()
+            
+        class B(Document):
+            slm = SchemaListProperty(A)
+
+        b = B()
+        a1 = A()
+        a1.s = 'test1'
+        a2 = A()
+        a2.s = 'test2'
+        b.slm = [a1, a2, a1]
+        self.assertEqual(b.slm.count(a1), 2)
+
+
+    def testSchemaListPropertyExtend(self):
+        """SchemaListProperty extend method
+        """
+        class A(DocumentSchema):
+            s = StringProperty()
+            
+        class B(Document):
+            slm = SchemaListProperty(A)
+
+        b = B()
+        a1 = A()
+        a1.s = 'test1'
+        a2 = A()
+        a2.s = 'test2'
+        b.slm.extend([a1, a2])
+        self.assertEqual(len(b.slm), 2)
+        self.assertEqual([b.slm[0].s, b.slm[1].s], [a1.s, a2.s])
+        self.assertEqual(b._doc, {
+            'doc_type': 'B',
+            'slm': [{'doc_type': 'A', 's': unicode(a1.s)},
+                    {'doc_type': 'A', 's': unicode(a2.s)}]
+        })
+
+
+    def testSchemaListPropertyIndex(self):
+        """SchemaListProperty index method
+        """
+        class A(DocumentSchema):
+            s = StringProperty()
+            
+        class B(Document):
+            slm = SchemaListProperty(A)
+
+        b = B()
+        a1 = A()
+        a1.s = 'test1'
+        a2 = A()
+        a2.s = 'test2'
+        a3 = A()
+        a3.s = 'test3'
+        b.slm = [a1, a2, a1, a2, a1]
+        self.assertEqual(b.slm.index(a1), 0)
+        self.assertEqual(b.slm.index(a2, 2), 3)
+        self.assertEqual(b.slm.index(a1, 1, 3), 2)
+        self.assertEqual(b.slm.index(a1, 1, -2), 2)
+        with self.assertRaises(ValueError) as cm:
+            b.slm.index(a3)
+        self.assertEqual(str(cm.exception), 'list.index(x): x not in list')
+
+
+    def testSchemaListPropertyInsert(self):
+        """SchemaListProperty insert method
+        """
+        class A(DocumentSchema):
+            s = StringProperty()
+            
+        class B(Document):
+            slm = SchemaListProperty(A)
+
+        b = B()
+        a1 = A()
+        a1.s = 'test1'
+        a2 = A()
+        a2.s = 'test2'
+        a3 = A()
+        a3.s = 'test3'
+        b.slm = [a1, a3]
+        b.slm.insert(1, a2)
+        self.assertEqual(len(b.slm), 3)
+        self.assertEqual(
+            [b.slm[0].s, b.slm[1].s, b.slm[2].s], [a1.s, a2.s, a3.s])
+        self.assertEqual(b._doc, {
+            'doc_type': 'B',
+            'slm': [{'doc_type': 'A', 's': unicode(a1.s)},
+                    {'doc_type': 'A', 's': unicode(a2.s)},
+                    {'doc_type': 'A', 's': unicode(a3.s)}]
+        })
+
+
+    def testSchemaListPropertyPop(self):
+        """SchemaListProperty pop method
+        """
+        class A(DocumentSchema):
+            s = StringProperty()
+            
+        class B(Document):
+            slm = SchemaListProperty(A)
+
+        b = B()
+        a1 = A()
+        a1.s = 'test1'
+        a2 = A()
+        a2.s = 'test2'
+        a3 = A()
+        a3.s = 'test3'
+        b.slm = [a1, a2, a3]
+        v = b.slm.pop()
+        self.assertEqual(v.s, a3.s)
+        self.assertEqual(len(b.slm), 2)
+        self.assertEqual([b.slm[0].s, b.slm[1].s], [a1.s, a2.s])
+        self.assertEqual(b._doc, {
+            'doc_type': 'B',
+            'slm': [{'doc_type': 'A', 's': unicode(a1.s)},
+                    {'doc_type': 'A', 's': unicode(a2.s)}]
+        })
+        v = b.slm.pop(0)
+        self.assertEqual(v.s, a1.s)
+        self.assertEqual(len(b.slm), 1)
+        self.assertEqual(b.slm[0].s, a2.s)
+        self.assertEqual(b._doc, {
+            'doc_type': 'B',
+            'slm': [{'doc_type': 'A', 's': unicode(a2.s)}]
+        })
+
+
+    def testSchemaListPropertyRemove(self):
+        """SchemaListProperty remove method
+        """
+        class A(DocumentSchema):
+            s = StringProperty()
+            
+        class B(Document):
+            slm = SchemaListProperty(A)
+
+        b = B()
+        a1 = A()
+        a1.s = 'test1'
+        a2 = A()
+        a2.s = 'test2'
+        b.slm = [a1, a2]
+        b.slm.remove(a1)
+        self.assertEqual(len(b.slm), 1)
+        self.assertEqual(b.slm[0].s, a2.s)
+        self.assertEqual(b._doc, {
+            'doc_type': 'B',
+            'slm': [{'doc_type': 'A', 's': unicode(a2.s)}]
+        })
+        with self.assertRaises(ValueError) as cm:
+            b.slm.remove(a1)
+        self.assertEqual(str(cm.exception), 'list.remove(x): x not in list')
+
+
+    def testSchemaListPropertyReverse(self):
+        """SchemaListProperty reverse method
+        """
+        class A(DocumentSchema):
+            s = StringProperty()
+            
+        class B(Document):
+            slm = SchemaListProperty(A)
+
+        b = B()
+        a1 = A()
+        a1.s = 'test1'
+        a2 = A()
+        a2.s = 'test2'
+        b.slm = [a1, a2]
+        b.slm.reverse()
+        self.assertEqual([b.slm[0].s, b.slm[1].s], [a2.s, a1.s])
+        self.assertEqual(b._doc, {
+            'doc_type': 'B',
+            'slm': [{'doc_type': 'A', 's': unicode(a2.s)},
+                    {'doc_type': 'A', 's': unicode(a1.s)}]
+        })
+
+
+    def testSchemaListPropertySort(self):
+        """SchemaListProperty sort method
+        """
+        class A(DocumentSchema):
+            s = StringProperty()
+            
+        class B(Document):
+            slm = SchemaListProperty(A)
+
+        b = B()
+        a1 = A()
+        a1.s = 'test1'
+        a2 = A()
+        a2.s = 'test2'
+        b.slm = [a2, a1]
+        b.slm.sort(key=lambda item: item['s'])
+        self.assertEqual([b.slm[0].s, b.slm[1].s], [a1.s, a2.s])
+        self.assertEqual(b._doc, {
+            'doc_type': 'B',
+            'slm': [{'doc_type': 'A', 's': unicode(a1.s)},
+                    {'doc_type': 'A', 's': unicode(a2.s)}]
+        })
+        b.slm.sort(key=lambda item: item['s'], reverse=True)
+        self.assertEqual([b.slm[0].s, b.slm[1].s], [a2.s, a1.s])
+        self.assertEqual(b._doc, {
+            'doc_type': 'B',
+            'slm': [{'doc_type': 'A', 's': unicode(a2.s)},
+                    {'doc_type': 'A', 's': unicode(a1.s)}]
+        })
+        b.slm.sort(cmp=lambda x, y: cmp(x['s'].lower(), y['s'].lower()))
+        self.assertEqual([b.slm[0].s, b.slm[1].s], [a1.s, a2.s])
+        self.assertEqual(b._doc, {
+            'doc_type': 'B',
+            'slm': [{'doc_type': 'A', 's': unicode(a1.s)},
+                    {'doc_type': 'A', 's': unicode(a2.s)}]
+        })
+
 
     def testSchemaDictProperty(self):
         class A(DocumentSchema):
@@ -1047,7 +1328,6 @@ class PropertyTestCase(unittest.TestCase):
         self.assert_(b.l == [])
         self.assert_(b.to_json()['l'] == [])
         
-       
         
     def testListPropertyNotEmpty(self):
         from datetime import datetime
@@ -1076,7 +1356,8 @@ class PropertyTestCase(unittest.TestCase):
         a2 = A2()            
         self.assertTrue(a2.validate(required=False))
         self.assertTrue(a2.validate())
-    
+
+
     def testListPropertyWithType(self):
         from datetime import datetime
         class A(Document):
@@ -1101,6 +1382,106 @@ class PropertyTestCase(unittest.TestCase):
         self.assert_(b1.ls.index(u'hello') == 0)
         b1.ls.remove(u'hello')
         self.assert_(u'hello' not in b1.ls)
+
+
+    def testListPropertyExtend(self):
+        """list extend method for property w/o type
+        """
+        class A(Document):
+            l = ListProperty()
+
+        a = A()
+        a.l.extend([42, 24])
+        self.assert_(a.l == [42, 24])
+        self.assert_(a._doc == {'doc_type': 'A', 'l': [42, 24]})
+
+
+    def testListPropertyExtendWithType(self):
+        """list extend method for property w/ type
+        """
+        from datetime import datetime
+        class A(Document):
+            l = ListProperty(item_type=datetime)
+
+        a = A()
+        d1 = datetime(2011, 3, 11, 21, 31, 1)
+        d2 = datetime(2011, 11, 3, 13, 12, 2)
+        a.l.extend([d1, d2])
+        self.assert_(a.l == [d1, d2])
+        self.assert_(a._doc == {
+            'doc_type': 'A',
+            'l': ['2011-03-11T21:31:01Z', '2011-11-03T13:12:02Z']
+        })
+
+
+    def testListPropertyInsert(self):
+        """list insert method for property w/o type
+        """
+        class A(Document):
+            l = ListProperty()
+
+        a = A()
+        a.l = [42, 24]
+        a.l.insert(1, 4224)
+        self.assertEqual(a.l, [42, 4224, 24])
+        self.assertEqual(a._doc, {'doc_type': 'A', 'l': [42, 4224, 24]})
+
+
+    def testListPropertyInsertWithType(self):
+        """list insert method for property w/ type
+        """
+        from datetime import datetime
+        class A(Document):
+            l = ListProperty(item_type=datetime)
+
+        a = A()
+        d1 = datetime(2011, 3, 11, 21, 31, 1)
+        d2 = datetime(2011, 11, 3, 13, 12, 2)
+        d3 = datetime(2010, 1, 12, 3, 2, 3)
+        a.l = [d1, d3]
+        a.l.insert(1, d2)
+        self.assertEqual(a.l, [d1, d2, d3])
+        self.assertEqual(a._doc, {
+            'doc_type': 'A',
+            'l': ['2011-03-11T21:31:01Z',
+                  '2011-11-03T13:12:02Z',
+                  '2010-01-12T03:02:03Z']
+        })
+
+
+    def testListPropertyPop(self):
+        """list pop method for property w/o type
+        """
+        class A(Document):
+            l = ListProperty()
+
+        a = A()
+        a.l = [42, 24, 4224]
+        v = a.l.pop()
+        self.assert_(v == 4224)
+        self.assert_(a.l == [42, 24])
+        self.assert_(a._doc == {'doc_type': 'A', 'l': [42, 24]})
+        v = a.l.pop(0)
+        self.assert_(v == 42)
+        self.assert_(a.l == [24])
+        self.assert_(a._doc == {'doc_type': 'A', 'l': [24]})
+
+
+    def testListPropertyPopWithType(self):
+        """list pop method for property w/ type
+        """
+        from datetime import datetime
+        class A(Document):
+            l = ListProperty(item_type=datetime)
+
+        a = A()
+        d1 = datetime(2011, 3, 11, 21, 31, 1)
+        d2 = datetime(2011, 11, 3, 13, 12, 2)
+        d3 = datetime(2010, 1, 12, 3, 2, 3)
+        a.l = [d1, d2, d3]
+        v = a.l.pop()
+        self.assertEqual(v, d3)
+        self.assertEqual(a.l, [d1, d2])
 
          
     def testDictProperty(self):
@@ -1353,6 +1734,7 @@ class PropertyTestCase(unittest.TestCase):
         b.d = {}
         self.assert_(b.d == {})
         self.assert_(b.to_json()['d'] == {})
+
         
 if __name__ == '__main__':
     unittest.main()
