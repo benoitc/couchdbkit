@@ -782,11 +782,11 @@ def value_to_python(value, item_type=None):
     """
     data_type = None
     if isinstance(value, basestring):
-        if re_date.match(value) and is_type_ok(item_type, datetime.datetime):
+        if re_date.match(value) and is_type_ok(item_type, datetime.date):
             data_type = datetime.date
-        elif re_time.match(value) and is_type_ok(item_type, datetime.date):
+        elif re_time.match(value) and is_type_ok(item_type, datetime.time):
             data_type = datetime.time
-        elif re_datetime.match(value) and is_type_ok(item_type, datetime.time):
+        elif re_datetime.match(value) and is_type_ok(item_type, datetime.datetime):
             data_type = datetime.datetime
         elif re_decimal.match(value) and is_type_ok(item_type, decimal.Decimal):
             data_type = decimal.Decimal
