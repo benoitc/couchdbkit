@@ -47,6 +47,12 @@ DEFAULT_UUID_BATCH_COUNT = 1000
 
 def _maybe_serialize(doc):
     if hasattr(doc, "to_json"):
+        # try to validate doc first
+        try:    
+            doc.validate()
+        except AttributeError:
+            pass
+
         return doc.to_json(), True
     elif isinstance(doc, dict):
         return doc.copy(), False
