@@ -6,8 +6,11 @@
 __author__ = 'benoitc@e-engura.com (Benoît Chesneau)'
 
 import threading
-import unittest
 import time
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
 
 from couchdbkit import *
 

@@ -9,7 +9,10 @@ import base64
 import os
 import shutil
 import tempfile
-import unittest
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
 
 from restkit import ResourceNotFound, RequestFailed
 
