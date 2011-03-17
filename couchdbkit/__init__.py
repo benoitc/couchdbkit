@@ -26,7 +26,8 @@ DateProperty, TimeProperty, dict_to_json, dict_to_json, dict_to_json,\
 value_to_python, dict_to_python, DocumentSchema, DocumentBase, Document,\
 StaticDocument, QueryMixin, AttachmentMixin, SchemaProperty, SchemaListProperty,\
 SchemaDictProperty, \
-ListProperty, DictProperty, StringListProperty, contain, StringProperty
+ListProperty, DictProperty, StringListProperty, contain, StringProperty, \
+SetProperty
 
 except ImportError:
     import traceback

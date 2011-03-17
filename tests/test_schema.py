@@ -1735,6 +1735,348 @@ class PropertyTestCase(unittest.TestCase):
         self.assert_(b.d == {})
         self.assert_(b.to_json()['d'] == {})
 
+
+
+
+class SetPropertyTestCase(unittest.TestCase):
+    def testSetPropertyConstructor(self):
+        """SetProperty constructor including default & item_type args
+        """
+        class A(Document):
+            s = SetProperty()
+        class B(Document):
+            s = SetProperty(default=set((42, 24)))
+
+        a = A()
+        self.assertEqual(a._doc, {'doc_type': 'A', 's': []})
+        b = B()
+        self.assertEqual(b._doc['doc_type'], 'B')
+        self.assertItemsEqual(b._doc['s'], [42, 24])
+        with self.assertRaises(ValueError) as cm:
+            class C(Document):
+                s = SetProperty(item_type=tuple)
+        self.assertIn(
+            "item_type <type 'tuple'> not in set([", str(cm.exception))
+
+
+    def testSetPropertyAssignment(self):
+        """SetProperty value assignment, len, in & not in
+        """
+        class A(Document):
+            s = SetProperty()
+
+        a = A()
+        a.s = set(('foo', 'bar'))
+        self.assertEqual(a.s, set(('foo', 'bar')))
+        self.assertItemsEqual(a._doc['s'], ['foo', 'bar'])
+        self.assertEqual(len(a.s), 2)
+        self.assertEqual(len(a._doc['s']), 2)
+        self.assertIn('foo', a.s)
+        self.assertIn('foo', a._doc['s'])
+        self.assertNotIn('baz', a.s)
+        self.assertNotIn('baz', a._doc['s'])
+
+
+    def testSetPropertyAssignmentWithType(self):
+        """SetProperty value assignment, len, in & not in w/ type
+        """
+        from datetime import datetime
+        class A(Document):
+            s = SetProperty(item_type=datetime)
+
+        d1 = datetime(2011, 3, 15, 17, 8, 1)
+        a = A()
+        a.s = set((d1, ))
+        self.assertEqual(a.s, set((d1, )))
+        self.assertItemsEqual(a._doc['s'], ['2011-03-15T17:08:01Z'])
+        self.assertEqual(len(a.s), 1)
+        self.assertEqual(len(a._doc['s']), 1)
+        self.assertIn(d1, a.s)
+        self.assertIn('2011-03-15T17:08:01Z', a._doc['s'])
+        self.assertNotIn(datetime(2011, 3, 16, 10, 37, 2), a.s)
+        self.assertNotIn('2011-03-16T10:37:02Z', a._doc['s'])
+
+
+    def testSetPropertySubSuperDisjoint(self):
+        """SetProperty Python subset, superset & disjoint operators work
+        """
+        class A(Document):
+            s = SetProperty()
+
+        iter1 = ('foo', 'bar')
+        a = A()
+        a.s = set(iter1)
+        self.assertTrue(a.s.issubset(iter1))
+        self.assertTrue(a.s <= set(iter1))
+        iter2 = ('foo', 'bar', 'baz')
+        self.assertTrue(a.s < set(iter2))
+        self.assertTrue(a.s.issuperset(iter1))
+        self.assertTrue(a.s >= set(iter1))
+        iter2 = ('foo', )
+        self.assertTrue(a.s > set(iter2))
+        iter2 = ('bam', 'baz')
+        self.assertTrue(a.s.isdisjoint(iter2))
+
+
+    def testSetPropertyUnionIntersectionDifferences(self):
+        """SetProperty Python union, intersection & differences operators work
+        """
+        class A(Document):
+            s = SetProperty()
+
+        iter1 = ('foo', 'bar')
+        iter2 = ('bar', 'baz')
+        iter3 = ('bar', 'fiz')
+        a = A()
+        a.s = set(iter1)
+        # Union
+        b = a.s.union(iter2)
+        self.assertEqual(b, set(('foo', 'bar', 'baz')))
+        b = a.s.union(iter2, iter3)
+        self.assertEqual(b, set(('foo', 'bar', 'baz', 'fiz')))
+        b = a.s | set(iter2)
+        self.assertEqual(b, set(('foo', 'bar', 'baz')))
+        b = a.s | set(iter2) | set(iter3)
+        self.assertEqual(b, set(('foo', 'bar', 'baz', 'fiz')))
+        # Intersection
+        b = a.s.intersection(iter2)
+        self.assertEqual(b, set(('bar', )))
+        b = a.s.intersection(iter2, iter3)
+        self.assertEqual(b, set(('bar', )))
+        b = a.s & set(iter2)
+        self.assertEqual(b, set(('bar', )))
+        b = a.s & set(iter2) & set(iter3)
+        self.assertEqual(b, set(('bar', )))
+        # Difference
+        b = a.s.difference(iter2)
+        self.assertEqual(b, set(('foo', )))
+        b = a.s.difference(iter2, iter3)
+        self.assertEqual(b, set(('foo', )))
+        b = a.s - set(iter2)
+        self.assertEqual(b, set(('foo', )))
+        b = a.s - set(iter2) - set(iter3)
+        self.assertEqual(b, set(('foo', )))
+        # Symmetric difference
+        self.assertEqual(a.s.symmetric_difference(iter2), set(('foo', 'baz')))
+        self.assertEqual(a.s ^ set(iter2), set(('foo', 'baz')))
+
+
+    def testSetPropertyCopy(self):
+        """SetProperty Python shallow copy method works
+        """
+        class A(Document):
+            s = SetProperty()
+
+        a = A()
+        a.s = set(('foo', 'bar'))
+        b = a.s.copy()
+        self.assertIsNot(b, a.s)
+
+
+    def testSetPropertyUpdate(self):
+        """SetProperty update method keeps Python set & _doc list in sync
+        """
+        class A(Document):
+            s = SetProperty()
+
+        iter1 = ('foo', 'bar')
+        iter2 = ('bar', 'baz')
+        iter3 = ('baz', 'fiz')
+        a = A()
+        a.s = set(iter1)
+        a.s.update(iter1)
+        self.assertEqual(a.s, set(('foo', 'bar')))
+        self.assertItemsEqual(a._doc['s'], ['foo', 'bar'])
+        a.s = set(iter1)
+        a.s.update(iter2)
+        self.assertEqual(a.s, set(('foo', 'bar', 'baz')))
+        self.assertItemsEqual(a._doc['s'], ['foo', 'bar', 'baz'])
+        a.s = set(iter1)
+        a.s.update(iter2, iter3)
+        self.assertEqual(a.s, set(('foo', 'bar', 'baz', 'fiz')))
+        self.assertItemsEqual(a._doc['s'], ['foo', 'bar', 'baz', 'fiz'])
+        a.s = set(iter1)
+        a.s |= set(iter2)
+        self.assertEqual(a.s, set(('foo', 'bar', 'baz')))
+        self.assertItemsEqual(a._doc['s'], ['foo', 'bar', 'baz'])
+        a.s = set(iter1)
+        a.s |= set(iter2) | set(iter3)
+        self.assertEqual(a.s, set(('foo', 'bar', 'baz', 'fiz')))
+        self.assertItemsEqual(a._doc['s'], ['foo', 'bar', 'baz', 'fiz'])
+
+
+    def testSetPropertyIntersectionUpdate(self):
+        """SetProperty intersection_update method keeps Python & _doc in sync
+        """
+        class A(Document):
+            s = SetProperty()
+
+        iter1 = ('foo', 'baz')
+        iter2 = ('bar', 'baz')
+        iter3 = ('bar', 'fiz')
+        a = A()
+        a.s = set(iter1)
+        a.s.intersection_update(iter1)
+        self.assertEqual(a.s, set(('foo', 'baz')))
+        self.assertItemsEqual(a._doc['s'], ['foo', 'baz'])
+        a.s = set(iter1)
+        a.s.intersection_update(iter2)
+        self.assertEqual(a.s, set(('baz', )))
+        self.assertItemsEqual(a._doc['s'], ['baz'])
+        a.s = set(iter1)
+        a.s.intersection_update(iter2, iter3)
+        self.assertEqual(a.s, set())
+        self.assertItemsEqual(a._doc['s'], [])
+        a.s = set(iter1)
+        a.s &= set(iter2)
+        self.assertEqual(a.s, set(('baz', )))
+        self.assertItemsEqual(a._doc['s'], ['baz'])
+        a.s = set(iter1)
+        a.s &= set(iter2) & set(iter3)
+        self.assertEqual(a.s, set())
+        self.assertItemsEqual(a._doc['s'], [])
+
+
+    def testSetPropertyDifferenceUpdate(self):
+        """SetProperty difference_update method keeps Python & _doc in sync
+        """
+        class A(Document):
+            s = SetProperty()
+
+        iter1 = ('foo', 'baz', 'fiz')
+        iter2 = ('bar', 'baz')
+        iter3 = ('bar', 'fiz')
+        a = A()
+        a.s = set(iter1)
+        a.s.difference_update(iter1)
+        self.assertEqual(a.s, set())
+        self.assertEqual(a._doc['s'], [])
+        a.s = set(iter1)
+        a.s.difference_update(iter2)
+        self.assertEqual(a.s, set(('foo', 'fiz')))
+        self.assertItemsEqual(a._doc['s'], ['foo', 'fiz'])
+        a.s = set(iter1)
+        a.s.difference_update(iter2, iter3)
+        self.assertEqual(a.s, set(('foo', )))
+        self.assertItemsEqual(a._doc['s'], ['foo'])
+        a.s = set(iter1)
+        a.s -= set(iter1)
+        self.assertEqual(a.s, set())
+        self.assertEqual(a._doc['s'], [])
+        a.s = set(iter1)
+        a.s -= set(iter2)
+        self.assertEqual(a.s, set(('foo', 'fiz')))
+        self.assertItemsEqual(a._doc['s'], ['foo', 'fiz'])
+        a.s = set(iter1)
+        a.s -= set(iter2) | set(iter3)
+        self.assertEqual(a.s, set(('foo', )))
+        self.assertItemsEqual(a._doc['s'], ['foo'])
+
+
+    def testSetPropertySymmetricDifferenceUpdate(self):
+        """SetProperty difference_update method keeps Python & _doc in sync
+        """
+        class A(Document):
+            s = SetProperty()
+
+        iter1 = ('foo', 'baz', 'fiz')
+        iter2 = ('bar', 'baz')
+        a = A()
+        a.s = set(iter1)
+        a.s.symmetric_difference_update(iter1)
+        self.assertEqual(a.s, set())
+        self.assertEqual(a._doc['s'], [])
+        a.s = set(iter1)
+        a.s.symmetric_difference_update(iter2)
+        self.assertEqual(a.s, set(('foo', 'bar', 'fiz')))
+        self.assertItemsEqual(a._doc['s'], ['foo', 'bar', 'fiz'])
+        a.s = set(iter1)
+        a.s ^= set(iter1)
+        self.assertEqual(a.s, set())
+        self.assertEqual(a._doc['s'], [])
+        a.s = set(iter1)
+        a.s ^= set(iter2)
+        self.assertEqual(a.s, set(('foo', 'bar', 'fiz')))
+        self.assertItemsEqual(a._doc['s'], ['foo', 'bar', 'fiz'])
+
+
+    def testSetPropertyAdd(self):
+        """SetProperty add method works
+        """
+        class A(Document):
+            s = SetProperty()
+
+        a = A()
+        a.s = set(('foo', 'bar'))
+        a.s.add('bar')
+        self.assertEqual(a.s, set(('foo', 'bar')))
+        self.assertItemsEqual(a._doc['s'], ['foo', 'bar'])
+        a.s.add('baz')
+        self.assertEqual(a.s, set(('foo', 'bar', 'baz')))
+        self.assertItemsEqual(a._doc['s'], ['foo', 'bar', 'baz'])
+
+
+    def testSetPropertyRemove(self):
+        """SetProperty remove method works
+        """
+        class A(Document):
+            s = SetProperty()
+
+        a = A()
+        a.s = set(('foo', 'bar'))
+        a.s.remove('foo')
+        self.assertEqual(a.s, set(('bar', )))
+        self.assertItemsEqual(a._doc['s'], ['bar'])
+        with self.assertRaises(KeyError):
+            a.s.remove('foo')
+
+
+    def testSetPropertyDiscard(self):
+        """SetProperty discard method works
+        """
+        class A(Document):
+            s = SetProperty()
+
+        a = A()
+        a.s = set(('foo', 'bar'))
+        a.s.discard('foo')
+        self.assertEqual(a.s, set(('bar', )))
+        self.assertItemsEqual(a._doc['s'], ['bar'])
+        a.s.discard('foo')
+        self.assertEqual(a.s, set(('bar', )))
+        self.assertItemsEqual(a._doc['s'], ['bar'])
+
+
+    def testSetPropertyPop(self):
+        """SetProperty pop method works
+        """
+        class A(Document):
+            s = SetProperty()
+
+        a = A()
+        a.s = set(('foo', 'bar'))
+        b = a.s.pop()
+        self.assertNotIn(b, a.s)
+        self.assertNotIn(b, a._doc['s'])
+        b = a.s.pop()
+        self.assertNotIn(b, a.s)
+        self.assertNotIn(b, a._doc['s'])
+        with self.assertRaises(KeyError):
+            a.s.pop()
+
+
+    def testSetPropertyClear(self):
+        """SetProperty clear method works
+        """
+        class A(Document):
+            s = SetProperty()
+
+        a = A()
+        a.s = set(('foo', 'bar'))
+        a.s.clear()
+        self.assertEqual(a.s, set())
+        self.assertEqual(a._doc['s'], [])
+
         
 if __name__ == '__main__':
     unittest.main()
