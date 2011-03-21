@@ -19,6 +19,7 @@ Example:
     u'Welcome'
 
 """
+import datetime
 import base64
 import re
 
@@ -96,13 +97,23 @@ class CouchdbResource(Resource):
         headers.setdefault('Accept', 'application/json')
         headers.setdefault('User-Agent', USER_AGENT)
 
+        start = datetime.datetime.now()
         if payload is not None:
             #TODO: handle case we want to put in payload json file.
             if not hasattr(payload, 'read') and not isinstance(payload, basestring):
                 payload = json.dumps(payload).encode('utf-8')
                 headers.setdefault('Content-Type', 'application/json')
 
+        end = datetime.datetime.now()
+        print "encode time %s" % (end -start)
+
+        start = datetime.datetime.now()
+        
         params = encode_params(params)
+        end = datetime.datetime.now()
+        print "param creation %s" % (end -start)
+
+        start = datetime.datetime.now()
         try:
             resp = Resource.request(self, method, path=path,
                              payload=payload, headers=headers, **params)
@@ -135,7 +146,8 @@ class CouchdbResource(Resource):
                 raise
         except: 
             raise 
-        
+        end = datetime.datetime.now()
+        print "couchdb request %s" % (end -start) 
         return resp
 
 def encode_params(params):

@@ -29,7 +29,7 @@ Example:
 
 UNKOWN_INFO = {}
 
-
+import datetime
 from collections import deque
 from itertools import groupby
 from mimetypes import guess_type
@@ -412,10 +412,14 @@ class Database(object):
 
         @return res: result of save. doc is updated in the mean time
         """
+        start0 = datetime.datetime.now()
+        start1 = datetime.datetime.now()
         if doc is None:
             doc1 = {}
         else:
             doc1, schema = _maybe_serialize(doc)
+        end1 = datetime.datetime.now()
+        print "maybe serialize %s" % (end1 - start1)
 
         if '_attachments' in doc1 and encode_attachments:
             doc1['_attachments'] = resource.encode_attachments(doc['_attachments'])
@@ -423,16 +427,21 @@ class Database(object):
         if '_id' in doc:
             docid = doc1['_id']
             docid1 = resource.escape_docid(doc1['_id'])
+            print "'%s' === '%s'" % (docid, docid1)
+            start3 = datetime.datetime.now()
             try:
                 res = self.res.put(docid1, payload=doc1,
                         **params).json_body
             except ResourceConflict:
+                print "force"
                 if force_update:
                     doc1['_rev'] = self.get_rev(docid)
                     res =self.res.put(docid1, payload=doc1,
                             **params).json_body
                 else:
                     raise
+            end3 = datetime.datetime.now()
+            print "saving doc request %s" % (end3-start3)
         else:
             try:
                 doc['_id'] = self.server.next_uuid()
@@ -441,6 +450,7 @@ class Database(object):
             except:
                 res = self.res.post(payload=doc1, **params).json_body
 
+        start2 = datetime.datetime.now()
         if 'batch' in params and 'id' in res:
             doc1.update({ '_id': res['id']})
         else:
@@ -451,6 +461,11 @@ class Database(object):
             doc._doc = doc1
         else:
             doc.update(doc1)
+        end2 = datetime.datetime.now()
+        print "manipulate doc %s" % (end2 - start2)
+
+        end0 = datetime.datetime.now()
+        print "save doc %s" % (end0 - start0)
         return res
 
     def save_docs(self, docs, use_uuids=True, all_or_nothing=False):
