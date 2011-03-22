@@ -6,35 +6,26 @@
 
 from .base import ConsumerBase
 
-import pkg_resources
+OLD_CONSUMER_URIS = dict(
+        eventlet = "couchdbkit.consumer.ceventlet.EventletConsumer",
+        gevent = "couchdbkit.consumer.cgevent.GeventConsumer",
+        sync = "couchdbkit.consumer.sync.SyncConsumer")
 
 def load_consumer_class(uri):
-    if uri.startswith("egg:"):
-        # uses entry points
-        entry_str = uri.split("egg:")[1]
-        try:
-            dist, name = entry_str.rsplit("#",1)
-        except ValueError:
-            dist = entry_str
-            name = "sync"
+    if uri in ('eventlet', 'gevent', 'sync'):
+        import warnings
+        warnings.warn(
+                "Short names for uri in consumer backend are deprecated.",
+                DeprecationWarning
+                )
+        uri = OLD_CONSUMER_URIS[uri] 
 
-        return pkg_resources.load_entry_point(dist,
-                "couchdbkit.consumers", name)
-    else:
-        components = uri.split('.')
-        if len(components) == 1:
-            try:
-                if uri.startswith("#"):
-                    uri = uri[1:]
-                return pkg_resources.load_entry_point("couchdbkit", 
-                            "couchdbkit.consumers", uri)
-            except ImportError: 
-                raise RuntimeError("consumer backend invalid or not found")
-        klass = components.pop(-1)
-        mod = __import__('.'.join(components))
-        for comp in components[1:]:
-            mod = getattr(mod, comp)
-        return getattr(mod, klass)
+    components = uri.split('.')
+    klass = components.pop(-1)
+    mod = __import__('.'.join(components))
+    for comp in components[1:]:
+        mod = getattr(mod, comp)
+    return getattr(mod, klass)
 
 class Consumer(object):
     """ Database change consumer
@@ -52,7 +43,7 @@ class Consumer(object):
          
     """
 
-    def __init__(self, db, backend='sync', **kwargs):
+    def __init__(self, db, backend='couchdbkit.consumer.sync.SyncConsumer', **kwargs):
         """ Constructor for the consumer
         
         Args:
