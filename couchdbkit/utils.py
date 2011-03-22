@@ -20,10 +20,10 @@ import urllib
 
 
 try:
-    import json
+    import simplejson as json
 except ImportError:
     try:
-        import simplejson as json
+        import json 
     except ImportError:
         raise ImportError("""simplejson isn't installed
 
