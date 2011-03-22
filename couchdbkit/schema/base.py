@@ -169,6 +169,12 @@ class DocumentSchema(object):
             self._doc['_id'] = value
         elif key == "_deleted":
             self._doc["_deleted"] = value
+        elif key == "_attachments":
+            if key not in self._doc or not value:
+                self._doc[key] = {}
+            elif not isinstance(self._doc[key], dict):
+                self._doc[key] = {}
+            value = LazyDict(self._doc[key], init_vals=value)
         else:
             check_reserved_words(key)
             if not hasattr( self, key ) and not self._allow_dynamic_properties:
