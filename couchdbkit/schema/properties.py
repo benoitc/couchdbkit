@@ -5,11 +5,21 @@
 
 """ properties used by Document object """
 
-import collections
 import decimal
 import datetime
 import re
 import time
+
+try:
+    from collections import MutableSet, Iterable
+
+    def is_iterable(c):
+        return isinstance(c, Iterable)
+except ImportError:
+    from sets import Set as MutableSet
+    
+    def is_iterable(o):
+        return hasattr(c, '__iter__')
 
 from couchdbkit.exceptions import BadValueError 
 
@@ -559,7 +569,7 @@ class SetProperty(Property):
     def validate(self, value, required=True):
         value = super(SetProperty, self).validate(value, required=required)
         if value and value is not None:
-            if not isinstance(value, collections.MutableSet):
+            if not isinstance(value, MutableSet):
                 raise BadValueError('Property %s must be a set' % self.name)
             value = self.validate_set_contents(value)
         return value
@@ -782,21 +792,21 @@ class LazyList(list):
         list.reverse(self)
 
 
-class LazySet(collections.MutableSet):
+class LazySet(MutableSet):
     """Object to make sure that we keep set and _doc synchronized.
 
-    We sub-class collections.MutableSet and maintain changes in doc.
+    We sub-class MutableSet and maintain changes in doc.
 
     Note that methods like union that return a set object do not
     alter _doc, while methods like update that change a set object
     in-place do keep _doc in sync.
     """
     def _map_named_operation(opname):
-        fn = getattr(collections.MutableSet, opname)
+        fn = getattr(MutableSet, opname)
         if hasattr(fn, 'im_func'):
             fn = fn.im_func
         def method(self, other, fn=fn):
-            if not isinstance(other, collections.MutableSet):
+            if not isinstance(other, MutableSet):
                 other = self._from_iterable(other)
             return fn(self, other)
         return method
@@ -814,6 +824,10 @@ class LazySet(collections.MutableSet):
     def __repr__(self):
         return '%s(%r)' % (type(self).__name__, list(self))
 
+    @classmethod
+    def _from_iterable(cls, it):
+        return cls(it)
+
     def __iand__(self, iterator):
         for value in (self.elements - iterator):
             self.elements.discard(value)
@@ -829,19 +843,19 @@ class LazySet(collections.MutableSet):
         return item in self.elements
 
     def __xor__(self, other):
-        if not isinstance(other, collections.MutableSet):
-            if not isinstance(other, collections.Iterable):
+        if not isinstance(other, MutableSet):
+            if not is_iterable(Other):
                 return NotImplemented
             other = self._from_iterable(other)
         return (self.elements - other) | (other - self.elements)
 
     def __gt__(self, other):
-        if not isinstance(other, collections.MutableSet):
+        if not isinstance(other, MutableSet):
             return NotImplemented
         return other < self.elements
 
     def __ge__(self, other):
-        if not isinstance(other, collections.MutableSet):
+        if not isinstance(other, MutableSet):
             return NotImplemented
         return other <= self.elements
 
@@ -876,7 +890,7 @@ class LazySet(collections.MutableSet):
         return self.elements.intersection(other, *args)
 
     def intersection_update(self, other, *args):
-        if not isinstance(other, collections.MutableSet):
+        if not isinstance(other, MutableSet):
             other = set(other)
         for value in self.elements - other:
             self.discard(value)
@@ -884,7 +898,7 @@ class LazySet(collections.MutableSet):
             self.intersection_update(arg)
 
     def symmetric_difference_update(self, other):
-        if not isinstance(other, collections.MutableSet):
+        if not isinstance(other, MutableSet):
             other = set(other)
         for value in other:
             if value in self.elements:
@@ -987,7 +1001,7 @@ def value_to_json(value, item_type=None):
         value = value.replace(microsecond=0).isoformat()
     elif isinstance(value, decimal.Decimal) and is_type_ok(item_type, decimal.Decimal):
         value = unicode(value)
-    elif isinstance(value, (list, collections.MutableSet)):
+    elif isinstance(value, (list, MutableSet)):
         value = list_to_json(value, item_type)
     elif isinstance(value, dict):
         value = dict_to_json(value, item_type)
@@ -1018,7 +1032,7 @@ def value_to_python(value, item_type=None):
                 value = prop.to_python(value)
             except:
                 pass
-    elif isinstance(value, (list, collections.MutableSet)):
+    elif isinstance(value, (list, MutableSet)):
         value = list_to_python(value, item_type=item_type)
     elif isinstance(value, dict):
         value = dict_to_python(value, item_type=item_type)
