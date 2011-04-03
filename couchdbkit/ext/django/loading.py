@@ -25,6 +25,7 @@ import os
 from couchdbkit import Server
 from couchdbkit import push
 from couchdbkit.resource import CouchdbResource
+from couchdbkit.exceptions import ResourceNotFound
 from django.conf import settings
 from django.utils.datastructures import SortedDict
 
@@ -68,10 +69,13 @@ class CouchdbkitHandler(object):
             app_label = app_name.split('.')[-1]
             self._databases[app_label] = (server, dbname)
     
-    def sync(self, app, verbosity=2):
+    def sync(self, app, verbosity=2, temp=None):
         """ used to sync views of all applications and eventually create
         database.
-        """
+
+        When temp is specified, it is appended to the app's name on the docid.
+        It can then be updated in the background and copied over the existing
+        design docs to reduce blocking time of view updates """
         app_name = app.__name__.rsplit('.', 1)[0]
         app_label = app_name.split('.')[-1]
         if app_label in self._databases:
@@ -86,9 +90,55 @@ class CouchdbkitHandler(object):
                     print >>sys.stderr, "%s don't exists, no ddoc synchronized" % design_path
                 return
 
+            if temp:
+                design_name = '%s-%s' % (app_label, temp)
+            else:
+                design_name = app_label
+
+            docid = "_design/%s" % design_name
+
             push(os.path.join(app_path, "_design"), db, force=True,
-                    docid="_design/%s" % app_label)
-                
+                    docid=docid)
+
+            if temp:
+                ddoc = db[docid]
+                view_names = ddoc['views'].keys()
+                if len(view_names) > 0:
+                    if verbosity >= 1:
+                        print 'Triggering view rebuild'
+
+                    view = '%s/%s' % (design_name, view_names[0])
+                    list(db.view(view, limit=0))
+
+
+    def copy_designs(self, app, temp, verbosity=2, delete=True):
+        """ Copies temporary view over the existing ones
+
+        This is used to reduce the waiting time for blocking view updates """
+
+        app_name = app.__name__.rsplit('.', 1)[0]
+        app_label = app_name.split('.')[-1]
+        if app_label in self._databases:
+            if verbosity >=1:
+                print "Copy prepared design docs for `%s`" % app_name
+            db = self.get_db(app_label)
+
+            tmp_name = '%s-%s' % (app_label, temp)
+
+            from_id = '_design/%s' % tmp_name
+            to_id   = '_design/%s' % app_label
+
+            try:
+                db.copy_doc(from_id, to_id)
+
+                if delete:
+                    del db[from_id]
+
+            except ResourceNotFound:
+                print '%s not found.' % (from_id, )
+                return
+
+
     def get_db(self, app_label, register=False):
         """ retrieve db session for a django application """
         if register:
