@@ -226,14 +226,17 @@ class DocumentSchema(object):
         else:
             object.__delattr__(self, key)
 
-    def __getattr__(self, key):
+    def __getattr__(self, key, default=None):
         """ get property value
         """
         if self._dynamic_properties and key in self._dynamic_properties:
             return self._dynamic_properties[key]
         elif key  in ('_id', '_rev', '_attachments', 'doc_type'):
             return self._doc.get(key)
-        return self.__dict__[key]
+        try:
+            return self.__dict__[key]
+        except KeyError, e:
+            raise AttributeError(e)
 
     def __getitem__(self, key):
         """ get property value
