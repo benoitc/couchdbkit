@@ -133,13 +133,15 @@ def read_file(fname, utf8=True, force_read=False):
         try:
             with codecs.open(fname, 'rb', "utf-8") as f:
                 data = f.read()
+                return data
         except UnicodeError:
             if force_read:
                 return read_file(fname, utf8=False)
+            raise
     else:
         with open(fname, 'rb') as f:
             data = f.read()
-    return data
+            return data
 
 def sign_file(file_path):
     """ return md5 hash from file content
