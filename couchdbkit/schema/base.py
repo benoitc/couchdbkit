@@ -226,7 +226,7 @@ class DocumentSchema(object):
         else:
             object.__delattr__(self, key)
 
-    def __getattr__(self, key, default=None):
+    def __getattr__(self, key):
         """ get property value
         """
         if self._dynamic_properties and key in self._dynamic_properties:
