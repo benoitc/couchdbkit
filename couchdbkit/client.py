@@ -582,8 +582,8 @@ class Database(object):
             destination = self.server.next_uuid(count=1)
         elif isinstance(dest, basestring):
             if dest in self:
-                rev = self.get(dest)['_rev']
-                destination = "%s?rev=%s" % (dest['_id'], rev)
+                dest = self.get(dest)
+                destination = "%s?rev=%s" % (dest['_id'], dest['_rev'])
             else:
                 destination = dest
         elif isinstance(dest, dict):
