@@ -582,13 +582,12 @@ class Database(object):
             destination = self.server.next_uuid(count=1)
         elif isinstance(dest, basestring):
             if dest in self:
-                dest = self.get(dest)['_rev']
-                destination = "%s?rev=%s" % (dest['_id'], dest['_rev'])
+                rev = self.get(dest)['_rev']
+                destination = "%s?rev=%s" % (dest['_id'], rev)
             else:
                 destination = dest
         elif isinstance(dest, dict):
             if '_id' in dest and '_rev' in dest and dest['_id'] in self:
-                rev = dest['_rev']
                 destination = "%s?rev=%s" % (dest['_id'], dest['_rev'])
             else:
                 raise KeyError("dest doesn't exist or this not a document ('_id' or '_rev' missig).")
