@@ -39,10 +39,13 @@ class CouchDBResponse(ClientResponse):
     
     @property
     def json_body(self):
+        body = self.body_string()
+
+        # try to decode json
         try:
-            return json.loads(self.body_string())
+            return json.loads(body)
         except ValueError:
-            return self.body_string()
+            return body 
 
 
 class CouchdbResource(Resource):
