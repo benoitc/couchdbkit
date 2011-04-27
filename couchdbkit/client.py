@@ -516,13 +516,33 @@ class Database(object):
         return results
     bulk_save = save_docs
 
-    def delete_docs(self, docs, all_or_nothing=False):
+    def delete_docs(self, docs, all_or_nothing=False,
+            empty_on_delete=False):
         """ bulk delete.
         It adds '_deleted' member to doc then uses bulk_save to save them.
+        
+        @param empty_on_delete: default is False if you want to make
+        sure the doc is emptied and will not be stored as is in Apache
+        CouchDB.
+        @param all_or_nothing: In the case of a power failure, when the database
+        restarts either all the changes will have been saved or none of them.
+        However, it does not do conflict checking, so the documents will
+
+        .. seealso:: `HTTP Bulk Document API <http://wiki.apache.org/couchdb/HTTP_Bulk_Document_API>`
+
 
         """
-        for doc in docs:
-            doc['_deleted'] = True
+
+        if empty_on_delete:
+            for doc in docs:
+                new_doc = {"_id": doc["_id"],
+                        "_rev": doc["_rev"],
+                        "_deleted": True}
+                doc.clear()
+                doc.update(new_doc)
+        else:
+            for doc in docs:
+                doc['_deleted'] = True
 
         return self.bulk_save(docs, use_uuids=False,
                 all_or_nothing=all_or_nothing)
