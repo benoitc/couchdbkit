@@ -453,7 +453,8 @@ class Database(object):
             doc.update(doc1)
         return res
 
-    def save_docs(self, docs, use_uuids=True, all_or_nothing=False):
+    def save_docs(self, docs, use_uuids=True, all_or_nothing=False,
+            **params):
         """ bulk save. Modify Multiple Documents With a Single Request
 
         @param docs: list of docs
@@ -494,7 +495,7 @@ class Database(object):
 
         # update docs
         results = self.res.post('/_bulk_docs',
-                payload=payload).json_body
+                payload=payload, **params).json_body
 
         errors = []
         for i, res in enumerate(results):
@@ -517,7 +518,7 @@ class Database(object):
     bulk_save = save_docs
 
     def delete_docs(self, docs, all_or_nothing=False,
-            empty_on_delete=False):
+            empty_on_delete=False, **params):
         """ bulk delete.
         It adds '_deleted' member to doc then uses bulk_save to save them.
         
@@ -545,11 +546,11 @@ class Database(object):
                 doc['_deleted'] = True
 
         return self.bulk_save(docs, use_uuids=False,
-                all_or_nothing=all_or_nothing)
+                all_or_nothing=all_or_nothing, **params)
 
     bulk_delete = delete_docs
 
-    def delete_doc(self, doc):
+    def delete_doc(self, doc, **params):
         """ delete a document or a list of documents
         @param doc: str or dict,  document id or full doc.
         @return: dict like:
@@ -566,11 +567,11 @@ class Database(object):
                 raise KeyError('_id and _rev are required to delete a doc')
 
             docid = resource.escape_docid(doc1['_id'])
-            result = self.res.delete(docid, rev=doc1['_rev']).json_body
+            result = self.res.delete(docid, rev=doc1['_rev'], **params).json_body
         elif isinstance(doc1, basestring): # we get a docid
             rev = self.get_rev(doc1)
             docid = resource.escape_docid(doc1)
-            result = self.res.delete(docid, rev=rev).json_body
+            result = self.res.delete(docid, rev=rev, **params).json_body
 
         if schema:
             doc._doc.update({
@@ -584,11 +585,14 @@ class Database(object):
             })
         return result
 
-    def copy_doc(self, doc, dest=None):
+    def copy_doc(self, doc, dest=None, headers=None):
         """ copy an existing document to a new id. If dest is None, a new uuid will be requested
         @param doc: dict or string, document or document id
         @param dest: basestring or dict. if _rev is specified in dict it will override the doc
         """
+
+        if not headers:
+            headers = {}
 
         doc1, schema = _maybe_serialize(doc)
         if isinstance(doc1, basestring):
@@ -613,9 +617,8 @@ class Database(object):
                 raise KeyError("dest doesn't exist or this not a document ('_id' or '_rev' missig).")
 
         if destination:
-            result = self.res.copy('/%s' % docid, headers={ 
-                "Destination": str(destination)
-            }).json_body
+            headers.update({"Destination": str(destination)})
+            result = self.res.copy('/%s' % docid, headers=headers).json_body
             return result
 
         return { 'ok': False }
@@ -722,7 +725,7 @@ class Database(object):
     iterdocuments = documents
 
     def put_attachment(self, doc, content, name=None, content_type=None,
-            content_length=None):
+            content_length=None, headers=None):
         """ Add attachement to a document. All attachments are streamed.
 
         @param doc: dict, document object
@@ -754,7 +757,8 @@ class Database(object):
             {u'ok': True}
         """
 
-        headers = {}
+        if not headers:
+            headers = {}
 
         if not content:
             content = ""
@@ -786,7 +790,7 @@ class Database(object):
             doc.update(new_doc)
         return res['ok']
 
-    def delete_attachment(self, doc, name):
+    def delete_attachment(self, doc, name, headers=None):
         """ delete attachement to the document
 
         @param doc: dict, document object in python
@@ -799,14 +803,16 @@ class Database(object):
         docid = resource.escape_docid(doc1['_id'])
         name = url_quote(name, safe="")
 
-        res = self.res(docid).delete(name, rev=doc1['_rev']).json_body
+        res = self.res(docid).delete(name, rev=doc1['_rev'],
+                headers=headers).json_body
         if res['ok']:
             new_doc = self.get(doc1['_id'], rev=res['rev'])
             doc.update(new_doc)
         return res['ok']
 
 
-    def fetch_attachment(self, id_or_doc, name, stream=False):
+    def fetch_attachment(self, id_or_doc, name, stream=False,
+            headers=None):
         """ get attachment in a document
 
         @param id_or_doc: str or dict, doc id or document dict
@@ -824,7 +830,7 @@ class Database(object):
         docid = resource.escape_docid(docid)
         name = url_quote(name, safe="")
 
-        resp = self.res(docid).get(name)
+        resp = self.res(docid).get(name, headers=headers)
         if stream:
             return resp.body_stream()
         return resp.body_string(charset="utf-8")
