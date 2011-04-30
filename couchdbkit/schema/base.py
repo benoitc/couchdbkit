@@ -458,7 +458,7 @@ class DocumentBase(DocumentSchema):
         """
         if cls._db is None:
             raise TypeError("doc database required to save document")
-        docs_to_save= [doc._doc for doc in docs if doc._doc_type == cls._doc_type]
+        docs_to_save= [doc for doc in docs if doc._doc_type == cls._doc_type]
         if not len(docs_to_save) == len(docs):
             raise ValueError("one of your documents does not have the correct type")
         cls._db.bulk_save(docs_to_save, use_uuids=use_uuids, all_or_nothing=all_or_nothing)
