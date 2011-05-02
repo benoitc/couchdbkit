@@ -346,16 +346,9 @@ class DocumentSchema(object):
 
     def clone(self, **kwargs):
         """ clone a document """
-        for prop_name in self._properties.keys():
-            try:
-                kwargs[prop_name] = self._doc[prop_name]
-            except KeyError:
-                pass
-
         kwargs.update(self._dynamic_properties)
         obj = self.__class__(**kwargs)
         obj._doc = self._doc
-
         return obj
 
     @classmethod
