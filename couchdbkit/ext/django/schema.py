@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2008-2009 Benoit Chesneau <benoitc@e-engura.com> 
+# Copyright (c) 2008-2009 Benoit Chesneau <benoitc@e-engura.com>
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -14,7 +14,7 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-""" Wrapper of couchdbkit Document and Properties for django. It also 
+""" Wrapper of couchdbkit Document and Properties for django. It also
 add possibility to a document to register itself in CouchdbkitHandler
 """
 import re
@@ -30,15 +30,16 @@ from couchdbkit import schema
 from couchdbkit.ext.django.loading import get_schema, register_schema, \
 get_db
 
-__all__ = ['Property', 'StringProperty', 'IntegerProperty', 
-            'DecimalProperty', 'BooleanProperty', 'FloatProperty', 
-            'DateTimeProperty', 'DateProperty', 'TimeProperty', 
-            'dict_to_json', 'list_to_json', 'value_to_json', 
-            'value_to_python', 'dict_to_python', 'list_to_python', 
-            'convert_property', 'DocumentSchema', 'Document', 
-            'SchemaProperty', 'SchemaListProperty', 'ListProperty', 
-            'DictProperty', 'StringListProperty', 'SchemaDictProperty']
-            
+__all__ = ['Property', 'StringProperty', 'IntegerProperty',
+            'DecimalProperty', 'BooleanProperty', 'FloatProperty',
+            'DateTimeProperty', 'DateProperty', 'TimeProperty',
+            'dict_to_json', 'list_to_json', 'value_to_json',
+            'value_to_python', 'dict_to_python', 'list_to_python',
+            'convert_property', 'DocumentSchema', 'Document',
+            'SchemaProperty', 'SchemaListProperty', 'ListProperty',
+            'DictProperty', 'StringListProperty', 'SchemaDictProperty',
+            'SetProperty',]
+
 
 DEFAULT_NAMES = ('verbose_name', 'db_table', 'ordering',
                  'app_label')
@@ -46,14 +47,14 @@ DEFAULT_NAMES = ('verbose_name', 'db_table', 'ordering',
 class Options(object):
     """ class based on django.db.models.options. We only keep
     useful bits."""
-    
+
     def __init__(self, meta, app_label=None):
         self.module_name, self.verbose_name = None, None
         self.verbose_name_plural = None
         self.object_name, self.app_label = None, app_label
         self.meta = meta
         self.admin = None
-    
+
     def contribute_to_class(self, cls, name):
         cls._meta = self
         self.installed = re.sub('\.models$', '', cls.__module__) in settings.INSTALLED_APPS
@@ -87,7 +88,7 @@ class Options(object):
         else:
             self.verbose_name_plural = string_concat(self.verbose_name, 's')
         del self.meta
-        
+
     def __str__(self):
         return "%s.%s" % (smart_str(self.app_label), smart_str(self.module_name))
 
@@ -110,26 +111,26 @@ class DocumentMeta(schema.SchemaProperties):
         parents = [b for b in bases if isinstance(b, DocumentMeta)]
         if not parents:
             return super_new(cls, name, bases, attrs)
-            
+
         new_class = super_new(cls, name, bases, attrs)
         attr_meta = attrs.pop('Meta', None)
         if not attr_meta:
             meta = getattr(new_class, 'Meta', None)
         else:
             meta = attr_meta
-        
+
         if getattr(meta, 'app_label', None) is None:
             document_module = sys.modules[new_class.__module__]
             app_label = document_module.__name__.split('.')[-2]
         else:
             app_label = getattr(meta, 'app_label')
-            
+
         new_class.add_to_class('_meta', Options(meta, app_label=app_label))
-        
-        register_schema(app_label, new_class)        
-        
+
+        register_schema(app_label, new_class)
+
         return get_schema(app_label, name)
-        
+
     def add_to_class(cls, name, value):
         if hasattr(value, 'contribute_to_class'):
             value.contribute_to_class(cls, name)
@@ -139,7 +140,7 @@ class DocumentMeta(schema.SchemaProperties):
 class Document(schema.Document):
     """ Document object for django extension """
     __metaclass__ = DocumentMeta
-    
+
     get_id = property(lambda self: self['_id'])
     get_rev = property(lambda self: self['_rev'])
 
@@ -151,8 +152,8 @@ class Document(schema.Document):
             db = get_db(app_label)
             cls._db = db
         return db
-    
-DocumentSchema = schema.DocumentSchema    
+
+DocumentSchema = schema.DocumentSchema
 
 #  properties
 Property = schema.Property
@@ -170,6 +171,7 @@ ListProperty = schema.ListProperty
 DictProperty = schema.DictProperty
 StringListProperty = schema.StringListProperty
 SchemaDictProperty = schema.SchemaDictProperty
+SetProperty = schema.SetProperty
 
 
 
