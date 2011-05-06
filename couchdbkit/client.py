@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -
 #
-# This file is part of couchdbkit released under the MIT license. 
+# This file is part of couchdbkit released under the MIT license.
 # See the NOTICE for more information.
 
 """
@@ -38,7 +38,7 @@ import time
 from restkit.util import url_quote
 
 from .exceptions import InvalidAttachment, NoResultFound, \
-ResourceNotFound, ResourceConflict, BulkSaveError, MultipleResultsFound 
+ResourceNotFound, ResourceConflict, BulkSaveError, MultipleResultsFound
 from . import resource
 from .utils import validate_dbname
 
@@ -48,7 +48,7 @@ DEFAULT_UUID_BATCH_COUNT = 1000
 def _maybe_serialize(doc):
     if hasattr(doc, "to_json"):
         # try to validate doc first
-        try:    
+        try:
             doc.validate()
         except AttributeError:
             pass
@@ -64,11 +64,11 @@ class Server(object):
     A Server object can be used like any `dict` object.
     """
 
-    resource_class = resource.CouchdbResource 
+    resource_class = resource.CouchdbResource
 
     def __init__(self, uri='http://127.0.0.1:5984',
             uuid_batch_count=DEFAULT_UUID_BATCH_COUNT,
-            resource_class=None, resource_instance=None, 
+            resource_class=None, resource_instance=None,
             **client_opts):
 
         """ constructor for Server object
@@ -92,7 +92,7 @@ class Server(object):
         if resource_class is not None:
             self.resource_class = resource_class
 
-        if resource_instance and isinstance(resource_instance, 
+        if resource_instance and isinstance(resource_instance,
                                 resource.CouchdbResource):
             resource_instance.initial['uri'] = uri
             self.res = resource_instance.clone()
@@ -101,7 +101,7 @@ class Server(object):
         else:
             self.res = self.resource_class(uri, **client_opts)
         self._uuids = deque()
-        
+
     def info(self):
         """ info of server
 
@@ -112,7 +112,7 @@ class Server(object):
             resp = self.res.get()
         except Exception:
             return UNKOWN_INFO
-        
+
         return resp.json_body
 
     def all_dbs(self):
@@ -134,7 +134,7 @@ class Server(object):
         @param dname: str, name of db
         @param param: custom parameters to pass to create a db. For
         example if you use couchdbkit to access to cloudant or bigcouch:
-            
+
             Ex: q=12 or n=4
 
         See https://github.com/cloudant/bigcouch for more info.
@@ -164,7 +164,7 @@ class Server(object):
         @param source: str, URI or dbname of the source
         @param target: str, URI or dbname of the target
         @param params: replication options
-        
+
         More info about replication here :
         http://wiki.apache.org/couchdb/Replication
 
@@ -176,7 +176,7 @@ class Server(object):
         payload.update(params)
         resp = self.res.post('/_replicate', payload=payload)
         return resp.json_body
-        
+
     def active_tasks(self):
         """ return active tasks """
         resp = self.res.get('/_active_tasks')
@@ -228,7 +228,7 @@ class Server(object):
     def _db_uri(self, dbname):
         if dbname.startswith("/"):
             dbname = dbname[1:]
-            
+
         dbname = url_quote(dbname, safe=":")
         return "/".join([self.uri, dbname])
 
@@ -287,7 +287,7 @@ class Database(object):
         path = "/_compact"
         if dname is not None:
             path = "%s/%s" % (path, resource.escape_docid(dname))
-        res = self.res.post(path, headers={"Content-Type": 
+        res = self.res.post(path, headers={"Content-Type":
             "application/json"})
         return res.json_body
 
@@ -354,7 +354,7 @@ class Database(object):
             wrapper = schema.wrap
 
         docid = resource.escape_docid(docid)
-        doc = self.res.get(docid, **params).json_body        
+        doc = self.res.get(docid, **params).json_body
         if wrapper is not None:
             if not callable(wrapper):
                 raise TypeError("wrapper isn't a callable")
@@ -363,6 +363,23 @@ class Database(object):
 
         return doc
     get = open_doc
+
+    def show(self, show_name, doc_id, **params):
+        """ Execute a show function on the server and return the response.
+        If the response is json it will be deserialized, otherwise the string
+        will be returned.
+
+        Args:
+            @param show_name: should be 'designname/showname'
+            @param doc_id: id of the document to pass into the show document
+            @param params: params of the show
+        """
+        show_name = show_name.split('/')
+        dname = show_name.pop(0)
+        vname = '/'.join(show_name)
+        show_path = '_design/%s/_show/%s/%s' % (dname, vname, doc_id)
+
+        return self.res.get(show_path, **params).json_body
 
     def all_docs(self, by_seq=False, **params):
         """Get all documents from a database
@@ -449,7 +466,7 @@ class Database(object):
             doc1.update({ '_id': res['id']})
         else:
             doc1.update({'_id': res['id'], '_rev': res['rev']})
-       
+
 
         if schema:
             doc._doc = doc1
@@ -470,7 +487,7 @@ class Database(object):
         .. seealso:: `HTTP Bulk Document API <http://wiki.apache.org/couchdb/HTTP_Bulk_Document_API>`
 
         """
-        
+
         docs1 = []
         docs_schema = []
         for doc in docs:
@@ -525,7 +542,7 @@ class Database(object):
             empty_on_delete=False, **params):
         """ bulk delete.
         It adds '_deleted' member to doc then uses bulk_save to save them.
-        
+
         @param empty_on_delete: default is False if you want to make
         sure the doc is emptied and will not be stored as is in Apache
         CouchDB.
@@ -694,14 +711,14 @@ class Database(object):
             if hasattr(schema, "wrap"):
                 if hasattr(schema, '_doc_type'):
                     schema = {schema._doc_type: schema}
-                    wrapper = get_multi_wrapper(schema, wrap_doc=wrap_doc, 
+                    wrapper = get_multi_wrapper(schema, wrap_doc=wrap_doc,
                             dynamic_properties=dynamic_properties)
                 else:
                     wrapper = schema.wrap
             else:
                 if isinstance(schema, list):
                     schema = dict([(s._doc_type, s) for s in schema])
-                
+
                 wrapper = get_multi_wrapper(schema, wrap_doc=wrap_doc,
                     dynamic_properties=dynamic_properties)
 
@@ -724,7 +741,7 @@ class Database(object):
         """ return a ViewResults objects containing all documents.
         This is a shorthand to view function.
         """
-        return View(self, '_all_docs', schema=schema, 
+        return View(self, '_all_docs', schema=schema,
                 wrapper=wrapper)(**params)
     iterdocuments = documents
 
