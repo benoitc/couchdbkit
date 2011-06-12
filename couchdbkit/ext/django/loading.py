@@ -77,8 +77,16 @@ class CouchdbkitHandler(object):
         It can then be updated in the background and copied over the existing
         design docs to reduce blocking time of view updates """
         app_name = app.__name__.rsplit('.', 1)[0]
-        app_label = app_name.split('.')[-1]
-        if app_label in self._databases:
+        app_labels = set()
+        schema_list = self.app_schema.values()
+        for schema_dict in schema_list:
+            for schema in schema_dict.values():
+                app_module = schema.__module__.rsplit(".", 1)[0]
+                if app_module == app_name and not schema._meta.app_label in app_labels:
+                    app_labels.add(schema._meta.app_label)
+        for app_label in app_labels:
+            if not app_label in self._databases:
+                continue
             if verbosity >=1:
                 print "sync `%s` in CouchDB" % app_name
             db = self.get_db(app_label)
