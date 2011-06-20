@@ -13,14 +13,21 @@ import time
 try:
     from collections import MutableSet, Iterable
 
+    def is_set(value):
+        return isinstance(value, (MutableSet, set,))
+
     def is_iterable(c):
         return isinstance(c, Iterable)
 except ImportError:
-    from sets import Set as MutableSet
-    
+    from couchdbkit.py25 import MutableSet
+        
     def is_iterable(o):
-        return hasattr(c, '__iter__')
+        return hasattr(c, '__iter__') or isinstance(o, (list, tuple, set))
 
+    def is_set(o):
+        return isinstance(o, (MutableSet, set,))
+
+    
 from couchdbkit.exceptions import BadValueError 
 
 __all__ = ['ALLOWED_PROPERTY_TYPES', 'Property', 'StringProperty',
@@ -564,12 +571,12 @@ class SetProperty(Property):
             verbose_name=verbose_name, default=default, required=required,
             **kwds)
 
-    data_type = set
+    data_type = list
 
     def validate(self, value, required=True):
         value = super(SetProperty, self).validate(value, required=required)
         if value and value is not None:
-            if not isinstance(value, MutableSet):
+            if not is_set(value):
                 raise BadValueError('Property %s must be a set' % self.name)
             value = self.validate_set_contents(value)
         return value
@@ -595,7 +602,7 @@ class SetProperty(Property):
         """
         value = super(SetProperty, self).default_value()
         if value is None:
-            return set()
+            return []
         return value.copy()
 
     def to_python(self, value):
@@ -806,7 +813,7 @@ class LazySet(MutableSet):
         if hasattr(fn, 'im_func'):
             fn = fn.im_func
         def method(self, other, fn=fn):
-            if not isinstance(other, MutableSet):
+            if not is_set(other):
                 other = self._from_iterable(other)
             return fn(self, other)
         return method
@@ -842,20 +849,59 @@ class LazySet(MutableSet):
     def __contains__(self, item):
         return item in self.elements
 
+    def __le__(self, other):
+        if not is_set(other):
+            return NotImplemented
+        if len(self.elements) > len(other):
+            return False
+        for elem in self.elements:
+            if elem not in other:
+                return False
+        return True
+
+    def __lt__(self, other):
+        if not is_set(other):
+            return NotImplemented
+        return len(self.elements) < len(other) and self.__le__(other)
+    
+    def __eq__(self, other):
+        if not is_set(other):
+            return NotImplemented
+        return len(self.elements) == len(other) and self.__le__(other)
+
+    def __and__(self, other):
+        if not is_iterable(other):
+            return NotImplemented
+        return self._from_iterable(value for value in other if value in self.elements)
+
+    def __or__(self, other):
+        if not is_iterable(other):
+            return NotImplemented
+        chain = (e for s in (self.elements, other) for e in s)
+        return self._from_iterable(chain)
+
+    def __sub__(self, other):
+        if not is_set(other):
+            if not s_iterable(other):
+                return NotImplemented
+            other = self._from_iterable(other)
+        return self._from_iterable(value for value in self.elements
+                                   if value not in other)
+
     def __xor__(self, other):
-        if not isinstance(other, MutableSet):
+        if not is_set(other):
             if not is_iterable(Other):
                 return NotImplemented
             other = self._from_iterable(other)
         return (self.elements - other) | (other - self.elements)
 
     def __gt__(self, other):
-        if not isinstance(other, MutableSet):
+        if not is_set(other):
             return NotImplemented
         return other < self.elements
 
     def __ge__(self, other):
-        if not isinstance(other, MutableSet):
+        if not is_set(other):
             return NotImplemented
         return other <= self.elements
 
@@ -890,7 +936,7 @@ class LazySet(MutableSet):
         return self.elements.intersection(other, *args)
 
     def intersection_update(self, other, *args):
-        if not isinstance(other, MutableSet):
+        if not is_set(other):
             other = set(other)
         for value in self.elements - other:
             self.discard(value)
@@ -898,7 +944,7 @@ class LazySet(MutableSet):
             self.intersection_update(arg)
 
     def symmetric_difference_update(self, other):
-        if not isinstance(other, MutableSet):
+        if not is_set(other):
             other = set(other)
         for value in other:
             if value in self.elements:
@@ -908,6 +954,8 @@ class LazySet(MutableSet):
 
     def union(self, other, *args):
         return self.elements.union(other, *args)
+            
+
 
     def update(self, other, *args):
         self.elements.update(other, *args)
@@ -915,6 +963,21 @@ class LazySet(MutableSet):
             if element not in self.doc:
                 self.doc.append(
                     value_to_json(element, item_type=self.item_type))
+
+    def pop(self):
+        v = super(LazySet, self).pop()
+        return value_to_python(v, item_type=self.item_type)
+
+    def clear(self):
+        try:
+            while True:
+                v = self.elements.pop()
+                try:
+                    self.doc.remove(v)
+                except ValueError:
+                    pass
+        except KeyError:
+            pass
 
 # some mapping
 
