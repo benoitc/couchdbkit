@@ -47,7 +47,7 @@ setup(
     zip_safe = False,
 
     install_requires = [
-        'restkit>=3.2',
+        'restkit>=3.3',
     ],
     
     entry_points="""
