@@ -364,6 +364,23 @@ class Database(object):
         return doc
     get = open_doc
 
+    def list(self, list_name, view_name, **params):
+        """ Execute a list function on the server and return the response.
+        If the response is json it will be deserialized, otherwise the string
+        will be returned.
+
+        Args:
+            @param list_name: should be 'designname/listname'
+            @param view_name: name of the view to run through the list document
+            @param params: params of the list
+        """
+        list_name = list_name.split('/')
+        dname = list_name.pop(0)
+        vname = '/'.join(list_name)
+        list_path = '_design/%s/_list/%s/%s' % (dname, vname, view_name)
+
+        return self.res.get(list_path, **params).json_body
+
     def show(self, show_name, doc_id, **params):
         """ Execute a show function on the server and return the response.
         If the response is json it will be deserialized, otherwise the string
