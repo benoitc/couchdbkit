@@ -22,6 +22,7 @@ and manage db sessions
 import sys
 import os
 
+from restkit import BasicAuth
 from couchdbkit import Server
 from couchdbkit import push
 from couchdbkit.resource import CouchdbResource
@@ -47,11 +48,23 @@ class CouchdbkitHandler(object):
 
         self.__dict__ = self.__shared_state__
 
+        # Convert old style to new style
+        if isinstance(databases, (list, tuple)):
+            databases = dict(
+                (app_name, {'URL': uri}) for app_name, uri in databases
+            )
+
         # create databases sessions
-        for app_name, uri in databases:
+        for app_name, app_setting in databases.iteritems():
+            uri = app_setting['URL']
+
+            # Blank credentials are valid for the admin party
+            user = app_setting.get('USER', '')
+            password = app_setting.get('PASSWORD', '')
+            auth = BasicAuth(user, password)
 
             try:
-                if isinstance(uri, tuple):
+                if isinstance(uri, (list, tuple)):
                     # case when you want to specify server uri 
                     # and database name specifically. usefull
                     # when you proxy couchdb on some path 
@@ -62,8 +75,7 @@ class CouchdbkitHandler(object):
                 raise ValueError("couchdb uri [%s:%s] invalid" % (
                     app_name, uri))
 
-                
-            res = CouchdbResource(server_uri, timeout=COUCHDB_TIMEOUT)
+            res = CouchdbResource(server_uri, timeout=COUCHDB_TIMEOUT, filters=[auth])
 
             server = Server(server_uri, resource_instance=res)
             app_label = app_name.split('.')[-1]
