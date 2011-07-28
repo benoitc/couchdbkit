@@ -449,13 +449,12 @@ class DocumentBase(DocumentSchema):
         be committed even if this creates conflicts.
 
         """
-        if cls._db is None:
-            raise TypeError("doc database required to save document")
+        db = cls.get_db()
         docs_to_save= [doc for doc in docs if doc._doc_type == cls._doc_type]
         if not len(docs_to_save) == len(docs):
             raise ValueError("one of your documents does not have the correct type")
-        cls._db.bulk_save(docs_to_save, use_uuids=use_uuids, all_or_nothing=all_or_nothing)
-    
+        db.bulk_save(docs_to_save, use_uuids=use_uuids, all_or_nothing=all_or_nothing)
+
     bulk_save = save_docs
 
     @classmethod
@@ -472,11 +471,9 @@ class DocumentBase(DocumentSchema):
         """ get  or create document with `docid` """
        
         if db:
-            cls._db = db
+            cls.set_db(db)
         cls._allow_dynamic_properties = dynamic_properties
-
-        if cls._db is None:
-            raise TypeError("doc database required to save document")
+        db = cls.get_db()
 
         if docid is None:
             obj = cls()
@@ -486,7 +483,7 @@ class DocumentBase(DocumentSchema):
         rev = params.pop('rev', None)
 
         try:
-            return cls._db.get(docid, rev=rev, wrapper=cls.wrap, **params)
+            return db.get(docid, rev=rev, wrapper=cls.wrap, **params)
         except ResourceNotFound:
             obj = cls()
             obj._id = docid
