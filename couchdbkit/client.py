@@ -121,6 +121,13 @@ class Server(object):
         """
         return self.res.get('/_all_dbs').json_body
 
+    def get_db(self, dbname, **params):
+        """
+        Try to return a Database object for dbname.
+
+        """
+        return Database(self._db_uri(dbname), server=self, **params)
+
     def create_db(self, dbname, **params):
         """ Create a database on CouchDb host
 
@@ -134,17 +141,14 @@ class Server(object):
 
         @return: Database instance if it's ok or dict message
         """
-        return Database(self._db_uri(dbname), create=True,
-                    server=self, **params)
+        return self.get_db(dbname, create=True, **params)
 
-    def get_or_create_db(self, dbname, **params):
-        """
+    get_or_create_db = create_db
+    get_or_create_db.__doc__ = """
         Try to return a Database object for dbname. If
         database doest't exist, it will be created.
 
         """
-        return Database(self._db_uri(dbname), create=True,
-                    server=self, **params)
 
     def delete_db(self, dbname):
         """
