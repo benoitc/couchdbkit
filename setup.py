@@ -62,5 +62,5 @@ setup(
     gevent=couchdbkit.consumer.cgevent:GeventConsumer
     """,
         
-    test_suite='noses',
+    test_suite='nose.collector',
 )
