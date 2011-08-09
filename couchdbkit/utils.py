@@ -113,10 +113,14 @@ def split_path(path):
     return parts
 
 VALID_DB_NAME = re.compile(r'^[a-z][a-z0-9_$()+-/]*$')
+SPECIAL_DBS = ("_users", "_replicator",)
 def validate_dbname(name):
     """ validate dbname """
-    if not VALID_DB_NAME.match(urllib.unquote(name)):
+    if name in SPECIAL_DBS:
+        return True
+    elif not VALID_DB_NAME.match(urllib.unquote(name)):
         raise ValueError("Invalid db name: '%s'" % name)
+    return True
 
 def to_bytestring(s):
     """ convert to bytestring an unicode """
