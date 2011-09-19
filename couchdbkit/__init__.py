@@ -6,6 +6,8 @@
 version_info = (0, 5, 5)
 __version__ =  ".".join(map(str, version_info))
 
+from .version import version_info, __version__
+
 try:
     from .resource import  RequestFailed, CouchdbResource
 

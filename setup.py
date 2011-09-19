@@ -3,6 +3,7 @@
 # This file is part of couchdbkit released under the MIT license. 
 # See the NOTICE for more information.
 
+from imp import load_source
 import os
 import sys
 
@@ -10,11 +11,15 @@ if not hasattr(sys, 'version_info') or sys.version_info < (2, 5, 0, 'final'):
     raise SystemExit("couchdbkit requires Python 2.5 or later.")
 
 from setuptools import setup, find_packages
-from couchdbkit import __version__
+
+# open version module
+version = load_source("version", os.path.join("couchdbkit",
+        "version.py"))
+
 
 setup(
     name = 'couchdbkit',
-    version = __version__,
+    version = version.__version__,
 
     description = 'Python couchdb kit',
     long_description = file(
