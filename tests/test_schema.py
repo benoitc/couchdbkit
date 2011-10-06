@@ -1663,6 +1663,22 @@ class PropertyTestCase(unittest.TestCase):
         b.l = []
         self.assert_(b.l == [])
         self.assert_(b.to_json()['l'] == [])
+    
+    def testDictPropertyPop(self):
+        class A(Document):
+            x = DictProperty()
+            
+        a = A()
+        self.assert_(a.x.pop('nothing', None) == None)
+        
+    def testDictPropertyPop2(self):
+        class A(Document):
+            x = DictProperty()
+            
+        a = A()
+        a.x['nothing'] = 'nothing'
+        self.assert_(a.x.pop('nothing') == 'nothing')
+        self.assertRaises(KeyError, a.x.pop, 'nothing')
         
     def testDynamicListProperty(self):
         from datetime import datetime

@@ -653,9 +653,13 @@ class LazyDict(dict):
         del self.doc[key]
         super(LazyDict, self).__delitem__(key)
 
-    def pop(self, key, default=None):
-        del self.doc[key]
-        return super(LazyDict, self).pop(key, default=default)
+    def pop(self, key, *args):
+        default = len(args) == 1
+        if default:
+            self.doc.pop(key, args[-1])
+            return super(LazyDict, self).pop(key, args[-1])
+        self.doc.pop(key)
+        return super(LazyDict, self).pop(key)
 
     def setdefault(self, key, default):
         if key in self:
