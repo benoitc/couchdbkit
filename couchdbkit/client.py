@@ -1084,4 +1084,4 @@ class TempView(ViewInterface):
 
     def _exec(self, **params):
         return self._db.res.post('_temp_view', payload=self.design,
-                **params)
+            headers={"Content-Type": "application/json"}, **params)
