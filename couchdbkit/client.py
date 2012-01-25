@@ -264,7 +264,6 @@ class Database(object):
             except ResourceNotFound:
                 self.server.res.put('/%s/' % self.dbname, **params).json_body
 
-
         self.res = server.res(self.dbname)
 
     def __repr__(self):
