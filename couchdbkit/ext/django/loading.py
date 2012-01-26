@@ -122,7 +122,7 @@ class CouchdbkitHandler(object):
 
             if temp:
                 ddoc = db[docid]
-                view_names = ddoc['views'].keys()
+                view_names = ddoc.get('views', {}).keys()
                 if len(view_names) > 0:
                     if verbosity >= 1:
                         print 'Triggering view rebuild'
