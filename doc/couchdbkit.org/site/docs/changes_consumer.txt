@@ -5,6 +5,10 @@ Since the "0.10 release":http://couchdb.apache.org/downloads.html of CouchDB, it
 
 The `couchdbkit.Consumer` object provides you a way to listen on these changes asynchronously (continuous changes) or just wait for one change (longpolling). You can of course just fetch changes since the last update sequence.
 
+h1. DEPRECATED
+
+This api is now deprecated. Since the changes API instead.
+
 h2. Create a consumer
 
 To create a consumer, instantiate the `couchdbkit.Consumer` object like this.
