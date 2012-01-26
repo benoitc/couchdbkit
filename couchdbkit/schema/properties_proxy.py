@@ -54,7 +54,7 @@ class SchemaProperty(Property):
             required=False, validators=None, default=None):
 
         Property.__init__(self, verbose_name=None,
-            name=None, required=False, validators=None)
+            name=None, required=False, validators=None, default=default)
        
         use_instance = True
         if isinstance(schema, type):
@@ -73,6 +73,8 @@ class SchemaProperty(Property):
         
     def default_value(self):
         if not self._use_instance:
+            if self.default:
+                return self.default
             return self._schema()
         return self._schema.clone()
 

@@ -833,6 +833,56 @@ class PropertyTestCase(unittest.TestCase):
         two = DocTwo(name='two', one=one)
         three = DocThree(name='three', two=two)
         self.assert_(three.two.one.name == 'one')
+
+    def testSchemaPropertyDefault(self):
+        class DocOne(DocumentSchema):
+            name = StringProperty()
+            
+        class DocTwo(Document):
+            one = SchemaProperty(DocOne, default=DocOne(name='12345'))
+        
+        two = DocTwo()
+        self.assert_(two.one.name == '12345')
+        
+    def testSchemaPropertyDefault2(self):
+        class DocOne(DocumentSchema):
+            name = StringProperty()
+            field2 = StringProperty(default='54321')
+                    
+        default_one = DocOne()
+        default_one.name ='12345'
+        
+        class DocTwo(Document):
+            one = SchemaProperty(DocOne, default=default_one)
+        
+        two = DocTwo()
+        self.assert_(two.one.name == '12345')
+        self.assert_(two.one.field2 == '54321')
+    
+    def testSchemaPropertyDefault3(self):
+        class DocOne(Document):
+            name = StringProperty()
+            
+        class DocTwo(Document):
+            one = SchemaProperty(DocOne, default=DocOne(name='12345'))
+
+        two = DocTwo()
+        self.assert_(two.one.name == '12345')
+    
+    def testSchemaPropertyDefault4(self):
+        class DocOne(Document):
+            name = StringProperty()
+            field2 = StringProperty(default='54321')
+        
+        default_one = DocOne()
+        default_one.name ='12345'
+        
+        class DocTwo(Document):
+            one = SchemaProperty(DocOne, default=default_one)
+        
+        two = DocTwo()
+        self.assert_(two.one.name == '12345')
+        self.assert_(two.one.field2 == '54321')
         
     def testSchemaWithPythonTypes(self):
         class A(Document):
