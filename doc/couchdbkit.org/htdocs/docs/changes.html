@@ -2,9 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
-    <title>Couchdbkit - 
-    Couchdbkit news
-</title>
+    <title>Couchdbkit - Listen to database changes</title>
     <!--[if IE]>
 
     <script>
@@ -75,49 +73,94 @@
         
     
         
-
 <section id="content">
-    <ul>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2012-01-26-Couchdbkit-0.6.0.html">Couchdbkit version 0.6.0 released</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2009-06-16-Couchdbkit-site-launched.html">Couchdbkit website launched</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2009-06-25-Couchdbkit-0.1.7-released.html">Couchdbkit version 0.1.7 released</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2009-06-26-Couchdbkit-0.1.7.1.html">Couchdbkit version 0.1.7.1 released</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2009-07-07-Couchdbkit-0.1.8.html">Couchdbkit version 0.1.8 released</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2009-09-07-Couchdbkit-0.1.9.html">Couchdbkit version 0.1.9 released</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2009-09-11-Couchdbkit-0.2.html">Couchdbkit version 0.2 released</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2009-11-05-Couchdbkit-0.2.2.html">Couchdbkit version 0.2.2 released</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2009-11-22-Couchdbkit-0.2.4.html">Couchdbkit version 0.2.4 released</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2009-12-07-Couchdbkit-0.3.html">Couchdbkit version 0.3 released - pre-awesome</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2010-01-08-Couchdbkit-0.4.html">Couchdbkit version 0.4 released</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2010-01-25-Couchdbkit-0.4.1.html">Couchdbkit version 0.4 1 released</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2010-02-04-CouchdbKit-0.4.2.html">Couchdbkit version 0.4.2 released</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2010-02-24-move-to-github.html">Sources and Tracker have been moved to github</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2010-02-28-restkit-update.html">Couchdbkit version 0.4.2 released</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2010-06-28-CouchdbKit-0.4.7.html">Couchdbkit version 0.4.7 released</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2010-07-20-CouchdbKit-0.4.9.html">Couchdbkit version 0.4.9 released</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2010-11-25-Couchdbkit-0.5.html">Couchdbkit version 0.5 released</a></li>
-    
-        <li> <a href="http://www.couchdbkit.org/blog/2011-02-18-Couchdbkit-0.5.4.html">Couchdbkit version 0.5.5 released</a></li>
-    
-    </ul>
+    <article>
+        <h1>Listen to database changes</h1>
+        	<p>couchdbkit 0.6.0 introduced a new <span class="caps">API</span> to listen for CouchDB changes.</p>
+
+	<p>The `couchdbkit.changes` modules allows you to listen for changes with a<br />streaming <span class="caps">API</span>.</p>
+
+	<h2>Stream changes in your application:</h2>
+
+	<p>To listen for change, instantiate the `couchdbkit.changes.ChangesStream`<br />object and iterrate it:</p>
+
+	<p><pre class="code prettyprint">
+    from couchdbkit import Server
+    from couchdbkit.changes import ChangesStream, fold, foreach</p>
+
+    s = Server()
+    db = s['testdb&#8217;]
+    stream = ChangesStream(db, feed=&#8220;continuous&#8221;, heartbeat=True)
+
+    print &#8220;got change now&#8221;
+    for change in stream:
+        print change
+</pre>
+
+	<p>You can also use it as a context:</p>
+
+	<p><pre class="code prettyprint">
+    from couchdbkit import Server
+    from couchdbkit.changes import ChangesStream, fold, foreach</p>
+
+    s = Server()
+    db = s['testdb&#8217;]
+    with ChangesStream(db, feed=&#8220;continuous&#8221;, heartbeat=True) as stream:
+        for change in stream:
+            print change
+</pre>
+
+	<p>Note: if you want to use it with gevent, you can just setup a gevent<br />pool:</p>
+
+	<p><pre class="code prettyprint">
+    from couchdbkit import Server
+    from couchdbkit.changes import ChangesStream, fold, foreach</p>
+
+    from restkit.conn import Connection
+    from socketpool.pool import ConnectionPool
+
+    pool = ConnectionPool(factory=Connection, backend=&#8220;gevent&#8221;)
+
+    s = Server(pool=pool)
+    db = s['testdb&#8217;]
+    with ChangesStream(db, feed=&#8220;continuous&#8221;, heartbeat=True) as stream:
+        for change in stream:
+            print change
+</pre>
+
+	<p>For more information about creating a greened pool, read the <a<br />href=&#8220;http://benoitc.github.com/restkit/green.html&#8221;>restkit<br />documentation</a>.</p>
+
+	<p>You can of course spawn or do anything you want with the gevent or<br />eventlet libraries.</p>
+
+	<h2>fold changes:</h2>
+
+	<p>`couchdbkit.changes.fold` allows you to fold all changes and pass<br />the change to a function, while collecting results to an accumularor.<br />The accumulator is returned at the end of the changes.</p>
+
+	<p>Exemple to fetch all changes in a streaming fashion:</p>
+
+	<p><pre class="code prettyprint">
+    def fold_fun(c, acc):
+        acc.append&#169;
+        return acc</p>
+
+    acc = fold(db, fold_fun, [])
+</pre>
+
+	<p>Note: The function take an optionnal `since` parameter.</p>
+
+	<h2>Iterrate all changes</h2>
+
+	<p>`couchdbkit.changes.foreach` allows you to itterate all changes and pass<br />the change to a function:</p>
+
+	<p><pre class="code prettyprint">
+    def print_change&#169;:
+        print c</p>
+
+    foreach(db, print_change)
+</pre>
+
+	<p>Note: The function take an optionnal `since` parameter.</p>
+    </article>
 </section>
 
         
