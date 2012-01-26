@@ -1,0 +1,104 @@
+title: Listen to database changes
+page_type: blog
+
+couchdbkit 0.6.0 introduced a new API to listen for CouchDB changes.
+
+
+The `couchdbkit.changes` modules allows you to listen for changes with a
+streaming API.
+
+h2. Stream changes in your application:
+
+To listen for change, instantiate the `couchdbkit.changes.ChangesStream`
+object and iterrate it:
+
+<pre class="code prettyprint">
+    from couchdbkit import Server
+    from couchdbkit.changes import ChangesStream, fold, foreach
+
+
+    s = Server()
+    db = s['testdb']
+    stream = ChangesStream(db, feed="continuous", heartbeat=True)
+
+    print "got change now"
+    for change in stream:
+        print change
+</pre>
+
+
+You can also use it as a context:
+
+<pre class="code prettyprint">
+    from couchdbkit import Server
+    from couchdbkit.changes import ChangesStream, fold, foreach
+
+
+    s = Server()
+    db = s['testdb']
+    with ChangesStream(db, feed="continuous", heartbeat=True) as stream:
+        for change in stream:
+            print change
+</pre>
+
+Note: if you want to use it with gevent, you can just setup a gevent
+pool:
+
+
+<pre class="code prettyprint">
+    from couchdbkit import Server
+    from couchdbkit.changes import ChangesStream, fold, foreach
+
+    from restkit.conn import Connection
+    from socketpool.pool import ConnectionPool
+
+    pool = ConnectionPool(factory=Connection, backend="gevent")
+
+    s = Server(pool=pool)
+    db = s['testdb']
+    with ChangesStream(db, feed="continuous", heartbeat=True) as stream:
+        for change in stream:
+            print change
+</pre>
+
+For more information about creating a greened pool, read the <a
+href="http://benoitc.github.com/restkit/green.html">restkit
+documentation</a>.
+
+
+You can of course spawn or do anything you want with the gevent or
+eventlet libraries.
+
+h2. fold changes:
+
+`couchdbkit.changes.fold` allows you to fold all changes and pass
+the change to a function, while collecting results to an accumularor.
+The accumulator is returned at the end of the changes.
+
+Exemple to fetch all changes in a streaming fashion:
+
+<pre class="code prettyprint">
+    def fold_fun(c, acc):
+        acc.append(c)
+        return acc
+
+    acc = fold(db, fold_fun, [])
+</pre>
+
+
+Note: The function take an optionnal `since` parameter.
+
+h2. Iterrate all changes
+
+`couchdbkit.changes.foreach` allows you to itterate all changes and pass
+the change to a function:
+
+<pre class="code prettyprint">
+    def print_change(c):
+        print c
+
+    foreach(db, print_change)
+</pre>
+
+Note: The function take an optionnal `since` parameter.
+
