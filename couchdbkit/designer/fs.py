@@ -87,7 +87,7 @@ class FSDoc(object):
         """Push a doc to a list of database `dburls`. If noatomic is true
         each attachments will be sent one by one."""
         for db in dbs:
-            if not atomic:
+            if atomic:
                 doc = self.doc(db, force=force)
                 db.save_doc(doc, force_update=True)
             else:
