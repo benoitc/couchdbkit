@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -
 #
-# This file is part of couchdbkit released under the MIT license. 
+# This file is part of couchdbkit released under the MIT license.
 # See the NOTICE for more information.
 
 from imp import load_source
@@ -48,19 +48,20 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
     packages = find_packages(exclude=['tests']),
-        
+
     zip_safe = False,
 
     install_requires = [
         'restkit>=3.3',
+        'nose'
     ],
-    
+
     entry_points="""
     [couchdbkit.consumers]
     sync=couchdbkit.consumer.sync:SyncConsumer
     eventlet=couchdbkit.consumer.ceventlet:EventletConsumer
     gevent=couchdbkit.consumer.cgevent:GeventConsumer
     """,
-        
+
     test_suite='nose.collector',
 )
