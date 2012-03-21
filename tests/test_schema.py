@@ -2159,6 +2159,18 @@ class SetPropertyTestCase(unittest.TestCase):
         self.assertEqual(a.s, set())
         self.assertEqual(a._doc['s'], [])
 
+
+
+class SchemaProxyUtilityTestCase(unittest.TestCase):
+    def test_svalue_to_json_instance(self):
+        from couchdbkit.schema.properties_proxy import svalue_to_json
+
+        svalue_to_json({}, Document(), True)
+
+    def test_svalue_to_json_schema(self):
+        from couchdbkit.schema.properties_proxy import svalue_to_json
+
+        svalue_to_json({}, Document, False)
         
 if __name__ == '__main__':
     unittest.main()

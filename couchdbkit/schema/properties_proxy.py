@@ -379,12 +379,12 @@ class LazySchemaDict(dict):
         
 def svalue_to_json(value, schema, use_instance):
     if not isinstance(value, DocumentSchema):
-        if not use_instance:
-            schema = schema()
-        else:
-            schema = schema.clone()
-
         if not isinstance(value, dict):
             raise BadValueError("%s is not a dict" % str(value))
-        value = schema(**value)
+
+        if not use_instance:
+            value = schema(**value)
+        else:
+            value = schema.clone(**value)
+
     return value._doc
