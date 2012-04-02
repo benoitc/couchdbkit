@@ -306,6 +306,11 @@ class Database(object):
                             include_docs=True)
         ddocs = []
         for ddoc in all_ddocs:
+            attachments = ddoc['doc'].get('_attachments', {})
+            for name, info in attachments.items():
+                info['data'] = self.fetch_attachment(ddoc['doc'], name)
+                del info['stub']
+
             ddoc['doc'].pop('_rev')
             ddocs.append(ddoc['doc'])
 

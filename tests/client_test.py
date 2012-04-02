@@ -237,6 +237,7 @@ class ClientDatabaseTestCase(unittest.TestCase):
             }
         }
         db.save_doc(design_doc)
+        db.put_attachment(design_doc, 'test', 'test', 'test/plain')
         self.assert_(len(db) == 3)
         db.flush()
         self.assert_(len(db) == 1)
@@ -245,6 +246,7 @@ class ClientDatabaseTestCase(unittest.TestCase):
         self.assert_(db.doc_exist('_design/test'))
         ddoc = db.get("_design/test")
         self.assert_('all' in ddoc['views'])
+        self.assert_('test' in ddoc['_attachments'])
         del self.Server['couchdbkit_test']
     
     def testDbLen(self):
