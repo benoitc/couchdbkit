@@ -470,7 +470,7 @@ class DocumentBase(DocumentSchema):
     def get_or_create(cls, docid=None, db=None, dynamic_properties=True, **params):
         """ get  or create document with `docid` """
        
-        if db:
+        if db is not None:
             cls.set_db(db)
         cls._allow_dynamic_properties = dynamic_properties
         db = cls.get_db()
