@@ -72,6 +72,16 @@ class DocumentTestCase(unittest.TestCase):
         self.server.delete_db('couchdbkit_test')
 
 
+    def testDocumentSetDbBooleanIssue(self):
+        db = self.server.create_db('couchdbkit_test')
+        class Test(Document):
+            pass
+
+        self.assertRaises(ResourceNotFound, Test.get, 'notthete', db=db)
+
+        fun = Test.get_or_create('foo', db=db)
+        self.assert_(fun._id == 'foo')
+
     def testDynamicDocumentCreation(self):
         class Test(Document):
             pass
