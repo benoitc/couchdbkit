@@ -461,7 +461,7 @@ class DocumentBase(DocumentSchema):
     def get(cls, docid, rev=None, db=None, dynamic_properties=True):
         """ get document with `docid`
         """
-        if not db:
+        if db is None:
             db = cls.get_db()
         cls._allow_dynamic_properties = dynamic_properties
         return db.get(docid, rev=rev, wrapper=cls.wrap)
