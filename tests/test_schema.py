@@ -77,7 +77,10 @@ class DocumentTestCase(unittest.TestCase):
         class Test(Document):
             pass
 
-        Test.get('notthete', db=db)
+        self.assertRaises(ResourceNotFound, Test.get, 'notthete', db=db)
+
+        fun = Test.get_or_create('foo', db=db)
+        self.assert_(fun._id == 'foo')
 
     def testDynamicDocumentCreation(self):
         class Test(Document):
