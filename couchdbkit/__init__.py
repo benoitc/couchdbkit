@@ -5,32 +5,29 @@
 
 from .version import version_info, __version__
 
-try:
-    from .resource import  RequestFailed, CouchdbResource
-    from .exceptions import InvalidAttachment, DuplicatePropertyError,\
+from .resource import  RequestFailed, CouchdbResource
+from .exceptions import InvalidAttachment, DuplicatePropertyError,\
 BadValueError, MultipleResultsFound, NoResultFound, ReservedWordError,\
 DocsPathNotFound, BulkSaveError, ResourceNotFound, ResourceConflict, \
 PreconditionFailed
 
-    from .client import Server, Database, ViewResults, View, TempView
-    from .changes import ChangesStream
-    from .consumer import Consumer
-    from .designer import document, push, pushdocs, pushapps, clone
-    from .external import External
-    from .loaders import BaseDocsLoader, FileSystemDocsLoader
+from .client import Server, Database, ViewResults
+from .changes import ChangesStream
+from .consumer import Consumer
+from .designer import document, push, pushdocs, pushapps, clone
+from .external import External
+from .loaders import BaseDocsLoader, FileSystemDocsLoader
 
-    from .schema import Property, Property, IntegerProperty,\
-DecimalProperty, BooleanProperty, FloatProperty, DateTimeProperty,\
-DateProperty, TimeProperty, dict_to_json, dict_to_json, dict_to_json,\
-value_to_python, dict_to_python, DocumentSchema, DocumentBase, Document,\
-StaticDocument, QueryMixin, AttachmentMixin, SchemaProperty, SchemaListProperty,\
-SchemaDictProperty, \
-ListProperty, DictProperty, StringListProperty, contain, StringProperty, \
-SetProperty
-
-except ImportError:
-    import traceback
-    traceback.print_exc()
+from .schema import (
+    Property, IntegerProperty, DecimalProperty, BooleanProperty, FloatProperty, StringProperty,
+    DateTimeProperty, DateProperty, TimeProperty,
+    dict_to_json, dict_to_json, dict_to_json,
+    value_to_python, dict_to_python,
+    DocumentSchema, DocumentBase, Document, StaticDocument, contain,
+    QueryMixin, AttachmentMixin,
+    SchemaProperty, SchemaListProperty, SchemaDictProperty,
+    ListProperty, DictProperty, StringListProperty, SetProperty
+)
 
 import logging
 
