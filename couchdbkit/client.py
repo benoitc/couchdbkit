@@ -662,6 +662,16 @@ class Database(object):
 
         return { 'ok': False }
 
+    def raw_view(self, view_path, params):
+        if 'keys' in params:
+            keys = params.pop('keys')
+            return self.res.post(view_path, payload={ 'keys': keys }, **params)
+        else:
+            return self.res.get(view_path, **params)
+
+    def raw_temp_view(db, design, params):
+        return db.res.post('_temp_view', payload=design,
+               headers={"Content-Type": "application/json"}, **params)
 
     def view(self, view_name, schema=None, wrapper=None, **params):
         """ get view results from database. viewname is generally
@@ -693,16 +703,16 @@ class Database(object):
             vname = '/'.join(view_name)
             view_path = '_design/%s/_view/%s' % (dname, vname)
 
-        return ViewResults(self, exec_path_view, view_path, wrapper, schema, params)
+        return ViewResults(self.raw_view, view_path, wrapper, schema, params)
 
     def temp_view(self, design, schema=None, wrapper=None, **params):
         """ get adhoc view results. Like view it reeturn a ViewResult object."""
-        return ViewResults(self, exec_temp_view, design, wrapper, schema, params)
+        return ViewResults(self.raw_temp_view, design, wrapper, schema, params)
 
     def search( self, view_name, handler='_fti/_design', wrapper=None, schema=None, **params):
         """ Search. Return results from search. Use couchdb-lucene
         with its default settings by default."""
-        return ViewResults(self, exec_path_view,
+        return ViewResults(self, self.raw_view,
                     "/%s/%s" % (handler, view_name), 
                     wrapper=wrapper, schema=schema, params=params)
 
@@ -710,7 +720,7 @@ class Database(object):
         """ return a ViewResults objects containing all documents.
         This is a shorthand to view function.
         """
-        return ViewResults(self, exec_path_view, '_all_docs',
+        return ViewResults(self.raw_view, '_all_docs',
                 wrapper=wrapper, schema=schema, params=params)
     iterdocuments = documents
 
@@ -862,7 +872,7 @@ class ViewResults(object):
     Object to retrieve view results.
     """
 
-    def __init__(self, db, _exec, arg, wrapper, schema, params):
+    def __init__(self, fetch, arg, wrapper, schema, params):
         """
         Constructor of ViewResults object
 
@@ -893,8 +903,7 @@ class ViewResults(object):
             def row_wrapper(row):
                 return row
 
-        self.db = db
-        self._exec = _exec
+        self._fetch = fetch
         self._arg = arg
         self.wrapper = wrapper or row_wrapper
         self.params = params or {}
@@ -976,7 +985,7 @@ class ViewResults(object):
 
     def fetch_raw(self):
         """ retrive the raw result """
-        return self._exec(self.db, self._arg, self.params)
+        return self._fetch(self._arg, self.params)
 
     def _fetch_if_needed(self):
         if not self._result_cache:
@@ -1009,7 +1018,7 @@ class ViewResults(object):
         else:
             params['key'] = key
 
-        return ViewResults(self.db. self._exec, self._arg, wrapper=wrapper, params=params)
+        return ViewResults(self._fetch, self._arg, wrapper=wrapper, params=params)
 
     def __iter__(self):
         return self.iterator()
@@ -1021,14 +1030,4 @@ class ViewResults(object):
         return bool(len(self))
 
 
-def exec_path_view(db, view_path, params):
-    if 'keys' in params:
-        keys = params.pop('keys')
-        return db.res.post(view_path, payload={ 'keys': keys }, **params)
-    else:
-        return db.res.get(view_path, **params)
-
-def exec_temp_view(db, design, params):
-    return db.res.post('_temp_view', payload=design,
-           headers={"Content-Type": "application/json"}, **params)
 
