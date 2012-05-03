@@ -15,10 +15,17 @@ def schema_map(schema, dynamic_properties):
     return schema
 
 
+def doctype_attr_of(classes):
+    doc_type_attrs = set(cls._doc_type_attr for cls in classes)
+    assert len(doc_type_attrs) == 1, "inconsistent doctype attr"
+    return doc_type_attrs.pop()
+
+
 def get_multi_wrapper(classes):
+    doctype_attr = doctype_attr_of(classes.values())
 
     def wrap(doc):
-        doc_type = doc.get('doc_type')
+        doc_type = doc.get(doctype_attr)
         cls = classes[doc_type]
         return cls.wrap(doc)
 

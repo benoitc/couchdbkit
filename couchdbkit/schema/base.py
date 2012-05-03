@@ -91,6 +91,7 @@ class DocumentSchema(object):
     _allow_dynamic_properties = True
     _doc = None
     _db = None
+    _doc_type_attr = 'doc_type'
 
     def __init__(self, _d=None, **properties):
         self._dynamic_properties = {}
@@ -102,7 +103,7 @@ class DocumentSchema(object):
             properties.update(_d)
 
         doc_type = getattr(self, '_doc_type', self.__class__.__name__)
-        self._doc['doc_type'] = doc_type
+        self._doc[self._doc_type_attr] = doc_type
         
         for prop in self._properties.values():
             if prop.name in properties:
@@ -151,9 +152,9 @@ class DocumentSchema(object):
         return all_properties
 
     def to_json(self):
-        if self._doc.get('doc_type') is None:
+        if self._doc.get(self._doc_type_attr) is None:
             doc_type = getattr(self, '_doc_type', self.__class__.__name__)
-            self._doc['doc_type'] = doc_type
+            self._doc[_doc_type_attr] = doc_type
         return self._doc
 
     #TODO: add a way to maintain custom dynamic properties
@@ -329,7 +330,7 @@ class DocumentSchema(object):
                     continue
                 elif attr_name.startswith('_'):
                     continue
-                elif attr_name == 'doc_type':
+                elif attr_name == cls._doc_type_attr:
                     continue
                 else:
                     value = value_to_python(value)
