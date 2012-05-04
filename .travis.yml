@@ -3,5 +3,7 @@ env: DB=couchdb
 python:
 - "2.6"
 - "2.7"
+before-script:
+- pip install unittest2
 install: python setup.py develop
 script: python setup.py test
