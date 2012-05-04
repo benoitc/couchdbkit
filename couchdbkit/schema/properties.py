@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -
 #
-# This file is part of couchdbkit released under the MIT license. 
+# This file is part of couchdbkit released under the MIT license.
 # See the NOTICE for more information.
 
 """ properties used by Document object """
@@ -17,11 +17,11 @@ try:
         return isinstance(c, Iterable)
 except ImportError:
     from sets import Set as MutableSet
-    
-    def is_iterable(o):
-        return hasattr(c, '__iter__')
 
-from couchdbkit.exceptions import BadValueError 
+    def is_iterable(o):
+        return hasattr(o, '__iter__')
+
+from couchdbkit.exceptions import BadValueError
 
 __all__ = ['ALLOWED_PROPERTY_TYPES', 'Property', 'StringProperty',
         'IntegerProperty', 'DecimalProperty', 'BooleanProperty',
@@ -64,14 +64,14 @@ class Property(object):
     def __init__(self, verbose_name=None, name=None,
             default=None, required=False, validators=None,
             choices=None):
-        """ Default constructor for a property. 
+        """ Default constructor for a property.
 
         :param verbose_name: str, verbose name of field, could
                 be use for description
         :param name: str, name of field
         :param default: default value
         :param required: True if field is required, default is False
-        :param validators: list of callable or callable, field validators 
+        :param validators: list of callable or callable, field validators
         function that are executed when document is saved.
         """
         self.verbose_name = verbose_name
@@ -168,8 +168,8 @@ class Property(object):
     data_type = None
 
 class StringProperty(Property):
-    """ string property str or unicode property 
-    
+    """ string property str or unicode property
+
     *Value type*: unicode
     """
 
@@ -190,8 +190,8 @@ class StringProperty(Property):
     data_type = unicode
 
 class IntegerProperty(Property):
-    """ Integer property. map to int 
-    
+    """ Integer property. map to int
+
     *Value type*: int
     """
     to_python = int
@@ -218,8 +218,8 @@ class IntegerProperty(Property):
 LongProperty = IntegerProperty
 
 class FloatProperty(Property):
-    """ Float property, map to python float 
-    
+    """ Float property, map to python float
+
     *Value type*: float
     """
     to_python = float
@@ -242,7 +242,7 @@ Number = FloatProperty
 
 class BooleanProperty(Property):
     """ Boolean property, map to python bool
-    
+
     *ValueType*: bool
     """
     to_python = bool
@@ -268,7 +268,7 @@ class BooleanProperty(Property):
 
 class DecimalProperty(Property):
     """ Decimal property, map to Decimal python object
-    
+
     *ValueType*: decimal.Decimal
     """
     data_type = decimal.Decimal
@@ -283,7 +283,7 @@ class DateTimeProperty(Property):
     """DateTime property. It convert iso3339 string
     to python and vice-versa. Map to datetime.datetime
     object.
-    
+
     *ValueType*: datetime.datetime
     """
 
@@ -337,7 +337,7 @@ class DateTimeProperty(Property):
 class DateProperty(DateTimeProperty):
     """ Date property, like DateTime property but only
     for Date. Map to datetime.date object
-    
+
     *ValueType*: datetime.date
     """
     data_type = datetime.date
@@ -363,7 +363,7 @@ class DateProperty(DateTimeProperty):
 class TimeProperty(DateTimeProperty):
     """ Date property, like DateTime property but only
     for time. Map to datetime.time object
-    
+
     *ValueType*: datetime.time
     """
 
@@ -458,12 +458,12 @@ class ListProperty(Property):
             required=False, item_type=None, **kwds):
         """Construct ListProperty.
 
-    
+
          :args verbose_name: Optional verbose name.
          :args default: Optional default value; if omitted, an empty list is used.
          :args**kwds: Optional additional keyword arguments, passed to base class.
 
-        
+
         """
         if default is None:
             default = []
@@ -608,13 +608,13 @@ class SetProperty(Property):
 # structures proxy
 
 class LazyDict(dict):
-    """ object to make sure we keep updated of dict 
+    """ object to make sure we keep updated of dict
     in _doc. We just override a dict and maintain change in
     doc reference (doc[keyt] obviously).
-    
+
     if init_vals is specified, doc is overwritten
-    with the dict given. Otherwise, the values already in 
-    doc are used. 
+    with the dict given. Otherwise, the values already in
+    doc are used.
     """
 
     def __init__(self, doc, item_type=None, init_vals=None):
@@ -682,13 +682,13 @@ class LazyDict(dict):
         super(LazyDict, self).clear()
 
 class LazyList(list):
-    """ object to make sure we keep update of list 
+    """ object to make sure we keep update of list
     in _doc. We just override a list and maintain change in
     doc reference (doc[index] obviously).
 
     if init_vals is specified, doc is overwritten
-    with the list given. Otherwise, the values already in 
-    doc are used. 
+    with the list given. Otherwise, the values already in
+    doc are used.
     """
 
     def __init__(self, doc, item_type=None, init_vals=None):
@@ -848,7 +848,7 @@ class LazySet(MutableSet):
 
     def __xor__(self, other):
         if not isinstance(other, MutableSet):
-            if not is_iterable(Other):
+            if not is_iterable(other):
                 return NotImplemented
             other = self._from_iterable(other)
         return (self.elements - other) | (other - self.elements)
@@ -995,7 +995,7 @@ def list_to_json(value, item_type=None):
 def value_to_json(value, item_type=None):
     """ convert a value to json using appropriate regexp.
     For Dates we use ISO 8601. Decimal are converted to string.
-    
+
     """
     if isinstance(value, datetime.datetime) and is_type_ok(item_type, datetime.datetime):
         value = value.replace(microsecond=0).isoformat() + 'Z'
