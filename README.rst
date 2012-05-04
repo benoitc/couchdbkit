@@ -1,6 +1,10 @@
 About
 -----
 
+.. image:: https://secure.travis-ci.org/benoitc/couchdbkit.png?branch=master
+    :alt: Build Status                                                           
+    :target: https://secure.travis-ci.org/benoitc/couchdbkit
+
 `Couchdbkit`_ provides you a full featured and easy client to access and 
 manage CouchDB. It allows you to manage a CouchDBserver, databases, doc 
 managements and view access. All objects mostly reflect python objects for 
