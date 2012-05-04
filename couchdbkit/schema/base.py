@@ -154,7 +154,7 @@ class DocumentSchema(object):
     def to_json(self):
         if self._doc.get(self._doc_type_attr) is None:
             doc_type = getattr(self, '_doc_type', self.__class__.__name__)
-            self._doc[_doc_type_attr] = doc_type
+            self._doc[self._doc_type_attr] = doc_type
         return self._doc
 
     #TODO: add a way to maintain custom dynamic properties
