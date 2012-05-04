@@ -15,11 +15,10 @@ try:
 
     def is_iterable(c):
         return isinstance(c, Iterable)
-except ImportError:
-    from sets import Set as MutableSet
 
-    def is_iterable(o):
-        return hasattr(o, '__iter__')
+    support_setproperty = True
+except ImportError:
+    support_setproperty = False
 
 from couchdbkit.exceptions import BadValueError
 
@@ -27,11 +26,14 @@ __all__ = ['ALLOWED_PROPERTY_TYPES', 'Property', 'StringProperty',
         'IntegerProperty', 'DecimalProperty', 'BooleanProperty',
         'FloatProperty', 'DateTimeProperty', 'DateProperty',
         'TimeProperty', 'DictProperty', 'ListProperty',
-        'StringListProperty', 'SetProperty',
+        'StringListProperty',
         'dict_to_json', 'list_to_json',
         'value_to_json', 'MAP_TYPES_PROPERTIES', 'value_to_python',
         'dict_to_python', 'list_to_python', 'convert_property',
-        'value_to_property', 'LazyDict', 'LazyList', 'LazySet']
+        'value_to_property', 'LazyDict', 'LazyList']
+
+if support_setproperty:
+    __all__ += ['SetProperty', 'LasySet']
 
 ALLOWED_PROPERTY_TYPES = set([
     basestring,
@@ -526,86 +528,10 @@ class StringListProperty(ListProperty):
             default=default, required=required, item_type=basestring, **kwds)
 
 
-class SetProperty(Property):
-    """A property that stores a Python set as a list of unique
-    elements.
-
-    Note that Python set operations like union that return a set
-    object do not alter list that will be stored with the next save,
-    while operations like update that change a set object in-place do
-    keep the list in sync.
-    """
-    def __init__(self, verbose_name=None, default=None, required=None,
-                 item_type=None, **kwds):
-        """Construct SetProperty.
-
-         :args verbose_name: Optional verbose name.
-
-         :args default: Optional default value; if omitted, an empty
-                        set is used.
-
-         :args required: True if field is required, default is False.
-
-         :args item_type: Optional data type of items that set
-                          contains.  Used to assist with JSON
-                          serialization/deserialization when data is
-                          stored/retireved.
-
-         :args **kwds: Optional additional keyword arguments, passed to
-                       base class.
-         """
-        if default is None:
-            default = set()
-        if item_type is not None and item_type not in ALLOWED_PROPERTY_TYPES:
-            raise ValueError('item_type %s not in %s'
-                             % (item_type, ALLOWED_PROPERTY_TYPES))
-        self.item_type = item_type
-        super(SetProperty, self).__init__(
-            verbose_name=verbose_name, default=default, required=required,
-            **kwds)
-
-    data_type = set
-
-    def validate(self, value, required=True):
-        value = super(SetProperty, self).validate(value, required=required)
-        if value and value is not None:
-            if not isinstance(value, MutableSet):
-                raise BadValueError('Property %s must be a set' % self.name)
-            value = self.validate_set_contents(value)
-        return value
-
-    def validate_set_contents(self, value):
-        try:
-            value = validate_set_content(value, item_type=self.item_type)
-        except BadValueError:
-            raise BadValueError(
-                'Items of %s set must all be in %s' %
-                    (self.name, ALLOWED_PROPERTY_TYPES))
-        return value
-
-    def default_value(self):
-        """Return default value for set.
-
-        Because the property supplied to 'default' is a static value,
-        that value must be shallow copied to prevent all fields with
-        default values from sharing the same instance.
-
-        Returns:
-          Copy of the default value.
-        """
-        value = super(SetProperty, self).default_value()
-        if value is None:
-            return set()
-        return value.copy()
-
-    def to_python(self, value):
-        return LazySet(value, item_type=self.item_type)
-
-    def to_json(self, value):
-        return value_to_json(value, item_type=self.item_type)
 
 
-# structures proxy
+
+#  dict proxy
 
 class LazyDict(dict):
     """ object to make sure we keep updated of dict
@@ -680,6 +606,7 @@ class LazyDict(dict):
     def clear(self):
         self.doc.clear()
         super(LazyDict, self).clear()
+
 
 class LazyList(list):
     """ object to make sure we keep update of list
@@ -795,130 +722,209 @@ class LazyList(list):
         self.doc.reverse()
         list.reverse(self)
 
+if support_setproperty:
+    class SetProperty(Property):
+        """A property that stores a Python set as a list of unique
+        elements.
 
-class LazySet(MutableSet):
-    """Object to make sure that we keep set and _doc synchronized.
+        Note that Python set operations like union that return a set
+        object do not alter list that will be stored with the next save,
+        while operations like update that change a set object in-place do
+        keep the list in sync.
+        """
+        def __init__(self, verbose_name=None, default=None, required=None,
+                     item_type=None, **kwds):
+            """Construct SetProperty.
 
-    We sub-class MutableSet and maintain changes in doc.
+             :args verbose_name: Optional verbose name.
 
-    Note that methods like union that return a set object do not
-    alter _doc, while methods like update that change a set object
-    in-place do keep _doc in sync.
-    """
-    def _map_named_operation(opname):
-        fn = getattr(MutableSet, opname)
-        if hasattr(fn, 'im_func'):
-            fn = fn.im_func
-        def method(self, other, fn=fn):
+             :args default: Optional default value; if omitted, an empty
+                            set is used.
+
+             :args required: True if field is required, default is False.
+
+             :args item_type: Optional data type of items that set
+                              contains.  Used to assist with JSON
+                              serialization/deserialization when data is
+                              stored/retireved.
+
+             :args **kwds: Optional additional keyword arguments, passed to
+                           base class.
+             """
+            if default is None:
+                default = set()
+            if item_type is not None and item_type not in ALLOWED_PROPERTY_TYPES:
+                raise ValueError('item_type %s not in %s'
+                                 % (item_type, ALLOWED_PROPERTY_TYPES))
+            self.item_type = item_type
+            super(SetProperty, self).__init__(
+                verbose_name=verbose_name, default=default, required=required,
+                **kwds)
+
+        data_type = set
+
+        def validate(self, value, required=True):
+            value = super(SetProperty, self).validate(value, required=required)
+            if value and value is not None:
+                if not isinstance(value, MutableSet):
+                    raise BadValueError('Property %s must be a set' % self.name)
+                value = self.validate_set_contents(value)
+            return value
+
+        def validate_set_contents(self, value):
+            try:
+                value = validate_set_content(value, item_type=self.item_type)
+            except BadValueError:
+                raise BadValueError(
+                    'Items of %s set must all be in %s' %
+                        (self.name, ALLOWED_PROPERTY_TYPES))
+            return value
+
+        def default_value(self):
+            """Return default value for set.
+
+            Because the property supplied to 'default' is a static value,
+            that value must be shallow copied to prevent all fields with
+            default values from sharing the same instance.
+
+            Returns:
+              Copy of the default value.
+            """
+            value = super(SetProperty, self).default_value()
+            if value is None:
+                return set()
+            return value.copy()
+
+        def to_python(self, value):
+            return LazySet(value, item_type=self.item_type)
+
+        def to_json(self, value):
+            return value_to_json(value, item_type=self.item_type)
+
+
+    class LazySet(MutableSet):
+        """Object to make sure that we keep set and _doc synchronized.
+
+        We sub-class MutableSet and maintain changes in doc.
+
+        Note that methods like union that return a set object do not
+        alter _doc, while methods like update that change a set object
+        in-place do keep _doc in sync.
+        """
+        def _map_named_operation(opname):
+            fn = getattr(MutableSet, opname)
+            if hasattr(fn, 'im_func'):
+                fn = fn.im_func
+            def method(self, other, fn=fn):
+                if not isinstance(other, MutableSet):
+                    other = self._from_iterable(other)
+                return fn(self, other)
+            return method
+
+        issubset = _map_named_operation('__le__')
+        issuperset = _map_named_operation('__ge__')
+        symmetric_difference = _map_named_operation('__xor__')
+
+        def __init__(self, doc, item_type=None):
+            self.item_type = item_type
+            self.doc = doc
+            self.elements = set(value_to_python(value, self.item_type)
+                                for value in self.doc)
+
+        def __repr__(self):
+            return '%s(%r)' % (type(self).__name__, list(self))
+
+        @classmethod
+        def _from_iterable(cls, it):
+            return cls(it)
+
+        def __iand__(self, iterator):
+            for value in (self.elements - iterator):
+                self.elements.discard(value)
+            return self
+
+        def __iter__(self):
+            return iter(element for element in self.elements)
+
+        def __len__(self):
+            return len(self.elements)
+
+        def __contains__(self, item):
+            return item in self.elements
+
+        def __xor__(self, other):
             if not isinstance(other, MutableSet):
+                if not is_iterable(other):
+                    return NotImplemented
                 other = self._from_iterable(other)
-            return fn(self, other)
-        return method
+            return (self.elements - other) | (other - self.elements)
 
-    issubset = _map_named_operation('__le__')
-    issuperset = _map_named_operation('__ge__')
-    symmetric_difference = _map_named_operation('__xor__')
-
-    def __init__(self, doc, item_type=None):
-        self.item_type = item_type
-        self.doc = doc
-        self.elements = set(value_to_python(value, self.item_type)
-                            for value in self.doc)
-
-    def __repr__(self):
-        return '%s(%r)' % (type(self).__name__, list(self))
-
-    @classmethod
-    def _from_iterable(cls, it):
-        return cls(it)
-
-    def __iand__(self, iterator):
-        for value in (self.elements - iterator):
-            self.elements.discard(value)
-        return self
-
-    def __iter__(self):
-        return iter(element for element in self.elements)
-
-    def __len__(self):
-        return len(self.elements)
-
-    def __contains__(self, item):
-        return item in self.elements
-
-    def __xor__(self, other):
-        if not isinstance(other, MutableSet):
-            if not is_iterable(other):
+        def __gt__(self, other):
+            if not isinstance(other, MutableSet):
                 return NotImplemented
-            other = self._from_iterable(other)
-        return (self.elements - other) | (other - self.elements)
+            return other < self.elements
 
-    def __gt__(self, other):
-        if not isinstance(other, MutableSet):
-            return NotImplemented
-        return other < self.elements
+        def __ge__(self, other):
+            if not isinstance(other, MutableSet):
+                return NotImplemented
+            return other <= self.elements
 
-    def __ge__(self, other):
-        if not isinstance(other, MutableSet):
-            return NotImplemented
-        return other <= self.elements
+        def __ne__(self, other):
+            return not (self.elements == other)
 
-    def __ne__(self, other):
-        return not (self.elements == other)
+        def add(self, value):
+            self.elements.add(value)
+            if value not in self.doc:
+                self.doc.append(value_to_json(value, item_type=self.item_type))
 
-    def add(self, value):
-        self.elements.add(value)
-        if value not in self.doc:
-            self.doc.append(value_to_json(value, item_type=self.item_type))
+        def copy(self):
+            return self.elements.copy()
 
-    def copy(self):
-        return self.elements.copy()
+        def difference(self, other, *args):
+            return self.elements.difference(other, *args)
 
-    def difference(self, other, *args):
-        return self.elements.difference(other, *args)
-
-    def difference_update(self, other, *args):
-        for value in other:
-            self.discard(value)
-        for arg in args:
-            self.difference_update(arg)
-
-    def discard(self, value):
-        self.elements.discard(value)
-        try:
-            self.doc.remove(value)
-        except ValueError:
-            pass
-
-    def intersection(self, other, *args):
-        return self.elements.intersection(other, *args)
-
-    def intersection_update(self, other, *args):
-        if not isinstance(other, MutableSet):
-            other = set(other)
-        for value in self.elements - other:
-            self.discard(value)
-        for arg in args:
-            self.intersection_update(arg)
-
-    def symmetric_difference_update(self, other):
-        if not isinstance(other, MutableSet):
-            other = set(other)
-        for value in other:
-            if value in self.elements:
+        def difference_update(self, other, *args):
+            for value in other:
                 self.discard(value)
-            else:
-                self.add(value)
+            for arg in args:
+                self.difference_update(arg)
 
-    def union(self, other, *args):
-        return self.elements.union(other, *args)
+        def discard(self, value):
+            self.elements.discard(value)
+            try:
+                self.doc.remove(value)
+            except ValueError:
+                pass
 
-    def update(self, other, *args):
-        self.elements.update(other, *args)
-        for element in self.elements:
-            if element not in self.doc:
-                self.doc.append(
-                    value_to_json(element, item_type=self.item_type))
+        def intersection(self, other, *args):
+            return self.elements.intersection(other, *args)
+
+        def intersection_update(self, other, *args):
+            if not isinstance(other, MutableSet):
+                other = set(other)
+            for value in self.elements - other:
+                self.discard(value)
+            for arg in args:
+                self.intersection_update(arg)
+
+        def symmetric_difference_update(self, other):
+            if not isinstance(other, MutableSet):
+                other = set(other)
+            for value in other:
+                if value in self.elements:
+                    self.discard(value)
+                else:
+                    self.add(value)
+
+        def union(self, other, *args):
+            return self.elements.union(other, *args)
+
+        def update(self, other, *args):
+            self.elements.update(other, *args)
+            for element in self.elements:
+                if element not in self.doc:
+                    self.doc.append(
+                        value_to_json(element, item_type=self.item_type))
 
 # some mapping
 
@@ -934,9 +940,11 @@ MAP_TYPES_PROPERTIES = {
         long: LongProperty,
         float: FloatProperty,
         list: ListProperty,
-        dict: DictProperty,
-        set: SetProperty,
+        dict: DictProperty
 }
+
+if support_setproperty:
+    MAP_TYPES_PROPERTIES[set] = SetProperty
 
 def convert_property(value):
     """ convert a value to json from Property._to_json """

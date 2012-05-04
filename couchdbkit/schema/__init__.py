@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -
 #
-# This file is part of couchdbkit released under the MIT license. 
+# This file is part of couchdbkit released under the MIT license.
 # See the NOTICE for more information.
 
 """ Schema is an easy way to map couchdb object in pythoin object. It's
@@ -69,7 +69,7 @@ using Property class instances in class attributes are fixed properties.
 
 Because dynamic properties do not have document property definitions, dynamic
 properties are not validated. Any dynamic property can have a value of any of
-the python types, including None. 
+the python types, including None.
 
 Unlike fixed properties, dynamic properties need not exist. A dynamic property
 with a value of None is different from a non-existent dynamic property.  You
@@ -84,7 +84,7 @@ Similarly, the request will only return entities with that property set.
 
     p1 = Person()
     p1.favorite = 42
-    db.save_doc(p1) 
+    db.save_doc(p1)
 
     p2 = Person()
     p2.favorite = "blue"
@@ -106,7 +106,7 @@ only possible if date/time fields are :rfc:`8601` strings in the couchdb
 document.
 
 Document inheritance in simplecouchdb work almost identically to the way normal
-class inheritance works in Python.     
+class inheritance works in Python.
 
     class Animal(Document)
         name = StringProperty(required=True)
@@ -124,7 +124,7 @@ Document object. Pet and Animal have 2 different doc_type.
 
 For now, there is no way in CouchDB to know that Pet inherit from Animal.
 Though this feature will be implemented soon.
- 
+
 
 Properties and Types
 --------------------
@@ -156,18 +156,54 @@ threadsafe.
 
 """
 
-from .properties import ALLOWED_PROPERTY_TYPES, Property, StringProperty, \
-IntegerProperty, DecimalProperty, BooleanProperty, FloatProperty, \
-DateTimeProperty, DateProperty, TimeProperty, DictProperty, \
-ListProperty, StringListProperty, SetProperty, dict_to_json, list_to_json, \
-value_to_json, MAP_TYPES_PROPERTIES, value_to_python, dict_to_python, \
-list_to_python, convert_property, value_to_property, LazyDict, LazyList, \
-LazySet
-from .base import ReservedWordError, ALLOWED_PROPERTY_TYPES, \
-DocumentSchema, SchemaProperties, DocumentBase, QueryMixin, \
-AttachmentMixin, Document, StaticDocument, valid_id
-from .properties_proxy import SchemaProperty, SchemaListProperty, \
-SchemaDictProperty
+from .properties import (
+        ALLOWED_PROPERTY_TYPES,
+        Property,
+        StringProperty,
+        IntegerProperty,
+        DecimalProperty,
+        BooleanProperty,
+        FloatProperty,
+        DateTimeProperty,
+        DateProperty,
+        TimeProperty,
+        DictProperty,
+        ListProperty,
+        StringListProperty,
+        SetProperty,
+        dict_to_json,
+        list_to_json,
+        value_to_json,
+        MAP_TYPES_PROPERTIES,
+        value_to_python,
+        dict_to_python,
+        list_to_python,
+        convert_property,
+        value_to_property,
+        LazyDict,
+        LazyList)
+
+try:
+    from .properties import SetProperty, LazySet
+except ImportError:
+    pass
+
+from .base import (
+        ReservedWordError,
+        ALLOWED_PROPERTY_TYPES,
+        DocumentSchema,
+        SchemaProperties,
+        DocumentBase,
+        QueryMixin,
+        AttachmentMixin,
+        Document,
+        StaticDocument,
+        valid_id)
+
+from .properties_proxy import (
+        SchemaProperty,
+        SchemaListProperty,
+        SchemaDictProperty)
 
 def contain(db, *docs):
     """ associate a db to multiple `Document` class"""

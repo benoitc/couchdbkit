@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -
 #
-# This file is part of couchdbkit released under the MIT license. 
+# This file is part of couchdbkit released under the MIT license.
 # See the NOTICE for more information.
 
 __author__ = 'benoitc@e-engura.com (Benoît Chesneau)'
@@ -13,7 +13,7 @@ except ImportError:
     import unittest
 
 from couchdbkit import *
-
+from couchdbkit.schema.properties import support_setproperty
 
 
 class DocumentTestCase(unittest.TestCase):
@@ -116,7 +116,7 @@ class DocumentTestCase(unittest.TestCase):
         doc1 = Test2(string="test")
         del doc1.string
         self.assert_(getattr(doc, "string") == None)
- 
+
 
     def testContain(self):
         class Test(Document):
@@ -136,8 +136,8 @@ class DocumentTestCase(unittest.TestCase):
         doc = Test()
         self.assert_(len(doc) == 3)
         doc.string3 = "4"
-        self.assert_(len(doc) == 4) 
-        
+        self.assert_(len(doc) == 4)
+
     def testStore(self):
         db = self.server.create_db('couchdbkit_test')
         class Test(Document):
@@ -211,10 +211,10 @@ class DocumentTestCase(unittest.TestCase):
         self.assert_(doc5._rev is not None)
         self.assert_(doc4.string == "doc4")
         self.assert_(doc5.string == "doc5")
-    
+
         self.server.delete_db('couchdbkit_test')
 
- 
+
 
     def testGet(self):
         db = self.server.create_db('couchdbkit_test')
@@ -229,7 +229,7 @@ class DocumentTestCase(unittest.TestCase):
         doc2 = Test.get(doc._id)
 
         self.assert_(doc2.string2 == "test2")
-    
+
         doc2.string3 = "blah"
         doc2.save()
         doc3 = db.get(doc2._id)
@@ -267,27 +267,27 @@ class DocumentTestCase(unittest.TestCase):
     def testDocType(self):
         class Test(Document):
             string = StringProperty(default="test")
-        
+
         class Test2(Document):
             string = StringProperty(default="test")
-            
+
         class Test3(Document):
             doc_type = "test_type"
             string = StringProperty(default="test")
 
-        doc1 = Test() 
+        doc1 = Test()
         doc2 = Test2()
         doc3 = Test2()
         doc4 = Test3()
 
         self.assert_(doc1._doc_type == 'Test')
         self.assert_(doc1._doc['doc_type'] == 'Test')
-        
+
         self.assert_(doc3._doc_type == 'Test2')
         self.assert_(doc4._doc_type == 'test_type')
         self.assert_(doc4._doc['doc_type'] == 'test_type')
-        
-        
+
+
         db = self.server.create_db('couchdbkit_test')
         Test3._db = Test2._db = Test._db = db
 
@@ -295,7 +295,7 @@ class DocumentTestCase(unittest.TestCase):
         doc2.save()
         doc3.save()
         doc4.save()
-     
+
         get1 = Test.get(doc1._id)
         get2 = Test2.get(doc2._id)
         get3 = Test2.get(doc3._id)
@@ -307,7 +307,7 @@ class DocumentTestCase(unittest.TestCase):
         self.assert_(get2._doc['doc_type']== 'Test2')
         self.assert_(get3._doc['doc_type'] == 'Test2')
         self.assert_(get4._doc['doc_type'] == 'test_type')
-        
+
     def testInheriting(self):
         class TestDoc(Document):
             field1 = StringProperty()
@@ -315,7 +315,7 @@ class DocumentTestCase(unittest.TestCase):
 
         class TestDoc2(TestDoc):
             field3 = StringProperty()
-           
+
         doc = TestDoc2(field1="a", field2="b",
                 field3="c")
         doc2 = TestDoc2(field1="a", field2="b",
@@ -411,7 +411,7 @@ class DocumentTestCase(unittest.TestCase):
         self.assert_(results[0].__class__ == A)
         self.assert_(results[1].__class__ == B)
         self.server.delete_db('couchdbkit_test')
-    
+
     def testViewNoneValue(self):
         class TestDoc(Document):
             field1 = StringProperty()
@@ -432,7 +432,7 @@ class DocumentTestCase(unittest.TestCase):
 
         db = self.server.create_db('couchdbkit_test')
         TestDoc._db = db
-        
+
         doc.save()
         doc1.save()
         db.save_doc(design_doc)
@@ -441,10 +441,10 @@ class DocumentTestCase(unittest.TestCase):
         self.assert_(isinstance(results.first(), dict) == True)
         results2 = TestDoc.view('test/all', include_docs=True)
         self.assert_(len(results2) == 2)
-        self.assert_(isinstance(results2.first(), TestDoc) == True)       
+        self.assert_(isinstance(results2.first(), TestDoc) == True)
         self.server.delete_db('couchdbkit_test')
-        
-        
+
+
     def testOne(self):
         class TestDoc(Document):
             field1 = StringProperty()
@@ -466,35 +466,35 @@ class DocumentTestCase(unittest.TestCase):
         db = self.server.create_db('couchdbkit_test')
         TestDoc._db = db
 
-       
+
         db.save_doc(design_doc)
         results = TestDoc.view('test/all')
         self.assert_(len(results) == 0)
         self.assertRaises(NoResultFound, results.one, except_all=True)
         rst = results.one()
         self.assert_(rst is None)
-        
-        
+
+
         results = TestDoc.view('test/all')
         doc.save()
         self.assert_(len(results) == 1)
-        
+
         one = results.one()
         self.assert_(isinstance(one, TestDoc) == True)
-        
+
         doc1.save()
         results = TestDoc.view('test/all')
         self.assert_(len(results) == 2)
-        
+
         self.assertRaises(MultipleResultsFound, results.one)
 
         self.server.delete_db('couchdbkit_test')
-        
+
     def testViewStringValue(self):
         class TestDoc(Document):
             field1 = StringProperty()
             field2 = StringProperty()
-        
+
         design_doc = {
             '_id': '_design/test',
             'language': 'javascript',
@@ -506,7 +506,7 @@ class DocumentTestCase(unittest.TestCase):
         }
         doc = TestDoc(field1="a", field2="b")
         doc1 = TestDoc(field1="c", field2="d")
-        
+
         db = self.server.create_db('couchdbkit_test')
         TestDoc._db = db
 
@@ -516,24 +516,24 @@ class DocumentTestCase(unittest.TestCase):
         results = TestDoc.view('test/all')
         self.assert_(len(results) == 2)
         self.server.delete_db('couchdbkit_test')
-        
+
 
     def testTempView(self):
         class TestDoc(Document):
             field1 = StringProperty()
             field2 = StringProperty()
-        
+
         design_doc = {
             "map": """function(doc) { if (doc.doc_type == "TestDoc") { emit(doc._id, doc);
 }}"""
         }
-       
+
         doc = TestDoc(field1="a", field2="b")
         doc1 = TestDoc(field1="c", field2="d")
 
         db = self.server.create_db('couchdbkit_test')
         TestDoc._db = db
-        
+
         doc.save()
         doc1.save()
         results = TestDoc.temp_view(design_doc)
@@ -541,10 +541,10 @@ class DocumentTestCase(unittest.TestCase):
         doc3 = list(results)[0]
         self.assert_(hasattr(doc3, "field1"))
         self.server.delete_db('couchdbkit_test')
-    
+
     def testDocumentAttachments(self):
         db = self.server.create_db('couchdbkit_test')
-        
+
         class A(Document):
             s = StringProperty(default='test')
             i = IntegerProperty(default=4)
@@ -552,7 +552,7 @@ class DocumentTestCase(unittest.TestCase):
 
         a = A()
         a.save()
-  
+
         text_attachment = u"un texte attaché"
         old_rev = a._rev
 
@@ -561,7 +561,7 @@ class DocumentTestCase(unittest.TestCase):
         fetch_attachment = a.fetch_attachment("test")
         self.assert_(text_attachment == fetch_attachment)
         self.server.delete_db('couchdbkit_test')
-   
+
 
     def testDocumentDeleteAttachment(self):
         db = self.server.create_db('couchdbkit_test')
@@ -572,14 +572,14 @@ class DocumentTestCase(unittest.TestCase):
 
         a = A()
         a.save()
-        
+
         text_attachment = "un texte attaché"
-        
+
         a.put_attachment(text_attachment, "test", "text/plain")
         a.delete_attachment('test')
         self.assertRaises(ResourceNotFound, a.fetch_attachment, 'test')
         self.assertFalse('test' in a._doc['_attachments'])
-        
+
         self.server.delete_db('couchdbkit_test')
 
     def testGetOrCreate(self):
@@ -597,11 +597,11 @@ class DocumentTestCase(unittest.TestCase):
 
         a = A.get_or_create('test')
         self.assert_(a._id == "test")
-        
+
         b = A.get_or_create()
         self.assert_(a._id is not None)
         self.server.delete_db('couchdbkit_test')
-    
+
     def testBulkDelete(self):
         db = self.server.create_db('couchdbkit_test')
         class Test(Document):
@@ -629,10 +629,10 @@ class PropertyTestCase(unittest.TestCase):
         self.server = Server()
         try:
             self.db = self.server.create_db('couchdbkit_test')
-        except: 
+        except:
             # waiting we fix all tests use created db
             self.db = self.server['couchdbkit_test']
-            
+
     def tearDown(self):
         try:
             self.server.delete_db('couchdbkit_test')
@@ -674,12 +674,12 @@ class PropertyTestCase(unittest.TestCase):
     def testIntegerProperty(self):
         class Test(Document):
             field = IntegerProperty()
-        
+
         test = Test()
         def ftest():
-            test.field = "essai" 
-        
-        
+            test.field = "essai"
+
+
         self.assertRaises(BadValueError, ftest)
         test.field = 4
         self.assert_(test._doc['field'] == 4)
@@ -706,7 +706,7 @@ class PropertyTestCase(unittest.TestCase):
             self.assert_(isinstance(value, datetime.datetime))
 
 
-        
+
     def testDateProperty(self):
         class Test(Document):
             field = DateProperty()
@@ -741,29 +741,29 @@ class PropertyTestCase(unittest.TestCase):
             field = StringProperty()
             field1 = DateTimeProperty()
 
-        test = Test(field="test", 
+        test = Test(field="test",
                 field1 = datetime.datetime(2008, 11, 10, 8, 0, 0))
 
         self.assert_(test._doc['field'] == "test")
         self.assert_(test._doc['field1'] == "2008-11-10T08:00:00Z")
-       
+
         self.assert_(isinstance(test.field, basestring))
         self.assert_(isinstance(test.field1, datetime.datetime))
         Test._db = self.db
         test.save()
         doc2 = Test.get(test._id)
-        
+
         v = doc2.field
         v1 = doc2.field1
         self.assert_(isinstance(v, basestring))
         self.assert_(isinstance(v1, datetime.datetime))
-    
+
     def testMixDynamicProperties(self):
         class Test(Document):
             field = StringProperty()
             field1 = DateTimeProperty()
 
-        test = Test(field="test", 
+        test = Test(field="test",
                 field1 = datetime.datetime(2008, 11, 10, 8, 0, 0),
                 dynamic_field = 'test')
 
@@ -789,16 +789,16 @@ class PropertyTestCase(unittest.TestCase):
 
         doc = MyDoc()
         self.assert_('schema' in doc._doc)
-        
+
         doc.schema.astring = u"test"
         self.assert_(doc.schema.astring == u"test")
         self.assert_(doc._doc['schema']['astring'] == u"test")
-        
+
         MyDoc._db = self.db
 
         doc.save()
         doc2 = MyDoc.get(doc._id)
-        
+
         self.assert_(isinstance(doc2.schema, MySchema) == True)
         self.assert_(doc2.schema.astring == u"test")
         self.assert_(doc2._doc['schema']['astring'] == u"test")
@@ -809,14 +809,14 @@ class PropertyTestCase(unittest.TestCase):
             class b_schema(DocumentSchema):
                 name = StringProperty(  required = True, default = "name" )
             b = SchemaProperty( b_schema )
-            
+
         B._db = self.db
-        
+
         b = B()
         self.assertEquals(b.b.name, "name" )
 
         def bad_value():
-            b.b.name = 4 
+            b.b.name = 4
         self.assertRaises(BadValueError, bad_value)
 
         b1 = B()
@@ -847,53 +847,53 @@ class PropertyTestCase(unittest.TestCase):
     def testSchemaPropertyDefault(self):
         class DocOne(DocumentSchema):
             name = StringProperty()
-            
-        class DocTwo(Document):
-            one = SchemaProperty(DocOne, default=DocOne(name='12345'))
-        
-        two = DocTwo()
-        self.assert_(two.one.name == '12345')
-        
-    def testSchemaPropertyDefault2(self):
-        class DocOne(DocumentSchema):
-            name = StringProperty()
-            field2 = StringProperty(default='54321')
-                    
-        default_one = DocOne()
-        default_one.name ='12345'
-        
-        class DocTwo(Document):
-            one = SchemaProperty(DocOne, default=default_one)
-        
-        two = DocTwo()
-        self.assert_(two.one.name == '12345')
-        self.assert_(two.one.field2 == '54321')
-    
-    def testSchemaPropertyDefault3(self):
-        class DocOne(Document):
-            name = StringProperty()
-            
+
         class DocTwo(Document):
             one = SchemaProperty(DocOne, default=DocOne(name='12345'))
 
         two = DocTwo()
         self.assert_(two.one.name == '12345')
-    
+
+    def testSchemaPropertyDefault2(self):
+        class DocOne(DocumentSchema):
+            name = StringProperty()
+            field2 = StringProperty(default='54321')
+
+        default_one = DocOne()
+        default_one.name ='12345'
+
+        class DocTwo(Document):
+            one = SchemaProperty(DocOne, default=default_one)
+
+        two = DocTwo()
+        self.assert_(two.one.name == '12345')
+        self.assert_(two.one.field2 == '54321')
+
+    def testSchemaPropertyDefault3(self):
+        class DocOne(Document):
+            name = StringProperty()
+
+        class DocTwo(Document):
+            one = SchemaProperty(DocOne, default=DocOne(name='12345'))
+
+        two = DocTwo()
+        self.assert_(two.one.name == '12345')
+
     def testSchemaPropertyDefault4(self):
         class DocOne(Document):
             name = StringProperty()
             field2 = StringProperty(default='54321')
-        
+
         default_one = DocOne()
         default_one.name ='12345'
-        
+
         class DocTwo(Document):
             one = SchemaProperty(DocOne, default=default_one)
-        
+
         two = DocTwo()
         self.assert_(two.one.name == '12345')
         self.assert_(two.one.field2 == '54321')
-        
+
     def testSchemaWithPythonTypes(self):
         class A(Document):
             c = unicode()
@@ -904,7 +904,7 @@ class PropertyTestCase(unittest.TestCase):
             a.i = "essai"
 
         self.assertRaises(BadValueError, bad_value)
-        
+
     def testValueNone(self):
         class A(Document):
             s = StringProperty()
@@ -951,20 +951,20 @@ class PropertyTestCase(unittest.TestCase):
         def bad_value():
             doc.bar.foo = "bla"
         self.assertRaises(BadValueError, bad_value)
-    
-   
+
+
     def testDynamicSchemaProperty(self):
         from datetime import datetime
         class A(DocumentSchema):
             s = StringProperty()
-            
+
         a = A(s="foo")
 
         class B(Document):
             s1 = StringProperty()
             s2 = StringProperty()
             sm = SchemaProperty(a)
-        
+
         b = B()
         self.assert_(b._doc == {'doc_type': 'B', 's1': None, 's2': None,
             'sm': {'doc_type': 'A', 's': u'foo'}})
@@ -1007,12 +1007,12 @@ class PropertyTestCase(unittest.TestCase):
         from datetime import datetime
         class A(DocumentSchema):
             s = StringProperty()
-            
+
         class B(Document):
             s1 = StringProperty()
             s2 = StringProperty()
             sm = SchemaProperty(A)
-       
+
         b = B()
         self.assert_(b._doc == {'doc_type': 'B', 's1': None, 's2': None,
             'sm': {'doc_type': 'A', 's': None}})
@@ -1030,17 +1030,17 @@ class PropertyTestCase(unittest.TestCase):
             None, 'sm': {'doc_type': 'A', 's': u't2'}})
 
         self.assert_(b2.sm.s != b.sm.s)
-        
+
     def testSchemaListProperty(self):
         class A(DocumentSchema):
             s = StringProperty()
-            
+
         class B(Document):
             slm = SchemaListProperty(A)
-            
+
         b = B()
         self.assert_(b.slm == [])
-        
+
         a = A()
         a.s = "test"
         b.slm.append(a)
@@ -1049,8 +1049,8 @@ class PropertyTestCase(unittest.TestCase):
         a1.s = "test2"
         b.slm.append(a1)
         self.assert_(b._doc == {'doc_type': 'B', 'slm': [{'doc_type': 'A', 's': u'test'}, {'doc_type': 'A', 's': u'test2'}]})
-        
-        B.set_db(self.db) 
+
+        B.set_db(self.db)
         b.save()
         b1 = B.get(b._id)
         self.assert_(len(b1.slm) == 2)
@@ -1062,7 +1062,7 @@ class PropertyTestCase(unittest.TestCase):
         """
         class A(DocumentSchema):
             s = StringProperty()
-            
+
         class B(Document):
             slm = SchemaListProperty(A)
 
@@ -1099,7 +1099,7 @@ class PropertyTestCase(unittest.TestCase):
         """
         class A(DocumentSchema):
             s = StringProperty()
-            
+
         class B(Document):
             slm = SchemaListProperty(A)
 
@@ -1118,7 +1118,7 @@ class PropertyTestCase(unittest.TestCase):
         """
         class A(DocumentSchema):
             s = StringProperty()
-            
+
         class B(Document):
             slm = SchemaListProperty(A)
 
@@ -1136,7 +1136,7 @@ class PropertyTestCase(unittest.TestCase):
         """
         class A(DocumentSchema):
             s = StringProperty()
-            
+
         class B(Document):
             slm = SchemaListProperty(A)
 
@@ -1160,7 +1160,7 @@ class PropertyTestCase(unittest.TestCase):
         """
         class A(DocumentSchema):
             s = StringProperty()
-            
+
         class B(Document):
             slm = SchemaListProperty(A)
 
@@ -1186,7 +1186,7 @@ class PropertyTestCase(unittest.TestCase):
         """
         class A(DocumentSchema):
             s = StringProperty()
-            
+
         class B(Document):
             slm = SchemaListProperty(A)
 
@@ -1215,7 +1215,7 @@ class PropertyTestCase(unittest.TestCase):
         """
         class A(DocumentSchema):
             s = StringProperty()
-            
+
         class B(Document):
             slm = SchemaListProperty(A)
 
@@ -1251,7 +1251,7 @@ class PropertyTestCase(unittest.TestCase):
         """
         class A(DocumentSchema):
             s = StringProperty()
-            
+
         class B(Document):
             slm = SchemaListProperty(A)
 
@@ -1278,7 +1278,7 @@ class PropertyTestCase(unittest.TestCase):
         """
         class A(DocumentSchema):
             s = StringProperty()
-            
+
         class B(Document):
             slm = SchemaListProperty(A)
 
@@ -1302,7 +1302,7 @@ class PropertyTestCase(unittest.TestCase):
         """
         class A(DocumentSchema):
             s = StringProperty()
-            
+
         class B(Document):
             slm = SchemaListProperty(A)
 
@@ -1368,15 +1368,15 @@ class PropertyTestCase(unittest.TestCase):
         from datetime import datetime
         class A(Document):
             l = ListProperty(datetime)
-        A.set_db(self.db) 
-            
+        A.set_db(self.db)
+
         # we can save an empty list
         a = A()
         self.assert_(a._doc == {'doc_type': 'A', 'l': []})
         a.save()
         self.assert_(a['_id'])
         self.assert_(a['l']==[])
-        
+
         a = A()
         d = datetime(2009, 4, 13, 22, 56, 10, 967388)
         a.l.append(d)
@@ -1387,15 +1387,15 @@ class PropertyTestCase(unittest.TestCase):
         self.assert_(a.l == [datetime(2009, 4, 13, 22, 56, 10), {'s': 'test'}])
         self.assert_(a._doc == {'doc_type': 'A', 'l': ['2009-04-13T22:56:10Z', {'s': 'test'}]}
         )
-        
+
         a.save()
-        
+
         b = A.get(a._id)
         self.assert_(len(b.l) == 2)
         self.assert_(b.l[0] == datetime(2009, 4, 13, 22, 56, 10))
         self.assert_(b._doc['l'] == ['2009-04-13T22:56:10Z', {'s': 'test'}])
-        
-        
+
+
         a = A(l=["a", "b", "c"])
         a.save()
         b = self.db.get(a._id, wrapper=A.wrap)
@@ -1403,8 +1403,8 @@ class PropertyTestCase(unittest.TestCase):
         b.l = []
         self.assert_(b.l == [])
         self.assert_(b.to_json()['l'] == [])
-        
-        
+
+
     def testListPropertyNotEmpty(self):
         from datetime import datetime
         class A(Document):
@@ -1418,18 +1418,18 @@ class PropertyTestCase(unittest.TestCase):
         except BadValueError, e:
             pass
         self.assert_(str(e) == 'Property l is required.')
-        
+
         d = datetime(2009, 4, 13, 22, 56, 10, 967388)
         a.l.append(d)
         self.assert_(len(a.l) == 1)
         self.assert_(a.l[0] == datetime(2009, 4, 13, 22, 56, 10))
         self.assert_(a._doc == {'doc_type': 'A', 'l': ['2009-04-13T22:56:10Z']})
         a.validate()
-        
+
         class A2(Document):
             l = ListProperty()
-            
-        a2 = A2()            
+
+        a2 = A2()
         self.assertTrue(a2.validate(required=False))
         self.assertTrue(a2.validate())
 
@@ -1438,10 +1438,10 @@ class PropertyTestCase(unittest.TestCase):
         from datetime import datetime
         class A(Document):
             l = ListProperty(item_type=datetime)
-        a = A()    
+        a = A()
         a.l.append("test")
         self.assertRaises(BadValueError, a.validate)
-        
+
         class B(Document):
             ls = StringListProperty()
         b = B()
@@ -1449,7 +1449,7 @@ class PropertyTestCase(unittest.TestCase):
         self.assertTrue(b.validate())
         b.ls.append(datetime.utcnow())
         self.assertRaises(BadValueError, b.validate)
-        
+
         b1  = B()
         b1.ls = [u'hello', u'123']
         self.assert_(b1.ls == [u'hello', u'123'])
@@ -1559,13 +1559,13 @@ class PropertyTestCase(unittest.TestCase):
         self.assertEqual(v, d3)
         self.assertEqual(a.l, [d1, d2])
 
-         
+
     def testDictProperty(self):
         from datetime import datetime
         class A(Document):
             d = DictProperty()
         A.set_db(self.db)
-            
+
         a = A()
         self.assert_(a._doc == {'d': {}, 'doc_type': 'A'})
         a.d['s'] = 'test'
@@ -1579,15 +1579,15 @@ class PropertyTestCase(unittest.TestCase):
         self.assert_(a._doc['d']['d2'] == '2009-04-16T16:05:41Z')
         self.assert_(a.d['d2'] == datetime(2009, 4, 16, 16, 5, 41))
         self.assert_(a.d == {'s2': 'test', 's': 'test', 'd2': datetime(2009, 4, 16, 16, 5, 41), 'created': datetime(2009, 4, 16, 16, 5, 41)})
-        
+
         a = A()
         a.d['test'] = { 'a': datetime(2009, 5, 10, 21, 19, 21, 127380) }
         self.assert_(a.d == { 'test': {'a': datetime(2009, 5, 10, 21, 19, 21)}})
         self.assert_(a._doc == {'d': {'test': {'a': '2009-05-10T21:19:21Z'}}, 'doc_type': 'A'} )
-        
+
         a.d['test']['b'] = "essai"
         self.assert_(a._doc == {'d': {'test': {'a': '2009-05-10T21:19:21Z', 'b': 'essai'}}, 'doc_type': 'A'})
-        
+
         a.d['essai'] = "test"
         self.assert_(a.d == {'essai': 'test',
          'test': {'a': datetime(2009, 5, 10, 21, 19, 21),
@@ -1595,11 +1595,11 @@ class PropertyTestCase(unittest.TestCase):
         )
         self.assert_(a._doc == {'d': {'essai': 'test', 'test': {'a': '2009-05-10T21:19:21Z', 'b': 'essai'}},
          'doc_type': 'A'})
-         
+
         del a.d['test']['a']
         self.assert_(a.d == {'essai': 'test', 'test': {'b': 'essai'}})
         self.assert_(a._doc ==  {'d': {'essai': 'test', 'test': {'b': 'essai'}}, 'doc_type': 'A'})
-        
+
         a.d['test']['essai'] = { "a": datetime(2009, 5, 10, 21, 21, 11) }
         self.assert_(a.d == {'essai': 'test',
          'test': {'b': 'essai',
@@ -1609,10 +1609,10 @@ class PropertyTestCase(unittest.TestCase):
                'test': {'b': 'essai', 'essai': {'a': '2009-05-10T21:21:11Z'}}},
          'doc_type': 'A'}
         )
-        
+
         del a.d['test']['essai']
         self.assert_(a._doc == {'d': {'essai': 'test', 'test': {'b': 'essai'}}, 'doc_type': 'A'})
-        
+
         a = A()
         a.d['s'] = "level1"
         a.d['d'] = {}
@@ -1623,12 +1623,12 @@ class PropertyTestCase(unittest.TestCase):
         a1.d['d']['s'] = "level2 edited"
         self.assert_(a1.d['d']['s'] == "level2 edited")
         self.assert_(a1._doc['d']['d']['s'] == "level2 edited")
-        
+
     def testDictPropertyNotEmpty(self):
         from datetime import datetime
         class A(Document):
             d = DictProperty(required=True)
-        A.set_db(self.db) 
+        A.set_db(self.db)
 
         a = A()
         self.assert_(a._doc == {'doc_type': 'A', 'd': {}})
@@ -1638,34 +1638,34 @@ class PropertyTestCase(unittest.TestCase):
         except BadValueError, e:
             pass
         self.assert_(str(e) == 'Property d is required.')
-        
+
         d = datetime(2009, 4, 13, 22, 56, 10, 967388)
         a.d['date'] = d
         self.assert_(a.d['date'] == datetime(2009, 4, 13, 22, 56, 10))
         self.assert_(a._doc == {'doc_type': 'A', 'd': { 'date': '2009-04-13T22:56:10Z' }})
         a.save()
-        
+
         class A2(Document):
             d = DictProperty()
-        a2 = A2()            
+        a2 = A2()
         self.assertTrue(a2.validate(required=False))
         self.assertTrue(a2.validate())
-        
+
     def testDynamicDictProperty(self):
         from datetime import datetime
         class A(Document):
             pass
-            
+
         a = A()
         a.d = {}
-        
+
         a.d['test'] = { 'a': datetime(2009, 5, 10, 21, 19, 21, 127380) }
         self.assert_(a.d == {'test': {'a': datetime(2009, 5, 10, 21, 19, 21, 127380)}})
         self.assert_(a._doc == {'d': {'test': {'a': '2009-05-10T21:19:21Z'}}, 'doc_type': 'A'} )
-        
+
         a.d['test']['b'] = "essai"
         self.assert_(a._doc == {'d': {'test': {'a': '2009-05-10T21:19:21Z', 'b': 'essai'}}, 'doc_type': 'A'})
-        
+
         a.d['essai'] = "test"
         self.assert_(a.d == {'essai': 'test',
          'test': {'a': datetime(2009, 5, 10, 21, 19, 21, 127380),
@@ -1673,11 +1673,11 @@ class PropertyTestCase(unittest.TestCase):
         )
         self.assert_(a._doc == {'d': {'essai': 'test', 'test': {'a': '2009-05-10T21:19:21Z', 'b': 'essai'}},
          'doc_type': 'A'})
-         
+
         del a.d['test']['a']
         self.assert_(a.d == {'essai': 'test', 'test': {'b': 'essai'}})
         self.assert_(a._doc ==  {'d': {'essai': 'test', 'test': {'b': 'essai'}}, 'doc_type': 'A'})
-        
+
         a.d['test']['essai'] = { "a": datetime(2009, 5, 10, 21, 21, 11, 425782) }
         self.assert_(a.d == {'essai': 'test',
          'test': {'b': 'essai',
@@ -1687,17 +1687,17 @@ class PropertyTestCase(unittest.TestCase):
                'test': {'b': 'essai', 'essai': {'a': '2009-05-10T21:21:11Z'}}},
          'doc_type': 'A'}
         )
-        
+
         del a.d['test']['essai']
         self.assert_(a._doc == {'d': {'essai': 'test', 'test': {'b': 'essai'}}, 'doc_type': 'A'})
-        
+
     def testDynamicDictProperty2(self):
         from datetime import datetime
         class A(Document):
             pass
-        
+
         A.set_db(self.db)
-        
+
         a = A()
         a.s = "test"
         a.d = {}
@@ -1706,16 +1706,16 @@ class PropertyTestCase(unittest.TestCase):
         a.d['d']['s'] = "level2"
         self.assert_(a._doc == {'d': {'d': {'s': 'level2'}, 's': 'level1'}, 'doc_type': 'A', 's': u'test'})
         a.save()
-        
+
         a1 = A.get(a._id)
         a1.d['d']['s'] = "level2 edited"
         self.assert_(a1.d['d']['s'] == "level2 edited")
 
         self.assert_(a1._doc['d']['d']['s'] == "level2 edited")
-        
+
         class A2(Document):
             pass
-        A2.set_db(self.db) 
+        A2.set_db(self.db)
         a = A2(l=["a", "b", "c"])
         a.save()
         b = self.db.get(a._id, wrapper=A2.wrap)
@@ -1723,30 +1723,30 @@ class PropertyTestCase(unittest.TestCase):
         b.l = []
         self.assert_(b.l == [])
         self.assert_(b.to_json()['l'] == [])
-    
+
     def testDictPropertyPop(self):
         class A(Document):
             x = DictProperty()
-            
+
         a = A()
         self.assert_(a.x.pop('nothing', None) == None)
-        
+
     def testDictPropertyPop2(self):
         class A(Document):
             x = DictProperty()
-            
+
         a = A()
         a.x['nothing'] = 'nothing'
         self.assert_(a.x.pop('nothing') == 'nothing')
         self.assertRaises(KeyError, a.x.pop, 'nothing')
-        
+
     def testDynamicListProperty(self):
         from datetime import datetime
         class A(Document):
             pass
-        
+
         A.set_db(self.db)
-        
+
         a = A()
         a.l = []
         a.l.append(1)
@@ -1762,13 +1762,13 @@ class PropertyTestCase(unittest.TestCase):
                {'date': '2009-05-12T13:35:09Z', 's': 'test'}]}
         )
         a.save()
-        
+
         a1 = A.get(a._id)
         self.assert_(a1.l == [1,
          datetime(2009, 5, 12, 13, 35, 9),
          {u'date': datetime(2009, 5, 12, 13, 35, 9), u's': u'test'}]
         )
-        
+
         a.l[2]['s'] = 'test edited'
         self.assert_(a.l == [1,
          datetime(2009, 5, 12, 13, 35, 9, 425701),
@@ -1779,8 +1779,8 @@ class PropertyTestCase(unittest.TestCase):
          '2009-05-12T13:35:09Z',
          {'date': '2009-05-12T13:35:09Z', 's': 'test edited'}]
         )
-        
-        
+
+
         design_doc = {
             '_id': '_design/test',
             'language': 'javascript',
@@ -1792,33 +1792,33 @@ class PropertyTestCase(unittest.TestCase):
             }
         }
         self.db.save_doc(design_doc)
-        
+
         a2 = A()
         a2.l = []
         a2.l.append(7)
         a2.save()
         docs = A.view('test/all')
         self.assert_(len(docs) == 2)
-        
+
         a3 = A()
         a3.l = []
         a3.save()
         docs = A.view('test/all')
         self.assert_(len(docs) == 3)
-        
+
         a = A(l = [1, 2])
         self.assert_(a.l == [1,2])
         self.assert_(a._doc['l'] == [1,2])
-        
+
         a = A()
         a.l = [1, 2]
         self.assert_(a.l == [1,2])
         self.assert_(a._doc['l'] == [1,2])
-        
+
 
         class A2(Document):
             pass
-        A2.set_db(self.db) 
+        A2.set_db(self.db)
         a = A2(d={"a": 1, "b": 2, "c": 3})
         a.save()
         b = self.db.get(a._id, wrapper=A2.wrap)
@@ -1829,345 +1829,345 @@ class PropertyTestCase(unittest.TestCase):
 
 
 
+if support_setproperty:
+    class SetPropertyTestCase(unittest.TestCase):
+        def testSetPropertyConstructor(self):
+            """SetProperty constructor including default & item_type args
+            """
+            class A(Document):
+                s = SetProperty()
+            class B(Document):
+                s = SetProperty(default=set((42, 24)))
 
-class SetPropertyTestCase(unittest.TestCase):
-    def testSetPropertyConstructor(self):
-        """SetProperty constructor including default & item_type args
-        """
-        class A(Document):
-            s = SetProperty()
-        class B(Document):
-            s = SetProperty(default=set((42, 24)))
-
-        a = A()
-        self.assertEqual(a._doc, {'doc_type': 'A', 's': []})
-        b = B()
-        self.assertEqual(b._doc['doc_type'], 'B')
-        self.assertItemsEqual(b._doc['s'], [42, 24])
-        with self.assertRaises(ValueError) as cm:
-            class C(Document):
-                s = SetProperty(item_type=tuple)
-        self.assertIn(
-            "item_type <type 'tuple'> not in set([", str(cm.exception))
-
-
-    def testSetPropertyAssignment(self):
-        """SetProperty value assignment, len, in & not in
-        """
-        class A(Document):
-            s = SetProperty()
-
-        a = A()
-        a.s = set(('foo', 'bar'))
-        self.assertEqual(a.s, set(('foo', 'bar')))
-        self.assertItemsEqual(a._doc['s'], ['foo', 'bar'])
-        self.assertEqual(len(a.s), 2)
-        self.assertEqual(len(a._doc['s']), 2)
-        self.assertIn('foo', a.s)
-        self.assertIn('foo', a._doc['s'])
-        self.assertNotIn('baz', a.s)
-        self.assertNotIn('baz', a._doc['s'])
+            a = A()
+            self.assertEqual(a._doc, {'doc_type': 'A', 's': []})
+            b = B()
+            self.assertEqual(b._doc['doc_type'], 'B')
+            self.assertItemsEqual(b._doc['s'], [42, 24])
+            with self.assertRaises(ValueError) as cm:
+                class C(Document):
+                    s = SetProperty(item_type=tuple)
+            self.assertIn(
+                "item_type <type 'tuple'> not in set([", str(cm.exception))
 
 
-    def testSetPropertyAssignmentWithType(self):
-        """SetProperty value assignment, len, in & not in w/ type
-        """
-        from datetime import datetime
-        class A(Document):
-            s = SetProperty(item_type=datetime)
+        def testSetPropertyAssignment(self):
+            """SetProperty value assignment, len, in & not in
+            """
+            class A(Document):
+                s = SetProperty()
 
-        d1 = datetime(2011, 3, 15, 17, 8, 1)
-        a = A()
-        a.s = set((d1, ))
-        self.assertEqual(a.s, set((d1, )))
-        self.assertItemsEqual(a._doc['s'], ['2011-03-15T17:08:01Z'])
-        self.assertEqual(len(a.s), 1)
-        self.assertEqual(len(a._doc['s']), 1)
-        self.assertIn(d1, a.s)
-        self.assertIn('2011-03-15T17:08:01Z', a._doc['s'])
-        self.assertNotIn(datetime(2011, 3, 16, 10, 37, 2), a.s)
-        self.assertNotIn('2011-03-16T10:37:02Z', a._doc['s'])
+            a = A()
+            a.s = set(('foo', 'bar'))
+            self.assertEqual(a.s, set(('foo', 'bar')))
+            self.assertItemsEqual(a._doc['s'], ['foo', 'bar'])
+            self.assertEqual(len(a.s), 2)
+            self.assertEqual(len(a._doc['s']), 2)
+            self.assertIn('foo', a.s)
+            self.assertIn('foo', a._doc['s'])
+            self.assertNotIn('baz', a.s)
+            self.assertNotIn('baz', a._doc['s'])
 
 
-    def testSetPropertySubSuperDisjoint(self):
-        """SetProperty Python subset, superset & disjoint operators work
-        """
-        class A(Document):
-            s = SetProperty()
+        def testSetPropertyAssignmentWithType(self):
+            """SetProperty value assignment, len, in & not in w/ type
+            """
+            from datetime import datetime
+            class A(Document):
+                s = SetProperty(item_type=datetime)
 
-        iter1 = ('foo', 'bar')
-        a = A()
-        a.s = set(iter1)
-        self.assertTrue(a.s.issubset(iter1))
-        self.assertTrue(a.s <= set(iter1))
-        iter2 = ('foo', 'bar', 'baz')
-        self.assertTrue(a.s < set(iter2))
-        self.assertTrue(a.s.issuperset(iter1))
-        self.assertTrue(a.s >= set(iter1))
-        iter2 = ('foo', )
-        self.assertTrue(a.s > set(iter2))
-        iter2 = ('bam', 'baz')
-        self.assertTrue(a.s.isdisjoint(iter2))
-
-
-    def testSetPropertyUnionIntersectionDifferences(self):
-        """SetProperty Python union, intersection & differences operators work
-        """
-        class A(Document):
-            s = SetProperty()
-
-        iter1 = ('foo', 'bar')
-        iter2 = ('bar', 'baz')
-        iter3 = ('bar', 'fiz')
-        a = A()
-        a.s = set(iter1)
-        # Union
-        b = a.s.union(iter2)
-        self.assertEqual(b, set(('foo', 'bar', 'baz')))
-        b = a.s.union(iter2, iter3)
-        self.assertEqual(b, set(('foo', 'bar', 'baz', 'fiz')))
-        b = a.s | set(iter2)
-        self.assertEqual(b, set(('foo', 'bar', 'baz')))
-        b = a.s | set(iter2) | set(iter3)
-        self.assertEqual(b, set(('foo', 'bar', 'baz', 'fiz')))
-        # Intersection
-        b = a.s.intersection(iter2)
-        self.assertEqual(b, set(('bar', )))
-        b = a.s.intersection(iter2, iter3)
-        self.assertEqual(b, set(('bar', )))
-        b = a.s & set(iter2)
-        self.assertEqual(b, set(('bar', )))
-        b = a.s & set(iter2) & set(iter3)
-        self.assertEqual(b, set(('bar', )))
-        # Difference
-        b = a.s.difference(iter2)
-        self.assertEqual(b, set(('foo', )))
-        b = a.s.difference(iter2, iter3)
-        self.assertEqual(b, set(('foo', )))
-        b = a.s - set(iter2)
-        self.assertEqual(b, set(('foo', )))
-        b = a.s - set(iter2) - set(iter3)
-        self.assertEqual(b, set(('foo', )))
-        # Symmetric difference
-        self.assertEqual(a.s.symmetric_difference(iter2), set(('foo', 'baz')))
-        self.assertEqual(a.s ^ set(iter2), set(('foo', 'baz')))
+            d1 = datetime(2011, 3, 15, 17, 8, 1)
+            a = A()
+            a.s = set((d1, ))
+            self.assertEqual(a.s, set((d1, )))
+            self.assertItemsEqual(a._doc['s'], ['2011-03-15T17:08:01Z'])
+            self.assertEqual(len(a.s), 1)
+            self.assertEqual(len(a._doc['s']), 1)
+            self.assertIn(d1, a.s)
+            self.assertIn('2011-03-15T17:08:01Z', a._doc['s'])
+            self.assertNotIn(datetime(2011, 3, 16, 10, 37, 2), a.s)
+            self.assertNotIn('2011-03-16T10:37:02Z', a._doc['s'])
 
 
-    def testSetPropertyCopy(self):
-        """SetProperty Python shallow copy method works
-        """
-        class A(Document):
-            s = SetProperty()
+        def testSetPropertySubSuperDisjoint(self):
+            """SetProperty Python subset, superset & disjoint operators work
+            """
+            class A(Document):
+                s = SetProperty()
 
-        a = A()
-        a.s = set(('foo', 'bar'))
-        b = a.s.copy()
-        self.assertIsNot(b, a.s)
-
-
-    def testSetPropertyUpdate(self):
-        """SetProperty update method keeps Python set & _doc list in sync
-        """
-        class A(Document):
-            s = SetProperty()
-
-        iter1 = ('foo', 'bar')
-        iter2 = ('bar', 'baz')
-        iter3 = ('baz', 'fiz')
-        a = A()
-        a.s = set(iter1)
-        a.s.update(iter1)
-        self.assertEqual(a.s, set(('foo', 'bar')))
-        self.assertItemsEqual(a._doc['s'], ['foo', 'bar'])
-        a.s = set(iter1)
-        a.s.update(iter2)
-        self.assertEqual(a.s, set(('foo', 'bar', 'baz')))
-        self.assertItemsEqual(a._doc['s'], ['foo', 'bar', 'baz'])
-        a.s = set(iter1)
-        a.s.update(iter2, iter3)
-        self.assertEqual(a.s, set(('foo', 'bar', 'baz', 'fiz')))
-        self.assertItemsEqual(a._doc['s'], ['foo', 'bar', 'baz', 'fiz'])
-        a.s = set(iter1)
-        a.s |= set(iter2)
-        self.assertEqual(a.s, set(('foo', 'bar', 'baz')))
-        self.assertItemsEqual(a._doc['s'], ['foo', 'bar', 'baz'])
-        a.s = set(iter1)
-        a.s |= set(iter2) | set(iter3)
-        self.assertEqual(a.s, set(('foo', 'bar', 'baz', 'fiz')))
-        self.assertItemsEqual(a._doc['s'], ['foo', 'bar', 'baz', 'fiz'])
+            iter1 = ('foo', 'bar')
+            a = A()
+            a.s = set(iter1)
+            self.assertTrue(a.s.issubset(iter1))
+            self.assertTrue(a.s <= set(iter1))
+            iter2 = ('foo', 'bar', 'baz')
+            self.assertTrue(a.s < set(iter2))
+            self.assertTrue(a.s.issuperset(iter1))
+            self.assertTrue(a.s >= set(iter1))
+            iter2 = ('foo', )
+            self.assertTrue(a.s > set(iter2))
+            iter2 = ('bam', 'baz')
+            self.assertTrue(a.s.isdisjoint(iter2))
 
 
-    def testSetPropertyIntersectionUpdate(self):
-        """SetProperty intersection_update method keeps Python & _doc in sync
-        """
-        class A(Document):
-            s = SetProperty()
+        def testSetPropertyUnionIntersectionDifferences(self):
+            """SetProperty Python union, intersection & differences operators work
+            """
+            class A(Document):
+                s = SetProperty()
 
-        iter1 = ('foo', 'baz')
-        iter2 = ('bar', 'baz')
-        iter3 = ('bar', 'fiz')
-        a = A()
-        a.s = set(iter1)
-        a.s.intersection_update(iter1)
-        self.assertEqual(a.s, set(('foo', 'baz')))
-        self.assertItemsEqual(a._doc['s'], ['foo', 'baz'])
-        a.s = set(iter1)
-        a.s.intersection_update(iter2)
-        self.assertEqual(a.s, set(('baz', )))
-        self.assertItemsEqual(a._doc['s'], ['baz'])
-        a.s = set(iter1)
-        a.s.intersection_update(iter2, iter3)
-        self.assertEqual(a.s, set())
-        self.assertItemsEqual(a._doc['s'], [])
-        a.s = set(iter1)
-        a.s &= set(iter2)
-        self.assertEqual(a.s, set(('baz', )))
-        self.assertItemsEqual(a._doc['s'], ['baz'])
-        a.s = set(iter1)
-        a.s &= set(iter2) & set(iter3)
-        self.assertEqual(a.s, set())
-        self.assertItemsEqual(a._doc['s'], [])
-
-
-    def testSetPropertyDifferenceUpdate(self):
-        """SetProperty difference_update method keeps Python & _doc in sync
-        """
-        class A(Document):
-            s = SetProperty()
-
-        iter1 = ('foo', 'baz', 'fiz')
-        iter2 = ('bar', 'baz')
-        iter3 = ('bar', 'fiz')
-        a = A()
-        a.s = set(iter1)
-        a.s.difference_update(iter1)
-        self.assertEqual(a.s, set())
-        self.assertEqual(a._doc['s'], [])
-        a.s = set(iter1)
-        a.s.difference_update(iter2)
-        self.assertEqual(a.s, set(('foo', 'fiz')))
-        self.assertItemsEqual(a._doc['s'], ['foo', 'fiz'])
-        a.s = set(iter1)
-        a.s.difference_update(iter2, iter3)
-        self.assertEqual(a.s, set(('foo', )))
-        self.assertItemsEqual(a._doc['s'], ['foo'])
-        a.s = set(iter1)
-        a.s -= set(iter1)
-        self.assertEqual(a.s, set())
-        self.assertEqual(a._doc['s'], [])
-        a.s = set(iter1)
-        a.s -= set(iter2)
-        self.assertEqual(a.s, set(('foo', 'fiz')))
-        self.assertItemsEqual(a._doc['s'], ['foo', 'fiz'])
-        a.s = set(iter1)
-        a.s -= set(iter2) | set(iter3)
-        self.assertEqual(a.s, set(('foo', )))
-        self.assertItemsEqual(a._doc['s'], ['foo'])
+            iter1 = ('foo', 'bar')
+            iter2 = ('bar', 'baz')
+            iter3 = ('bar', 'fiz')
+            a = A()
+            a.s = set(iter1)
+            # Union
+            b = a.s.union(iter2)
+            self.assertEqual(b, set(('foo', 'bar', 'baz')))
+            b = a.s.union(iter2, iter3)
+            self.assertEqual(b, set(('foo', 'bar', 'baz', 'fiz')))
+            b = a.s | set(iter2)
+            self.assertEqual(b, set(('foo', 'bar', 'baz')))
+            b = a.s | set(iter2) | set(iter3)
+            self.assertEqual(b, set(('foo', 'bar', 'baz', 'fiz')))
+            # Intersection
+            b = a.s.intersection(iter2)
+            self.assertEqual(b, set(('bar', )))
+            b = a.s.intersection(iter2, iter3)
+            self.assertEqual(b, set(('bar', )))
+            b = a.s & set(iter2)
+            self.assertEqual(b, set(('bar', )))
+            b = a.s & set(iter2) & set(iter3)
+            self.assertEqual(b, set(('bar', )))
+            # Difference
+            b = a.s.difference(iter2)
+            self.assertEqual(b, set(('foo', )))
+            b = a.s.difference(iter2, iter3)
+            self.assertEqual(b, set(('foo', )))
+            b = a.s - set(iter2)
+            self.assertEqual(b, set(('foo', )))
+            b = a.s - set(iter2) - set(iter3)
+            self.assertEqual(b, set(('foo', )))
+            # Symmetric difference
+            self.assertEqual(a.s.symmetric_difference(iter2), set(('foo', 'baz')))
+            self.assertEqual(a.s ^ set(iter2), set(('foo', 'baz')))
 
 
-    def testSetPropertySymmetricDifferenceUpdate(self):
-        """SetProperty difference_update method keeps Python & _doc in sync
-        """
-        class A(Document):
-            s = SetProperty()
+        def testSetPropertyCopy(self):
+            """SetProperty Python shallow copy method works
+            """
+            class A(Document):
+                s = SetProperty()
 
-        iter1 = ('foo', 'baz', 'fiz')
-        iter2 = ('bar', 'baz')
-        a = A()
-        a.s = set(iter1)
-        a.s.symmetric_difference_update(iter1)
-        self.assertEqual(a.s, set())
-        self.assertEqual(a._doc['s'], [])
-        a.s = set(iter1)
-        a.s.symmetric_difference_update(iter2)
-        self.assertEqual(a.s, set(('foo', 'bar', 'fiz')))
-        self.assertItemsEqual(a._doc['s'], ['foo', 'bar', 'fiz'])
-        a.s = set(iter1)
-        a.s ^= set(iter1)
-        self.assertEqual(a.s, set())
-        self.assertEqual(a._doc['s'], [])
-        a.s = set(iter1)
-        a.s ^= set(iter2)
-        self.assertEqual(a.s, set(('foo', 'bar', 'fiz')))
-        self.assertItemsEqual(a._doc['s'], ['foo', 'bar', 'fiz'])
+            a = A()
+            a.s = set(('foo', 'bar'))
+            b = a.s.copy()
+            self.assertIsNot(b, a.s)
 
 
-    def testSetPropertyAdd(self):
-        """SetProperty add method works
-        """
-        class A(Document):
-            s = SetProperty()
+        def testSetPropertyUpdate(self):
+            """SetProperty update method keeps Python set & _doc list in sync
+            """
+            class A(Document):
+                s = SetProperty()
 
-        a = A()
-        a.s = set(('foo', 'bar'))
-        a.s.add('bar')
-        self.assertEqual(a.s, set(('foo', 'bar')))
-        self.assertItemsEqual(a._doc['s'], ['foo', 'bar'])
-        a.s.add('baz')
-        self.assertEqual(a.s, set(('foo', 'bar', 'baz')))
-        self.assertItemsEqual(a._doc['s'], ['foo', 'bar', 'baz'])
+            iter1 = ('foo', 'bar')
+            iter2 = ('bar', 'baz')
+            iter3 = ('baz', 'fiz')
+            a = A()
+            a.s = set(iter1)
+            a.s.update(iter1)
+            self.assertEqual(a.s, set(('foo', 'bar')))
+            self.assertItemsEqual(a._doc['s'], ['foo', 'bar'])
+            a.s = set(iter1)
+            a.s.update(iter2)
+            self.assertEqual(a.s, set(('foo', 'bar', 'baz')))
+            self.assertItemsEqual(a._doc['s'], ['foo', 'bar', 'baz'])
+            a.s = set(iter1)
+            a.s.update(iter2, iter3)
+            self.assertEqual(a.s, set(('foo', 'bar', 'baz', 'fiz')))
+            self.assertItemsEqual(a._doc['s'], ['foo', 'bar', 'baz', 'fiz'])
+            a.s = set(iter1)
+            a.s |= set(iter2)
+            self.assertEqual(a.s, set(('foo', 'bar', 'baz')))
+            self.assertItemsEqual(a._doc['s'], ['foo', 'bar', 'baz'])
+            a.s = set(iter1)
+            a.s |= set(iter2) | set(iter3)
+            self.assertEqual(a.s, set(('foo', 'bar', 'baz', 'fiz')))
+            self.assertItemsEqual(a._doc['s'], ['foo', 'bar', 'baz', 'fiz'])
 
 
-    def testSetPropertyRemove(self):
-        """SetProperty remove method works
-        """
-        class A(Document):
-            s = SetProperty()
+        def testSetPropertyIntersectionUpdate(self):
+            """SetProperty intersection_update method keeps Python & _doc in sync
+            """
+            class A(Document):
+                s = SetProperty()
 
-        a = A()
-        a.s = set(('foo', 'bar'))
-        a.s.remove('foo')
-        self.assertEqual(a.s, set(('bar', )))
-        self.assertItemsEqual(a._doc['s'], ['bar'])
-        with self.assertRaises(KeyError):
+            iter1 = ('foo', 'baz')
+            iter2 = ('bar', 'baz')
+            iter3 = ('bar', 'fiz')
+            a = A()
+            a.s = set(iter1)
+            a.s.intersection_update(iter1)
+            self.assertEqual(a.s, set(('foo', 'baz')))
+            self.assertItemsEqual(a._doc['s'], ['foo', 'baz'])
+            a.s = set(iter1)
+            a.s.intersection_update(iter2)
+            self.assertEqual(a.s, set(('baz', )))
+            self.assertItemsEqual(a._doc['s'], ['baz'])
+            a.s = set(iter1)
+            a.s.intersection_update(iter2, iter3)
+            self.assertEqual(a.s, set())
+            self.assertItemsEqual(a._doc['s'], [])
+            a.s = set(iter1)
+            a.s &= set(iter2)
+            self.assertEqual(a.s, set(('baz', )))
+            self.assertItemsEqual(a._doc['s'], ['baz'])
+            a.s = set(iter1)
+            a.s &= set(iter2) & set(iter3)
+            self.assertEqual(a.s, set())
+            self.assertItemsEqual(a._doc['s'], [])
+
+
+        def testSetPropertyDifferenceUpdate(self):
+            """SetProperty difference_update method keeps Python & _doc in sync
+            """
+            class A(Document):
+                s = SetProperty()
+
+            iter1 = ('foo', 'baz', 'fiz')
+            iter2 = ('bar', 'baz')
+            iter3 = ('bar', 'fiz')
+            a = A()
+            a.s = set(iter1)
+            a.s.difference_update(iter1)
+            self.assertEqual(a.s, set())
+            self.assertEqual(a._doc['s'], [])
+            a.s = set(iter1)
+            a.s.difference_update(iter2)
+            self.assertEqual(a.s, set(('foo', 'fiz')))
+            self.assertItemsEqual(a._doc['s'], ['foo', 'fiz'])
+            a.s = set(iter1)
+            a.s.difference_update(iter2, iter3)
+            self.assertEqual(a.s, set(('foo', )))
+            self.assertItemsEqual(a._doc['s'], ['foo'])
+            a.s = set(iter1)
+            a.s -= set(iter1)
+            self.assertEqual(a.s, set())
+            self.assertEqual(a._doc['s'], [])
+            a.s = set(iter1)
+            a.s -= set(iter2)
+            self.assertEqual(a.s, set(('foo', 'fiz')))
+            self.assertItemsEqual(a._doc['s'], ['foo', 'fiz'])
+            a.s = set(iter1)
+            a.s -= set(iter2) | set(iter3)
+            self.assertEqual(a.s, set(('foo', )))
+            self.assertItemsEqual(a._doc['s'], ['foo'])
+
+
+        def testSetPropertySymmetricDifferenceUpdate(self):
+            """SetProperty difference_update method keeps Python & _doc in sync
+            """
+            class A(Document):
+                s = SetProperty()
+
+            iter1 = ('foo', 'baz', 'fiz')
+            iter2 = ('bar', 'baz')
+            a = A()
+            a.s = set(iter1)
+            a.s.symmetric_difference_update(iter1)
+            self.assertEqual(a.s, set())
+            self.assertEqual(a._doc['s'], [])
+            a.s = set(iter1)
+            a.s.symmetric_difference_update(iter2)
+            self.assertEqual(a.s, set(('foo', 'bar', 'fiz')))
+            self.assertItemsEqual(a._doc['s'], ['foo', 'bar', 'fiz'])
+            a.s = set(iter1)
+            a.s ^= set(iter1)
+            self.assertEqual(a.s, set())
+            self.assertEqual(a._doc['s'], [])
+            a.s = set(iter1)
+            a.s ^= set(iter2)
+            self.assertEqual(a.s, set(('foo', 'bar', 'fiz')))
+            self.assertItemsEqual(a._doc['s'], ['foo', 'bar', 'fiz'])
+
+
+        def testSetPropertyAdd(self):
+            """SetProperty add method works
+            """
+            class A(Document):
+                s = SetProperty()
+
+            a = A()
+            a.s = set(('foo', 'bar'))
+            a.s.add('bar')
+            self.assertEqual(a.s, set(('foo', 'bar')))
+            self.assertItemsEqual(a._doc['s'], ['foo', 'bar'])
+            a.s.add('baz')
+            self.assertEqual(a.s, set(('foo', 'bar', 'baz')))
+            self.assertItemsEqual(a._doc['s'], ['foo', 'bar', 'baz'])
+
+
+        def testSetPropertyRemove(self):
+            """SetProperty remove method works
+            """
+            class A(Document):
+                s = SetProperty()
+
+            a = A()
+            a.s = set(('foo', 'bar'))
             a.s.remove('foo')
+            self.assertEqual(a.s, set(('bar', )))
+            self.assertItemsEqual(a._doc['s'], ['bar'])
+            with self.assertRaises(KeyError):
+                a.s.remove('foo')
 
 
-    def testSetPropertyDiscard(self):
-        """SetProperty discard method works
-        """
-        class A(Document):
-            s = SetProperty()
+        def testSetPropertyDiscard(self):
+            """SetProperty discard method works
+            """
+            class A(Document):
+                s = SetProperty()
 
-        a = A()
-        a.s = set(('foo', 'bar'))
-        a.s.discard('foo')
-        self.assertEqual(a.s, set(('bar', )))
-        self.assertItemsEqual(a._doc['s'], ['bar'])
-        a.s.discard('foo')
-        self.assertEqual(a.s, set(('bar', )))
-        self.assertItemsEqual(a._doc['s'], ['bar'])
-
-
-    def testSetPropertyPop(self):
-        """SetProperty pop method works
-        """
-        class A(Document):
-            s = SetProperty()
-
-        a = A()
-        a.s = set(('foo', 'bar'))
-        b = a.s.pop()
-        self.assertNotIn(b, a.s)
-        self.assertNotIn(b, a._doc['s'])
-        b = a.s.pop()
-        self.assertNotIn(b, a.s)
-        self.assertNotIn(b, a._doc['s'])
-        with self.assertRaises(KeyError):
-            a.s.pop()
+            a = A()
+            a.s = set(('foo', 'bar'))
+            a.s.discard('foo')
+            self.assertEqual(a.s, set(('bar', )))
+            self.assertItemsEqual(a._doc['s'], ['bar'])
+            a.s.discard('foo')
+            self.assertEqual(a.s, set(('bar', )))
+            self.assertItemsEqual(a._doc['s'], ['bar'])
 
 
-    def testSetPropertyClear(self):
-        """SetProperty clear method works
-        """
-        class A(Document):
-            s = SetProperty()
+        def testSetPropertyPop(self):
+            """SetProperty pop method works
+            """
+            class A(Document):
+                s = SetProperty()
 
-        a = A()
-        a.s = set(('foo', 'bar'))
-        a.s.clear()
-        self.assertEqual(a.s, set())
-        self.assertEqual(a._doc['s'], [])
+            a = A()
+            a.s = set(('foo', 'bar'))
+            b = a.s.pop()
+            self.assertNotIn(b, a.s)
+            self.assertNotIn(b, a._doc['s'])
+            b = a.s.pop()
+            self.assertNotIn(b, a.s)
+            self.assertNotIn(b, a._doc['s'])
+            with self.assertRaises(KeyError):
+                a.s.pop()
+
+
+        def testSetPropertyClear(self):
+            """SetProperty clear method works
+            """
+            class A(Document):
+                s = SetProperty()
+
+            a = A()
+            a.s = set(('foo', 'bar'))
+            a.s.clear()
+            self.assertEqual(a.s, set())
+            self.assertEqual(a._doc['s'], [])
 
 
 
@@ -2181,6 +2181,6 @@ class SchemaProxyUtilityTestCase(unittest.TestCase):
         from couchdbkit.schema.properties_proxy import svalue_to_json
 
         svalue_to_json({}, Document, False)
-        
+
 if __name__ == '__main__':
     unittest.main()
