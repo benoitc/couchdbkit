@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
-    <title>Couchdbkit - Build an external handler</title>
+    <title>Couchdbkit - 
+    Couchdbkit version 0.6.2 released
+</title>
     <!--[if IE]>
 
     <script>
@@ -73,32 +75,22 @@
         
     
         
+
 <section id="content">
     <article>
-        <h1>Build an external handler</h1>
-        	<p>Building an <a href="http://wiki.apache.org/couchdb/ExternalProcesse">external handler</a> with couchdbkit is easy. The only thing you have to do is to create an object inheriting from `couchdbkit.external` module. </p>
+        <header>
+            <h1>Couchdbkit version 0.6.2 released</h1>
+        </header>
+        	<p>New release for <a href="http://couchdbkit.org">Couchdbkit</a>.</p>
 
-	<p>Here is a little snippet that shows you how to handle the <a href="http://wiki.apache.org/couchdb/ExternalProcesse#Example_External_Process">example external process from CouchDB wiki</a> with couchdbkit.</p>
+	<p>Compare changes from 0.6.1 to 0.6.2 on<br /><a href="https://github.com/benoitc/couchdbkit/compare/0.6.1...0.6.2">github</a> .</p>
 
-	<p><pre class="code prettyprint">
- from couchdbkit.external import External
- import anyjson</p>
-
- class Test(External):
-
-     def handle_line(self, line):
-         self.send_response(200, 
-             &#8220;got message external object %s&#8221; % anyjson.serialize(line),
-             {&#8220;Content-type&#8221;: &#8220;text/plain&#8221;})
-
- if <i>name</i> == &#8220;<i>main</i>&#8220;:
-     Test().run()
-</pre>
-
-	<p>All lines received by the external handler are handled in `handle_line` method of External instance. Then the `send_response` method can be used to send the response. It takes the http status code, body and headers as arguments. `This method is a wrapper around `write` method of your instance. </p>
-
-	<p>`couchdbkit.External` interface has been used to build the wsgi external handler. Its <a href="http://bitbucket.org/benoitc/couchdbkit/src/5d7bb0ebf3f4/couchdbkit/contrib/wsgi_handler.py">code</a> is also a good example of use.</p>
+	<p>You can download latest release on<br /><a href="http://pypi.python.org/pypi/couchdbkit/0.6.0">Pypi</a> or check <a href="../download.html">download page</a> for other ways.</p>
+        <footer>
+             <p><span class='comments'><a href='/blog/2012-05-04-Couchdbkit-0.6.2.html#disqus_thread'>View Comments</a></span></p>
+        </footer>
     </article>
+    <div id="disqus_thread"></div><script type="text/javascript" src="http://disqus.com/forums/couchdbkit/embed.js"></script><noscript><a href="http://couchdbkit.disqus.com/?url=ref">View the discussion thread.</a></noscript><a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
 </section>
 
         
@@ -113,5 +105,22 @@
     
     
     
+    <script>
+    //<![CDATA[
+    (function() {
+            
+    		var links = document.getElementsByTagName('a');
+    		var query = '?';
+    		for(var i = 0; i < links.length; i++) {
+    			if(links[i].href.indexOf('#disqus_thread') >= 0) {
+    				query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+    			}
+    		}
+    		document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/couchdbkit/get_num_replies.js' + query + '&disqus_developer=1"></' + 'script>');
+    	})();
+    //]]>
+    </script>
+    
+
 </body>
 </html>
