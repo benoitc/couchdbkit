@@ -11,6 +11,10 @@ couchdbkit.document	couchdbkit.designer.fs-module.html#document
 couchdbkit.push	couchdbkit.designer.fs-module.html#push
 couchdbkit.pushapps	couchdbkit.designer.fs-module.html#pushapps
 couchdbkit.__package__	couchdbkit-module.html#__package__
+couchdbkit.changes	couchdbkit.changes-module.html
+couchdbkit.changes.fold	couchdbkit.changes-module.html#fold
+couchdbkit.changes.foreach	couchdbkit.changes-module.html#foreach
+couchdbkit.changes.__package__	couchdbkit.changes-module.html#__package__
 couchdbkit.client	couchdbkit.client-module.html
 couchdbkit.client.maybe_schema_wrapper	couchdbkit.schema.util-module.html#maybe_schema_wrapper
 couchdbkit.client.validate_dbname	couchdbkit.utils-module.html#validate_dbname
@@ -270,6 +274,13 @@ int.__hash__	int-class.html#__hash__
 int.__sub__	int-class.html#__sub__
 int.__long__	int-class.html#__long__
 int.__divmod__	int-class.html#__divmod__
+couchdbkit.changes.ChangesStream	couchdbkit.changes.ChangesStream-class.html
+couchdbkit.changes.ChangesStream.__next__	couchdbkit.changes.ChangesStream-class.html#__next__
+couchdbkit.changes.ChangesStream.__exit__	couchdbkit.changes.ChangesStream-class.html#__exit__
+couchdbkit.changes.ChangesStream.__enter__	couchdbkit.changes.ChangesStream-class.html#__enter__
+couchdbkit.changes.ChangesStream.__iter__	couchdbkit.changes.ChangesStream-class.html#__iter__
+couchdbkit.changes.ChangesStream._parse_change	couchdbkit.changes.ChangesStream-class.html#_parse_change
+couchdbkit.changes.ChangesStream.__init__	couchdbkit.changes.ChangesStream-class.html#__init__
 couchdbkit.client.Database	couchdbkit.client.Database-class.html
 couchdbkit.client.Database.bulk_delete	couchdbkit.client.Database-class.html#bulk_delete
 couchdbkit.client.Database.show	couchdbkit.client.Database-class.html#show
