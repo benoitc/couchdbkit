@@ -10,7 +10,7 @@ as using a dict.
 Installation
 ------------
 
-Couchdbkit requires Python 2.x superior to 2.5.
+Couchdbkit requires Python 2.x superior to 2.6.
 
 Install from sources::
 
