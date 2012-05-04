@@ -252,6 +252,46 @@ object --+
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a href="couchdbkit.client.Database-class.html#list" class="summary-sig-name">list</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">list_name</span>,
+        <span class="summary-sig-arg">view_name</span>,
+        <span class="summary-sig-arg">**params</span>)</span><br />
+      Execute a list function on the server and return the response.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="couchdbkit.client-pysrc.html#Database.list">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="couchdbkit.client.Database-class.html#show" class="summary-sig-name">show</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">show_name</span>,
+        <span class="summary-sig-arg">doc_id</span>,
+        <span class="summary-sig-arg">**params</span>)</span><br />
+      Execute a show function on the server and return the response.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="couchdbkit.client-pysrc.html#Database.show">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a href="couchdbkit.client.Database-class.html#all_docs" class="summary-sig-name">all_docs</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">by_seq</span>=<span class="summary-sig-default">False</span>,
         <span class="summary-sig-arg">**params</span>)</span><br />
@@ -313,7 +353,8 @@ object --+
           <td><span class="summary-sig"><a href="couchdbkit.client.Database-class.html#save_docs" class="summary-sig-name">save_docs</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">docs</span>,
         <span class="summary-sig-arg">use_uuids</span>=<span class="summary-sig-default">True</span>,
-        <span class="summary-sig-arg">all_or_nothing</span>=<span class="summary-sig-default">False</span>)</span><br />
+        <span class="summary-sig-arg">all_or_nothing</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">**params</span>)</span><br />
       bulk save.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="couchdbkit.client-pysrc.html#Database.save_docs">source&nbsp;code</a></span>
@@ -333,7 +374,8 @@ object --+
           <td><span class="summary-sig"><a href="couchdbkit.client.Database-class.html#bulk_save" class="summary-sig-name">bulk_save</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">docs</span>,
         <span class="summary-sig-arg">use_uuids</span>=<span class="summary-sig-default">True</span>,
-        <span class="summary-sig-arg">all_or_nothing</span>=<span class="summary-sig-default">False</span>)</span><br />
+        <span class="summary-sig-arg">all_or_nothing</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">**params</span>)</span><br />
       bulk save.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="couchdbkit.client-pysrc.html#Database.save_docs">source&nbsp;code</a></span>
@@ -352,7 +394,9 @@ object --+
         <tr>
           <td><span class="summary-sig"><a href="couchdbkit.client.Database-class.html#delete_docs" class="summary-sig-name">delete_docs</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">docs</span>,
-        <span class="summary-sig-arg">all_or_nothing</span>=<span class="summary-sig-default">False</span>)</span><br />
+        <span class="summary-sig-arg">all_or_nothing</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">empty_on_delete</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">**params</span>)</span><br />
       bulk delete.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="couchdbkit.client-pysrc.html#Database.delete_docs">source&nbsp;code</a></span>
@@ -371,7 +415,9 @@ object --+
         <tr>
           <td><span class="summary-sig"><a href="couchdbkit.client.Database-class.html#bulk_delete" class="summary-sig-name">bulk_delete</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">docs</span>,
-        <span class="summary-sig-arg">all_or_nothing</span>=<span class="summary-sig-default">False</span>)</span><br />
+        <span class="summary-sig-arg">all_or_nothing</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">empty_on_delete</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">**params</span>)</span><br />
       bulk delete.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="couchdbkit.client-pysrc.html#Database.delete_docs">source&nbsp;code</a></span>
@@ -389,7 +435,8 @@ object --+
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="couchdbkit.client.Database-class.html#delete_doc" class="summary-sig-name">delete_doc</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">doc</span>)</span><br />
+        <span class="summary-sig-arg">doc</span>,
+        <span class="summary-sig-arg">**params</span>)</span><br />
       delete a document or a list of documents
 @param doc: str or dict,  document id or full doc.</td>
           <td align="right" valign="top">
@@ -409,10 +456,47 @@ object --+
         <tr>
           <td><span class="summary-sig"><a href="couchdbkit.client.Database-class.html#copy_doc" class="summary-sig-name">copy_doc</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">doc</span>,
-        <span class="summary-sig-arg">dest</span>=<span class="summary-sig-default">None</span>)</span><br />
+        <span class="summary-sig-arg">dest</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">headers</span>=<span class="summary-sig-default">None</span>)</span><br />
       copy an existing document to a new id.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="couchdbkit.client-pysrc.html#Database.copy_doc">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="raw_view"></a><span class="summary-sig-name">raw_view</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">view_path</span>,
+        <span class="summary-sig-arg">params</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="couchdbkit.client-pysrc.html#Database.raw_view">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="raw_temp_view"></a><span class="summary-sig-name">raw_temp_view</span>(<span class="summary-sig-arg">db</span>,
+        <span class="summary-sig-arg">design</span>,
+        <span class="summary-sig-arg">params</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="couchdbkit.client-pysrc.html#Database.raw_temp_view">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -472,6 +556,7 @@ object --+
         <span class="summary-sig-arg">view_name</span>,
         <span class="summary-sig-arg">handler</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string">_fti/_design</code><code class="variable-quote">'</code></span>,
         <span class="summary-sig-arg">wrapper</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">schema</span>=<span class="summary-sig-default">None</span>,
         <span class="summary-sig-arg">**params</span>)</span><br />
       Search.</td>
           <td align="right" valign="top">
@@ -490,6 +575,7 @@ object --+
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="couchdbkit.client.Database-class.html#documents" class="summary-sig-name">documents</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">schema</span>=<span class="summary-sig-default">None</span>,
         <span class="summary-sig-arg">wrapper</span>=<span class="summary-sig-default">None</span>,
         <span class="summary-sig-arg">**params</span>)</span><br />
       return a ViewResults objects containing all documents.</td>
@@ -509,6 +595,7 @@ object --+
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="couchdbkit.client.Database-class.html#iterdocuments" class="summary-sig-name">iterdocuments</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">schema</span>=<span class="summary-sig-default">None</span>,
         <span class="summary-sig-arg">wrapper</span>=<span class="summary-sig-default">None</span>,
         <span class="summary-sig-arg">**params</span>)</span><br />
       return a ViewResults objects containing all documents.</td>
@@ -532,7 +619,8 @@ object --+
         <span class="summary-sig-arg">content</span>,
         <span class="summary-sig-arg">name</span>=<span class="summary-sig-default">None</span>,
         <span class="summary-sig-arg">content_type</span>=<span class="summary-sig-default">None</span>,
-        <span class="summary-sig-arg">content_length</span>=<span class="summary-sig-default">None</span>)</span><br />
+        <span class="summary-sig-arg">content_length</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">headers</span>=<span class="summary-sig-default">None</span>)</span><br />
       Add attachement to a document.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="couchdbkit.client-pysrc.html#Database.put_attachment">source&nbsp;code</a></span>
@@ -551,7 +639,8 @@ object --+
         <tr>
           <td><span class="summary-sig"><a href="couchdbkit.client.Database-class.html#delete_attachment" class="summary-sig-name">delete_attachment</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">doc</span>,
-        <span class="summary-sig-arg">name</span>)</span><br />
+        <span class="summary-sig-arg">name</span>,
+        <span class="summary-sig-arg">headers</span>=<span class="summary-sig-default">None</span>)</span><br />
       delete attachement to the document</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="couchdbkit.client-pysrc.html#Database.delete_attachment">source&nbsp;code</a></span>
@@ -571,7 +660,8 @@ object --+
           <td><span class="summary-sig"><a href="couchdbkit.client.Database-class.html#fetch_attachment" class="summary-sig-name">fetch_attachment</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">id_or_doc</span>,
         <span class="summary-sig-arg">name</span>,
-        <span class="summary-sig-arg">stream</span>=<span class="summary-sig-default">False</span>)</span><br />
+        <span class="summary-sig-arg">stream</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">headers</span>=<span class="summary-sig-default">None</span>)</span><br />
       get attachment in a document</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="couchdbkit.client-pysrc.html#Database.fetch_attachment">source&nbsp;code</a></span>
@@ -969,6 +1059,68 @@ object --+
   </dl>
 </td></tr></table>
 </div>
+<a name="list"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">list</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">list_name</span>,
+        <span class="sig-arg">view_name</span>,
+        <span class="sig-arg">**params</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="couchdbkit.client-pysrc.html#Database.list">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Execute a list function on the server and return the response. If the 
+  response is json it will be deserialized, otherwise the string will be 
+  returned.</p>
+  <p>Args:</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>list_name</code></strong> - should be 'designname/listname'</li>
+        <li><strong class="pname"><code>view_name</code></strong> - name of the view to run through the list document</li>
+        <li><strong class="pname"><code>params</code></strong> - params of the list</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="show"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">show</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">show_name</span>,
+        <span class="sig-arg">doc_id</span>,
+        <span class="sig-arg">**params</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="couchdbkit.client-pysrc.html#Database.show">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Execute a show function on the server and return the response. If the 
+  response is json it will be deserialized, otherwise the string will be 
+  returned.</p>
+  <p>Args:</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>show_name</code></strong> - should be 'designname/showname'</li>
+        <li><strong class="pname"><code>doc_id</code></strong> - id of the document to pass into the show document</li>
+        <li><strong class="pname"><code>params</code></strong> - params of the show</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
 <a name="all_docs"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -1077,7 +1229,8 @@ couchdb. It will return an updated list of all documents.
   <h3 class="epydoc"><span class="sig"><span class="sig-name">save_docs</span>(<span class="sig-arg">self</span>,
         <span class="sig-arg">docs</span>,
         <span class="sig-arg">use_uuids</span>=<span class="sig-default">True</span>,
-        <span class="sig-arg">all_or_nothing</span>=<span class="sig-default">False</span>)</span>
+        <span class="sig-arg">all_or_nothing</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">**params</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="couchdbkit.client-pysrc.html#Database.save_docs">source&nbsp;code</a></span>&nbsp;
@@ -1109,7 +1262,8 @@ couchdb. It will return an updated list of all documents.
   <h3 class="epydoc"><span class="sig"><span class="sig-name">bulk_save</span>(<span class="sig-arg">self</span>,
         <span class="sig-arg">docs</span>,
         <span class="sig-arg">use_uuids</span>=<span class="sig-default">True</span>,
-        <span class="sig-arg">all_or_nothing</span>=<span class="sig-default">False</span>)</span>
+        <span class="sig-arg">all_or_nothing</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">**params</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="couchdbkit.client-pysrc.html#Database.save_docs">source&nbsp;code</a></span>&nbsp;
@@ -1140,7 +1294,9 @@ couchdb. It will return an updated list of all documents.
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">delete_docs</span>(<span class="sig-arg">self</span>,
         <span class="sig-arg">docs</span>,
-        <span class="sig-arg">all_or_nothing</span>=<span class="sig-default">False</span>)</span>
+        <span class="sig-arg">all_or_nothing</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">empty_on_delete</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">**params</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="couchdbkit.client-pysrc.html#Database.delete_docs">source&nbsp;code</a></span>&nbsp;
@@ -1150,6 +1306,16 @@ couchdb. It will return an updated list of all documents.
   <p>bulk delete. It adds '_deleted' member to doc then uses bulk_save to 
   save them.</p>
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>empty_on_delete</code></strong> - default is False if you want to make sure the doc is emptied and 
+          will not be stored as is in Apache CouchDB.</li>
+        <li><strong class="pname"><code>all_or_nothing</code></strong> - In the case of a power failure, when the database restarts either
+          all the changes will have been saved or none of them. However, it
+          does not do conflict checking, so the documents will
+          <p>.. seealso:: `HTTP Bulk Document API 
+          &lt;http://wiki.apache.org/couchdb/HTTP_Bulk_Document_API&gt;`</p></li>
+    </ul></dd>
   </dl>
 </td></tr></table>
 </div>
@@ -1162,7 +1328,9 @@ couchdb. It will return an updated list of all documents.
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">bulk_delete</span>(<span class="sig-arg">self</span>,
         <span class="sig-arg">docs</span>,
-        <span class="sig-arg">all_or_nothing</span>=<span class="sig-default">False</span>)</span>
+        <span class="sig-arg">all_or_nothing</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">empty_on_delete</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">**params</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="couchdbkit.client-pysrc.html#Database.delete_docs">source&nbsp;code</a></span>&nbsp;
@@ -1172,6 +1340,16 @@ couchdb. It will return an updated list of all documents.
   <p>bulk delete. It adds '_deleted' member to doc then uses bulk_save to 
   save them.</p>
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>empty_on_delete</code></strong> - default is False if you want to make sure the doc is emptied and 
+          will not be stored as is in Apache CouchDB.</li>
+        <li><strong class="pname"><code>all_or_nothing</code></strong> - In the case of a power failure, when the database restarts either
+          all the changes will have been saved or none of them. However, it
+          does not do conflict checking, so the documents will
+          <p>.. seealso:: `HTTP Bulk Document API 
+          &lt;http://wiki.apache.org/couchdb/HTTP_Bulk_Document_API&gt;`</p></li>
+    </ul></dd>
   </dl>
 </td></tr></table>
 </div>
@@ -1183,7 +1361,8 @@ couchdb. It will return an updated list of all documents.
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">delete_doc</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">doc</span>)</span>
+        <span class="sig-arg">doc</span>,
+        <span class="sig-arg">**params</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="couchdbkit.client-pysrc.html#Database.delete_doc">source&nbsp;code</a></span>&nbsp;
@@ -1213,7 +1392,8 @@ delete a document or a list of documents
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">copy_doc</span>(<span class="sig-arg">self</span>,
         <span class="sig-arg">doc</span>,
-        <span class="sig-arg">dest</span>=<span class="sig-default">None</span>)</span>
+        <span class="sig-arg">dest</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">headers</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="couchdbkit.client-pysrc.html#Database.copy_doc">source&nbsp;code</a></span>&nbsp;
@@ -1303,6 +1483,7 @@ delete a document or a list of documents
         <span class="sig-arg">view_name</span>,
         <span class="sig-arg">handler</span>=<span class="sig-default"><code class="variable-quote">'</code><code class="variable-string">_fti/_design</code><code class="variable-quote">'</code></span>,
         <span class="sig-arg">wrapper</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">schema</span>=<span class="sig-default">None</span>,
         <span class="sig-arg">**params</span>)</span>
   </h3>
   </td><td align="right" valign="top"
@@ -1324,6 +1505,7 @@ delete a document or a list of documents
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">documents</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">schema</span>=<span class="sig-default">None</span>,
         <span class="sig-arg">wrapper</span>=<span class="sig-default">None</span>,
         <span class="sig-arg">**params</span>)</span>
   </h3>
@@ -1346,6 +1528,7 @@ delete a document or a list of documents
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">iterdocuments</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">schema</span>=<span class="sig-default">None</span>,
         <span class="sig-arg">wrapper</span>=<span class="sig-default">None</span>,
         <span class="sig-arg">**params</span>)</span>
   </h3>
@@ -1372,7 +1555,8 @@ delete a document or a list of documents
         <span class="sig-arg">content</span>,
         <span class="sig-arg">name</span>=<span class="sig-default">None</span>,
         <span class="sig-arg">content_type</span>=<span class="sig-default">None</span>,
-        <span class="sig-arg">content_length</span>=<span class="sig-default">None</span>)</span>
+        <span class="sig-arg">content_length</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">headers</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="couchdbkit.client-pysrc.html#Database.put_attachment">source&nbsp;code</a></span>&nbsp;
@@ -1421,7 +1605,8 @@ delete a document or a list of documents
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">delete_attachment</span>(<span class="sig-arg">self</span>,
         <span class="sig-arg">doc</span>,
-        <span class="sig-arg">name</span>)</span>
+        <span class="sig-arg">name</span>,
+        <span class="sig-arg">headers</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="couchdbkit.client-pysrc.html#Database.delete_attachment">source&nbsp;code</a></span>&nbsp;
@@ -1450,7 +1635,8 @@ delete a document or a list of documents
   <h3 class="epydoc"><span class="sig"><span class="sig-name">fetch_attachment</span>(<span class="sig-arg">self</span>,
         <span class="sig-arg">id_or_doc</span>,
         <span class="sig-arg">name</span>,
-        <span class="sig-arg">stream</span>=<span class="sig-default">False</span>)</span>
+        <span class="sig-arg">stream</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">headers</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="couchdbkit.client-pysrc.html#Database.fetch_attachment">source&nbsp;code</a></span>&nbsp;
@@ -1497,7 +1683,7 @@ delete a document or a list of documents
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Fri Feb 18 10:31:28 2011
+    Generated by Epydoc 3.0.1 on Fri May  4 11:48:40 2012
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

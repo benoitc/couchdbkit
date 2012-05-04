@@ -2,17 +2,21 @@
 #
 # This file is part of couchdbkit released under the MIT license.
 # See the NOTICE for more information.
-#
-# module to fetch and stream changes from a database
-#
+
+"""
+module to fetch and stream changes from a database
+"""
 
 from .utils import json
 
-class ChangesStream(object):
-    """ change stream object::
 
-        from couchdbkit import Server
-        from couchdbkit.changes import ChangesStream
+class ChangesStream(object):
+    """\
+    Change stream object.
+
+    .. code-block:: python
+
+        from couchdbkit import Server from couchdbkit.changes import ChangesStream
 
         s = Server()
         db = s['testdb']
@@ -23,11 +27,10 @@ class ChangesStream(object):
             print c
 
         print "stream changes"
-        with ChangesStream(db, feed="continuous", heartbeat=True) as stream:
-            for c in stream:
-                print c
-    """
+        with ChangesStream(db, feed="continuous",  heartbeat=True) as stream:
+            for c in stream: print c
 
+    """
 
     def __init__(self, db, **params):
         self.db = db
@@ -50,7 +53,8 @@ class ChangesStream(object):
                     line = line[:-2]
                 else:
                     line = line[:-1]
-                if not line: # heartbeat
+                if not line:
+                    #heartbeat
                     continue
 
                 if line.endswith(","):
@@ -67,7 +71,7 @@ class ChangesStream(object):
             try:
                 obj = json.loads(line)
                 return obj
-            except ValueError, e:
+            except ValueError:
                 return None
 
     def __next__(self):
@@ -75,19 +79,24 @@ class ChangesStream(object):
 
 
 def fold(db, fun, acc, since=0):
-    """ fold each changes and accuumulate result using a function
+    """Fold each changes and accuumulate result using a function
 
     Args:
-        @param db: a database object
-        @param fun: a callable with arity 2::
 
-            fun(change_object, acc):
-                return acc
+        @param db: Database, a database object
+        @param fun: function, a callable with arity 2
+        @param since: int, sequence where to start the feed
 
-            if acc == "stop": it will stop
-        @param since: sequence wheer to start the feed
+    @return: list, last acc returned
 
-    @return: acc last acc returned
+    Ex of function:
+
+        fun(change_object,acc):
+            return acc
+
+    If the function return "stop", the changes feed will stop.
+
+
     """
 
     if not callable(fun):
@@ -100,7 +109,8 @@ def fold(db, fun, acc, since=0):
 
 
 def foreach(db, fun, since=0):
-    """ iter each changes and pass it to the callable """
+    """Iter each changes and pass it to the callable"""
+
     if not callable(fun):
         raise TypeError("fun isn't a callable")
 

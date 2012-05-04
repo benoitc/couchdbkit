@@ -3,7 +3,8 @@
 # This file is part of couchdbkit released under the MIT license.
 # See the NOTICE for more information.
 
-""" Schema is an easy way to map couchdb object in pythoin object. It's
+"""\
+Schema is an easy way to map couchdb object in pythoin object. It's
 similar to ORMs but with all couchdb glory.
 
 An application describes the kinds of data it uses with a Document object. A
@@ -43,8 +44,8 @@ arguments.
     pet.weight_in_pounds = 24
 
 
-  Document is dynamic
---------------------
+Document is dynamic
+-------------------
 
 Sometimes it is usefull to have different properties on each document. CouchDB
 allows it, so why not having it in python. A document can have both dynamic and
@@ -153,7 +154,6 @@ This method isn't really threadsafe since once class will share a db
 reference across threads, changing a db to a class will be applied to
 all threads. It's better to use the db object methods if you want to be
 threadsafe.
-
 """
 
 from .properties import (

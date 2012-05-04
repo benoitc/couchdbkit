@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -
 #
-# This file is part of couchdbkit released under the MIT license. 
+# This file is part of couchdbkit released under the MIT license.
 # See the NOTICE for more information.
 
 from repoze.what.adapters import BaseSourceAdapter
@@ -9,7 +9,8 @@ from repoze.who.interfaces import IMetadataProvider
 from zope.interface import implements
 
 class GroupAdapter(BaseSourceAdapter):
-    """Group adapter. Use 'auth/group_users' to retrieve group's users"""
+    """ group adapter """
+
     def __init__(self, user_class):
         self.user_class = user_class
 
@@ -20,9 +21,7 @@ class GroupAdapter(BaseSourceAdapter):
         raise NotImplementedError()
 
     def _find_sections(self, hint):
-        """
-        Returns the group ids that the user is part of.
-        """
+        """Returns the group ids that the user is part of."""
         user = self.user_class.get(hint['repoze.what.userid'])
         return user.groups
 
@@ -87,4 +86,3 @@ class MDPlugin(object):
             if uid:
                 user = self.user_class.get(uid)
                 identity['user'] = user
-

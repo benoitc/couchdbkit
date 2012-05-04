@@ -1,5 +1,10 @@
 title: Getting help with Couchdbkit
 
-There is a mailing-list for now on "Google groups":http://groups.google.com/group/couchdbkit where you can follow changes and ask questions about Couchdbkit. You can also chat with users and developers on "#couchdbkit irc channel":irc://irc.freenode.net/couchdbkit or send a ticket on "bitbucket":http://github.com/benoitc/couchdbkit/.
+There is a mailing-list for now on "Google
+groups":http://groups.google.com/group/couchdbkit where you can follow changes
+and ask questions about Couchdbkit. You can also chat with users and
+developers on "#couchdbkit irc channel":irc://irc.freenode.net/couchdbkit or
+send a ticket on "bitbucket":http://github.com/benoitc/couchdbkit/.
 
-The best way to get help with Couchdbkit is to email me directly at "benoitc@e-engura.org":mailto:benoitc@e-engura.org .
+The best way to get help with Couchdbkit is to email me directly at
+"benoitc@e-engura.org":mailto:benoitc@apache.org .

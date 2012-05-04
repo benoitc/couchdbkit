@@ -55,16 +55,6 @@
 </b></center><br />
 <h1 class="epydoc">Class Hierarchy</h1>
 <ul class="nomargin-top">
-    <li> <strong class="uidlink">couchdbkit.ext.django.core.management.base.BaseCommand</strong>
-    </li>
-    <li> <strong class="uidlink">couchdbkit.ext.django.forms.forms.BaseForm</strong>
-    </li>
-    <li> <strong class="uidlink">repoze.what.adapters.BaseSourceAdapter</strong>
-    </li>
-    <li> <strong class="uidlink">repoze.what.adapters.BaseSourceAdapter</strong>
-    </li>
-    <li> <strong class="uidlink">couchdbkit.ext.django.test.simple.DjangoTestSuiteRunner</strong>
-    </li>
     <li> <strong class="uidlink">object</strong>:
       <em class="summary">The most base type</em>
     <ul>
@@ -74,22 +64,27 @@
     <li> <strong class="uidlink"><a href="couchdbkit.schema.base.Document-class.html">couchdbkit.schema.base.Document</a></strong>:
       <em class="summary">Full featured document object implementing the following :</em>
     <ul>
-    <li> <strong class="uidlink"><a href="couchdbkit.ext.pylons.auth.model.Group-class.html">couchdbkit.ext.pylons.auth.model.Group</a></strong>:
-      <em class="summary">Group class, contains multiple permissions.</em>
-    </li>
-    <li> <strong class="uidlink"><a href="couchdbkit.ext.pylons.auth.model.Permission-class.html">couchdbkit.ext.pylons.auth.model.Permission</a></strong>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.schema.Document-class.html">couchdbkit.ext.django.schema.Document</a></strong>:
+      <em class="summary">Document object for django extension</em>
     </li>
     <li> <strong class="uidlink"><a href="couchdbkit.schema.base.StaticDocument-class.html">couchdbkit.schema.base.StaticDocument</a></strong>:
       <em class="summary">Shorthand for a document that disallow dynamic properties.</em>
     </li>
-    <li> <strong class="uidlink"><a href="couchdbkit.ext.pylons.auth.model.User-class.html">couchdbkit.ext.pylons.auth.model.User</a></strong>:
-      <em class="summary">The base User model.</em>
-    </li>
     </ul>
     </li>
     </ul>
     </li>
-    <li> <strong class="uidlink"><a href="couchdbkit.ext.pylons.auth.adapters.Authenticator-class.html">couchdbkit.ext.pylons.auth.adapters.Authenticator</a></strong>
+    <li> <strong class="uidlink">django.core.management.base.BaseCommand</strong>:
+      <em class="summary">The base class from which all management commands ultimately
+derive.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.management.commands.sync_finish_couchdb.Command-class.html">couchdbkit.ext.django.management.commands.sync_finish_couchdb.Command</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.management.commands.sync_prepare_couchdb.Command-class.html">couchdbkit.ext.django.management.commands.sync_prepare_couchdb.Command</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.management.commands.sync_couchdb.Command-class.html">couchdbkit.ext.django.management.commands.sync_couchdb.Command</a></strong>
+    </li>
+    </ul>
     </li>
     <li> <strong class="uidlink"><a href="couchdbkit.loaders.BaseDocsLoader-class.html">couchdbkit.loaders.BaseDocsLoader</a></strong>:
       <em class="summary">Baseclass for all doc loaders.</em>
@@ -126,8 +121,6 @@
     </li>
     <li> <strong class="uidlink"><a href="couchdbkit.exceptions.DuplicatePropertyError-class.html">couchdbkit.exceptions.DuplicatePropertyError</a></strong>:
       <em class="summary">exception raised when there is a duplicate property in a model</em>
-    </li>
-    <li> <strong class="uidlink"><a href="greenlet.GreenletExit-class.html">greenlet.GreenletExit</a></strong>
     </li>
     <li> <strong class="uidlink"><a href="couchdbkit.exceptions.InvalidAttachment-class.html">couchdbkit.exceptions.InvalidAttachment</a></strong>:
       <em class="summary">raised when an attachment is invalid</em>
@@ -176,10 +169,9 @@
     </li>
     </ul>
     </li>
-    </ul>
+    <li> <strong class="uidlink"><a href="greenlet.GreenletExit-class.html">greenlet.GreenletExit</a></strong>
     </li>
-    <li> <strong class="uidlink"><a href="couchdbkit.ext.pylons.auth.basic.BasicAuth-class.html">couchdbkit.ext.pylons.auth.basic.BasicAuth</a></strong>:
-      <em class="summary">A basic challenger and identifier</em>
+    </ul>
     </li>
     <li> <strong class="uidlink"><a href="couchdbkit.consumer.ceventlet.ChangeConsumer-class.html">couchdbkit.consumer.ceventlet.ChangeConsumer</a></strong>
     <ul>
@@ -188,6 +180,9 @@
     <li> <strong class="uidlink"><a href="couchdbkit.consumer.ceventlet.LongPollChangeConsumer-class.html">couchdbkit.consumer.ceventlet.LongPollChangeConsumer</a></strong>
     </li>
     </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.changes.ChangesStream-class.html">couchdbkit.changes.ChangesStream</a></strong>:
+      <em class="summary">Change stream object.</em>
     </li>
     <li> <strong class="uidlink">paste.script.command.Command</strong>
     <ul>
@@ -211,6 +206,22 @@
     </li>
     </ul>
     </li>
+    <li> <strong class="uidlink">_abcoll.Container</strong>
+    <ul>
+    <li> <strong class="uidlink">_abcoll.Set</strong>:
+      <em class="summary">A set is a finite, iterable container.</em>
+    <ul>
+    <li> <strong class="uidlink">_abcoll.MutableSet</strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties.LazySet-class.html" onclick="show_private();">couchdbkit.schema.properties.LazySet</a></strong>:
+      <em class="summary">Object to make sure that we keep set and _doc synchronized.</em>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
     <li> <strong class="uidlink"><a href="couchdbkit.wsgi.proxy.CouchdbProxy-class.html">couchdbkit.wsgi.proxy.CouchdbProxy</a></strong>:
       <em class="summary">WSGI application to proxy a couchdb server.</em>
     </li>
@@ -224,6 +235,13 @@
     <li> <strong class="uidlink"><a href="decimal.Decimal-class.html">decimal.Decimal</a></strong>:
       <em class="summary">Floating point class for decimal arithmetic.</em>
     </li>
+    <li> <strong class="uidlink">django.test.simple.DjangoTestSuiteRunner</strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.testrunner.CouchDbKitTestSuiteRunner-class.html">couchdbkit.ext.django.testrunner.CouchDbKitTestSuiteRunner</a></strong>:
+      <em class="summary">A test suite runner for couchdbkit.</em>
+    </li>
+    </ul>
+    </li>
     <li> <strong class="uidlink"><a href="couchdbkit.ext.django.forms.DocumentFormOptions-class.html">couchdbkit.ext.django.forms.DocumentFormOptions</a></strong>
     </li>
     <li> <strong class="uidlink"><a href="couchdbkit.schema.base.DocumentSchema-class.html">couchdbkit.schema.base.DocumentSchema</a></strong>
@@ -234,16 +252,11 @@
     <li> <strong class="uidlink"><a href="couchdbkit.schema.base.Document-class.html">couchdbkit.schema.base.Document</a></strong>:
       <em class="summary">Full featured document object implementing the following :</em>
     <ul>
-    <li> <strong class="uidlink"><a href="couchdbkit.ext.pylons.auth.model.Group-class.html">couchdbkit.ext.pylons.auth.model.Group</a></strong>:
-      <em class="summary">Group class, contains multiple permissions.</em>
-    </li>
-    <li> <strong class="uidlink"><a href="couchdbkit.ext.pylons.auth.model.Permission-class.html">couchdbkit.ext.pylons.auth.model.Permission</a></strong>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.schema.Document-class.html">couchdbkit.ext.django.schema.Document</a></strong>:
+      <em class="summary">Document object for django extension</em>
     </li>
     <li> <strong class="uidlink"><a href="couchdbkit.schema.base.StaticDocument-class.html">couchdbkit.schema.base.StaticDocument</a></strong>:
       <em class="summary">Shorthand for a document that disallow dynamic properties.</em>
-    </li>
-    <li> <strong class="uidlink"><a href="couchdbkit.ext.pylons.auth.model.User-class.html">couchdbkit.ext.pylons.auth.model.User</a></strong>:
-      <em class="summary">The base User model.</em>
     </li>
     </ul>
     </li>
@@ -261,7 +274,21 @@ ans send the response.</em>
     </li>
     <li> <strong class="uidlink"><a href="couchdbkit.designer.fs.FSDoc-class.html">couchdbkit.designer.fs.FSDoc</a></strong>
     </li>
-    <li> <strong class="uidlink"><a href="couchdbkit.ext.pylons.auth.adapters.MDPlugin-class.html">couchdbkit.ext.pylons.auth.adapters.MDPlugin</a></strong>
+    <li> <strong class="uidlink">_abcoll.Iterable</strong>
+    <ul>
+    <li> <strong class="uidlink">_abcoll.Set</strong>:
+      <em class="summary">A set is a finite, iterable container.</em>
+    <ul>
+    <li> <strong class="uidlink">_abcoll.MutableSet</strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties.LazySet-class.html" onclick="show_private();">couchdbkit.schema.properties.LazySet</a></strong>:
+      <em class="summary">Object to make sure that we keep set and _doc synchronized.</em>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    </ul>
     </li>
     <li> <strong class="uidlink"><a href="couchdbkit.ext.django.schema.Options-class.html" onclick="show_private();">couchdbkit.ext.django.schema.Options</a></strong>:
       <em class="summary">class based on django.db.models.options.</em>
@@ -292,7 +319,7 @@ ans send the response.</em>
     <li> <strong class="uidlink"><a href="couchdbkit.schema.properties.FloatProperty-class.html">couchdbkit.schema.properties.FloatProperty</a></strong>:
       <em class="summary">Float property, map to python float</em>
     </li>
-    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties.IntegerProperty-class.html">couchdbkit.schema.properties.IntegerProperty</a></strong>:
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties.IntegerProperty-class.html" onclick="show_private();">couchdbkit.schema.properties.IntegerProperty</a></strong>:
       <em class="summary">Integer property.</em>
     </li>
     <li> <strong class="uidlink"><a href="couchdbkit.schema.properties.ListProperty-class.html">couchdbkit.schema.properties.ListProperty</a></strong>:
@@ -312,6 +339,9 @@ ans send the response.</em>
     <li> <strong class="uidlink"><a href="couchdbkit.schema.properties_proxy.SchemaProperty-class.html">couchdbkit.schema.properties_proxy.SchemaProperty</a></strong>:
       <em class="summary">Schema property.</em>
     </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties.SetProperty-class.html">couchdbkit.schema.properties.SetProperty</a></strong>:
+      <em class="summary">A property that stores a Python set as a list of unique elements.</em>
+    </li>
     <li> <strong class="uidlink"><a href="couchdbkit.schema.properties.StringProperty-class.html">couchdbkit.schema.properties.StringProperty</a></strong>:
       <em class="summary">string property str or unicode property</em>
     </li>
@@ -323,16 +353,11 @@ ans send the response.</em>
     <li> <strong class="uidlink"><a href="couchdbkit.schema.base.Document-class.html">couchdbkit.schema.base.Document</a></strong>:
       <em class="summary">Full featured document object implementing the following :</em>
     <ul>
-    <li> <strong class="uidlink"><a href="couchdbkit.ext.pylons.auth.model.Group-class.html">couchdbkit.ext.pylons.auth.model.Group</a></strong>:
-      <em class="summary">Group class, contains multiple permissions.</em>
-    </li>
-    <li> <strong class="uidlink"><a href="couchdbkit.ext.pylons.auth.model.Permission-class.html">couchdbkit.ext.pylons.auth.model.Permission</a></strong>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.schema.Document-class.html">couchdbkit.ext.django.schema.Document</a></strong>:
+      <em class="summary">Document object for django extension</em>
     </li>
     <li> <strong class="uidlink"><a href="couchdbkit.schema.base.StaticDocument-class.html">couchdbkit.schema.base.StaticDocument</a></strong>:
       <em class="summary">Shorthand for a document that disallow dynamic properties.</em>
-    </li>
-    <li> <strong class="uidlink"><a href="couchdbkit.ext.pylons.auth.model.User-class.html">couchdbkit.ext.pylons.auth.model.User</a></strong>:
-      <em class="summary">The base User model.</em>
     </li>
     </ul>
     </li>
@@ -355,23 +380,46 @@ ans send the response.</em>
     <li> <strong class="uidlink"><a href="couchdbkit.client.Server-class.html">couchdbkit.client.Server</a></strong>:
       <em class="summary">Server object that allows you to access and manage a couchdb node.</em>
     </li>
+    <li> <strong class="uidlink">_abcoll.Sized</strong>
+    <ul>
+    <li> <strong class="uidlink">_abcoll.Set</strong>:
+      <em class="summary">A set is a finite, iterable container.</em>
+    <ul>
+    <li> <strong class="uidlink">_abcoll.MutableSet</strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties.LazySet-class.html" onclick="show_private();">couchdbkit.schema.properties.LazySet</a></strong>:
+      <em class="summary">Object to make sure that we keep set and _doc synchronized.</em>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink">django.utils.encoding.StrAndUnicode</strong>:
+      <em class="summary">A class whose __str__ returns its __unicode__ as a UTF-8 
+        bytestring.</em>
+    <ul>
+    <li> <strong class="uidlink">django.forms.forms.BaseForm</strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.forms.BaseDocumentForm-class.html">couchdbkit.ext.django.forms.BaseDocumentForm</a></strong>:
+      <em class="summary">Base Document Form object</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.forms.DocumentForm-class.html">couchdbkit.ext.django.forms.DocumentForm</a></strong>:
+      <em class="summary">The document form object</em>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
     <li> <strong class="uidlink">unittest.case.TestCase</strong>:
       <em class="summary">A class whose instances are single test cases.</em>
     <ul>
     <li> <strong class="uidlink"><a href="couchdbkit.ext.pylons.test.TestCase-class.html">couchdbkit.ext.pylons.test.TestCase</a></strong>:
       <em class="summary">Basic test class that will be default load all fixtures specified 
         in the fixtures attribute.</em>
-    </li>
-    </ul>
-    </li>
-    <li> <strong class="uidlink"><a href="couchdbkit.client.ViewInterface-class.html">couchdbkit.client.ViewInterface</a></strong>:
-      <em class="summary">Generic object interface used by View and TempView objects.</em>
-    <ul>
-    <li> <strong class="uidlink"><a href="couchdbkit.client.TempView-class.html">couchdbkit.client.TempView</a></strong>:
-      <em class="summary">Object used to wrap a temporary and return ViewResults.</em>
-    </li>
-    <li> <strong class="uidlink"><a href="couchdbkit.client.View-class.html">couchdbkit.client.View</a></strong>:
-      <em class="summary">Object used to wrap a view and return ViewResults.</em>
     </li>
     </ul>
     </li>
@@ -456,6 +504,9 @@ dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
     </li>
     </ul>
     </li>
+    <li> <strong class="uidlink"><a href="set-class.html">set</a></strong>:
+      <em class="summary">set() -&gt; new empty set object set(iterable) -&gt; new set object</em>
+    </li>
     <li> <strong class="uidlink"><a href="datetime.time-class.html">datetime.time</a></strong>:
       <em class="summary">time([hour[, minute[, second[, microsecond[, tzinfo]]]]]) --&gt; a 
         time object</em>
@@ -464,7 +515,16 @@ dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
       <em class="summary">type(object) -&gt; the object's type type(name, bases, dict) -&gt; 
         a new type</em>
     <ul>
+    <li> <strong class="uidlink"><a href="abc.ABCMeta-class.html">abc.ABCMeta</a></strong>:
+      <em class="summary">Metaclass for defining Abstract Base Classes (ABCs).</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.forms.DocumentFormMetaClass-class.html">couchdbkit.ext.django.forms.DocumentFormMetaClass</a></strong>
+    </li>
     <li> <strong class="uidlink"><a href="couchdbkit.schema.base.SchemaProperties-class.html">couchdbkit.schema.base.SchemaProperties</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.schema.DocumentMeta-class.html" onclick="show_private();">couchdbkit.ext.django.schema.DocumentMeta</a></strong>
+    </li>
+    </ul>
     </li>
     </ul>
     </li>
@@ -497,7 +557,7 @@ dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Fri Feb 18 10:31:27 2011
+    Generated by Epydoc 3.0.1 on Fri May  4 11:48:40 2012
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

@@ -12,13 +12,16 @@ Installation
 
 Couchdbkit requires Python 2.x superior to 2.6.
 
-Install from sources::
+To install couchdbkit using pip you must make sure you have a
+recent version of distribute installed::
 
-  $ python setup.py install
+    $ curl -O http://python-distribute.org/distribute_setup.py
+    $ sudo python distribute_setup.py
+    $ easy_install pip
 
-Or from Pypi::
+To install or upgrade to the latest released version of couchdbkit::
 
-  $ easy_install -U couchdbkit
+    $ pip install couchdbkit
   
 Getting started
 ---------------

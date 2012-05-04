@@ -127,31 +127,6 @@ object --+
     </table>
   </td>
 </tr>
-<tr class="private">
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="couchdbkit.schema.base.QueryMixin-class.html#__view" class="summary-sig-name" onclick="show_private();">__view</a>(<span class="summary-sig-arg">cl</span>,
-        <span class="summary-sig-arg">view_type</span>=<span class="summary-sig-default">None</span>,
-        <span class="summary-sig-arg">data</span>=<span class="summary-sig-default">None</span>,
-        <span class="summary-sig-arg">wrapper</span>=<span class="summary-sig-default">None</span>,
-        <span class="summary-sig-arg">dynamic_properties</span>=<span class="summary-sig-default">True</span>,
-        <span class="summary-sig-arg">wrap_doc</span>=<span class="summary-sig-default">True</span>,
-        <span class="summary-sig-arg">classes</span>=<span class="summary-sig-default">None</span>,
-        <span class="summary-sig-arg">**params</span>)</span><br />
-      The default wrapper can distinguish between multiple Document classes
-      and wrap the result accordingly.</td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="couchdbkit.schema.base-pysrc.html#QueryMixin.__view">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
@@ -161,7 +136,7 @@ object --+
           <td><span class="summary-sig"><a href="couchdbkit.schema.base.QueryMixin-class.html#view" class="summary-sig-name">view</a>(<span class="summary-sig-arg">cls</span>,
         <span class="summary-sig-arg">view_name</span>,
         <span class="summary-sig-arg">wrapper</span>=<span class="summary-sig-default">None</span>,
-        <span class="summary-sig-arg">dynamic_properties</span>=<span class="summary-sig-default">True</span>,
+        <span class="summary-sig-arg">dynamic_properties</span>=<span class="summary-sig-default">None</span>,
         <span class="summary-sig-arg">wrap_doc</span>=<span class="summary-sig-default">True</span>,
         <span class="summary-sig-arg">classes</span>=<span class="summary-sig-default">None</span>,
         <span class="summary-sig-arg">**params</span>)</span><br />
@@ -184,7 +159,7 @@ object --+
           <td><span class="summary-sig"><a href="couchdbkit.schema.base.QueryMixin-class.html#temp_view" class="summary-sig-name">temp_view</a>(<span class="summary-sig-arg">cls</span>,
         <span class="summary-sig-arg">design</span>,
         <span class="summary-sig-arg">wrapper</span>=<span class="summary-sig-default">None</span>,
-        <span class="summary-sig-arg">dynamic_properties</span>=<span class="summary-sig-default">True</span>,
+        <span class="summary-sig-arg">dynamic_properties</span>=<span class="summary-sig-default">None</span>,
         <span class="summary-sig-arg">wrap_doc</span>=<span class="summary-sig-default">True</span>,
         <span class="summary-sig-arg">classes</span>=<span class="summary-sig-default">None</span>,
         <span class="summary-sig-arg">**params</span>)</span><br />
@@ -242,36 +217,6 @@ object --+
   </td>
 </tr>
 </table>
-<a name="__view"></a>
-<div class="private">
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">__view</span>(<span class="sig-arg">cl</span>,
-        <span class="sig-arg">view_type</span>=<span class="sig-default">None</span>,
-        <span class="sig-arg">data</span>=<span class="sig-default">None</span>,
-        <span class="sig-arg">wrapper</span>=<span class="sig-default">None</span>,
-        <span class="sig-arg">dynamic_properties</span>=<span class="sig-default">True</span>,
-        <span class="sig-arg">wrap_doc</span>=<span class="sig-default">True</span>,
-        <span class="sig-arg">classes</span>=<span class="sig-default">None</span>,
-        <span class="sig-arg">**params</span>)</span>
-    <br /><em class="fname">Class Method</em>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="couchdbkit.schema.base-pysrc.html#QueryMixin.__view">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  <p>The default wrapper can distinguish between multiple Document classes 
-  and wrap the result accordingly. The known classes are passed either as 
-  classes={&lt;doc_type&gt;: &lt;Document-class&gt;, ...} or 
-  classes=[&lt;Document-class1&gt;, &lt;Document-class2&gt;, ...]</p>
-  <dl class="fields">
-  </dl>
-</td></tr></table>
-</div>
 <a name="view"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -282,7 +227,7 @@ object --+
   <h3 class="epydoc"><span class="sig"><span class="sig-name">view</span>(<span class="sig-arg">cls</span>,
         <span class="sig-arg">view_name</span>,
         <span class="sig-arg">wrapper</span>=<span class="sig-default">None</span>,
-        <span class="sig-arg">dynamic_properties</span>=<span class="sig-default">True</span>,
+        <span class="sig-arg">dynamic_properties</span>=<span class="sig-default">None</span>,
         <span class="sig-arg">wrap_doc</span>=<span class="sig-default">True</span>,
         <span class="sig-arg">classes</span>=<span class="sig-default">None</span>,
         <span class="sig-arg">**params</span>)</span>
@@ -312,7 +257,7 @@ object --+
   <h3 class="epydoc"><span class="sig"><span class="sig-name">temp_view</span>(<span class="sig-arg">cls</span>,
         <span class="sig-arg">design</span>,
         <span class="sig-arg">wrapper</span>=<span class="sig-default">None</span>,
-        <span class="sig-arg">dynamic_properties</span>=<span class="sig-default">True</span>,
+        <span class="sig-arg">dynamic_properties</span>=<span class="sig-default">None</span>,
         <span class="sig-arg">wrap_doc</span>=<span class="sig-default">True</span>,
         <span class="sig-arg">classes</span>=<span class="sig-default">None</span>,
         <span class="sig-arg">**params</span>)</span>
@@ -359,7 +304,7 @@ object --+
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Fri Feb 18 10:31:28 2011
+    Generated by Epydoc 3.0.1 on Fri May  4 11:48:41 2012
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

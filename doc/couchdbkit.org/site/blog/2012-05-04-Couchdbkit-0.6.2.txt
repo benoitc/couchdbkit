@@ -1,0 +1,16 @@
+title: Couchdbkit version 0.6.2 released
+content_type: textile
+page_type: blog
+template: blog/post.html
+
+New release for "Couchdbkit":http://couchdbkit.org.
+
+
+Compare changes from 0.6.1 to 0.6.2 on
+"github":https://github.com/benoitc/couchdbkit/compare/0.6.1...0.6.2 .
+
+
+
+
+You can download latest release on
+"Pypi":http://pypi.python.org/pypi/couchdbkit/0.6.0 or check "download page":../download.html for other ways.

@@ -10,52 +10,19 @@ To install Couchdb follow the documentation on  "CouchDB wiki":http://wiki.apach
 
 h2. 2. Installing Couchdbkit
 
-Couchdbkit <b>requires python2.x >= 2.5.4</b> to work. python 3.x will be supported soon. 
+Couchdbkit <b>requires python2.x >= 2.6.0</b> to work. python 3.x will be supported soon.
 
-h3. 2.1 Installing with easy_install
-
-To install Couchdbkit using easy_install you must make sure you have a recent version of setuptools installed (as of this writing, 0.6c6 (0.6a9 on windows) or later):
+To install couchdbkit using pip you must make sure you have a
+recent version of distribute installed:
 
 <pre class="code prettyprint">
-$ curl -O http://peak.telecommunity.com/dist/ez_setup.py
-$ sudo python ez_setup.py -U setuptools
+    $ curl -O http://python-distribute.org/distribute_setup.py
+    $ sudo python distribute_setup.py
+    $ easy_install pip
 </pre>
 
-To install or upgrade to the latest released version of Couchdbkit:
-
-<pre class="code prettyprint">$ sudo easy_install -U Couchdbkit</pre>
-
-h3. 2.2 Installing from source
-
-To install Couchdbkit from source, simply use the normal procedure for installing any Python package. Since Couchdbkit uses setuptools, all dependencies (including setuptools itself) will be automatically acquired and installed for you as appropriate.
-
-h4. Fetch sources
-
-You could download latest sources from "Github Downloads":http://github.com/benoitc/couchdbkit/downloads
-
-Or fetch them with hg. Therefore we have to "install git":http://git-scm.com/ and then run :
+To install or upgrade to the latest released version of couchdbkit:
 
 <pre class="code prettyprint">
-$ git clone http://github.com/benoitc/couchdbkit.git
-</pre>
-
-h4. install Couchdbkit
-
-<pre class="code prettyprint">
-$ python setup.py install
-</pre>
-
-If you're using a hg clone, it's recommended to use the setuptools develop command, which will simply activate Couchdbkit directly from your source directory. This way you can do a hg fetch or make changes to the source code without re-installing every time:
-
-<pre class="code prettyprint">
-$ python setup.py develop
-</pre>
-
-3. Install requirements
-
-If you don't use python 2.6x or want to use a faster solution, you will
-need to install a simplejson, a json serializer: 
-
-<pre class="code prettyprint">
-$ easy_install -U simplejson
+    $ pip install couchdbkit
 </pre>
