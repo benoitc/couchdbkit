@@ -147,7 +147,7 @@ class Property(object):
 
     def empty(self, value):
         """ test if value is empty """
-        return not value or value is None
+        return (not value and value != 0) or value is None
 
     def _to_python(self, value):
         if value == None:
