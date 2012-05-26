@@ -1,32 +1,25 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -
 #
-# Copyright (c) 2008-2009 Benoit Chesneau <benoitc@e-engura.com> 
-#
-# Permission to use, copy, modify, and distribute this software for any
-# purpose with or without fee is hereby granted, provided that the above
-# copyright notice and this permission notice appear in all copies.
-#
-# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+# This file is part of couchdbkit released under the MIT license.
+# See the NOTICE for more information.
 
+from imp import load_source
 import os
 import sys
 
 if not hasattr(sys, 'version_info') or sys.version_info < (2, 5, 0, 'final'):
-    raise SystemExit("Couchapp requires Python 2.5 or later.")
+    raise SystemExit("couchdbkit requires Python 2.5 or later.")
 
 from setuptools import setup, find_packages
-from couchdbkit import __version__
+
+# open version module
+version = load_source("version", os.path.join("couchdbkit",
+        "version.py"))
+
 
 setup(
     name = 'couchdbkit',
-    version = __version__,
+    version = version.__version__,
 
     description = 'Python couchdb kit',
     long_description = file(
@@ -46,19 +39,29 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Operating System :: OS Independent',
-        'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.5',
+        'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 2.7',
         'Topic :: Database',
         'Topic :: Utilities',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
     packages = find_packages(exclude=['tests']),
-        
+
     zip_safe = False,
 
     install_requires = [
-        'restkit>=1.0',
-        'anyjson'
+        'restkit>=3.3',
+        'nose'
     ],
-        
-    test_suite='noses',
+
+    entry_points="""
+    [couchdbkit.consumers]
+    sync=couchdbkit.consumer.sync:SyncConsumer
+    eventlet=couchdbkit.consumer.ceventlet:EventletConsumer
+    gevent=couchdbkit.consumer.cgevent:GeventConsumer
+    """,
+
+    test_suite='nose.collector',
 )

@@ -6,6 +6,7 @@
 """
 All exceptions used in couchdbkit.
 """
+from restkit.errors import ResourceError
 
 class InvalidAttachment(Exception):
     """ raised when an attachment is invalid """
@@ -36,8 +37,25 @@ class BulkSaveError(Exception):
     """ exception raised when bulk save contain errors.
     error are saved in `errors` property.
     """
-    def __init__(self, errors, *args):
+    def __init__(self, errors, results, *args):
         self.errors = errors
+        self.results = results
 
 class ViewServerError(Exception):
     """ exception raised by view server"""
+
+class MacroError(Exception):
+    """ exception raised when macro parsiing error in functions """
+
+class DesignerError(Exception):
+    """ unkown exception raised by the designer """
+
+class ResourceNotFound(ResourceError):
+    """ Exception raised when resource is not found"""
+
+class ResourceConflict(ResourceError):
+    """ Exception raised when there is conflict while updating"""
+
+class PreconditionFailed(ResourceError):
+    """ Exception raised when 412 HTTP error is received in response
+    to a request """

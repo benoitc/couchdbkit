@@ -94,6 +94,6 @@ from django.db.models import signals
 def syncdb(app, created_models, verbosity=2, **kwargs):
     """ function used by syncdb signal """
     from couchdbkit.ext.django.loading import couchdbkit_handler
-    couchdbkit_handler.sync(app, verbosity=2)
+    couchdbkit_handler.sync(app, verbosity=verbosity)
 
 signals.post_syncdb.connect(syncdb)

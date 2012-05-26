@@ -5,10 +5,14 @@
 #
 __author__ = 'benoitc@e-engura.com (Benoît Chesneau)'
 
+import base64
 import os
 import shutil
 import tempfile
-import unittest
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
 
 from restkit import ResourceNotFound, RequestFailed
 
@@ -19,14 +23,12 @@ from couchdbkit.utils import *
 class LoaderTestCase(unittest.TestCase):
     
     def setUp(self):
-        f, fname = tempfile.mkstemp()
-        os.unlink(fname)
-        self.tempdir = fname
-        os.makedirs(self.tempdir)
-        
+        self.tempdir = tempfile.mkdtemp()
         self.template_dir = os.path.join(os.path.dirname(__file__), 'data/app-template')
         self.app_dir = os.path.join(self.tempdir, "couchdbkit-test")
         shutil.copytree(self.template_dir, self.app_dir)
+        write_content(os.path.join(self.app_dir, "_id"),
+                "_design/couchdbkit-test")
         self.server = Server()
         self.db = self.server.create_db('couchdbkit_test')
         
@@ -36,6 +38,8 @@ class LoaderTestCase(unittest.TestCase):
                 os.remove(os.path.join(root, name))
             for name in dirs:
                 os.rmdir(os.path.join(root, name))
+
+        os.rmdir(self.tempdir)
         del self.server['couchdbkit_test']
                 
     def testGetDoc(self):
@@ -77,8 +81,8 @@ class LoaderTestCase(unittest.TestCase):
         self.assert_('index.html' in design_doc['_attachments'])
         self.assert_('style/main.css' in design_doc['_attachments'])
         
-        content = open(design_doc['_attachments']['style/main.css'], 'rb').read()
-        self.assert_(content == "/* add styles here */")
+        content = design_doc['_attachments']['style/main.css']
+        self.assert_(base64.b64decode(content['data']) == "/* add styles here */")
         
     def testGetDocSignatures(self):
         l = FileSystemDocsLoader(self.tempdir)

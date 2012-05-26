@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>couchdbkit.schema</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="couchdbkit-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="couchdbkit-module.html">Package&nbsp;couchdbkit</a> ::
+        Package&nbsp;schema
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="couchdbkit.schema-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PACKAGE DESCRIPTION ==================== -->
+<h1 class="epydoc">Package schema</h1><p class="nomargin-top"><span class="codelink"><a href="couchdbkit.schema-pysrc.html">source&nbsp;code</a></span></p>
+<pre class="literalblock">
+Schema is an easy way to map couchdb object in pythoin object. It's
+similar to ORMs but with all couchdb glory.
+
+An application describes the kinds of data it uses with a Document object. A
+document is a Python class that inherits from the `couchdbkit.schema.Document`
+class. The document class defines a new kind of CouchDB document and the
+properties the kind is expected to take.
+
+Document properties are defined using class attributes on the document class.
+Each class attribute is an instance of a subclass of the Property class,
+usually one of the provided property classes. A property instance holds
+configuration for the property, such as whether or not the property is required
+for the instance to be valid, or a default value to use for the instance if
+none is provided.
+
+
+    from couchdbkit import Document
+
+    class Pet(Document):
+        name = schema.StringProperty(required=True)
+        type = schema.StringProperty(required=True)
+        birthdate = schema.DateProperty()
+        weight_in_pounds = schema.IntegerProperty()
+        spayed_or_neutered = schema.BooleanProperty()
+        owner = schema.StringProperty()
+
+An CouchDB document is represented in the API by an instance of the
+corresponding document class. The application can create a new document by
+calling the constructor of the class. The application accesses and manipulates
+properties of the entity using attributes of the instance. The document
+instance constructor accepts initial values for properties as keyword
+arguments.
+
+
+    pet = Pet(name=&quot;Fluffy&quot;,
+          type=&quot;cat&quot;,
+          owner=&quot;Jean&quot;)
+    pet.weight_in_pounds = 24
+
+
+Document is dynamic
+-------------------
+
+Sometimes it is usefull to have different properties on each document. CouchDB
+allows it, so why not having it in python. A document can have both dynamic and
+static property. Any value assigned to an attribute of an instance of a
+document becomes a property of the CouchDB document, using the name of the
+attribute. These properties are known as dynamic properties. Properties defined
+using Property class instances in class attributes are fixed properties.
+
+
+    class Person(Document):
+        first_name = schema.StringProperty()
+        last_name = schema.StringProperty()
+        hobbies = schema.ListProperty()
+
+    p = Person(first_name=&quot;Albert&quot;, last_name=&quot;Johnson&quot;)
+    p.hobbies = [&quot;chess&quot;, &quot;travel&quot;]
+
+    p.chess_elo_rating = 1350
+
+    p.travel_countries_visited = [&quot;Spain&quot;, &quot;Italy&quot;, &quot;USA&quot;, &quot;Brazil&quot;]
+    p.travel_trip_count = 13
+
+Because dynamic properties do not have document property definitions, dynamic
+properties are not validated. Any dynamic property can have a value of any of
+the python types, including None.
+
+Unlike fixed properties, dynamic properties need not exist. A dynamic property
+with a value of None is different from a non-existent dynamic property.  You
+can delete a dynamic property by deleting the attribute.
+
+    del p.chess_elo_rating
+
+A request that uses a dynamic property will only return entities whose value
+for the property is of the same type as the value used in the request.
+Similarly, the request will only return entities with that property set.
+
+
+    p1 = Person()
+    p1.favorite = 42
+    db.save_doc(p1)
+
+    p2 = Person()
+    p2.favorite = &quot;blue&quot;
+    db.save_doc(p2)
+
+    p3 = Person()
+    db.save_doc(p3)
+
+    people = Person.view(db, &quot;person/favorite&quot;, startkey=0, endkey=50)
+    # people has p1, but not p2 or p3
+
+    people = Person.view(db, &quot;person/favorite&quot;)&quot;, startkey=50)
+    # people has no results
+
+
+Some dynamic data in couchdb are automatically converted to their python type.
+Those are datetime, datetime.date, datetime.time and Decimal types. this is
+only possible if date/time fields are :rfc:`8601` strings in the couchdb
+document.
+
+Document inheritance in simplecouchdb work almost identically to the way normal
+class inheritance works in Python.
+
+    class Animal(Document)
+        name = StringProperty(required=True)
+        type = StringProperty(required=True)
+
+    class Pet(Animal):
+        birthdate = DateProperty()
+        weight_in_pounds = IntegerProperty()
+        spayed_or_neutered = BooleanProperty()
+        owner = StringProperty()
+
+The `Pet` document will have 6 properties name, type, birthdate,
+weight_in_pounds, spayed_or_neutered, owner. It can be used as a common
+Document object. Pet and Animal have 2 different doc_type.
+
+For now, there is no way in CouchDB to know that Pet inherit from Animal.
+Though this feature will be implemented soon.
+
+
+Properties and Types
+--------------------
+
+Couchdb supports all Javascript types, including Unicode strings, integers,
+floating point numbers. We also added support for dates and decimal types. Each
+of the CouchDB value type has a corresponding Property class provided by the
+:mod:`simplecouchdb.schema` module.
+
+
+Other way to save on the db.
+----------------------------
+
+If you don't want to use the db object to save doc each time and save
+&#224;la &quot;ORM&quot; you can fix a db to a Document class::
+
+    class A(Dcoument):
+        s = StringProperty()
+
+    A.set_db(db)
+
+    a = A()
+    a.save()
+
+This method isn't really threadsafe since once class will share a db
+reference across threads, changing a db to a class will be applied to
+all threads. It's better to use the db object methods if you want to be
+threadsafe.
+
+</pre>
+
+<!-- ==================== SUBMODULES ==================== -->
+<a name="section-Submodules"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Submodules</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Submodules"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr><td class="summary">
+  <ul class="nomargin">
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.base-module.html">couchdbkit.schema.base</a></strong>: <em class="summary">module that provides a Document object that allows you to map 
+        CouchDB document in Python statically, dynamically or both</em>    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties-module.html">couchdbkit.schema.properties</a></strong>: <em class="summary">properties used by Document object</em>    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties_proxy-module.html">couchdbkit.schema.properties_proxy</a></strong>: <em class="summary">Meta properties</em>    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.util-module.html">couchdbkit.schema.util</a></strong>    </li>
+  </ul></td></tr>
+</table>
+
+<br />
+<!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Functions</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Functions"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="contain"></a><span class="summary-sig-name">contain</span>(<span class="summary-sig-arg">db</span>,
+        <span class="summary-sig-arg">*docs</span>)</span><br />
+      associate a db to multiple `Document` class</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="couchdbkit.schema-pysrc.html#contain">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES ==================== -->
+<a name="section-Variables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Variables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__package__"></a><span class="summary-name">__package__</span> = <code title="'couchdbkit.schema'"><code class="variable-quote">'</code><code class="variable-string">couchdbkit.schema</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+</table>
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="couchdbkit-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Fri May  4 11:48:40 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+title: Couchdbkit version 0.5.5 released 
+content_type: textile
+page_type: blog
+template: blog/post.html
+
+New release for "Couchdbkit":http://couchdbkit.org.  
+
+
+It's now based on latest "restkit":http://benoitc.github.com/restkit 3.2.0 so make sure to upgrade it before
+upgrading. I will try to resume main changes since 0.5.0. I've failed to
+update this blog since, sorry for that. 
+
+Full changelog is also "here":https://github.com/benoitc/couchdbkit/compare/0.5.0...0.5.4
+
+h2. What's new ?
+
+* New SchemaDict property, store dict of things.
+
+Usage:
+ "restkit":http://benoitc.github.com/restkit 3.2.0 
+<pre class="code prettyprint">
+ class A(DocumentSchema):
+     # some properties
+     pass
+
+ class B(Document):
+     p = SchemaDictProperty(A)
+
+ a1 = A()
+ a2 = A()
+ b = B()
+ b.p['str'] = a1
+ b.p[12345] = a2
+</pre>
+
+* support ISO-8601 DateTime format with a timezone offset in
+  DateTimeProperty
+* TestRunner in django extension
+* Query views can return different Document instance based on doc_type
+* Many fixes.
+
+
+You can download latest release on
+"Pypi":http://pypi.python.org/pypi/couchdbkit/0.5.4 or check "download page":../download.html for other ways.

@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -
 #
-# This file is part of couchdbkit released under the MIT license. 
+# This file is part of couchdbkit released under the MIT license.
 # See the NOTICE for more information.
 
-""" Schema is an easy way to map couchdb object in pythoin object. It's
+"""\
+Schema is an easy way to map couchdb object in pythoin object. It's
 similar to ORMs but with all couchdb glory.
 
 An application describes the kinds of data it uses with a Document object. A
@@ -43,8 +44,8 @@ arguments.
     pet.weight_in_pounds = 24
 
 
-  Document is dynamic
---------------------
+Document is dynamic
+-------------------
 
 Sometimes it is usefull to have different properties on each document. CouchDB
 allows it, so why not having it in python. A document can have both dynamic and
@@ -69,7 +70,7 @@ using Property class instances in class attributes are fixed properties.
 
 Because dynamic properties do not have document property definitions, dynamic
 properties are not validated. Any dynamic property can have a value of any of
-the python types, including None. 
+the python types, including None.
 
 Unlike fixed properties, dynamic properties need not exist. A dynamic property
 with a value of None is different from a non-existent dynamic property.  You
@@ -84,14 +85,14 @@ Similarly, the request will only return entities with that property set.
 
     p1 = Person()
     p1.favorite = 42
-    p1.save(db)
+    db.save_doc(p1)
 
     p2 = Person()
     p2.favorite = "blue"
-    p2.save(db)
+    db.save_doc(p2)
 
     p3 = Person()
-    p3.save(db)
+    db.save_doc(p3)
 
     people = Person.view(db, "person/favorite", startkey=0, endkey=50)
     # people has p1, but not p2 or p3
@@ -106,7 +107,7 @@ only possible if date/time fields are :rfc:`8601` strings in the couchdb
 document.
 
 Document inheritance in simplecouchdb work almost identically to the way normal
-class inheritance works in Python.     
+class inheritance works in Python.
 
     class Animal(Document)
         name = StringProperty(required=True)
@@ -124,7 +125,7 @@ Document object. Pet and Animal have 2 different doc_type.
 
 For now, there is no way in CouchDB to know that Pet inherit from Animal.
 Though this feature will be implemented soon.
- 
+
 
 Properties and Types
 --------------------
@@ -134,11 +135,75 @@ floating point numbers. We also added support for dates and decimal types. Each
 of the CouchDB value type has a corresponding Property class provided by the
 :mod:`simplecouchdb.schema` module.
 
+
+Other way to save on the db.
+----------------------------
+
+If you don't want to use the db object to save doc each time and save
+àla "ORM" you can fix a db to a Document class::
+
+    class A(Dcoument):
+        s = StringProperty()
+
+    A.set_db(db)
+
+    a = A()
+    a.save()
+
+This method isn't really threadsafe since once class will share a db
+reference across threads, changing a db to a class will be applied to
+all threads. It's better to use the db object methods if you want to be
+threadsafe.
 """
 
-from couchdbkit.schema.properties import *
-from couchdbkit.schema.base import *
-from couchdbkit.schema.properties_proxy import *
+from .properties import (
+        ALLOWED_PROPERTY_TYPES,
+        Property,
+        StringProperty,
+        IntegerProperty,
+        DecimalProperty,
+        BooleanProperty,
+        FloatProperty,
+        DateTimeProperty,
+        DateProperty,
+        TimeProperty,
+        DictProperty,
+        ListProperty,
+        StringListProperty,
+        SetProperty,
+        dict_to_json,
+        list_to_json,
+        value_to_json,
+        MAP_TYPES_PROPERTIES,
+        value_to_python,
+        dict_to_python,
+        list_to_python,
+        convert_property,
+        value_to_property,
+        LazyDict,
+        LazyList)
+
+try:
+    from .properties import SetProperty, LazySet
+except ImportError:
+    pass
+
+from .base import (
+        ReservedWordError,
+        ALLOWED_PROPERTY_TYPES,
+        DocumentSchema,
+        SchemaProperties,
+        DocumentBase,
+        QueryMixin,
+        AttachmentMixin,
+        Document,
+        StaticDocument,
+        valid_id)
+
+from .properties_proxy import (
+        SchemaProperty,
+        SchemaListProperty,
+        SchemaDictProperty)
 
 def contain(db, *docs):
     """ associate a db to multiple `Document` class"""

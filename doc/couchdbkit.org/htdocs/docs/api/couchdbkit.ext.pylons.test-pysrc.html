@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>couchdbkit.ext.pylons.test</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="couchdbkit-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="couchdbkit-module.html">Package&nbsp;couchdbkit</a> ::
+        <a href="couchdbkit.ext-module.html">Package&nbsp;ext</a> ::
+        <a href="couchdbkit.ext.pylons-module.html">Package&nbsp;pylons</a> ::
+        Module&nbsp;test
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="couchdbkit.ext.pylons.test-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="couchdbkit.ext.pylons.test-module.html">Module couchdbkit.ext.pylons.test</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-comment"># -*- coding: utf-8 -</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-comment"># This file is part of couchdbkit released under the MIT license. </tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-comment"># See the NOTICE for more information.</tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">__future__</tt> <tt class="py-keyword">import</tt> <tt class="py-name">with_statement</tt> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">os</tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">unittest</tt> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-op">.</tt><tt class="py-op">.</tt><tt class="py-op">.</tt> <tt class="py-keyword">import</tt> <tt id="link-0" class="py-name" targets="Class couchdbkit.loaders.BaseDocsLoader=couchdbkit.loaders.BaseDocsLoader-class.html"><a title="couchdbkit.loaders.BaseDocsLoader" class="py-name" href="#" onclick="return doclink('link-0', 'BaseDocsLoader', 'link-0');">BaseDocsLoader</a></tt><tt class="py-op">,</tt> <tt id="link-1" class="py-name" targets="Class couchdbkit.exceptions.ResourceNotFound=couchdbkit.exceptions.ResourceNotFound-class.html"><a title="couchdbkit.exceptions.ResourceNotFound" class="py-name" href="#" onclick="return doclink('link-1', 'ResourceNotFound', 'link-1');">ResourceNotFound</a></tt> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-op">.</tt><tt id="link-2" class="py-name" targets="Module couchdbkit.ext.pylons.db=couchdbkit.ext.pylons.db-module.html"><a title="couchdbkit.ext.pylons.db" class="py-name" href="#" onclick="return doclink('link-2', 'db', 'link-2');">db</a></tt> <tt class="py-keyword">import</tt> <tt id="link-3" class="py-name" targets="Function couchdbkit.ext.pylons.db.init_db()=couchdbkit.ext.pylons.db-module.html#init_db"><a title="couchdbkit.ext.pylons.db.init_db" class="py-name" href="#" onclick="return doclink('link-3', 'init_db', 'link-3');">init_db</a></tt><tt class="py-op">,</tt> <tt id="link-4" class="py-name" targets="Function couchdbkit.ext.pylons.db.sync_design()=couchdbkit.ext.pylons.db-module.html#sync_design"><a title="couchdbkit.ext.pylons.db.sync_design" class="py-name" href="#" onclick="return doclink('link-4', 'sync_design', 'link-4');">sync_design</a></tt><tt class="py-op">,</tt> <tt id="link-5" class="py-name" targets="Function couchdbkit.ext.pylons.db.default_design_path()=couchdbkit.ext.pylons.db-module.html#default_design_path"><a title="couchdbkit.ext.pylons.db.default_design_path" class="py-name" href="#" onclick="return doclink('link-5', 'default_design_path', 'link-5');">default_design_path</a></tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-op">.</tt><tt class="py-op">.</tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Module couchdbkit.utils=couchdbkit.utils-module.html"><a title="couchdbkit.utils" class="py-name" href="#" onclick="return doclink('link-6', 'utils', 'link-6');">utils</a></tt> <tt class="py-keyword">import</tt> <tt class="py-name">json</tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line"> </tt>
+<a name="FixtureLoader"></a><div id="FixtureLoader-def"><a name="L15"></a><tt class="py-lineno">15</tt> <a class="py-toggle" href="#" id="FixtureLoader-toggle" onclick="return toggle('FixtureLoader');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.test.FixtureLoader-class.html">FixtureLoader</a><tt class="py-op">(</tt><tt class="py-base-class">BaseDocsLoader</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="FixtureLoader-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="FixtureLoader-expanded"><a name="FixtureLoader.__init__"></a><div id="FixtureLoader.__init__-def"><a name="L16"></a><tt class="py-lineno">16</tt> <a class="py-toggle" href="#" id="FixtureLoader.__init__-toggle" onclick="return toggle('FixtureLoader.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.test.FixtureLoader-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">directory</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="FixtureLoader.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="FixtureLoader.__init__-expanded"><a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_directory</tt> <tt class="py-op">=</tt> <tt class="py-name">directory</tt> </tt>
+</div><a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line"> </tt>
+<a name="FixtureLoader.get_docs"></a><div id="FixtureLoader.get_docs-def"><a name="L19"></a><tt class="py-lineno">19</tt> <a class="py-toggle" href="#" id="FixtureLoader.get_docs-toggle" onclick="return toggle('FixtureLoader.get_docs');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.test.FixtureLoader-class.html#get_docs">get_docs</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="FixtureLoader.get_docs-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="FixtureLoader.get_docs-expanded"><a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line">        <tt class="py-name">docs</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">fixture</tt> <tt class="py-keyword">in</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">listdir</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_directory</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line">            <tt class="py-name">fixture_path</tt> <tt class="py-op">=</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_directory</tt><tt class="py-op">,</tt> <tt class="py-name">fixture</tt><tt class="py-op">)</tt> </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">isfile</tt><tt class="py-op">(</tt><tt class="py-name">fixture_path</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line">                <tt class="py-keyword">raise</tt> <tt class="py-name">Exception</tt><tt class="py-op">(</tt><tt class="py-string">"Fixture path %s not found"</tt> <tt class="py-op">%</tt> <tt class="py-name">fixture_path</tt><tt class="py-op">)</tt> </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line">            <tt class="py-keyword">with</tt> <tt class="py-name">open</tt><tt class="py-op">(</tt><tt class="py-name">fixture_path</tt><tt class="py-op">,</tt> <tt class="py-string">"r"</tt><tt class="py-op">)</tt> <tt class="py-keyword">as</tt> <tt class="py-name">fp</tt><tt class="py-op">:</tt> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line">                <tt class="py-keyword">for</tt> <tt id="link-7" class="py-name" targets="Method couchdbkit.designer.fs.FSDoc.doc()=couchdbkit.designer.fs.FSDoc-class.html#doc"><a title="couchdbkit.designer.fs.FSDoc.doc" class="py-name" href="#" onclick="return doclink('link-7', 'doc', 'link-7');">doc</a></tt> <tt class="py-keyword">in</tt> <tt class="py-name">json</tt><tt class="py-op">.</tt><tt class="py-name">load</tt><tt class="py-op">(</tt><tt class="py-name">fp</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line">                    <tt class="py-name">docs</tt><tt class="py-op">.</tt><tt id="link-8" class="py-name" targets="Method couchdbkit.schema.properties.LazyList.append()=couchdbkit.schema.properties.LazyList-class.html#append,Method couchdbkit.schema.properties_proxy.LazySchemaList.append()=couchdbkit.schema.properties_proxy.LazySchemaList-class.html#append"><a title="couchdbkit.schema.properties.LazyList.append
+couchdbkit.schema.properties_proxy.LazySchemaList.append" class="py-name" href="#" onclick="return doclink('link-8', 'append', 'link-8');">append</a></tt><tt class="py-op">(</tt><tt id="link-9" class="py-name"><a title="couchdbkit.designer.fs.FSDoc.doc" class="py-name" href="#" onclick="return doclink('link-9', 'doc', 'link-7');">doc</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">docs</tt> </tt>
+</div></div><a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line"> </tt>
+<a name="TestCase"></a><div id="TestCase-def"><a name="L30"></a><tt class="py-lineno">30</tt> <a class="py-toggle" href="#" id="TestCase-toggle" onclick="return toggle('TestCase');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.test.TestCase-class.html">TestCase</a><tt class="py-op">(</tt><tt class="py-base-class">unittest</tt><tt class="py-op">.</tt><tt class="py-base-class">TestCase</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TestCase-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="TestCase-expanded"><a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line"><tt class="py-docstring">    Basic test class that will be default load all fixtures specified in the</tt> </tt>
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line"><tt class="py-docstring">    fixtures attribute.</tt> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="TestCase.__init__"></a><div id="TestCase.__init__-def"><a name="L35"></a><tt class="py-lineno">35</tt> <a class="py-toggle" href="#" id="TestCase.__init__-toggle" onclick="return toggle('TestCase.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.test.TestCase-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-param">args</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TestCase.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="TestCase.__init__-expanded"><a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_config</tt> <tt class="py-op">=</tt> <tt class="py-name">kwargs</tt><tt class="py-op">[</tt><tt class="py-string">'config'</tt><tt class="py-op">]</tt> </tt>
+<a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line">        <tt class="py-keyword">del</tt> <tt class="py-name">kwargs</tt><tt class="py-op">[</tt><tt class="py-string">'config'</tt><tt class="py-op">]</tt> </tt>
+<a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line">        <tt class="py-name">unittest</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Class couchdbkit.ext.pylons.test.TestCase=couchdbkit.ext.pylons.test.TestCase-class.html"><a title="couchdbkit.ext.pylons.test.TestCase" class="py-name" href="#" onclick="return doclink('link-10', 'TestCase', 'link-10');">TestCase</a></tt><tt class="py-op">.</tt><tt id="link-11" class="py-name" targets="Method couchdbkit.changes.ChangesStream.__init__()=couchdbkit.changes.ChangesStream-class.html#__init__,Method couchdbkit.client.Database.__init__()=couchdbkit.client.Database-class.html#__init__,Method couchdbkit.client.Server.__init__()=couchdbkit.client.Server-class.html#__init__,Method couchdbkit.client.ViewResults.__init__()=couchdbkit.client.ViewResults-class.html#__init__,Method couchdbkit.consumer.Consumer.__init__()=couchdbkit.consumer.Consumer-class.html#__init__,Method couchdbkit.consumer.base.ConsumerBase.__init__()=couchdbkit.consumer.base.ConsumerBase-class.html#__init__,Method couchdbkit.consumer.ceventlet.ChangeConsumer.__init__()=couchdbkit.consumer.ceventlet.ChangeConsumer-class.html#__init__,Method couchdbkit.consumer.ceventlet.EventletConsumer.__init__()=couchdbkit.consumer.ceventlet.EventletConsumer-class.html#__init__,Method couchdbkit.consumer.cgevent.ChangeConsumer.__init__()=couchdbkit.consumer.cgevent.ChangeConsumer-class.html#__init__,Method couchdbkit.consumer.cgevent.GeventConsumer.__init__()=couchdbkit.consumer.cgevent.GeventConsumer-class.html#__init__,Method couchdbkit.designer.fs.FSDoc.__init__()=couchdbkit.designer.fs.FSDoc-class.html#__init__,Method couchdbkit.exceptions.BulkSaveError.__init__()=couchdbkit.exceptions.BulkSaveError-class.html#__init__,Method couchdbkit.ext.django.forms.BaseDocumentForm.__init__()=couchdbkit.ext.django.forms.BaseDocumentForm-class.html#__init__,Method couchdbkit.ext.django.forms.DocumentFormOptions.__init__()=couchdbkit.ext.django.forms.DocumentFormOptions-class.html#__init__,Method couchdbkit.ext.django.loading.CouchdbkitHandler.__init__()=couchdbkit.ext.django.loading.CouchdbkitHandler-class.html#__init__,Method couchdbkit.ext.django.schema.Options.__init__()=couchdbkit.ext.django.schema.Options-class.html#__init__,Method couchdbkit.ext.pylons.test.FixtureLoader.__init__()=couchdbkit.ext.pylons.test.FixtureLoader-class.html#__init__,Method couchdbkit.ext.pylons.test.TestCase.__init__()=couchdbkit.ext.pylons.test.TestCase-class.html#__init__,Method couchdbkit.external.External.__init__()=couchdbkit.external.External-class.html#__init__,Method couchdbkit.loaders.FileSystemDocLoader.__init__()=couchdbkit.loaders.FileSystemDocLoader-class.html#__init__,Method couchdbkit.loaders.FileSystemDocsLoader.__init__()=couchdbkit.loaders.FileSystemDocsLoader-class.html#__init__,Method couchdbkit.resource.CouchdbResource.__init__()=couchdbkit.resource.CouchdbResource-class.html#__init__,Method couchdbkit.schema.base.DocumentBase.__init__()=couchdbkit.schema.base.DocumentBase-class.html#__init__,Method couchdbkit.schema.base.DocumentSchema.__init__()=couchdbkit.schema.base.DocumentSchema-class.html#__init__,Method couchdbkit.schema.properties.DateTimeProperty.__init__()=couchdbkit.schema.properties.DateTimeProperty-class.html#__init__,Method couchdbkit.schema.properties.DictProperty.__init__()=couchdbkit.schema.properties.DictProperty-class.html#__init__,Method couchdbkit.schema.properties.LazyDict.__init__()=couchdbkit.schema.properties.LazyDict-class.html#__init__,Method couchdbkit.schema.properties.LazyList.__init__()=couchdbkit.schema.properties.LazyList-class.html#__init__,Method couchdbkit.schema.properties.LazySet.__init__()=couchdbkit.schema.properties.LazySet-class.html#__init__,Method couchdbkit.schema.properties.ListProperty.__init__()=couchdbkit.schema.properties.ListProperty-class.html#__init__,Method couchdbkit.schema.properties.Property.__init__()=couchdbkit.schema.properties.Property-class.html#__init__,Method couchdbkit.schema.properties.SetProperty.__init__()=couchdbkit.schema.properties.SetProperty-class.html#__init__,Method couchdbkit.schema.properties.StringListProperty.__init__()=couchdbkit.schema.properties.StringListProperty-class.html#__init__,Method couchdbkit.schema.properties_proxy.LazySchemaDict.__init__()=couchdbkit.schema.properties_proxy.LazySchemaDict-class.html#__init__,Method couchdbkit.schema.properties_proxy.LazySchemaList.__init__()=couchdbkit.schema.properties_proxy.LazySchemaList-class.html#__init__,Method couchdbkit.schema.properties_proxy.SchemaDictProperty.__init__()=couchdbkit.schema.properties_proxy.SchemaDictProperty-class.html#__init__,Method couchdbkit.schema.properties_proxy.SchemaListProperty.__init__()=couchdbkit.schema.properties_proxy.SchemaListProperty-class.html#__init__,Method couchdbkit.schema.properties_proxy.SchemaProperty.__init__()=couchdbkit.schema.properties_proxy.SchemaProperty-class.html#__init__,Method couchdbkit.wsgi.handler.WSGIHandler.__init__()=couchdbkit.wsgi.handler.WSGIHandler-class.html#__init__,Method couchdbkit.wsgi.handler.WSGIRequest.__init__()=couchdbkit.wsgi.handler.WSGIRequest-class.html#__init__,Method couchdbkit.wsgi.proxy.CouchdbProxy.__init__()=couchdbkit.wsgi.proxy.CouchdbProxy-class.html#__init__"><a title="couchdbkit.changes.ChangesStream.__init__
+couchdbkit.client.Database.__init__
+couchdbkit.client.Server.__init__
+couchdbkit.client.ViewResults.__init__
+couchdbkit.consumer.Consumer.__init__
+couchdbkit.consumer.base.ConsumerBase.__init__
+couchdbkit.consumer.ceventlet.ChangeConsumer.__init__
+couchdbkit.consumer.ceventlet.EventletConsumer.__init__
+couchdbkit.consumer.cgevent.ChangeConsumer.__init__
+couchdbkit.consumer.cgevent.GeventConsumer.__init__
+couchdbkit.designer.fs.FSDoc.__init__
+couchdbkit.exceptions.BulkSaveError.__init__
+couchdbkit.ext.django.forms.BaseDocumentForm.__init__
+couchdbkit.ext.django.forms.DocumentFormOptions.__init__
+couchdbkit.ext.django.loading.CouchdbkitHandler.__init__
+couchdbkit.ext.django.schema.Options.__init__
+couchdbkit.ext.pylons.test.FixtureLoader.__init__
+couchdbkit.ext.pylons.test.TestCase.__init__
+couchdbkit.external.External.__init__
+couchdbkit.loaders.FileSystemDocLoader.__init__
+couchdbkit.loaders.FileSystemDocsLoader.__init__
+couchdbkit.resource.CouchdbResource.__init__
+couchdbkit.schema.base.DocumentBase.__init__
+couchdbkit.schema.base.DocumentSchema.__init__
+couchdbkit.schema.properties.DateTimeProperty.__init__
+couchdbkit.schema.properties.DictProperty.__init__
+couchdbkit.schema.properties.LazyDict.__init__
+couchdbkit.schema.properties.LazyList.__init__
+couchdbkit.schema.properties.LazySet.__init__
+couchdbkit.schema.properties.ListProperty.__init__
+couchdbkit.schema.properties.Property.__init__
+couchdbkit.schema.properties.SetProperty.__init__
+couchdbkit.schema.properties.StringListProperty.__init__
+couchdbkit.schema.properties_proxy.LazySchemaDict.__init__
+couchdbkit.schema.properties_proxy.LazySchemaList.__init__
+couchdbkit.schema.properties_proxy.SchemaDictProperty.__init__
+couchdbkit.schema.properties_proxy.SchemaListProperty.__init__
+couchdbkit.schema.properties_proxy.SchemaProperty.__init__
+couchdbkit.wsgi.handler.WSGIHandler.__init__
+couchdbkit.wsgi.handler.WSGIRequest.__init__
+couchdbkit.wsgi.proxy.CouchdbProxy.__init__" class="py-name" href="#" onclick="return doclink('link-11', '__init__', 'link-11');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-name">args</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line"> </tt>
+<a name="TestCase.setUp"></a><div id="TestCase.setUp-def"><a name="L40"></a><tt class="py-lineno">40</tt> <a class="py-toggle" href="#" id="TestCase.setUp-toggle" onclick="return toggle('TestCase.setUp');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.test.TestCase-class.html#setUp">setUp</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TestCase.setUp-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="TestCase.setUp-expanded"><a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line">        <tt class="py-name">dbname</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_config</tt><tt class="py-op">[</tt><tt class="py-string">'couchdb.db'</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt class="py-name">dbname</tt> </tt>
+<a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line"> </tt>
+<a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line">        <tt class="py-comment"># Set the directory to the fixtures.</tt> </tt>
+<a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line">        <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L45"></a><tt class="py-lineno">45</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_config</tt><tt class="py-op">[</tt><tt class="py-string">'couchdb.db'</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt class="py-name">server</tt><tt class="py-op">.</tt><tt id="link-12" class="py-name" targets="Method couchdbkit.client.Server.delete_db()=couchdbkit.client.Server-class.html#delete_db"><a title="couchdbkit.client.Server.delete_db" class="py-name" href="#" onclick="return doclink('link-12', 'delete_db', 'link-12');">delete_db</a></tt><tt class="py-op">(</tt><tt class="py-name">dbname</tt><tt class="py-op">)</tt> </tt>
+<a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line">        <tt class="py-keyword">except</tt> <tt id="link-13" class="py-name"><a title="couchdbkit.exceptions.ResourceNotFound" class="py-name" href="#" onclick="return doclink('link-13', 'ResourceNotFound', 'link-1');">ResourceNotFound</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line">            <tt class="py-keyword">pass</tt> </tt>
+<a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line"> </tt>
+<a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_config</tt><tt class="py-op">[</tt><tt class="py-string">'couchdb.db'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt id="link-14" class="py-name"><a title="couchdbkit.ext.pylons.db.init_db" class="py-name" href="#" onclick="return doclink('link-14', 'init_db', 'link-3');">init_db</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_config</tt><tt class="py-op">[</tt><tt class="py-string">'couchdb.uri'</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-name">dbname</tt><tt class="py-op">)</tt> </tt>
+<a name="L50"></a><tt class="py-lineno">50</tt>  <tt class="py-line">        <tt id="link-15" class="py-name"><a title="couchdbkit.ext.pylons.db.sync_design" class="py-name" href="#" onclick="return doclink('link-15', 'sync_design', 'link-4');">sync_design</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_config</tt><tt class="py-op">[</tt><tt class="py-string">'couchdb.db'</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt id="link-16" class="py-name"><a title="couchdbkit.ext.pylons.db.default_design_path" class="py-name" href="#" onclick="return doclink('link-16', 'default_design_path', 'link-5');">default_design_path</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_config</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line"> </tt>
+<a name="L52"></a><tt class="py-lineno">52</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">hasattr</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-string">'fixtures'</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L53"></a><tt class="py-lineno">53</tt>  <tt class="py-line">            <tt class="py-name">fixtures_dir</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_config</tt><tt class="py-op">[</tt><tt class="py-string">'couchdb.fixtures'</tt><tt class="py-op">]</tt> </tt>
+<a name="L54"></a><tt class="py-lineno">54</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">isdir</tt><tt class="py-op">(</tt><tt class="py-name">fixtures_dir</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L55"></a><tt class="py-lineno">55</tt>  <tt class="py-line">                <tt class="py-keyword">raise</tt> <tt class="py-name">Exception</tt><tt class="py-op">(</tt><tt class="py-string">"Fixtures dir %s not found"</tt> <tt class="py-op">%</tt> <tt class="py-name">fixtures_dir</tt><tt class="py-op">)</tt> </tt>
+<a name="L56"></a><tt class="py-lineno">56</tt>  <tt class="py-line">            <tt id="link-17" class="py-name" targets="Class couchdbkit.ext.pylons.test.FixtureLoader=couchdbkit.ext.pylons.test.FixtureLoader-class.html"><a title="couchdbkit.ext.pylons.test.FixtureLoader" class="py-name" href="#" onclick="return doclink('link-17', 'FixtureLoader', 'link-17');">FixtureLoader</a></tt><tt class="py-op">(</tt><tt class="py-name">fixtures_dir</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-18" class="py-name" targets="Module couchdbkit.consumer.sync=couchdbkit.consumer.sync-module.html,Method couchdbkit.ext.django.loading.CouchdbkitHandler.sync()=couchdbkit.ext.django.loading.CouchdbkitHandler-class.html#sync,Method couchdbkit.loaders.BaseDocsLoader.sync()=couchdbkit.loaders.BaseDocsLoader-class.html#sync,Method couchdbkit.loaders.FileSystemDocLoader.sync()=couchdbkit.loaders.FileSystemDocLoader-class.html#sync,Method couchdbkit.loaders.FileSystemDocsLoader.sync()=couchdbkit.loaders.FileSystemDocsLoader-class.html#sync"><a title="couchdbkit.consumer.sync
+couchdbkit.ext.django.loading.CouchdbkitHandler.sync
+couchdbkit.loaders.BaseDocsLoader.sync
+couchdbkit.loaders.FileSystemDocLoader.sync
+couchdbkit.loaders.FileSystemDocsLoader.sync" class="py-name" href="#" onclick="return doclink('link-18', 'sync', 'link-18');">sync</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_config</tt><tt class="py-op">[</tt><tt class="py-string">'couchdb.db'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L57"></a><tt class="py-lineno">57</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="couchdbkit-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Fri May  4 11:48:42 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

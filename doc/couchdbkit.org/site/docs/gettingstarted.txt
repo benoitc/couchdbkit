@@ -9,6 +9,7 @@ If you have not installed couchdbkit yet, follow instructions on "download page"
 
 <pre class="code prettyprint">
  import datetime
+ 
  from couchdbkit import *
  
  class Greeting(Document):
@@ -22,6 +23,7 @@ h2. Store the submitted Greetings
 Here is the code to save a greet on `Greeting` database. We also see how to create a database.
 
 <pre class="code prettyprint">
+ 
  # server object
  server = Server()
  
@@ -42,7 +44,7 @@ Here is the code to save a greet on `Greeting` database. We also see how to crea
  greet.save()
 </pre>
 
-Note: Here we use `contain` to associate the db to the <code>Greeting</code> object. This function could be use to associate myltiple dcouemnt objects to one db : <code>contain(db, Doc1, ...)</code> 
+Note: You can just use the <code>db.save</code> method to save any <code>Greeting</code> object.  
 
 
 Your document `greet` is now in the `greetings` db. Each document is saved with a `doc_type` field that allow you to find easily each kind of document with the views. By default `doc_type` is the name of the class.
@@ -95,10 +97,9 @@ A system will be provided to manage view creation and other things. As some noti
 Then we use `FileSystemDocsLoader` object to send the design document to CouchDB:
 
 <pre class="code prettyprint">
- from couchdbkit.loaders import FileSystemDocsLoader
- 
- loader = FileSystemDocsLoader('/path/to/example/_design')
- loader.sync(db, verbose=True)
+ from couchdbkit.designer import push
+
+ push('/path/to/example/_design/greeting', db)
 </pre>
 
 The design doc is now in the `greetings` database and you can get all greets :

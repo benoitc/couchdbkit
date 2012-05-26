@@ -11,10 +11,12 @@ template: index.html
 <p>Couchdbkit provides you a full featured and easy client to access and manage CouchDB. It allows you to manage a CouchDB server, databases, doc managements and view access. All objects mostly reflect python objects for convenience. Server and Databases objects could be used for example as easy as using a dict.</p>
 
 <pre class="code prettyprint">
+from couchdbkit import Server
+
 s = Server()
 
 db = s.create_db("couchbdkit_test")
-db['somedoc'] = { 'test': 'essai' }
+db['someid'] = { 'test': 'essai' }
 doc = db['someid']
 </pre>
 
@@ -34,10 +36,10 @@ greet.homepage = "http://couchdbkit.org"
 </pre>
 <p>Manage easily design docs in your Python application with <code>loaders</code>.</p> 
 <pre class="code prettyprint">
-from couchdbkit.loaders import FileSystemDocsLoader
+from couchdbkit.designer import pushapps
 
-loader = FileSystemDocsLoader('/path/to/designs')
-loader.sync(db)
+pushapps('/path/to/designs', db)
+
 </pre>
 
 </article>

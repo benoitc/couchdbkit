@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>couchdbkit.ext.pylons.commands</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="couchdbkit-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="couchdbkit-module.html">Package&nbsp;couchdbkit</a> ::
+        <a href="couchdbkit.ext-module.html">Package&nbsp;ext</a> ::
+        <a href="couchdbkit.ext.pylons-module.html">Package&nbsp;pylons</a> ::
+        Module&nbsp;commands
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="couchdbkit.ext.pylons.commands-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="couchdbkit.ext.pylons.commands-module.html">Module couchdbkit.ext.pylons.commands</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-comment"># -*- coding: utf-8 -</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-comment"># This file is part of couchdbkit released under the MIT license. </tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-comment"># See the NOTICE for more information.</tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">os</tt> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">paste</tt><tt class="py-op">.</tt><tt class="py-name">deploy</tt> <tt class="py-keyword">import</tt> <tt class="py-name">loadapp</tt> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">paste</tt><tt class="py-op">.</tt><tt class="py-name">script</tt><tt class="py-op">.</tt><tt id="link-0" class="py-name" targets="Method couchdbkit.ext.pylons.commands.SyncDbCommand.command()=couchdbkit.ext.pylons.commands.SyncDbCommand-class.html#command"><a title="couchdbkit.ext.pylons.commands.SyncDbCommand.command" class="py-name" href="#" onclick="return doclink('link-0', 'command', 'link-0');">command</a></tt> <tt class="py-keyword">import</tt> <tt id="link-1" class="py-name" targets="Class couchdbkit.ext.django.management.commands.sync_couchdb.Command=couchdbkit.ext.django.management.commands.sync_couchdb.Command-class.html,Class couchdbkit.ext.django.management.commands.sync_finish_couchdb.Command=couchdbkit.ext.django.management.commands.sync_finish_couchdb.Command-class.html,Class couchdbkit.ext.django.management.commands.sync_prepare_couchdb.Command=couchdbkit.ext.django.management.commands.sync_prepare_couchdb.Command-class.html"><a title="couchdbkit.ext.django.management.commands.sync_couchdb.Command
+couchdbkit.ext.django.management.commands.sync_finish_couchdb.Command
+couchdbkit.ext.django.management.commands.sync_prepare_couchdb.Command" class="py-name" href="#" onclick="return doclink('link-1', 'Command', 'link-1');">Command</a></tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-op">.</tt><tt id="link-2" class="py-name" targets="Module couchdbkit.ext.pylons.db=couchdbkit.ext.pylons.db-module.html"><a title="couchdbkit.ext.pylons.db" class="py-name" href="#" onclick="return doclink('link-2', 'db', 'link-2');">db</a></tt> <tt class="py-keyword">import</tt> <tt id="link-3" class="py-name" targets="Function couchdbkit.ext.pylons.db.sync_design()=couchdbkit.ext.pylons.db-module.html#sync_design"><a title="couchdbkit.ext.pylons.db.sync_design" class="py-name" href="#" onclick="return doclink('link-3', 'sync_design', 'link-3');">sync_design</a></tt><tt class="py-op">,</tt> <tt id="link-4" class="py-name" targets="Function couchdbkit.ext.pylons.db.default_design_path()=couchdbkit.ext.pylons.db-module.html#default_design_path"><a title="couchdbkit.ext.pylons.db.default_design_path" class="py-name" href="#" onclick="return doclink('link-4', 'default_design_path', 'link-4');">default_design_path</a></tt> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line"> </tt>
+<a name="SyncDbCommand"></a><div id="SyncDbCommand-def"><a name="L12"></a><tt class="py-lineno">12</tt> <a class="py-toggle" href="#" id="SyncDbCommand-toggle" onclick="return toggle('SyncDbCommand');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.commands.SyncDbCommand-class.html">SyncDbCommand</a><tt class="py-op">(</tt><tt class="py-base-class">Command</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="SyncDbCommand-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="SyncDbCommand-expanded"><a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line">    <tt class="py-docstring">"""Syncs the CouchDB views on disk with the database.</tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line"><tt class="py-docstring">    Example::</tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line"><tt class="py-docstring">        $ paster syncdb my-development.ini</tt> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line"><tt class="py-docstring">    This will also create the database if it does not exist</tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line">    <tt id="link-5" class="py-name" targets="Variable couchdbkit.ext.pylons.commands.SyncDbCommand.summary=couchdbkit.ext.pylons.commands.SyncDbCommand-class.html#summary"><a title="couchdbkit.ext.pylons.commands.SyncDbCommand.summary" class="py-name" href="#" onclick="return doclink('link-5', 'summary', 'link-5');">summary</a></tt> <tt class="py-op">=</tt> <tt class="py-name">__doc__</tt><tt class="py-op">.</tt><tt class="py-name">splitlines</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line">    <tt id="link-6" class="py-name" targets="Variable couchdbkit.ext.pylons.commands.SyncDbCommand.usage=couchdbkit.ext.pylons.commands.SyncDbCommand-class.html#usage"><a title="couchdbkit.ext.pylons.commands.SyncDbCommand.usage" class="py-name" href="#" onclick="return doclink('link-6', 'usage', 'link-6');">usage</a></tt> <tt class="py-op">=</tt> <tt class="py-string">'\n'</tt> <tt class="py-op">+</tt> <tt class="py-name">__doc__</tt> </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line"> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line">    <tt id="link-7" class="py-name" targets="Variable couchdbkit.ext.pylons.commands.SyncDbCommand.min_args=couchdbkit.ext.pylons.commands.SyncDbCommand-class.html#min_args"><a title="couchdbkit.ext.pylons.commands.SyncDbCommand.min_args" class="py-name" href="#" onclick="return doclink('link-7', 'min_args', 'link-7');">min_args</a></tt> <tt class="py-op">=</tt> <tt class="py-number">1</tt> </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line">    <tt id="link-8" class="py-name" targets="Variable couchdbkit.ext.pylons.commands.SyncDbCommand.max_args=couchdbkit.ext.pylons.commands.SyncDbCommand-class.html#max_args"><a title="couchdbkit.ext.pylons.commands.SyncDbCommand.max_args" class="py-name" href="#" onclick="return doclink('link-8', 'max_args', 'link-8');">max_args</a></tt> <tt class="py-op">=</tt> <tt class="py-number">1</tt> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line">    <tt id="link-9" class="py-name" targets="Variable couchdbkit.ext.pylons.commands.SyncDbCommand.group_name=couchdbkit.ext.pylons.commands.SyncDbCommand-class.html#group_name"><a title="couchdbkit.ext.pylons.commands.SyncDbCommand.group_name" class="py-name" href="#" onclick="return doclink('link-9', 'group_name', 'link-9');">group_name</a></tt> <tt class="py-op">=</tt> <tt class="py-string">'couchdbkit'</tt> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line">    <tt id="link-10" class="py-name" targets="Variable couchdbkit.ext.pylons.commands.SyncDbCommand.default_verbosity=couchdbkit.ext.pylons.commands.SyncDbCommand-class.html#default_verbosity"><a title="couchdbkit.ext.pylons.commands.SyncDbCommand.default_verbosity" class="py-name" href="#" onclick="return doclink('link-10', 'default_verbosity', 'link-10');">default_verbosity</a></tt> <tt class="py-op">=</tt> <tt class="py-number">3</tt> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line">    <tt id="link-11" class="py-name" targets="Variable couchdbkit.ext.pylons.commands.SyncDbCommand.parser=couchdbkit.ext.pylons.commands.SyncDbCommand-class.html#parser"><a title="couchdbkit.ext.pylons.commands.SyncDbCommand.parser" class="py-name" href="#" onclick="return doclink('link-11', 'parser', 'link-11');">parser</a></tt> <tt class="py-op">=</tt> <tt id="link-12" class="py-name"><a title="couchdbkit.ext.django.management.commands.sync_couchdb.Command
+couchdbkit.ext.django.management.commands.sync_finish_couchdb.Command
+couchdbkit.ext.django.management.commands.sync_prepare_couchdb.Command" class="py-name" href="#" onclick="return doclink('link-12', 'Command', 'link-1');">Command</a></tt><tt class="py-op">.</tt><tt class="py-name">standard_parser</tt><tt class="py-op">(</tt><tt class="py-name">simulate</tt><tt class="py-op">=</tt><tt class="py-name">True</tt><tt class="py-op">)</tt> </tt>
+<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line"> </tt>
+<a name="SyncDbCommand.command"></a><div id="SyncDbCommand.command-def"><a name="L30"></a><tt class="py-lineno">30</tt> <a class="py-toggle" href="#" id="SyncDbCommand.command-toggle" onclick="return toggle('SyncDbCommand.command');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.pylons.commands.SyncDbCommand-class.html#command">command</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="SyncDbCommand.command-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="SyncDbCommand.command-expanded"><a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line">        <tt class="py-docstring">"""Main command to sync db"""</tt> </tt>
+<a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line">        <tt class="py-name">config_file</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">args</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line"> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line">        <tt class="py-name">config_name</tt> <tt class="py-op">=</tt> <tt class="py-string">'config:%s'</tt> <tt class="py-op">%</tt> <tt class="py-name">config_file</tt> </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line">        <tt class="py-name">here_dir</tt> <tt class="py-op">=</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">getcwd</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line"> </tt>
+<a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">options</tt><tt class="py-op">.</tt><tt class="py-name">quiet</tt><tt class="py-op">:</tt> </tt>
+<a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line">            <tt class="py-comment"># Configure logging from the config file</tt> </tt>
+<a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">logging_file_config</tt><tt class="py-op">(</tt><tt class="py-name">config_file</tt><tt class="py-op">)</tt> </tt>
+<a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line"> </tt>
+<a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line">        <tt class="py-comment"># Load the wsgi app first so that everything is initialized right</tt> </tt>
+<a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line">        <tt class="py-name">wsgiapp</tt> <tt class="py-op">=</tt> <tt class="py-name">loadapp</tt><tt class="py-op">(</tt><tt class="py-name">config_name</tt><tt class="py-op">,</tt> <tt class="py-name">relative_to</tt><tt class="py-op">=</tt><tt class="py-name">here_dir</tt><tt class="py-op">)</tt> </tt>
+<a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line">        <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line">            <tt class="py-name">design_path</tt> <tt class="py-op">=</tt> <tt class="py-name">wsgiapp</tt><tt class="py-op">.</tt><tt class="py-name">config</tt><tt class="py-op">[</tt><tt class="py-string">'couchdb.design'</tt><tt class="py-op">]</tt> </tt>
+<a name="L45"></a><tt class="py-lineno">45</tt>  <tt class="py-line">        <tt class="py-keyword">except</tt> <tt class="py-name">KeyError</tt><tt class="py-op">:</tt> </tt>
+<a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line">            <tt class="py-name">design_path</tt> <tt class="py-op">=</tt> <tt id="link-13" class="py-name"><a title="couchdbkit.ext.pylons.db.default_design_path" class="py-name" href="#" onclick="return doclink('link-13', 'default_design_path', 'link-4');">default_design_path</a></tt><tt class="py-op">(</tt><tt class="py-name">wsgiapp</tt><tt class="py-op">.</tt><tt class="py-name">config</tt><tt class="py-op">)</tt> </tt>
+<a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line"> </tt>
+<a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line">        <tt class="py-comment"># This syncs the main database.</tt> </tt>
+<a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line">        <tt id="link-14" class="py-name"><a title="couchdbkit.ext.pylons.db.sync_design" class="py-name" href="#" onclick="return doclink('link-14', 'sync_design', 'link-3');">sync_design</a></tt><tt class="py-op">(</tt><tt class="py-name">wsgiapp</tt><tt class="py-op">.</tt><tt class="py-name">config</tt><tt class="py-op">[</tt><tt class="py-string">'couchdb.db'</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-name">design_path</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L50"></a><tt class="py-lineno">50</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="couchdbkit-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Fri May  4 11:48:41 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

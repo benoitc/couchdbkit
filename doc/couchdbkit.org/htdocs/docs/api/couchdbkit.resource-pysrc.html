@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>couchdbkit.resource</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="couchdbkit-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="couchdbkit-module.html">Package&nbsp;couchdbkit</a> ::
+        Module&nbsp;resource
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="couchdbkit.resource-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="couchdbkit.resource-module.html">Module couchdbkit.resource</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment"># -*- coding: utf-8 -</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-comment"># This file is part of couchdbkit released under the MIT license.</tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-comment"># See the NOTICE for more information.</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-docstring">couchdb.resource</tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-docstring">~~~~~~~~~~~~~~~~~~~~~~</tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-docstring">This module providess a common interface for all CouchDB request. This</tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-docstring">module makes HTTP request using :mod:`httplib2` module or :mod:`pycurl`</tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-docstring">if available. Just use set transport argument for this.</tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"><tt class="py-docstring">Example:</tt> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-docstring">    &gt;&gt;&gt; resource = CouchdbResource()</tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt class="py-docstring">    &gt;&gt;&gt; info = resource.get()</tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt class="py-docstring">    &gt;&gt;&gt; info['couchdb']</tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"><tt class="py-docstring">    u'Welcome'</tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">base64</tt> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">re</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line"> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">restkit</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Resource</tt><tt class="py-op">,</tt> <tt class="py-name">ClientResponse</tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">restkit</tt><tt class="py-op">.</tt><tt class="py-name">errors</tt> <tt class="py-keyword">import</tt> <tt class="py-name">ResourceError</tt><tt class="py-op">,</tt> <tt class="py-name">RequestFailed</tt><tt class="py-op">,</tt> <tt class="py-name">RequestError</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">restkit</tt><tt class="py-op">.</tt><tt id="link-0" class="py-name" targets="Module couchdbkit.schema.util=couchdbkit.schema.util-module.html"><a title="couchdbkit.schema.util" class="py-name" href="#" onclick="return doclink('link-0', 'util', 'link-0');">util</a></tt> <tt class="py-keyword">import</tt> <tt class="py-name">url_quote</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-op">.</tt> <tt class="py-keyword">import</tt> <tt class="py-name">__version__</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Module couchdbkit.exceptions=couchdbkit.exceptions-module.html"><a title="couchdbkit.exceptions" class="py-name" href="#" onclick="return doclink('link-1', 'exceptions', 'link-1');">exceptions</a></tt> <tt class="py-keyword">import</tt> <tt id="link-2" class="py-name" targets="Class couchdbkit.exceptions.ResourceNotFound=couchdbkit.exceptions.ResourceNotFound-class.html"><a title="couchdbkit.exceptions.ResourceNotFound" class="py-name" href="#" onclick="return doclink('link-2', 'ResourceNotFound', 'link-2');">ResourceNotFound</a></tt><tt class="py-op">,</tt> <tt id="link-3" class="py-name" targets="Class couchdbkit.exceptions.ResourceConflict=couchdbkit.exceptions.ResourceConflict-class.html"><a title="couchdbkit.exceptions.ResourceConflict" class="py-name" href="#" onclick="return doclink('link-3', 'ResourceConflict', 'link-3');">ResourceConflict</a></tt><tt class="py-op">,</tt> \ </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line"><tt id="link-4" class="py-name" targets="Class couchdbkit.exceptions.PreconditionFailed=couchdbkit.exceptions.PreconditionFailed-class.html"><a title="couchdbkit.exceptions.PreconditionFailed" class="py-name" href="#" onclick="return doclink('link-4', 'PreconditionFailed', 'link-4');">PreconditionFailed</a></tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-op">.</tt><tt id="link-5" class="py-name" targets="Module couchdbkit.utils=couchdbkit.utils-module.html"><a title="couchdbkit.utils" class="py-name" href="#" onclick="return doclink('link-5', 'utils', 'link-5');">utils</a></tt> <tt class="py-keyword">import</tt> <tt class="py-name">json</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line"> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line"><tt id="link-6" class="py-name" targets="Variable couchdbkit.resource.USER_AGENT=couchdbkit.resource-module.html#USER_AGENT"><a title="couchdbkit.resource.USER_AGENT" class="py-name" href="#" onclick="return doclink('link-6', 'USER_AGENT', 'link-6');">USER_AGENT</a></tt> <tt class="py-op">=</tt> <tt class="py-string">'couchdbkit/%s'</tt> <tt class="py-op">%</tt> <tt class="py-name">__version__</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line"> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line"><tt class="py-name">RequestFailed</tt> <tt class="py-op">=</tt> <tt class="py-name">RequestFailed</tt> </tt>
+<a name="CouchDBResponse"></a><div id="CouchDBResponse-def"><a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line"> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt> <a class="py-toggle" href="#" id="CouchDBResponse-toggle" onclick="return toggle('CouchDBResponse');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="couchdbkit.resource.CouchDBResponse-class.html">CouchDBResponse</a><tt class="py-op">(</tt><tt class="py-base-class">ClientResponse</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="CouchDBResponse-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="CouchDBResponse-expanded"><a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line"> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="CouchDBResponse.json_body"></a><div id="CouchDBResponse.json_body-def"><a name="L41"></a><tt class="py-lineno"> 41</tt> <a class="py-toggle" href="#" id="CouchDBResponse.json_body-toggle" onclick="return toggle('CouchDBResponse.json_body');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.resource.CouchDBResponse-class.html#json_body">json_body</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="CouchDBResponse.json_body-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="CouchDBResponse.json_body-expanded"><a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line">        <tt class="py-name">body</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">body_string</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line"> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line">        <tt class="py-comment"># try to decode json</tt> </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line">        <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">json</tt><tt class="py-op">.</tt><tt class="py-name">loads</tt><tt class="py-op">(</tt><tt class="py-name">body</tt><tt class="py-op">)</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line">        <tt class="py-keyword">except</tt> <tt class="py-name">ValueError</tt><tt class="py-op">:</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">body</tt> </tt>
+</div></div><a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line"> </tt>
+<a name="CouchdbResource"></a><div id="CouchdbResource-def"><a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line"> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt> <a class="py-toggle" href="#" id="CouchdbResource-toggle" onclick="return toggle('CouchdbResource');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="couchdbkit.resource.CouchdbResource-class.html">CouchdbResource</a><tt class="py-op">(</tt><tt class="py-base-class">Resource</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="CouchdbResource-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="CouchdbResource-expanded"><a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line"> </tt>
+<a name="CouchdbResource.__init__"></a><div id="CouchdbResource.__init__-def"><a name="L53"></a><tt class="py-lineno"> 53</tt> <a class="py-toggle" href="#" id="CouchdbResource.__init__-toggle" onclick="return toggle('CouchdbResource.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.resource.CouchdbResource-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">uri</tt><tt class="py-op">=</tt><tt class="py-string">"http://127.0.0.1:5984"</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">client_opts</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="CouchdbResource.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="CouchdbResource.__init__-expanded"><a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line">        <tt class="py-docstring">"""Constructor for a `CouchdbResource` object.</tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line"><tt class="py-docstring">        CouchdbResource represent an HTTP resource to CouchDB.</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line"><tt class="py-docstring">        @param uri: str, full uri to the server.</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">        <tt class="py-name">client_opts</tt><tt class="py-op">[</tt><tt class="py-string">'response_class'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt id="link-7" class="py-name" targets="Class couchdbkit.resource.CouchDBResponse=couchdbkit.resource.CouchDBResponse-class.html"><a title="couchdbkit.resource.CouchDBResponse" class="py-name" href="#" onclick="return doclink('link-7', 'CouchDBResponse', 'link-7');">CouchDBResponse</a></tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line"> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">        <tt class="py-name">Resource</tt><tt class="py-op">.</tt><tt id="link-8" class="py-name" targets="Method couchdbkit.changes.ChangesStream.__init__()=couchdbkit.changes.ChangesStream-class.html#__init__,Method couchdbkit.client.Database.__init__()=couchdbkit.client.Database-class.html#__init__,Method couchdbkit.client.Server.__init__()=couchdbkit.client.Server-class.html#__init__,Method couchdbkit.client.ViewResults.__init__()=couchdbkit.client.ViewResults-class.html#__init__,Method couchdbkit.consumer.Consumer.__init__()=couchdbkit.consumer.Consumer-class.html#__init__,Method couchdbkit.consumer.base.ConsumerBase.__init__()=couchdbkit.consumer.base.ConsumerBase-class.html#__init__,Method couchdbkit.consumer.ceventlet.ChangeConsumer.__init__()=couchdbkit.consumer.ceventlet.ChangeConsumer-class.html#__init__,Method couchdbkit.consumer.ceventlet.EventletConsumer.__init__()=couchdbkit.consumer.ceventlet.EventletConsumer-class.html#__init__,Method couchdbkit.consumer.cgevent.ChangeConsumer.__init__()=couchdbkit.consumer.cgevent.ChangeConsumer-class.html#__init__,Method couchdbkit.consumer.cgevent.GeventConsumer.__init__()=couchdbkit.consumer.cgevent.GeventConsumer-class.html#__init__,Method couchdbkit.designer.fs.FSDoc.__init__()=couchdbkit.designer.fs.FSDoc-class.html#__init__,Method couchdbkit.exceptions.BulkSaveError.__init__()=couchdbkit.exceptions.BulkSaveError-class.html#__init__,Method couchdbkit.ext.django.forms.BaseDocumentForm.__init__()=couchdbkit.ext.django.forms.BaseDocumentForm-class.html#__init__,Method couchdbkit.ext.django.forms.DocumentFormOptions.__init__()=couchdbkit.ext.django.forms.DocumentFormOptions-class.html#__init__,Method couchdbkit.ext.django.loading.CouchdbkitHandler.__init__()=couchdbkit.ext.django.loading.CouchdbkitHandler-class.html#__init__,Method couchdbkit.ext.django.schema.Options.__init__()=couchdbkit.ext.django.schema.Options-class.html#__init__,Method couchdbkit.ext.pylons.test.FixtureLoader.__init__()=couchdbkit.ext.pylons.test.FixtureLoader-class.html#__init__,Method couchdbkit.ext.pylons.test.TestCase.__init__()=couchdbkit.ext.pylons.test.TestCase-class.html#__init__,Method couchdbkit.external.External.__init__()=couchdbkit.external.External-class.html#__init__,Method couchdbkit.loaders.FileSystemDocLoader.__init__()=couchdbkit.loaders.FileSystemDocLoader-class.html#__init__,Method couchdbkit.loaders.FileSystemDocsLoader.__init__()=couchdbkit.loaders.FileSystemDocsLoader-class.html#__init__,Method couchdbkit.resource.CouchdbResource.__init__()=couchdbkit.resource.CouchdbResource-class.html#__init__,Method couchdbkit.schema.base.DocumentBase.__init__()=couchdbkit.schema.base.DocumentBase-class.html#__init__,Method couchdbkit.schema.base.DocumentSchema.__init__()=couchdbkit.schema.base.DocumentSchema-class.html#__init__,Method couchdbkit.schema.properties.DateTimeProperty.__init__()=couchdbkit.schema.properties.DateTimeProperty-class.html#__init__,Method couchdbkit.schema.properties.DictProperty.__init__()=couchdbkit.schema.properties.DictProperty-class.html#__init__,Method couchdbkit.schema.properties.LazyDict.__init__()=couchdbkit.schema.properties.LazyDict-class.html#__init__,Method couchdbkit.schema.properties.LazyList.__init__()=couchdbkit.schema.properties.LazyList-class.html#__init__,Method couchdbkit.schema.properties.LazySet.__init__()=couchdbkit.schema.properties.LazySet-class.html#__init__,Method couchdbkit.schema.properties.ListProperty.__init__()=couchdbkit.schema.properties.ListProperty-class.html#__init__,Method couchdbkit.schema.properties.Property.__init__()=couchdbkit.schema.properties.Property-class.html#__init__,Method couchdbkit.schema.properties.SetProperty.__init__()=couchdbkit.schema.properties.SetProperty-class.html#__init__,Method couchdbkit.schema.properties.StringListProperty.__init__()=couchdbkit.schema.properties.StringListProperty-class.html#__init__,Method couchdbkit.schema.properties_proxy.LazySchemaDict.__init__()=couchdbkit.schema.properties_proxy.LazySchemaDict-class.html#__init__,Method couchdbkit.schema.properties_proxy.LazySchemaList.__init__()=couchdbkit.schema.properties_proxy.LazySchemaList-class.html#__init__,Method couchdbkit.schema.properties_proxy.SchemaDictProperty.__init__()=couchdbkit.schema.properties_proxy.SchemaDictProperty-class.html#__init__,Method couchdbkit.schema.properties_proxy.SchemaListProperty.__init__()=couchdbkit.schema.properties_proxy.SchemaListProperty-class.html#__init__,Method couchdbkit.schema.properties_proxy.SchemaProperty.__init__()=couchdbkit.schema.properties_proxy.SchemaProperty-class.html#__init__,Method couchdbkit.wsgi.handler.WSGIHandler.__init__()=couchdbkit.wsgi.handler.WSGIHandler-class.html#__init__,Method couchdbkit.wsgi.handler.WSGIRequest.__init__()=couchdbkit.wsgi.handler.WSGIRequest-class.html#__init__,Method couchdbkit.wsgi.proxy.CouchdbProxy.__init__()=couchdbkit.wsgi.proxy.CouchdbProxy-class.html#__init__"><a title="couchdbkit.changes.ChangesStream.__init__
+couchdbkit.client.Database.__init__
+couchdbkit.client.Server.__init__
+couchdbkit.client.ViewResults.__init__
+couchdbkit.consumer.Consumer.__init__
+couchdbkit.consumer.base.ConsumerBase.__init__
+couchdbkit.consumer.ceventlet.ChangeConsumer.__init__
+couchdbkit.consumer.ceventlet.EventletConsumer.__init__
+couchdbkit.consumer.cgevent.ChangeConsumer.__init__
+couchdbkit.consumer.cgevent.GeventConsumer.__init__
+couchdbkit.designer.fs.FSDoc.__init__
+couchdbkit.exceptions.BulkSaveError.__init__
+couchdbkit.ext.django.forms.BaseDocumentForm.__init__
+couchdbkit.ext.django.forms.DocumentFormOptions.__init__
+couchdbkit.ext.django.loading.CouchdbkitHandler.__init__
+couchdbkit.ext.django.schema.Options.__init__
+couchdbkit.ext.pylons.test.FixtureLoader.__init__
+couchdbkit.ext.pylons.test.TestCase.__init__
+couchdbkit.external.External.__init__
+couchdbkit.loaders.FileSystemDocLoader.__init__
+couchdbkit.loaders.FileSystemDocsLoader.__init__
+couchdbkit.resource.CouchdbResource.__init__
+couchdbkit.schema.base.DocumentBase.__init__
+couchdbkit.schema.base.DocumentSchema.__init__
+couchdbkit.schema.properties.DateTimeProperty.__init__
+couchdbkit.schema.properties.DictProperty.__init__
+couchdbkit.schema.properties.LazyDict.__init__
+couchdbkit.schema.properties.LazyList.__init__
+couchdbkit.schema.properties.LazySet.__init__
+couchdbkit.schema.properties.ListProperty.__init__
+couchdbkit.schema.properties.Property.__init__
+couchdbkit.schema.properties.SetProperty.__init__
+couchdbkit.schema.properties.StringListProperty.__init__
+couchdbkit.schema.properties_proxy.LazySchemaDict.__init__
+couchdbkit.schema.properties_proxy.LazySchemaList.__init__
+couchdbkit.schema.properties_proxy.SchemaDictProperty.__init__
+couchdbkit.schema.properties_proxy.SchemaListProperty.__init__
+couchdbkit.schema.properties_proxy.SchemaProperty.__init__
+couchdbkit.wsgi.handler.WSGIHandler.__init__
+couchdbkit.wsgi.handler.WSGIRequest.__init__
+couchdbkit.wsgi.proxy.CouchdbProxy.__init__" class="py-name" href="#" onclick="return doclink('link-8', '__init__', 'link-8');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">uri</tt><tt class="py-op">=</tt><tt class="py-name">uri</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">client_opts</tt><tt class="py-op">)</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">safe</tt> <tt class="py-op">=</tt> <tt class="py-string">":/%"</tt> </tt>
+</div><a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line"> </tt>
+<a name="CouchdbResource.copy"></a><div id="CouchdbResource.copy-def"><a name="L65"></a><tt class="py-lineno"> 65</tt> <a class="py-toggle" href="#" id="CouchdbResource.copy-toggle" onclick="return toggle('CouchdbResource.copy');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.resource.CouchdbResource-class.html#copy">copy</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">path</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-param">headers</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">params</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="CouchdbResource.copy-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="CouchdbResource.copy-expanded"><a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">        <tt class="py-docstring">""" add copy to HTTP verbs """</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Method couchdbkit.resource.CouchdbResource.request()=couchdbkit.resource.CouchdbResource-class.html#request"><a title="couchdbkit.resource.CouchdbResource.request" class="py-name" href="#" onclick="return doclink('link-9', 'request', 'link-9');">request</a></tt><tt class="py-op">(</tt><tt class="py-string">'COPY'</tt><tt class="py-op">,</tt> <tt class="py-name">path</tt><tt class="py-op">=</tt><tt class="py-name">path</tt><tt class="py-op">,</tt> <tt class="py-name">headers</tt><tt class="py-op">=</tt><tt class="py-name">headers</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">params</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line"> </tt>
+<a name="CouchdbResource.request"></a><div id="CouchdbResource.request-def"><a name="L69"></a><tt class="py-lineno"> 69</tt> <a class="py-toggle" href="#" id="CouchdbResource.request-toggle" onclick="return toggle('CouchdbResource.request');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.resource.CouchdbResource-class.html#request">request</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">method</tt><tt class="py-op">,</tt> <tt class="py-param">path</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-param">payload</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-param">headers</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">params</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="CouchdbResource.request-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="CouchdbResource.request-expanded"><a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">        <tt class="py-docstring">""" Perform HTTP call to the couchdb server and manage</tt> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line"><tt class="py-docstring">        JSON conversions, support GET, POST, PUT and DELETE.</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line"><tt class="py-docstring">        Usage example, get infos of a couchdb server on</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line"><tt class="py-docstring">        http://127.0.0.1:5984 :</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line"><tt class="py-docstring">            import couchdbkit.CouchdbResource</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line"><tt class="py-docstring">            resource = couchdbkit.CouchdbResource()</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line"><tt class="py-docstring">            infos = resource.request('GET')</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line"><tt class="py-docstring">        @param method: str, the HTTP action to be performed:</tt> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line"><tt class="py-docstring">            'GET', 'HEAD', 'POST', 'PUT', or 'DELETE'</tt> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line"><tt class="py-docstring">        @param path: str or list, path to add to the uri</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line"><tt class="py-docstring">        @param data: str or string or any object that could be</tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line"><tt class="py-docstring">            converted to JSON.</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line"><tt class="py-docstring">        @param headers: dict, optional headers that will</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line"><tt class="py-docstring">            be added to HTTP request.</tt> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line"><tt class="py-docstring">        @param raw: boolean, response return a Response object</tt> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line"><tt class="py-docstring">        @param params: Optional parameterss added to the request.</tt> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line"><tt class="py-docstring">            Parameterss are for example the parameters for a view. See</tt> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line"><tt class="py-docstring">            `CouchDB View API reference</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line"><tt class="py-docstring">            &lt;http://wiki.apache.org/couchdb/HTTP_view_API&gt;`_ for example.</tt> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line"><tt class="py-docstring">        @return: tuple (data, resp), where resp is an `httplib2.Response`</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line"><tt class="py-docstring">            object and data a python object (often a dict).</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line"> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">        <tt class="py-name">headers</tt> <tt class="py-op">=</tt> <tt class="py-name">headers</tt> <tt class="py-keyword">or</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">        <tt class="py-name">headers</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Method couchdbkit.schema.properties.LazyDict.setdefault()=couchdbkit.schema.properties.LazyDict-class.html#setdefault"><a title="couchdbkit.schema.properties.LazyDict.setdefault" class="py-name" href="#" onclick="return doclink('link-10', 'setdefault', 'link-10');">setdefault</a></tt><tt class="py-op">(</tt><tt class="py-string">'Accept'</tt><tt class="py-op">,</tt> <tt class="py-string">'application/json'</tt><tt class="py-op">)</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">        <tt class="py-name">headers</tt><tt class="py-op">.</tt><tt id="link-11" class="py-name"><a title="couchdbkit.schema.properties.LazyDict.setdefault" class="py-name" href="#" onclick="return doclink('link-11', 'setdefault', 'link-10');">setdefault</a></tt><tt class="py-op">(</tt><tt class="py-string">'User-Agent'</tt><tt class="py-op">,</tt> <tt id="link-12" class="py-name"><a title="couchdbkit.resource.USER_AGENT" class="py-name" href="#" onclick="return doclink('link-12', 'USER_AGENT', 'link-6');">USER_AGENT</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line"> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">payload</tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line">            <tt class="py-comment">#TODO: handle case we want to put in payload json file.</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">hasattr</tt><tt class="py-op">(</tt><tt class="py-name">payload</tt><tt class="py-op">,</tt> <tt class="py-string">'read'</tt><tt class="py-op">)</tt> <tt class="py-keyword">and</tt> <tt class="py-keyword">not</tt> <tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt class="py-name">payload</tt><tt class="py-op">,</tt> <tt class="py-name">basestring</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line">                <tt class="py-name">payload</tt> <tt class="py-op">=</tt> <tt class="py-name">json</tt><tt class="py-op">.</tt><tt class="py-name">dumps</tt><tt class="py-op">(</tt><tt class="py-name">payload</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">encode</tt><tt class="py-op">(</tt><tt class="py-string">'utf-8'</tt><tt class="py-op">)</tt> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line">                <tt class="py-name">headers</tt><tt class="py-op">.</tt><tt id="link-13" class="py-name"><a title="couchdbkit.schema.properties.LazyDict.setdefault" class="py-name" href="#" onclick="return doclink('link-13', 'setdefault', 'link-10');">setdefault</a></tt><tt class="py-op">(</tt><tt class="py-string">'Content-Type'</tt><tt class="py-op">,</tt> <tt class="py-string">'application/json'</tt><tt class="py-op">)</tt> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line"> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line">        <tt class="py-name">params</tt> <tt class="py-op">=</tt> <tt id="link-14" class="py-name" targets="Function couchdbkit.resource.encode_params()=couchdbkit.resource-module.html#encode_params"><a title="couchdbkit.resource.encode_params" class="py-name" href="#" onclick="return doclink('link-14', 'encode_params', 'link-14');">encode_params</a></tt><tt class="py-op">(</tt><tt class="py-name">params</tt><tt class="py-op">)</tt> </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line">        <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line">            <tt class="py-name">resp</tt> <tt class="py-op">=</tt> <tt class="py-name">Resource</tt><tt class="py-op">.</tt><tt id="link-15" class="py-name"><a title="couchdbkit.resource.CouchdbResource.request" class="py-name" href="#" onclick="return doclink('link-15', 'request', 'link-9');">request</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">method</tt><tt class="py-op">,</tt> <tt class="py-name">path</tt><tt class="py-op">=</tt><tt class="py-name">path</tt><tt class="py-op">,</tt> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line">                             <tt class="py-name">payload</tt><tt class="py-op">=</tt><tt class="py-name">payload</tt><tt class="py-op">,</tt> <tt class="py-name">headers</tt><tt class="py-op">=</tt><tt class="py-name">headers</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">params</tt><tt class="py-op">)</tt> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line"> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line">        <tt class="py-keyword">except</tt> <tt class="py-name">ResourceError</tt><tt class="py-op">,</tt> <tt class="py-name">e</tt><tt class="py-op">:</tt> </tt>
+<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line">            <tt class="py-name">msg</tt> <tt class="py-op">=</tt> <tt class="py-name">getattr</tt><tt class="py-op">(</tt><tt class="py-name">e</tt><tt class="py-op">,</tt> <tt class="py-string">'msg'</tt><tt class="py-op">,</tt> <tt class="py-string">''</tt><tt class="py-op">)</tt> </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">e</tt><tt class="py-op">.</tt><tt class="py-name">response</tt> <tt class="py-keyword">and</tt> <tt class="py-name">msg</tt><tt class="py-op">:</tt> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt> <tt class="py-name">e</tt><tt class="py-op">.</tt><tt class="py-name">response</tt><tt class="py-op">.</tt><tt class="py-name">headers</tt><tt class="py-op">.</tt><tt id="link-16" class="py-name" targets="Class Method couchdbkit.schema.base.DocumentBase.get()=couchdbkit.schema.base.DocumentBase-class.html#get"><a title="couchdbkit.schema.base.DocumentBase.get" class="py-name" href="#" onclick="return doclink('link-16', 'get', 'link-16');">get</a></tt><tt class="py-op">(</tt><tt class="py-string">'content-type'</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-string">'application/json'</tt><tt class="py-op">:</tt> </tt>
+<a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line">                    <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line">                        <tt class="py-name">msg</tt> <tt class="py-op">=</tt> <tt class="py-name">json</tt><tt class="py-op">.</tt><tt class="py-name">loads</tt><tt class="py-op">(</tt><tt class="py-name">msg</tt><tt class="py-op">)</tt> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line">                    <tt class="py-keyword">except</tt> <tt class="py-name">ValueError</tt><tt class="py-op">:</tt> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line">                        <tt class="py-keyword">pass</tt> </tt>
+<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line"> </tt>
+<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">type</tt><tt class="py-op">(</tt><tt class="py-name">msg</tt><tt class="py-op">)</tt> <tt class="py-keyword">is</tt> <tt id="link-17" class="py-name" targets="Class dict=dict-class.html"><a title="dict" class="py-name" href="#" onclick="return doclink('link-17', 'dict', 'link-17');">dict</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line">                <tt id="link-18" class="py-name" targets="Class greenlet.error=greenlet.error-class.html"><a title="greenlet.error" class="py-name" href="#" onclick="return doclink('link-18', 'error', 'link-18');">error</a></tt> <tt class="py-op">=</tt> <tt class="py-name">msg</tt><tt class="py-op">.</tt><tt id="link-19" class="py-name"><a title="couchdbkit.schema.base.DocumentBase.get" class="py-name" href="#" onclick="return doclink('link-19', 'get', 'link-16');">get</a></tt><tt class="py-op">(</tt><tt class="py-string">'reason'</tt><tt class="py-op">)</tt> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line">            <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line">                <tt id="link-20" class="py-name"><a title="greenlet.error" class="py-name" href="#" onclick="return doclink('link-20', 'error', 'link-18');">error</a></tt> <tt class="py-op">=</tt> <tt class="py-name">msg</tt> </tt>
+<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line"> </tt>
+<a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">e</tt><tt class="py-op">.</tt><tt class="py-name">status_int</tt> <tt class="py-op">==</tt> <tt class="py-number">404</tt><tt class="py-op">:</tt> </tt>
+<a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line">                <tt class="py-keyword">raise</tt> <tt id="link-21" class="py-name"><a title="couchdbkit.exceptions.ResourceNotFound" class="py-name" href="#" onclick="return doclink('link-21', 'ResourceNotFound', 'link-2');">ResourceNotFound</a></tt><tt class="py-op">(</tt><tt id="link-22" class="py-name"><a title="greenlet.error" class="py-name" href="#" onclick="return doclink('link-22', 'error', 'link-18');">error</a></tt><tt class="py-op">,</tt> <tt class="py-name">http_code</tt><tt class="py-op">=</tt><tt class="py-number">404</tt><tt class="py-op">,</tt> </tt>
+<a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line">                        <tt class="py-name">response</tt><tt class="py-op">=</tt><tt class="py-name">e</tt><tt class="py-op">.</tt><tt class="py-name">response</tt><tt class="py-op">)</tt> </tt>
+<a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line"> </tt>
+<a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line">            <tt class="py-keyword">elif</tt> <tt class="py-name">e</tt><tt class="py-op">.</tt><tt class="py-name">status_int</tt> <tt class="py-op">==</tt> <tt class="py-number">409</tt><tt class="py-op">:</tt> </tt>
+<a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line">                <tt class="py-keyword">raise</tt> <tt id="link-23" class="py-name"><a title="couchdbkit.exceptions.ResourceConflict" class="py-name" href="#" onclick="return doclink('link-23', 'ResourceConflict', 'link-3');">ResourceConflict</a></tt><tt class="py-op">(</tt><tt id="link-24" class="py-name"><a title="greenlet.error" class="py-name" href="#" onclick="return doclink('link-24', 'error', 'link-18');">error</a></tt><tt class="py-op">,</tt> <tt class="py-name">http_code</tt><tt class="py-op">=</tt><tt class="py-number">409</tt><tt class="py-op">,</tt> </tt>
+<a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line">                        <tt class="py-name">response</tt><tt class="py-op">=</tt><tt class="py-name">e</tt><tt class="py-op">.</tt><tt class="py-name">response</tt><tt class="py-op">)</tt> </tt>
+<a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line">            <tt class="py-keyword">elif</tt> <tt class="py-name">e</tt><tt class="py-op">.</tt><tt class="py-name">status_int</tt> <tt class="py-op">==</tt> <tt class="py-number">412</tt><tt class="py-op">:</tt> </tt>
+<a name="L135"></a><tt class="py-lineno">135</tt>  <tt class="py-line">                <tt class="py-keyword">raise</tt> <tt id="link-25" class="py-name"><a title="couchdbkit.exceptions.PreconditionFailed" class="py-name" href="#" onclick="return doclink('link-25', 'PreconditionFailed', 'link-4');">PreconditionFailed</a></tt><tt class="py-op">(</tt><tt id="link-26" class="py-name"><a title="greenlet.error" class="py-name" href="#" onclick="return doclink('link-26', 'error', 'link-18');">error</a></tt><tt class="py-op">,</tt> <tt class="py-name">http_code</tt><tt class="py-op">=</tt><tt class="py-number">412</tt><tt class="py-op">,</tt> </tt>
+<a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line">                        <tt class="py-name">response</tt><tt class="py-op">=</tt><tt class="py-name">e</tt><tt class="py-op">.</tt><tt class="py-name">response</tt><tt class="py-op">)</tt> </tt>
+<a name="L137"></a><tt class="py-lineno">137</tt>  <tt class="py-line">            <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line">                <tt class="py-keyword">raise</tt> </tt>
+<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line">        <tt class="py-keyword">except</tt><tt class="py-op">:</tt> </tt>
+<a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line">            <tt class="py-keyword">raise</tt> </tt>
+<a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line"> </tt>
+<a name="L142"></a><tt class="py-lineno">142</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">resp</tt> </tt>
+</div></div><a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line"> </tt>
+<a name="encode_params"></a><div id="encode_params-def"><a name="L144"></a><tt class="py-lineno">144</tt> <a class="py-toggle" href="#" id="encode_params-toggle" onclick="return toggle('encode_params');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.resource-module.html#encode_params">encode_params</a><tt class="py-op">(</tt><tt class="py-param">params</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="encode_params-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="encode_params-expanded"><a name="L145"></a><tt class="py-lineno">145</tt>  <tt class="py-line">    <tt class="py-docstring">""" encode parameters in json if needed """</tt> </tt>
+<a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line">    <tt class="py-name">_params</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L147"></a><tt class="py-lineno">147</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">params</tt><tt class="py-op">:</tt> </tt>
+<a name="L148"></a><tt class="py-lineno">148</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">name</tt><tt class="py-op">,</tt> <tt class="py-name">value</tt> <tt class="py-keyword">in</tt> <tt class="py-name">params</tt><tt class="py-op">.</tt><tt id="link-27" class="py-name" targets="Method couchdbkit.schema.base.DocumentSchema.items()=couchdbkit.schema.base.DocumentSchema-class.html#items"><a title="couchdbkit.schema.base.DocumentSchema.items" class="py-name" href="#" onclick="return doclink('link-27', 'items', 'link-27');">items</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L149"></a><tt class="py-lineno">149</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">name</tt> <tt class="py-keyword">in</tt> <tt class="py-op">(</tt><tt class="py-string">'key'</tt><tt class="py-op">,</tt> <tt class="py-string">'startkey'</tt><tt class="py-op">,</tt> <tt class="py-string">'endkey'</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L150"></a><tt class="py-lineno">150</tt>  <tt class="py-line">                <tt class="py-name">value</tt> <tt class="py-op">=</tt> <tt class="py-name">json</tt><tt class="py-op">.</tt><tt class="py-name">dumps</tt><tt class="py-op">(</tt><tt class="py-name">value</tt><tt class="py-op">)</tt> </tt>
+<a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line">            <tt class="py-keyword">elif</tt> <tt class="py-name">value</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L152"></a><tt class="py-lineno">152</tt>  <tt class="py-line">                <tt class="py-keyword">continue</tt> </tt>
+<a name="L153"></a><tt class="py-lineno">153</tt>  <tt class="py-line">            <tt class="py-keyword">elif</tt> <tt class="py-keyword">not</tt> <tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt class="py-name">value</tt><tt class="py-op">,</tt> <tt class="py-name">basestring</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L154"></a><tt class="py-lineno">154</tt>  <tt class="py-line">                <tt class="py-name">value</tt> <tt class="py-op">=</tt> <tt class="py-name">json</tt><tt class="py-op">.</tt><tt class="py-name">dumps</tt><tt class="py-op">(</tt><tt class="py-name">value</tt><tt class="py-op">)</tt> </tt>
+<a name="L155"></a><tt class="py-lineno">155</tt>  <tt class="py-line">            <tt class="py-name">_params</tt><tt class="py-op">[</tt><tt class="py-name">name</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">value</tt> </tt>
+<a name="L156"></a><tt class="py-lineno">156</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">_params</tt> </tt>
+</div><a name="L157"></a><tt class="py-lineno">157</tt>  <tt class="py-line"> </tt>
+<a name="escape_docid"></a><div id="escape_docid-def"><a name="L158"></a><tt class="py-lineno">158</tt> <a class="py-toggle" href="#" id="escape_docid-toggle" onclick="return toggle('escape_docid');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.resource-module.html#escape_docid">escape_docid</a><tt class="py-op">(</tt><tt class="py-param">docid</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="escape_docid-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="escape_docid-expanded"><a name="L159"></a><tt class="py-lineno">159</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">docid</tt><tt class="py-op">.</tt><tt class="py-name">startswith</tt><tt class="py-op">(</tt><tt class="py-string">'/'</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L160"></a><tt class="py-lineno">160</tt>  <tt class="py-line">        <tt class="py-name">docid</tt> <tt class="py-op">=</tt> <tt class="py-name">docid</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">:</tt><tt class="py-op">]</tt> </tt>
+<a name="L161"></a><tt class="py-lineno">161</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">docid</tt><tt class="py-op">.</tt><tt class="py-name">startswith</tt><tt class="py-op">(</tt><tt class="py-string">'_design'</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L162"></a><tt class="py-lineno">162</tt>  <tt class="py-line">        <tt class="py-name">docid</tt> <tt class="py-op">=</tt> <tt class="py-string">'_design/%s'</tt> <tt class="py-op">%</tt> <tt class="py-name">url_quote</tt><tt class="py-op">(</tt><tt class="py-name">docid</tt><tt class="py-op">[</tt><tt class="py-number">8</tt><tt class="py-op">:</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-name">safe</tt><tt class="py-op">=</tt><tt class="py-string">''</tt><tt class="py-op">)</tt> </tt>
+<a name="L163"></a><tt class="py-lineno">163</tt>  <tt class="py-line">    <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L164"></a><tt class="py-lineno">164</tt>  <tt class="py-line">        <tt class="py-name">docid</tt> <tt class="py-op">=</tt> <tt class="py-name">url_quote</tt><tt class="py-op">(</tt><tt class="py-name">docid</tt><tt class="py-op">,</tt> <tt class="py-name">safe</tt><tt class="py-op">=</tt><tt class="py-string">''</tt><tt class="py-op">)</tt> </tt>
+<a name="L165"></a><tt class="py-lineno">165</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">docid</tt> </tt>
+</div><a name="L166"></a><tt class="py-lineno">166</tt>  <tt class="py-line"> </tt>
+<a name="L167"></a><tt class="py-lineno">167</tt>  <tt class="py-line"><tt id="link-28" class="py-name" targets="Variable couchdbkit.resource.re_sp=couchdbkit.resource-module.html#re_sp"><a title="couchdbkit.resource.re_sp" class="py-name" href="#" onclick="return doclink('link-28', 're_sp', 'link-28');">re_sp</a></tt> <tt class="py-op">=</tt> <tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">compile</tt><tt class="py-op">(</tt><tt class="py-string">'\s'</tt><tt class="py-op">)</tt> </tt>
+<a name="encode_attachments"></a><div id="encode_attachments-def"><a name="L168"></a><tt class="py-lineno">168</tt> <a class="py-toggle" href="#" id="encode_attachments-toggle" onclick="return toggle('encode_attachments');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.resource-module.html#encode_attachments">encode_attachments</a><tt class="py-op">(</tt><tt class="py-param">attachments</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="encode_attachments-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="encode_attachments-expanded"><a name="L169"></a><tt class="py-lineno">169</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">k</tt><tt class="py-op">,</tt> <tt class="py-name">v</tt> <tt class="py-keyword">in</tt> <tt id="link-29" class="py-name" targets="Method couchdbkit.designer.fs.FSDoc.attachments()=couchdbkit.designer.fs.FSDoc-class.html#attachments"><a title="couchdbkit.designer.fs.FSDoc.attachments" class="py-name" href="#" onclick="return doclink('link-29', 'attachments', 'link-29');">attachments</a></tt><tt class="py-op">.</tt><tt class="py-name">iteritems</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L170"></a><tt class="py-lineno">170</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">v</tt><tt class="py-op">.</tt><tt id="link-30" class="py-name"><a title="couchdbkit.schema.base.DocumentBase.get" class="py-name" href="#" onclick="return doclink('link-30', 'get', 'link-16');">get</a></tt><tt class="py-op">(</tt><tt class="py-string">'stub'</tt><tt class="py-op">,</tt> <tt class="py-name">False</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L171"></a><tt class="py-lineno">171</tt>  <tt class="py-line">            <tt class="py-keyword">continue</tt> </tt>
+<a name="L172"></a><tt class="py-lineno">172</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L173"></a><tt class="py-lineno">173</tt>  <tt class="py-line">            <tt class="py-name">v</tt><tt class="py-op">[</tt><tt class="py-string">'data'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt id="link-31" class="py-name"><a title="couchdbkit.resource.re_sp" class="py-name" href="#" onclick="return doclink('link-31', 're_sp', 'link-28');">re_sp</a></tt><tt class="py-op">.</tt><tt class="py-name">sub</tt><tt class="py-op">(</tt><tt class="py-string">''</tt><tt class="py-op">,</tt> <tt class="py-name">base64</tt><tt class="py-op">.</tt><tt class="py-name">b64encode</tt><tt class="py-op">(</tt><tt class="py-name">v</tt><tt class="py-op">[</tt><tt class="py-string">'data'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L174"></a><tt class="py-lineno">174</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt id="link-32" class="py-name"><a title="couchdbkit.designer.fs.FSDoc.attachments" class="py-name" href="#" onclick="return doclink('link-32', 'attachments', 'link-29');">attachments</a></tt> </tt>
+</div><a name="L175"></a><tt class="py-lineno">175</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="couchdbkit-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Fri May  4 11:48:43 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

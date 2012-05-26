@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>couchdbkit.ext.django</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="couchdbkit-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="couchdbkit-module.html">Package&nbsp;couchdbkit</a> ::
+        <a href="couchdbkit.ext-module.html">Package&nbsp;ext</a> ::
+        Package&nbsp;django
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="couchdbkit.ext.django-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PACKAGE DESCRIPTION ==================== -->
+<h1 class="epydoc">Package django</h1><p class="nomargin-top"><span class="codelink"><a href="couchdbkit.ext.django-pysrc.html">source&nbsp;code</a></span></p>
+<pre class="literalblock">
+
+Extension to use couchdbkit in Django 1.x. It allows you to use couchdbkit
+easily in your django projects.
+
+Just add to your settings the `COUCHDB_DATABASES` that defines 
+
+        COUCHDB_DATABASES = (
+            ('djangoapp.greeting', 'http://127.0.0.1:5984/greeting'),
+        )
+
+This one define the db greeting on url `http://127.0.0.1:5984/greeting`
+for the application `greeting`of djangoapp project.
+
+
+Then add extension to your INSTALLED_APPS before all applications using
+couchdbkit documents :
+
+    INSTALLED_APPS = (
+        ....
+        'couchdbkit.ext.django',
+        ....
+    )
+
+Add your documents objects in models.py : 
+
+    from couchdbkit.ext.django.schema import *
+    class Greeting(Document):
+        author = StringProperty()
+        content = StringProperty(required=True)
+        date = DateTimeProperty(default=datetimee.utcnow)
+
+and use it in your views.py :
+        
+    class GreetingForm(DocumentForm):
+        
+        class Meta:
+            document = Greeting
+
+    def home(request):
+        
+        greet = None
+        
+        if request.POST:
+            form = GreetingForm(request.POST)
+            if form.is_valid():
+                greet = form.save()  
+        else:
+            form = GreetingForm()
+            
+        greetings = Greeting.view('greeting/all')
+        
+        return render(&quot;home.html&quot;, {
+            &quot;form&quot;: form,
+            &quot;greet&quot;: greet,
+            &quot;greetings&quot;: greetings
+        }, context_instance=RequestContext(request)
+
+You could notice in this example the `DocumentForm` object. 
+This object works like the ModelForm object but for couchdb
+documents. Very easy.
+
+Views/shows/lists are created in _design folder of your application.
+exemple :
+
+    /yourapp
+    /yourapp/_design
+    /yourapp/_design/views
+    /yourapp/_design/views/viewname
+    /yourapp/_design/views/viewname/map.js
+    ....
+
+To create databases and sync views, just run the usual `syncdb` command.
+It won't destroy your datas, just synchronize views.
+
+</pre>
+
+<!-- ==================== SUBMODULES ==================== -->
+<a name="section-Submodules"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Submodules</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Submodules"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr><td class="summary">
+  <ul class="nomargin">
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.forms-module.html">couchdbkit.ext.django.forms</a></strong>: <em class="summary">Implement DocumentForm object.</em>    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.loading-module.html">couchdbkit.ext.django.loading</a></strong>: <em class="summary">Maintain registry of documents used in your django project and 
+        manage db sessions</em>    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.management-module.html">couchdbkit.ext.django.management</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.management.commands-module.html">couchdbkit.ext.django.management.commands</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.management.commands.sync_couchdb-module.html">couchdbkit.ext.django.management.commands.sync_couchdb</a></strong>    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.management.commands.sync_finish_couchdb-module.html">couchdbkit.ext.django.management.commands.sync_finish_couchdb</a></strong>    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.management.commands.sync_prepare_couchdb-module.html">couchdbkit.ext.django.management.commands.sync_prepare_couchdb</a></strong>    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.schema-module.html">couchdbkit.ext.django.schema</a></strong>: <em class="summary">Wrapper of couchdbkit Document and Properties for django.</em>    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.testrunner-module.html">couchdbkit.ext.django.testrunner</a></strong>    </li>
+  </ul></td></tr>
+</table>
+
+<br />
+<!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Functions</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Functions"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="syncdb"></a><span class="summary-sig-name">syncdb</span>(<span class="summary-sig-arg">app</span>,
+        <span class="summary-sig-arg">created_models</span>,
+        <span class="summary-sig-arg">verbosity</span>=<span class="summary-sig-default">2</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span><br />
+      function used by syncdb signal</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="couchdbkit.ext.django-pysrc.html#syncdb">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES ==================== -->
+<a name="section-Variables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Variables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__package__"></a><span class="summary-name">__package__</span> = <code title="'couchdbkit.ext.django'"><code class="variable-quote">'</code><code class="variable-string">couchdbkit.ext.django</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+</table>
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="couchdbkit-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Fri May  4 11:48:40 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

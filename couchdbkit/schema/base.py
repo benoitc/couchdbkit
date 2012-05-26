@@ -1,24 +1,19 @@
 # -*- coding: utf-8 -
 #
-# This file is part of couchdbkit released under the MIT license. 
+# This file is part of couchdbkit released under the MIT license.
 # See the NOTICE for more information.
 
 """ module that provides a Document object that allows you
 to map CouchDB document in Python statically, dynamically or both
 """
 
-import datetime
-import decimal
-import re
-import warnings
 
-from couchdbkit.client import Database
-from couchdbkit.schema import properties as p
-from couchdbkit.schema.properties import value_to_python, \
+from . import properties as p
+from .properties import value_to_python, \
 convert_property, MAP_TYPES_PROPERTIES, ALLOWED_PROPERTY_TYPES, \
-LazyDict, LazyList, value_to_json
-from couchdbkit.exceptions import *
-from couchdbkit.resource import ResourceNotFound
+LazyDict, LazyList
+from ..exceptions import DuplicatePropertyError, ResourceNotFound, \
+ReservedWordError
 
 
 __all__ = ['ReservedWordError', 'ALLOWED_PROPERTY_TYPES', 'DocumentSchema',
@@ -28,6 +23,7 @@ __all__ = ['ReservedWordError', 'ALLOWED_PROPERTY_TYPES', 'DocumentSchema',
 _RESERVED_WORDS = ['_id', '_rev', '$schema']
 
 _NODOC_WORDS = ['doc_type']
+
 
 def check_reserved_words(attr_name):
     if attr_name in _RESERVED_WORDS:
@@ -95,6 +91,7 @@ class DocumentSchema(object):
     _allow_dynamic_properties = True
     _doc = None
     _db = None
+    _doc_type_attr = 'doc_type'
 
     def __init__(self, _d=None, **properties):
         self._dynamic_properties = {}
@@ -106,8 +103,8 @@ class DocumentSchema(object):
             properties.update(_d)
 
         doc_type = getattr(self, '_doc_type', self.__class__.__name__)
-        self._doc['doc_type'] = doc_type
-        
+        self._doc[self._doc_type_attr] = doc_type
+
         for prop in self._properties.values():
             if prop.name in properties:
                 value = properties.pop(prop.name)
@@ -116,6 +113,7 @@ class DocumentSchema(object):
             else:
                 value = prop.default_value()
             prop.__property_init__(self, value)
+            self.__dict__[prop.name] = value
 
         _dynamic_properties = properties.copy()
         for attr_name, value in _dynamic_properties.iteritems():
@@ -141,9 +139,10 @@ class DocumentSchema(object):
             return {}
         return self._dynamic_properties.copy()
 
-    def properties(self):
+    @classmethod
+    def properties(cls):
         """ get dict of defined properties """
-        return self._properties.copy()
+        return cls._properties.copy()
 
     def all_properties(self):
         """ get all properties.
@@ -153,9 +152,9 @@ class DocumentSchema(object):
         return all_properties
 
     def to_json(self):
-        if self._doc.get('doc_type') is None:
+        if self._doc.get(self._doc_type_attr) is None:
             doc_type = getattr(self, '_doc_type', self.__class__.__name__)
-            self._doc['doc_type'] = doc_type
+            self._doc[self._doc_type_attr] = doc_type
         return self._doc
 
     #TODO: add a way to maintain custom dynamic properties
@@ -170,6 +169,14 @@ class DocumentSchema(object):
 
         if key == "_id" and valid_id(value):
             self._doc['_id'] = value
+        elif key == "_deleted":
+            self._doc["_deleted"] = value
+        elif key == "_attachments":
+            if key not in self._doc or not value:
+                self._doc[key] = {}
+            elif not isinstance(self._doc[key], dict):
+                self._doc[key] = {}
+            value = LazyDict(self._doc[key], init_vals=value)
         else:
             check_reserved_words(key)
             if not hasattr( self, key ) and not self._allow_dynamic_properties:
@@ -228,7 +235,10 @@ class DocumentSchema(object):
             return self._dynamic_properties[key]
         elif key  in ('_id', '_rev', '_attachments', 'doc_type'):
             return self._doc.get(key)
-        return getattr(super(DocumentSchema, self), key)
+        try:
+            return self.__dict__[key]
+        except KeyError, e:
+            raise AttributeError(e)
 
     def __getitem__(self, key):
         """ get property value
@@ -236,9 +246,9 @@ class DocumentSchema(object):
         try:
             attr = getattr(self, key)
             if callable(attr):
-                raise AttributeError
+                raise AttributeError("existing instance method")
             return attr
-        except AttributeError, e:
+        except AttributeError:
             if key in self._doc:
                 return self._doc[key]
             raise
@@ -320,12 +330,13 @@ class DocumentSchema(object):
                     continue
                 elif attr_name.startswith('_'):
                     continue
-                elif attr_name == 'doc_type':
+                elif attr_name == cls._doc_type_attr:
                     continue
                 else:
                     value = value_to_python(value)
                     setattr(instance, attr_name, value)
         return instance
+    from_json = wrap
 
     def validate(self, required=True):
         """ validate a document """
@@ -337,22 +348,14 @@ class DocumentSchema(object):
 
     def clone(self, **kwargs):
         """ clone a document """
-        for prop_name in self._properties.keys():
-            try:
-                kwargs[prop_name] = self._doc[prop_name]
-            except KeyError:
-                pass
-
         kwargs.update(self._dynamic_properties)
-        obj = type(self)(**kwargs)
+        obj = self.__class__(**kwargs)
         obj._doc = self._doc
-
         return obj
 
     @classmethod
     def build(cls, **kwargs):
         """ build a new instance from this document object. """
-        obj = cls()
         properties = {}
         for attr_name, attr in kwargs.items():
             if isinstance(attr, (p.Property,)):
@@ -366,7 +369,7 @@ class DocumentSchema(object):
                 prop = MAP_TYPES_PROPERTIES[type(attr)](default=attr)
                 properties[attr_name] = prop
                 prop.__property_config__(cls, attr_name)
-                attrs[attr_name] = prop
+                properties[attr_name] = prop
         return type('AnonymousSchema', (cls,), properties)
 
 class DocumentBase(DocumentSchema):
@@ -397,14 +400,14 @@ class DocumentBase(DocumentSchema):
 
     def __init__(self, _d=None, **kwargs):
         _d = _d or {}
-        
+
         docid = kwargs.pop('_id', _d.pop("_id", ""))
         docrev = kwargs.pop('_rev', _d.pop("_rev", ""))
-        
+
         DocumentSchema.__init__(self, _d, **kwargs)
-        
+
         if docid: self._doc['_id'] = valid_id(docid)
-        if docrev: self._doc['_rev'] = docrev            
+        if docrev: self._doc['_rev'] = docrev
 
     @classmethod
     def set_db(cls, db):
@@ -425,11 +428,10 @@ class DocumentBase(DocumentSchema):
         @params db: couchdbkit.core.Database instance
         """
         self.validate()
-        if self._db is None:
-            raise TypeError("doc database required to save document")
+        db = self.get_db()
 
         doc = self.to_json()
-        self._db.save_doc(doc, **params)
+        db.save_doc(doc, **params)
         if '_id' in doc and '_rev' in doc:
             self._doc.update(doc)
         elif '_id' in doc:
@@ -438,7 +440,7 @@ class DocumentBase(DocumentSchema):
     store = save
 
     @classmethod
-    def bulk_save(cls, docs, use_uuids=True, all_or_nothing=False):
+    def save_docs(cls, docs, use_uuids=True, all_or_nothing=False):
         """ Save multiple documents in database.
 
         @params docs: list of couchdbkit.schema.Document instance
@@ -449,34 +451,31 @@ class DocumentBase(DocumentSchema):
         be committed even if this creates conflicts.
 
         """
-        if cls._db is None:
-            raise TypeError("doc database required to save document")
-        docs_to_save= [doc._doc for doc in docs if doc._doc_type == cls._doc_type]
+        db = cls.get_db()
+        docs_to_save= [doc for doc in docs if doc._doc_type == cls._doc_type]
         if not len(docs_to_save) == len(docs):
             raise ValueError("one of your documents does not have the correct type")
-        cls._db.bulk_save(docs_to_save, use_uuids=use_uuids, all_or_nothing=all_or_nothing)
+        db.bulk_save(docs_to_save, use_uuids=use_uuids, all_or_nothing=all_or_nothing)
+
+    bulk_save = save_docs
 
     @classmethod
     def get(cls, docid, rev=None, db=None, dynamic_properties=True):
         """ get document with `docid`
         """
-        if db is not None:
-            cls._db = db
+        if db is None:
+            db = cls.get_db()
         cls._allow_dynamic_properties = dynamic_properties
-        if cls._db is None:
-            raise TypeError("doc database required to save document")
-        return cls._db.get(docid, rev=rev, wrapper=cls.wrap)
+        return db.get(docid, rev=rev, wrapper=cls.wrap)
 
     @classmethod
     def get_or_create(cls, docid=None, db=None, dynamic_properties=True, **params):
         """ get  or create document with `docid` """
+
         if db is not None:
-            cls._db = db
-
+            cls.set_db(db)
         cls._allow_dynamic_properties = dynamic_properties
-
-        if cls._db is None:
-            raise TypeError("doc database required to save document")
+        db = cls.get_db()
 
         if docid is None:
             obj = cls()
@@ -486,7 +485,7 @@ class DocumentBase(DocumentSchema):
         rev = params.pop('rev', None)
 
         try:
-            return cls._db.get(docid, rev=rev, wrapper=cls.wrap, **params)
+            return db.get(docid, rev=rev, wrapper=cls.wrap, **params)
         except ResourceNotFound:
             obj = cls()
             obj._id = docid
@@ -499,13 +498,13 @@ class DocumentBase(DocumentSchema):
         """ Delete document from the database.
         @params db: couchdbkit.core.Database instance
         """
-        if self._db is None:
-            raise TypeError("doc database required to save document")
-
         if self.new_document:
             raise TypeError("the document is not saved")
 
-        self._db.delete_doc(self._id)
+        db = self.get_db()
+
+        # delete doc
+        db.delete_doc(self._id)
 
         # reinit document
         del self._doc['_id']
@@ -529,9 +528,8 @@ class AttachmentMixin(object):
 
         @return: bool, True if everything was ok.
         """
-        if not hasattr(self, '_db'):
-            raise TypeError("doc database required to save document")
-        return self.__class__._db.put_attachment(self._doc, content, name=name,
+        db = self.get_db()
+        return db.put_attachment(self._doc, content, name=name,
             content_type=content_type, content_length=content_length)
 
     def delete_attachment(self, name):
@@ -541,9 +539,9 @@ class AttachmentMixin(object):
 
         @return: dict, with member ok set to True if delete was ok.
         """
-        if not hasattr(self, '_db'):
-            raise TypeError("doc database required to save document")
-        result = self.__class__._db.delete_attachment(self._doc, name)
+
+        db = self.get_db()
+        result = db.delete_attachment(self._doc, name)
         try:
             self._doc['_attachments'].pop(name)
         except KeyError:
@@ -559,55 +557,16 @@ class AttachmentMixin(object):
 
         @return: str or unicode, attachment
         """
-        if not hasattr(self, '_db'):
-            raise TypeError("doc database required to save document")
-        return self.__class__._db.fetch_attachment(self._doc, name,
-                                            stream=stream)
+        db = self.get_db()
+        return db.fetch_attachment(self._doc, name, stream=stream)
 
 
 class QueryMixin(object):
     """ Mixin that add query methods """
 
     @classmethod
-    def __view(cls, view_type=None, data=None, wrapper=None,
-    dynamic_properties=True, wrap_doc=True, **params):
-        def default_wrapper(row):
-            data = row.get('value')
-            docid = row.get('id')
-            doc = row.get('doc')
-            if doc is not None and wrap_doc:
-                cls._allow_dynamic_properties = dynamic_properties
-                return cls.wrap(doc)
-            elif not data or data is None:
-                return row
-            elif not isinstance(data, dict) or not docid:
-                return row
-            else:
-                data['_id'] = docid
-                if 'rev' in data:
-                    data['_rev'] = data.pop('rev')
-                cls._allow_dynamic_properties = dynamic_properties
-                return cls.wrap(data)
-
-        if wrapper is None:
-            wrapper = default_wrapper
-
-        if not wrapper:
-            wrapper = None
-        elif not callable(wrapper):
-            raise TypeError("wrapper is not a callable")
-
-        db = cls.get_db()
-        if view_type == 'view':
-            return db.view(data, wrapper=wrapper, **params)
-        elif view_type == 'temp_view':
-            return db.temp_view(data, wrapper=wrapper, **params)
-        else:
-            raise RuntimeError("bad view_type : %s" % view_type )
-
-    @classmethod
-    def view(cls, view_name, wrapper=None, dynamic_properties=True,
-    wrap_doc=True, **params):
+    def view(cls, view_name, wrapper=None, dynamic_properties=None,
+    wrap_doc=True, classes=None, **params):
         """ Get documents associated view a view.
         Results of view are automatically wrapped
         to Document object.
@@ -623,13 +582,14 @@ class QueryMixin(object):
         @return: :class:`simplecouchdb.core.ViewResults` instance. All
         results are wrapped to current document instance.
         """
-        return cls.__view(view_type="view", data=view_name, wrapper=wrapper,
+        db = cls.get_db()
+        return db.view(view_name,
             dynamic_properties=dynamic_properties, wrap_doc=wrap_doc,
-            **params)
+            wrapper=wrapper, schema=classes or cls, **params)
 
     @classmethod
-    def temp_view(cls, design, wrapper=None, dynamic_properties=True,
-    wrap_doc=True, **params):
+    def temp_view(cls, design, wrapper=None, dynamic_properties=None,
+    wrap_doc=True, classes=None, **params):
         """ Slow view. Like in view method,
         results are automatically wrapped to
         Document object.
@@ -644,9 +604,10 @@ class QueryMixin(object):
         @return: Like view, return a :class:`simplecouchdb.core.ViewResults`
         instance. All results are wrapped to current document instance.
         """
-        return cls.__view(view_type="temp_view", data=design, wrapper=wrapper,
+        db = cls.get_db()
+        return db.temp_view(design,
             dynamic_properties=dynamic_properties, wrap_doc=wrap_doc,
-            **params)
+            wrapper=wrapper, schema=classes or cls, **params)
 
 class Document(DocumentBase, QueryMixin, AttachmentMixin):
     """

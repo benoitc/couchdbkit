@@ -12,17 +12,26 @@ from __future__ import with_statement
 
 import codecs
 import string
-from calendar import timegm
-import datetime
-import decimal
 from hashlib import md5
 import os
 import re
 import sys
-import time
+import urllib
 
 
-import anyjson
+try:
+    import simplejson as json
+except ImportError:
+    try:
+        import json 
+    except ImportError:
+        raise ImportError("""simplejson isn't installed
+
+Install it with the command:
+
+    pip install simplejson
+""")
+ 
 
 # backport relpath from python2.6
 if not hasattr(os.path, 'relpath'):
@@ -72,7 +81,7 @@ if not hasattr(os.path, 'relpath'):
 
             rel_list = [os.path.pardir] * (len(start_list)-i) + path_list[i:]
             if not rel_list:
-                return curdir
+                return os.path.curdir
             return os.path.join(*rel_list)
     else:
         def relpath(path, start=os.path.curdir):
@@ -89,18 +98,30 @@ if not hasattr(os.path, 'relpath'):
 
             rel_list = [os.path.pardir] * (len(start_list)-i) + path_list[i:]
             if not rel_list:
-                return curdir
+                return os.path.curdir
             return os.path.join(*rel_list)
 else:
     relpath = os.path.relpath
 
-VALID_DB_NAME = re.compile(r'^[a-z0-9_$()+-/]+$')
+def split_path(path):
+    parts = []
+    while True:
+        head, tail = os.path.split(path)
+        parts = [tail] + parts
+        path = head
+        if not path: break
+    return parts
+
+VALID_DB_NAME = re.compile(r'^[a-z][a-z0-9_$()+-/]*$')
+SPECIAL_DBS = ("_users", "_replicator",)
 def validate_dbname(name):
     """ validate dbname """
-    if not VALID_DB_NAME.match(name):
-        raise ValueError('Invalid database name')
-    return name
-    
+    if name in SPECIAL_DBS:
+        return True
+    elif not VALID_DB_NAME.match(urllib.unquote(name)):
+        raise ValueError("Invalid db name: '%s'" % name)
+    return True
+
 def to_bytestring(s):
     """ convert to bytestring an unicode """
     if not isinstance(s, basestring):
@@ -116,13 +137,15 @@ def read_file(fname, utf8=True, force_read=False):
         try:
             with codecs.open(fname, 'rb', "utf-8") as f:
                 data = f.read()
-        except UnicodeError, e:
+                return data
+        except UnicodeError:
             if force_read:
                 return read_file(fname, utf8=False)
+            raise
     else:
         with open(fname, 'rb') as f:
             data = f.read()
-    return data
+            return data
 
 def sign_file(file_path):
     """ return md5 hash from file content
@@ -153,7 +176,7 @@ def write_json(filename, content):
     :attr content: string
     
     """
-    write_content(filename, anyjson.serialize(content))
+    write_content(filename, json.dumps(content))
 
 def read_json(filename, use_environment=False):
     """ read a json file and deserialize
@@ -176,8 +199,10 @@ def read_json(filename, use_environment=False):
         data = string.Template(data).substitute(os.environ)
 
     try:
-        data = anyjson.deserialize(data)
+        data = json.loads(data)
     except ValueError:
         print >>sys.stderr, "Json is invalid, can't load %s" % filename
         raise
     return data
+
+

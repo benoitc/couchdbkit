@@ -1,27 +1,40 @@
 # -*- coding: utf-8 -
 #
-# This file is part of couchdbkit released under the MIT license. 
+# This file is part of couchdbkit released under the MIT license.
 # See the NOTICE for more information.
 
 """ properties used by Document object """
 
-from calendar import timegm
 import decimal
 import datetime
 import re
 import time
 
-from couchdbkit.exceptions import *
+try:
+    from collections import MutableSet, Iterable
 
-__all__ = ['ALLOWED_PROPERTY_TYPES', 'Property', 'StringProperty', 
-        'IntegerProperty','DecimalProperty', 'BooleanProperty', 
-        'FloatProperty','DateTimeProperty', 'DateProperty', 
-        'TimeProperty','DictProperty', 'ListProperty', 
-        'StringListProperty', 'dict_to_json', 'list_to_json', 
-        'value_to_json', 'MAP_TYPES_PROPERTIES', 'value_to_python', 
+    def is_iterable(c):
+        return isinstance(c, Iterable)
+
+    support_setproperty = True
+except ImportError:
+    support_setproperty = False
+
+from couchdbkit.exceptions import BadValueError
+
+__all__ = ['ALLOWED_PROPERTY_TYPES', 'Property', 'StringProperty',
+        'IntegerProperty', 'DecimalProperty', 'BooleanProperty',
+        'FloatProperty', 'DateTimeProperty', 'DateProperty',
+        'TimeProperty', 'DictProperty', 'ListProperty',
+        'StringListProperty',
+        'dict_to_json', 'list_to_json',
+        'value_to_json', 'MAP_TYPES_PROPERTIES', 'value_to_python',
         'dict_to_python', 'list_to_python', 'convert_property',
         'value_to_property', 'LazyDict', 'LazyList']
-        
+
+if support_setproperty:
+    __all__ += ['SetProperty', 'LasySet']
+
 ALLOWED_PROPERTY_TYPES = set([
     basestring,
     str,
@@ -36,30 +49,31 @@ ALLOWED_PROPERTY_TYPES = set([
     decimal.Decimal,
     dict,
     list,
+    set,
     type(None)
 ])
 
 re_date = re.compile('^(\d{4})\D?(0[1-9]|1[0-2])\D?([12]\d|0[1-9]|3[01])$')
 re_time = re.compile('^([01]\d|2[0-3])\D?([0-5]\d)\D?([0-5]\d)?\D?(\d{3})?$')
 re_datetime = re.compile('^(\d{4})\D?(0[1-9]|1[0-2])\D?([12]\d|0[1-9]|3[01])(\D?([01]\d|2[0-3])\D?([0-5]\d)\D?([0-5]\d)?\D?(\d{3})?([zZ]|([\+-])([01]\d|2[0-3])\D?([0-5]\d)?)?)?$')
-re_decimal = re.compile('^(\d+).(\d+)$')
+re_decimal = re.compile('^(\d+)\.(\d+)$')
 
 class Property(object):
     """ Property base which all other properties
     inherit."""
     creation_counter = 0
 
-    def __init__(self, verbose_name=None, name=None, 
+    def __init__(self, verbose_name=None, name=None,
             default=None, required=False, validators=None,
             choices=None):
-        """ Default constructor for a property. 
+        """ Default constructor for a property.
 
         :param verbose_name: str, verbose name of field, could
                 be use for description
         :param name: str, name of field
         :param default: default value
         :param required: True if field is required, default is False
-        :param validators: list of callable or callable, field validators 
+        :param validators: list of callable or callable, field validators
         function that are executed when document is saved.
         """
         self.verbose_name = verbose_name
@@ -90,7 +104,7 @@ class Property(object):
         value = document_instance._doc.get(self.name)
         if value is not None:
             value = self._to_python(value)
-        
+
         return value
 
     def __set__(self, document_instance, value):
@@ -114,15 +128,14 @@ class Property(object):
             if self.required:
                 raise BadValueError("Property %s is required." % self.name)
         else:
-            if self.choices:
-                match = False
-                for choice in self.choices:
-                    if choice == value:
-                        match = True
-                        break
-                if not match:
+            if self.choices and value is not None:
+                if isinstance(self.choices, list):      choice_list = self.choices
+                if isinstance(self.choices, dict):      choice_list = self.choices.keys()
+                if isinstance(self.choices, tuple):     choice_list = [key for (key, name) in self.choices]
+
+                if value not in choice_list:
                     raise BadValueError('Property %s is %r; must be one of %r' % (
-                        self.name, value, self.choices))
+                        self.name, value, choice_list))
         if self.validators:
             if isinstance(self.validators, (list, tuple,)):
                 for validator in self.validators:
@@ -134,16 +147,16 @@ class Property(object):
 
     def empty(self, value):
         """ test if value is empty """
-        return not value or value is None
-        
+        return (not value and value != 0) or value is None
+
     def _to_python(self, value):
         if value == None:
-            return value    
+            return value
         return self.to_python(value)
-        
+
     def _to_json(self, value):
         if value == None:
-            return value    
+            return value
         return self.to_json(value)
 
     def to_python(self, value):
@@ -157,12 +170,12 @@ class Property(object):
     data_type = None
 
 class StringProperty(Property):
-    """ string property str or unicode property 
-    
+    """ string property str or unicode property
+
     *Value type*: unicode
     """
 
-    to_python = unicode 
+    to_python = unicode
 
     def validate(self, value, required=True):
         value = super(StringProperty, self).validate(value,
@@ -170,7 +183,7 @@ class StringProperty(Property):
 
         if value is None:
             return value
-        
+
         if not isinstance(value, basestring):
             raise BadValueError(
                 'Property %s must be unicode or str instance, not a %s' % (self.name, type(value).__name__))
@@ -179,8 +192,8 @@ class StringProperty(Property):
     data_type = unicode
 
 class IntegerProperty(Property):
-    """ Integer property. map to int 
-    
+    """ Integer property. map to int
+
     *Value type*: int
     """
     to_python = int
@@ -198,24 +211,24 @@ class IntegerProperty(Property):
         if value is not None and not isinstance(value, (int, long,)):
             raise BadValueError(
                 'Property %s must be %s or long instance, not a %s'
-                % (self.name, type(self.data_type).__name__, 
-                    type(value).__name__)) 
+                % (self.name, type(self.data_type).__name__,
+                    type(value).__name__))
 
-        return value 
+        return value
 
     data_type = int
 LongProperty = IntegerProperty
 
 class FloatProperty(Property):
-    """ Float property, map to python float 
-    
+    """ Float property, map to python float
+
     *Value type*: float
     """
     to_python = float
     data_type = float
 
     def validate(self, value, required=True):
-        value = super(FloatProperty, self).validate(value, 
+        value = super(FloatProperty, self).validate(value,
                 required=required)
 
         if value is None:
@@ -225,20 +238,20 @@ class FloatProperty(Property):
             raise BadValueError(
                 'Property %s must be float instance, not a %s'
                 % (self.name, type(value).__name__))
-        
+
         return value
 Number = FloatProperty
 
 class BooleanProperty(Property):
     """ Boolean property, map to python bool
-    
+
     *ValueType*: bool
     """
     to_python = bool
     data_type = bool
 
     def validate(self, value, required=True):
-        value = super(BooleanProperty, self).validate(value, 
+        value = super(BooleanProperty, self).validate(value,
                 required=required)
 
         if value is None:
@@ -248,12 +261,16 @@ class BooleanProperty(Property):
             raise BadValueError(
                 'Property %s must be bool instance, not a %s'
                 % (self.name, type(value).__name__))
-        
+
         return value
+
+    def empty(self, value):
+        """test if boolean is empty"""
+        return value is None
 
 class DecimalProperty(Property):
     """ Decimal property, map to Decimal python object
-    
+
     *ValueType*: decimal.Decimal
     """
     data_type = decimal.Decimal
@@ -268,7 +285,7 @@ class DateTimeProperty(Property):
     """DateTime property. It convert iso3339 string
     to python and vice-versa. Map to datetime.datetime
     object.
-    
+
     *ValueType*: datetime.datetime
     """
 
@@ -298,17 +315,17 @@ class DateTimeProperty(Property):
         if isinstance(value, basestring):
             try:
                 value = value.split('.', 1)[0] # strip out microseconds
-                value = value.rstrip('Z') # remove timezone separator
-                timestamp = timegm(time.strptime(value, '%Y-%m-%dT%H:%M:%S'))
-                value = datetime.datetime.utcfromtimestamp(timestamp)
+                value = value[0:19] # remove timezone
+                value = datetime.datetime.strptime(value, '%Y-%m-%dT%H:%M:%S')
             except ValueError, e:
-                raise ValueError('Invalid ISO date/time %r' % value)
+                raise ValueError('Invalid ISO date/time %r [%s]' %
+                        (value, str(e)))
         return value
 
     def to_json(self, value):
         if self.auto_now:
             value = self.now()
-        
+
         if value is None:
             return value
         return value.replace(microsecond=0).isoformat() + 'Z'
@@ -322,7 +339,7 @@ class DateTimeProperty(Property):
 class DateProperty(DateTimeProperty):
     """ Date property, like DateTime property but only
     for Date. Map to datetime.date object
-    
+
     *ValueType*: datetime.date
     """
     data_type = datetime.date
@@ -336,7 +353,8 @@ class DateProperty(DateTimeProperty):
             try:
                 value = datetime.date(*time.strptime(value, '%Y-%m-%d')[:3])
             except ValueError, e:
-                raise ValueError('Invalid ISO date %r' % value)
+                raise ValueError('Invalid ISO date %r [%s]' % (value,
+                    str(e)))
         return value
 
     def to_json(self, value):
@@ -347,7 +365,7 @@ class DateProperty(DateTimeProperty):
 class TimeProperty(DateTimeProperty):
     """ Date property, like DateTime property but only
     for time. Map to datetime.time object
-    
+
     *ValueType*: datetime.time
     """
 
@@ -363,19 +381,20 @@ class TimeProperty(DateTimeProperty):
                 value = value.split('.', 1)[0] # strip out microseconds
                 value = datetime.time(*time.strptime(value, '%H:%M:%S')[3:6])
             except ValueError, e:
-                raise ValueError('Invalid ISO time %r' % value)
+                raise ValueError('Invalid ISO time %r [%s]' % (value,
+                    str(e)))
         return value
 
     def to_json(self, value):
         if value is None:
             return value
         return value.replace(microsecond=0).isoformat()
-        
+
 
 class DictProperty(Property):
     """ A property that stores a dict of things"""
-    
-    def __init__(self, verbose_name=None, default=None, 
+
+    def __init__(self, verbose_name=None, default=None,
         required=False, **kwds):
         """
         :args verbose_name: Optional verbose name.
@@ -384,15 +403,15 @@ class DictProperty(Property):
 
         Note that the only permissible value for 'required' is True.
         """
-           
+
         if default is None:
             default = {}
-            
+
         Property.__init__(self, verbose_name, default=default,
             required=required, **kwds)
-            
+
     data_type = dict
-    
+
     def validate(self, value, required=True):
         value = super(DictProperty, self).validate(value, required=required)
         if value and value is not None:
@@ -400,7 +419,7 @@ class DictProperty(Property):
                 raise BadValueError('Property %s must be a dict' % self.name)
             value = self.validate_dict_contents(value)
         return value
-        
+
     def validate_dict_contents(self, value):
         try:
             value = validate_dict_content(value)
@@ -409,7 +428,7 @@ class DictProperty(Property):
                 'Items of %s dict must all be in %s' %
                     (self.name, ALLOWED_PROPERTY_TYPES))
         return value
-        
+
     def default_value(self):
         """Default value for list.
 
@@ -424,42 +443,42 @@ class DictProperty(Property):
         if value is None:
             value = {}
         return dict(value)
-        
+
     def to_python(self, value):
         return LazyDict(value)
-        
+
     def to_json(self, value):
         return value_to_json(value)
-        
-        
+
+
 
 class ListProperty(Property):
     """A property that stores a list of things.
 
       """
-    def __init__(self, verbose_name=None, default=None, 
+    def __init__(self, verbose_name=None, default=None,
             required=False, item_type=None, **kwds):
         """Construct ListProperty.
 
-    
+
          :args verbose_name: Optional verbose name.
          :args default: Optional default value; if omitted, an empty list is used.
          :args**kwds: Optional additional keyword arguments, passed to base class.
 
-        
+
         """
         if default is None:
             default = []
-            
+
         if item_type is not None and item_type not in ALLOWED_PROPERTY_TYPES:
             raise ValueError('item_type %s not in %s' % (item_type, ALLOWED_PROPERTY_TYPES))
         self.item_type = item_type
 
         Property.__init__(self, verbose_name, default=default,
             required=required, **kwds)
-        
+
     data_type = list
-        
+
     def validate(self, value, required=True):
         value = super(ListProperty, self).validate(value, required=required)
         if value and value is not None:
@@ -467,7 +486,7 @@ class ListProperty(Property):
                 raise BadValueError('Property %s must be a list' % self.name)
             value = self.validate_list_contents(value)
         return value
-        
+
     def validate_list_contents(self, value):
         value = validate_list_content(value, item_type=self.item_type)
         try:
@@ -477,7 +496,7 @@ class ListProperty(Property):
                 'Items of %s list must all be in %s' %
                     (self.name, ALLOWED_PROPERTY_TYPES))
         return value
-        
+
     def default_value(self):
         """Default value for list.
 
@@ -492,32 +511,36 @@ class ListProperty(Property):
         if value is None:
             value = []
         return list(value)
-        
+
     def to_python(self, value):
         return LazyList(value, item_type=self.item_type)
-        
+
     def to_json(self, value):
         return value_to_json(value, item_type=self.item_type)
 
 
 class StringListProperty(ListProperty):
     """ shorthand for list that should containe only unicode"""
-    
-    def __init__(self, verbose_name=None, default=None, 
-            required=False, **kwds):
-        super(StringListProperty, self).__init__(verbose_name=verbose_name, 
-            default=default, required=required, item_type=basestring,**kwds)
 
-# structures proxy
+    def __init__(self, verbose_name=None, default=None,
+            required=False, **kwds):
+        super(StringListProperty, self).__init__(verbose_name=verbose_name,
+            default=default, required=required, item_type=basestring, **kwds)
+
+
+
+
+
+#  dict proxy
 
 class LazyDict(dict):
-    """ object to make sure we keep updated of dict 
+    """ object to make sure we keep updated of dict
     in _doc. We just override a dict and maintain change in
     doc reference (doc[keyt] obviously).
-    
+
     if init_vals is specified, doc is overwritten
-    with the dict given. Otherwise, the values already in 
-    doc are used. 
+    with the dict given. Otherwise, the values already in
+    doc are used.
     """
 
     def __init__(self, doc, item_type=None, init_vals=None):
@@ -556,13 +579,17 @@ class LazyDict(dict):
         del self.doc[key]
         super(LazyDict, self).__delitem__(key)
 
-    def pop(self, key, default=None):
-        del self.doc[key]
-        return super(LazyDict, self).pop(key, default=default)
+    def pop(self, key, *args):
+        default = len(args) == 1
+        if default:
+            self.doc.pop(key, args[-1])
+            return super(LazyDict, self).pop(key, args[-1])
+        self.doc.pop(key)
+        return super(LazyDict, self).pop(key)
 
     def setdefault(self, key, default):
         if key in self:
-            return self[key]  
+            return self[key]
         self.doc.setdefault(key, value_to_json(default, item_type=self.item_type))
         super(LazyDict, self).setdefault(key, default)
         return default
@@ -580,19 +607,20 @@ class LazyDict(dict):
         self.doc.clear()
         super(LazyDict, self).clear()
 
+
 class LazyList(list):
-    """ object to make sure we keep update of list 
+    """ object to make sure we keep update of list
     in _doc. We just override a list and maintain change in
     doc reference (doc[index] obviously).
 
     if init_vals is specified, doc is overwritten
-    with the list given. Otherwise, the values already in 
-    doc are used. 
+    with the list given. Otherwise, the values already in
+    doc are used.
     """
 
     def __init__(self, doc, item_type=None, init_vals=None):
         list.__init__(self)
-        
+
         self.item_type = item_type
         self.doc = doc
         if init_vals is None:
@@ -618,7 +646,7 @@ class LazyList(list):
     def __delitem__(self, index):
         del self.doc[index]
         list.__delitem__(self, index)
-        
+
     def __setitem__(self, index, value):
         if isinstance(value, dict):
             self.doc[index] = {}
@@ -629,7 +657,7 @@ class LazyList(list):
         else:
             self.doc[index] = value_to_json(value, item_type=self.item_type)
         list.__setitem__(self, index, value)
-        
+
 
     def __delslice__(self, i, j):
         del self.doc[i:j]
@@ -641,13 +669,13 @@ class LazyList(list):
     def __setslice__(self, i, j, seq):
         self.doc[i:j] = (value_to_json(v, item_type=self.item_type) for v in seq)
         list.__setslice__(self, i, j, seq)
-        
+
     def __contains__(self, value):
         jvalue = value_to_json(value)
         for m in self.doc:
-            if m == value: return True
+            if m == jvalue: return True
         return False
-        
+
     def append(self, *args, **kwargs):
         if args:
             assert len(args) == 1
@@ -665,25 +693,241 @@ class LazyList(list):
         else:
             self.doc.append(value_to_json(value, item_type=self.item_type))
         super(LazyList, self).append(value)
-        
+
+    def extend(self, x):
+        self.doc.extend(
+            [value_to_json(v, item_type=self.item_type) for v in x])
+        super(LazyList, self).extend(x)
+
     def index(self, x, *args):
         x = value_to_json(x, item_type=self.item_type)
         return self.doc.index(x)
-        
+
+    def insert(self, i, x):
+        self.__setslice__(i, i, [x])
+
+    def pop(self, i=-1):
+        del self.doc[i]
+        v = super(LazyList, self).pop(i)
+        return value_to_python(v, item_type=self.item_type)
+
     def remove(self, x):
         del self[self.index(x)]
-        
+
     def sort(self, cmp=None, key=None, reverse=False):
         self.doc.sort(cmp, key, reverse)
         list.sort(self, cmp, key, reverse)
-        
+
     def reverse(self):
         self.doc.reverse()
         list.reverse(self)
-        
-    
+
+if support_setproperty:
+    class SetProperty(Property):
+        """A property that stores a Python set as a list of unique
+        elements.
+
+        Note that Python set operations like union that return a set
+        object do not alter list that will be stored with the next save,
+        while operations like update that change a set object in-place do
+        keep the list in sync.
+        """
+        def __init__(self, verbose_name=None, default=None, required=None,
+                     item_type=None, **kwds):
+            """Construct SetProperty.
+
+             :args verbose_name: Optional verbose name.
+
+             :args default: Optional default value; if omitted, an empty
+                            set is used.
+
+             :args required: True if field is required, default is False.
+
+             :args item_type: Optional data type of items that set
+                              contains.  Used to assist with JSON
+                              serialization/deserialization when data is
+                              stored/retireved.
+
+             :args **kwds: Optional additional keyword arguments, passed to
+                           base class.
+             """
+            if default is None:
+                default = set()
+            if item_type is not None and item_type not in ALLOWED_PROPERTY_TYPES:
+                raise ValueError('item_type %s not in %s'
+                                 % (item_type, ALLOWED_PROPERTY_TYPES))
+            self.item_type = item_type
+            super(SetProperty, self).__init__(
+                verbose_name=verbose_name, default=default, required=required,
+                **kwds)
+
+        data_type = set
+
+        def validate(self, value, required=True):
+            value = super(SetProperty, self).validate(value, required=required)
+            if value and value is not None:
+                if not isinstance(value, MutableSet):
+                    raise BadValueError('Property %s must be a set' % self.name)
+                value = self.validate_set_contents(value)
+            return value
+
+        def validate_set_contents(self, value):
+            try:
+                value = validate_set_content(value, item_type=self.item_type)
+            except BadValueError:
+                raise BadValueError(
+                    'Items of %s set must all be in %s' %
+                        (self.name, ALLOWED_PROPERTY_TYPES))
+            return value
+
+        def default_value(self):
+            """Return default value for set.
+
+            Because the property supplied to 'default' is a static value,
+            that value must be shallow copied to prevent all fields with
+            default values from sharing the same instance.
+
+            Returns:
+              Copy of the default value.
+            """
+            value = super(SetProperty, self).default_value()
+            if value is None:
+                return set()
+            return value.copy()
+
+        def to_python(self, value):
+            return LazySet(value, item_type=self.item_type)
+
+        def to_json(self, value):
+            return value_to_json(value, item_type=self.item_type)
+
+
+    class LazySet(MutableSet):
+        """Object to make sure that we keep set and _doc synchronized.
+
+        We sub-class MutableSet and maintain changes in doc.
+
+        Note that methods like union that return a set object do not
+        alter _doc, while methods like update that change a set object
+        in-place do keep _doc in sync.
+        """
+        def _map_named_operation(opname):
+            fn = getattr(MutableSet, opname)
+            if hasattr(fn, 'im_func'):
+                fn = fn.im_func
+            def method(self, other, fn=fn):
+                if not isinstance(other, MutableSet):
+                    other = self._from_iterable(other)
+                return fn(self, other)
+            return method
+
+        issubset = _map_named_operation('__le__')
+        issuperset = _map_named_operation('__ge__')
+        symmetric_difference = _map_named_operation('__xor__')
+
+        def __init__(self, doc, item_type=None):
+            self.item_type = item_type
+            self.doc = doc
+            self.elements = set(value_to_python(value, self.item_type)
+                                for value in self.doc)
+
+        def __repr__(self):
+            return '%s(%r)' % (type(self).__name__, list(self))
+
+        @classmethod
+        def _from_iterable(cls, it):
+            return cls(it)
+
+        def __iand__(self, iterator):
+            for value in (self.elements - iterator):
+                self.elements.discard(value)
+            return self
+
+        def __iter__(self):
+            return iter(element for element in self.elements)
+
+        def __len__(self):
+            return len(self.elements)
+
+        def __contains__(self, item):
+            return item in self.elements
+
+        def __xor__(self, other):
+            if not isinstance(other, MutableSet):
+                if not is_iterable(other):
+                    return NotImplemented
+                other = self._from_iterable(other)
+            return (self.elements - other) | (other - self.elements)
+
+        def __gt__(self, other):
+            if not isinstance(other, MutableSet):
+                return NotImplemented
+            return other < self.elements
+
+        def __ge__(self, other):
+            if not isinstance(other, MutableSet):
+                return NotImplemented
+            return other <= self.elements
+
+        def __ne__(self, other):
+            return not (self.elements == other)
+
+        def add(self, value):
+            self.elements.add(value)
+            if value not in self.doc:
+                self.doc.append(value_to_json(value, item_type=self.item_type))
+
+        def copy(self):
+            return self.elements.copy()
+
+        def difference(self, other, *args):
+            return self.elements.difference(other, *args)
+
+        def difference_update(self, other, *args):
+            for value in other:
+                self.discard(value)
+            for arg in args:
+                self.difference_update(arg)
+
+        def discard(self, value):
+            self.elements.discard(value)
+            try:
+                self.doc.remove(value)
+            except ValueError:
+                pass
+
+        def intersection(self, other, *args):
+            return self.elements.intersection(other, *args)
+
+        def intersection_update(self, other, *args):
+            if not isinstance(other, MutableSet):
+                other = set(other)
+            for value in self.elements - other:
+                self.discard(value)
+            for arg in args:
+                self.intersection_update(arg)
+
+        def symmetric_difference_update(self, other):
+            if not isinstance(other, MutableSet):
+                other = set(other)
+            for value in other:
+                if value in self.elements:
+                    self.discard(value)
+                else:
+                    self.add(value)
+
+        def union(self, other, *args):
+            return self.elements.union(other, *args)
+
+        def update(self, other, *args):
+            self.elements.update(other, *args)
+            for element in self.elements:
+                if element not in self.doc:
+                    self.doc.append(
+                        value_to_json(element, item_type=self.item_type))
+
 # some mapping
- 
+
 MAP_TYPES_PROPERTIES = {
         decimal.Decimal: DecimalProperty,
         datetime.datetime: DateTimeProperty,
@@ -697,8 +941,11 @@ MAP_TYPES_PROPERTIES = {
         float: FloatProperty,
         list: ListProperty,
         dict: DictProperty
-}           
-            
+}
+
+if support_setproperty:
+    MAP_TYPES_PROPERTIES[set] = SetProperty
+
 def convert_property(value):
     """ convert a value to json from Property._to_json """
     if type(value) in MAP_TYPES_PROPERTIES:
@@ -720,12 +967,16 @@ def value_to_property(value):
 def validate_list_content(value, item_type=None):
     """ validate type of values in a list """
     return [validate_content(item, item_type=item_type) for item in value]
-    
+
 def validate_dict_content(value, item_type=None):
     """ validate type of values in a dict """
-    return dict([(k, validate_content(v, 
+    return dict([(k, validate_content(v,
                 item_type=item_type)) for k, v in value.iteritems()])
-           
+
+def validate_set_content(value, item_type=None):
+    """ validate type of values in a set """
+    return set(validate_content(item, item_type=item_type) for item in value)
+
 def validate_content(value, item_type=None):
     """ validate a value. test if value is in supported types """
     if isinstance(value, list):
@@ -744,15 +995,15 @@ def validate_content(value, item_type=None):
 def dict_to_json(value, item_type=None):
     """ convert a dict to json """
     return dict([(k, value_to_json(v, item_type=item_type)) for k, v in value.iteritems()])
-    
+
 def list_to_json(value, item_type=None):
     """ convert a list to json """
     return [value_to_json(item, item_type=item_type) for item in value]
-    
+
 def value_to_json(value, item_type=None):
     """ convert a value to json using appropriate regexp.
     For Dates we use ISO 8601. Decimal are converted to string.
-    
+
     """
     if isinstance(value, datetime.datetime) and is_type_ok(item_type, datetime.datetime):
         value = value.replace(microsecond=0).isoformat() + 'Z'
@@ -761,48 +1012,48 @@ def value_to_json(value, item_type=None):
     elif isinstance(value, datetime.time) and is_type_ok(item_type, datetime.time):
         value = value.replace(microsecond=0).isoformat()
     elif isinstance(value, decimal.Decimal) and is_type_ok(item_type, decimal.Decimal):
-        value = unicode(value) 
-    elif isinstance(value, list):
+        value = unicode(value)
+    elif isinstance(value, (list, MutableSet)):
         value = list_to_json(value, item_type)
     elif isinstance(value, dict):
         value = dict_to_json(value, item_type)
     return value
-    
+
 def is_type_ok(item_type, value_type):
     return item_type is None or item_type == value_type
-    
-    
+
+
 def value_to_python(value, item_type=None):
     """ convert a json value to python type using regexp. values converted
     have been put in json via `value_to_json` .
     """
     data_type = None
     if isinstance(value, basestring):
-        if re_date.match(value) and is_type_ok(item_type, datetime.datetime):
+        if re_date.match(value) and is_type_ok(item_type, datetime.date):
             data_type = datetime.date
-        elif re_time.match(value) and is_type_ok(item_type, datetime.date):
+        elif re_time.match(value) and is_type_ok(item_type, datetime.time):
             data_type = datetime.time
-        elif re_datetime.match(value) and is_type_ok(item_type, datetime.time):
+        elif re_datetime.match(value) and is_type_ok(item_type, datetime.datetime):
             data_type = datetime.datetime
         elif re_decimal.match(value) and is_type_ok(item_type, decimal.Decimal):
             data_type = decimal.Decimal
         if data_type is not None:
             prop = MAP_TYPES_PROPERTIES[data_type]()
-            try: 
+            try:
                 #sometimes regex fail so return value
                 value = prop.to_python(value)
             except:
-                pass           
-    elif isinstance(value, list):
+                pass
+    elif isinstance(value, (list, MutableSet)):
         value = list_to_python(value, item_type=item_type)
     elif isinstance(value, dict):
         value = dict_to_python(value, item_type=item_type)
     return value
-    
+
 def list_to_python(value, item_type=None):
     """ convert a list of json values to python list """
     return [value_to_python(item, item_type=item_type) for item in value]
-    
+
 def dict_to_python(value, item_type=None):
     """ convert a json object values to python dict """
     return dict([(k, value_to_python(v, item_type=item_type)) for k, v in value.iteritems()])

@@ -1,0 +1,47 @@
+title: Couchdbkit version 0.5 released 
+content_type: textile
+page_type: blog
+template: blog/post.html
+
+New release for "Couchdbkit":http://couchdbkit.org. Lot of change in this release. It's now based on latest "restkit":http://benoitc.github.com/restkit 2.3.0 so make sure to upgrade it before upgrading.
+
+h2. What's new ?
+
+* new `couchdbkit.designer` module. the `couchdbkit.loaders` module is now deprecated. Instead use push, pushapps, pushdocs & clone functions. They are all compatible with couchapp. 
+* Use the Database instances to save Documents objects.
+
+<pre class="code prettyprint">
+ import datetime
+ 
+ from couchdbkit import *
+
+ s = Server()
+ db = s["mydb"]
+
+ class Greeting(Document):
+      author = StringProperty()
+      content = StringProperty()
+      date = DateTimeProperty()
+
+ greet = Greeting(
+     author="Benoit",
+     content="Welcome to couchdbkit world",
+     date=datetime.datetime.utcnow()
+ )
+ db.save_doc(greet)
+</pre>
+
+* new pylons extension, thanks to Alfred Hall. Like django extension it will help you to use couchdbkit in pylons
+* Added gevent & eventlet consumers. The "doc":http://couchdbkit.org/docs/changes_consumer.html has been updated.
+* New **SchemaDict** property
+* Added oauth support via restkit
+* Lazy db loading in django extension
+* No more _raw_json function. For proxying use the CouchdbResource object.
+* breaking changes. We are now using simplejson instead of anyjson.
+* Simplejson give us better JSON serialization.
+* Fixed BooleanProperty
+* support for ISO-8601 DateTime format with a timezone offset 	
+
+You can download latest release on "Pypi":http://pypi.python.org/pypi/couchdbkit/0.5 or check "download page":../download.html for other ways.
+
+You can find a summary of changes on "github":http://github.com/benoitc/couchdbkit/comp

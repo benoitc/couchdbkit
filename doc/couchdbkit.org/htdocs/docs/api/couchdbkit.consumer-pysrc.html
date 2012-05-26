@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>couchdbkit.consumer</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="couchdbkit-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="couchdbkit-module.html">Package&nbsp;couchdbkit</a> ::
+        Package&nbsp;consumer
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="couchdbkit.consumer-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="couchdbkit.consumer-module.html">Package couchdbkit.consumer</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment"># -*- coding: utf-8 -</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-comment"># This file is part of couchdbkit released under the MIT license. </tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-comment"># See the NOTICE for more information.</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-op">.</tt><tt id="link-0" class="py-name" targets="Module couchdbkit.consumer.base=couchdbkit.consumer.base-module.html,Module couchdbkit.schema.base=couchdbkit.schema.base-module.html"><a title="couchdbkit.consumer.base
+couchdbkit.schema.base" class="py-name" href="#" onclick="return doclink('link-0', 'base', 'link-0');">base</a></tt> <tt class="py-keyword">import</tt> <tt id="link-1" class="py-name" targets="Class couchdbkit.consumer.base.ConsumerBase=couchdbkit.consumer.base.ConsumerBase-class.html"><a title="couchdbkit.consumer.base.ConsumerBase" class="py-name" href="#" onclick="return doclink('link-1', 'ConsumerBase', 'link-1');">ConsumerBase</a></tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt id="link-2" class="py-name" targets="Variable couchdbkit.consumer.OLD_CONSUMER_URIS=couchdbkit.consumer-module.html#OLD_CONSUMER_URIS"><a title="couchdbkit.consumer.OLD_CONSUMER_URIS" class="py-name" href="#" onclick="return doclink('link-2', 'OLD_CONSUMER_URIS', 'link-2');">OLD_CONSUMER_URIS</a></tt> <tt class="py-op">=</tt> <tt id="link-3" class="py-name" targets="Class dict=dict-class.html"><a title="dict" class="py-name" href="#" onclick="return doclink('link-3', 'dict', 'link-3');">dict</a></tt><tt class="py-op">(</tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line">        <tt class="py-name">eventlet</tt> <tt class="py-op">=</tt> <tt class="py-string">"couchdbkit.consumer.ceventlet.EventletConsumer"</tt><tt class="py-op">,</tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line">        <tt class="py-name">gevent</tt> <tt class="py-op">=</tt> <tt class="py-string">"couchdbkit.consumer.cgevent.GeventConsumer"</tt><tt class="py-op">,</tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line">        <tt id="link-4" class="py-name" targets="Module couchdbkit.consumer.sync=couchdbkit.consumer.sync-module.html,Method couchdbkit.ext.django.loading.CouchdbkitHandler.sync()=couchdbkit.ext.django.loading.CouchdbkitHandler-class.html#sync,Method couchdbkit.loaders.BaseDocsLoader.sync()=couchdbkit.loaders.BaseDocsLoader-class.html#sync,Method couchdbkit.loaders.FileSystemDocLoader.sync()=couchdbkit.loaders.FileSystemDocLoader-class.html#sync,Method couchdbkit.loaders.FileSystemDocsLoader.sync()=couchdbkit.loaders.FileSystemDocsLoader-class.html#sync"><a title="couchdbkit.consumer.sync
+couchdbkit.ext.django.loading.CouchdbkitHandler.sync
+couchdbkit.loaders.BaseDocsLoader.sync
+couchdbkit.loaders.FileSystemDocLoader.sync
+couchdbkit.loaders.FileSystemDocsLoader.sync" class="py-name" href="#" onclick="return doclink('link-4', 'sync', 'link-4');">sync</a></tt> <tt class="py-op">=</tt> <tt class="py-string">"couchdbkit.consumer.sync.SyncConsumer"</tt><tt class="py-op">)</tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"> </tt>
+<a name="load_consumer_class"></a><div id="load_consumer_class-def"><a name="L14"></a><tt class="py-lineno"> 14</tt> <a class="py-toggle" href="#" id="load_consumer_class-toggle" onclick="return toggle('load_consumer_class');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.consumer-module.html#load_consumer_class">load_consumer_class</a><tt class="py-op">(</tt><tt class="py-param">uri</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="load_consumer_class-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="load_consumer_class-expanded"><a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">uri</tt> <tt class="py-keyword">in</tt> <tt class="py-op">(</tt><tt class="py-string">'eventlet'</tt><tt class="py-op">,</tt> <tt class="py-string">'gevent'</tt><tt class="py-op">,</tt> <tt class="py-string">'sync'</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line">        <tt class="py-keyword">import</tt> <tt class="py-name">warnings</tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line">        <tt class="py-name">warnings</tt><tt class="py-op">.</tt><tt class="py-name">warn</tt><tt class="py-op">(</tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line">                <tt class="py-string">"Short names for uri in consumer backend are deprecated."</tt><tt class="py-op">,</tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line">                <tt class="py-name">DeprecationWarning</tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line">                <tt class="py-op">)</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line">        <tt class="py-name">uri</tt> <tt class="py-op">=</tt> <tt id="link-5" class="py-name"><a title="couchdbkit.consumer.OLD_CONSUMER_URIS" class="py-name" href="#" onclick="return doclink('link-5', 'OLD_CONSUMER_URIS', 'link-2');">OLD_CONSUMER_URIS</a></tt><tt class="py-op">[</tt><tt class="py-name">uri</tt><tt class="py-op">]</tt>  </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line">    <tt class="py-name">components</tt> <tt class="py-op">=</tt> <tt class="py-name">uri</tt><tt class="py-op">.</tt><tt class="py-name">split</tt><tt class="py-op">(</tt><tt class="py-string">'.'</tt><tt class="py-op">)</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line">    <tt class="py-name">klass</tt> <tt class="py-op">=</tt> <tt class="py-name">components</tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Method couchdbkit.schema.properties.LazyDict.pop()=couchdbkit.schema.properties.LazyDict-class.html#pop,Method couchdbkit.schema.properties.LazyList.pop()=couchdbkit.schema.properties.LazyList-class.html#pop,Method couchdbkit.schema.properties_proxy.LazySchemaList.pop()=couchdbkit.schema.properties_proxy.LazySchemaList-class.html#pop"><a title="couchdbkit.schema.properties.LazyDict.pop
+couchdbkit.schema.properties.LazyList.pop
+couchdbkit.schema.properties_proxy.LazySchemaList.pop" class="py-name" href="#" onclick="return doclink('link-6', 'pop', 'link-6');">pop</a></tt><tt class="py-op">(</tt><tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line">    <tt class="py-name">mod</tt> <tt class="py-op">=</tt> <tt class="py-name">__import__</tt><tt class="py-op">(</tt><tt class="py-string">'.'</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">components</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">comp</tt> <tt class="py-keyword">in</tt> <tt class="py-name">components</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">:</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line">        <tt class="py-name">mod</tt> <tt class="py-op">=</tt> <tt class="py-name">getattr</tt><tt class="py-op">(</tt><tt class="py-name">mod</tt><tt class="py-op">,</tt> <tt class="py-name">comp</tt><tt class="py-op">)</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">getattr</tt><tt class="py-op">(</tt><tt class="py-name">mod</tt><tt class="py-op">,</tt> <tt class="py-name">klass</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"> </tt>
+<a name="Consumer"></a><div id="Consumer-def"><a name="L30"></a><tt class="py-lineno"> 30</tt> <a class="py-toggle" href="#" id="Consumer-toggle" onclick="return toggle('Consumer');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="couchdbkit.consumer.Consumer-class.html">Consumer</a><tt class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Consumer-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="Consumer-expanded"><a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line">    <tt class="py-docstring">""" Database change consumer</tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line"><tt class="py-docstring">    Example Usage:</tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line"><tt class="py-docstring">        &gt;&gt;&gt; from couchdbkit import Server, Consumer</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line"><tt class="py-docstring">        &gt;&gt;&gt; s = Server()</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line"><tt class="py-docstring">        &gt;&gt;&gt; db = s['testdb']</tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line"><tt class="py-docstring">        &gt;&gt;&gt; c = Consumer(db)</tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line"><tt class="py-docstring">        &gt;&gt;&gt; def print_line(line):</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line"><tt class="py-docstring">        ...     print "got %s" % line</tt> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line"><tt class="py-docstring">        ... </tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line"><tt class="py-docstring">        &gt;&gt;&gt; c.wait(print_line,since=0) # Go into receive loop</tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line"><tt class="py-docstring">         </tt> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line"> </tt>
+<a name="Consumer.__init__"></a><div id="Consumer.__init__-def"><a name="L46"></a><tt class="py-lineno"> 46</tt> <a class="py-toggle" href="#" id="Consumer.__init__-toggle" onclick="return toggle('Consumer.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.consumer.Consumer-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">db</tt><tt class="py-op">,</tt> <tt class="py-param">backend</tt><tt class="py-op">=</tt><tt class="py-string">'couchdbkit.consumer.sync.SyncConsumer'</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Consumer.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Consumer.__init__-expanded"><a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line">        <tt class="py-docstring">""" Constructor for the consumer</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line"><tt class="py-docstring">        </tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line"><tt class="py-docstring">        Args:</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line"><tt class="py-docstring">        @param db: Database instance</tt> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line"><tt class="py-docstring">        @param backend: backend entry point uri</tt> </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line"><tt class="py-docstring">        The default class (sync) erialize each call to registered</tt> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line"><tt class="py-docstring">        callbacks. Line processing should be fast in this case to not</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line"><tt class="py-docstring">        wait on socket read.</tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line"><tt class="py-docstring">         A string referring to one of the following bundled classes:</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line"><tt class="py-docstring">        </tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line"><tt class="py-docstring">        * ``sync``</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line"><tt class="py-docstring">        * ``eventlet`` - Requires eventlet &gt;= 0.9.7</tt> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line"><tt class="py-docstring">        * ``gevent``   - Requires gevent &gt;= 0.12.2 (?)</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line"><tt class="py-docstring">        You can optionnaly register in ``couchdbkit.consumers``entry point </tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line"><tt class="py-docstring">        your own worker.</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-7" class="py-name" targets="Module couchdbkit.ext.pylons.db=couchdbkit.ext.pylons.db-module.html"><a title="couchdbkit.ext.pylons.db" class="py-name" href="#" onclick="return doclink('link-7', 'db', 'link-7');">db</a></tt> <tt class="py-op">=</tt> <tt id="link-8" class="py-name"><a title="couchdbkit.ext.pylons.db" class="py-name" href="#" onclick="return doclink('link-8', 'db', 'link-7');">db</a></tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">consumer_class</tt> <tt class="py-op">=</tt> <tt id="link-9" class="py-name" targets="Function couchdbkit.consumer.load_consumer_class()=couchdbkit.consumer-module.html#load_consumer_class"><a title="couchdbkit.consumer.load_consumer_class" class="py-name" href="#" onclick="return doclink('link-9', 'load_consumer_class', 'link-9');">load_consumer_class</a></tt><tt class="py-op">(</tt><tt class="py-name">backend</tt><tt class="py-op">)</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_consumer</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">consumer_class</tt><tt class="py-op">(</tt><tt id="link-10" class="py-name"><a title="couchdbkit.ext.pylons.db" class="py-name" href="#" onclick="return doclink('link-10', 'db', 'link-7');">db</a></tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line"> </tt>
+<a name="Consumer.fetch"></a><div id="Consumer.fetch-def"><a name="L69"></a><tt class="py-lineno"> 69</tt> <a class="py-toggle" href="#" id="Consumer.fetch-toggle" onclick="return toggle('Consumer.fetch');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.consumer.Consumer-class.html#fetch">fetch</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">cb</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">params</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Consumer.fetch-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Consumer.fetch-expanded"><a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">        <tt class="py-docstring">""" Fetch all changes and return. If since is specified, fetch all changes</tt> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line"><tt class="py-docstring">        since this doc sequence</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line"><tt class="py-docstring">        </tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line"><tt class="py-docstring">        Args:</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line"><tt class="py-docstring">        @param params: kwargs</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line"><tt class="py-docstring">        See Changes API (http://wiki.apache.org/couchdb/HTTP_database_API#Changes)</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line"><tt class="py-docstring">        </tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line"><tt class="py-docstring">        @return: dict, change result</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line"><tt class="py-docstring">        </tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_consumer</tt><tt class="py-op">.</tt><tt id="link-11" class="py-name" targets="Method couchdbkit.client.ViewResults.fetch()=couchdbkit.client.ViewResults-class.html#fetch,Method couchdbkit.consumer.Consumer.fetch()=couchdbkit.consumer.Consumer-class.html#fetch,Method couchdbkit.consumer.base.ConsumerBase.fetch()=couchdbkit.consumer.base.ConsumerBase-class.html#fetch,Method couchdbkit.consumer.ceventlet.EventletConsumer.fetch()=couchdbkit.consumer.ceventlet.EventletConsumer-class.html#fetch,Method couchdbkit.consumer.cgevent.GeventConsumer.fetch()=couchdbkit.consumer.cgevent.GeventConsumer-class.html#fetch"><a title="couchdbkit.client.ViewResults.fetch
+couchdbkit.consumer.Consumer.fetch
+couchdbkit.consumer.base.ConsumerBase.fetch
+couchdbkit.consumer.ceventlet.EventletConsumer.fetch
+couchdbkit.consumer.cgevent.GeventConsumer.fetch" class="py-name" href="#" onclick="return doclink('link-11', 'fetch', 'link-11');">fetch</a></tt><tt class="py-op">(</tt><tt class="py-name">cb</tt><tt class="py-op">=</tt><tt class="py-name">cb</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">params</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line"> </tt>
+<a name="Consumer.wait_once"></a><div id="Consumer.wait_once-def"><a name="L82"></a><tt class="py-lineno"> 82</tt> <a class="py-toggle" href="#" id="Consumer.wait_once-toggle" onclick="return toggle('Consumer.wait_once');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.consumer.Consumer-class.html#wait_once">wait_once</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">cb</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">params</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Consumer.wait_once-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Consumer.wait_once-expanded"><a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">        <tt class="py-docstring">"""Wait for one change and return (longpoll feed) </tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line"><tt class="py-docstring">        </tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line"><tt class="py-docstring">        Args:</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line"><tt class="py-docstring">        @param params: kwargs</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line"><tt class="py-docstring">        See Changes API (http://wiki.apache.org/couchdb/HTTP_database_API#Changes)</tt> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line"><tt class="py-docstring">        </tt> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line"><tt class="py-docstring">        @return: dict, change result</tt> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line"> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_consumer</tt><tt class="py-op">.</tt><tt id="link-12" class="py-name" targets="Method couchdbkit.consumer.Consumer.wait_once()=couchdbkit.consumer.Consumer-class.html#wait_once,Method couchdbkit.consumer.base.ConsumerBase.wait_once()=couchdbkit.consumer.base.ConsumerBase-class.html#wait_once,Method couchdbkit.consumer.ceventlet.EventletConsumer.wait_once()=couchdbkit.consumer.ceventlet.EventletConsumer-class.html#wait_once,Method couchdbkit.consumer.cgevent.GeventConsumer.wait_once()=couchdbkit.consumer.cgevent.GeventConsumer-class.html#wait_once,Method couchdbkit.consumer.sync.SyncConsumer.wait_once()=couchdbkit.consumer.sync.SyncConsumer-class.html#wait_once"><a title="couchdbkit.consumer.Consumer.wait_once
+couchdbkit.consumer.base.ConsumerBase.wait_once
+couchdbkit.consumer.ceventlet.EventletConsumer.wait_once
+couchdbkit.consumer.cgevent.GeventConsumer.wait_once
+couchdbkit.consumer.sync.SyncConsumer.wait_once" class="py-name" href="#" onclick="return doclink('link-12', 'wait_once', 'link-12');">wait_once</a></tt><tt class="py-op">(</tt><tt class="py-name">cb</tt><tt class="py-op">=</tt><tt class="py-name">cb</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">params</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line"> </tt>
+<a name="Consumer.wait"></a><div id="Consumer.wait-def"><a name="L94"></a><tt class="py-lineno"> 94</tt> <a class="py-toggle" href="#" id="Consumer.wait-toggle" onclick="return toggle('Consumer.wait');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.consumer.Consumer-class.html#wait">wait</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">cb</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">params</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Consumer.wait-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Consumer.wait-expanded"><a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">        <tt class="py-docstring">""" Wait for changes until the connection close (continuous feed)</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line"><tt class="py-docstring">        </tt> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line"><tt class="py-docstring">        Args:</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line"><tt class="py-docstring">        @param params: kwargs</tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line"><tt class="py-docstring">        See Changes API (http://wiki.apache.org/couchdb/HTTP_database_API#Changes)</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line"><tt class="py-docstring">        </tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line"><tt class="py-docstring">        @return: dict, line of change</tt> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_consumer</tt><tt class="py-op">.</tt><tt id="link-13" class="py-name" targets="Method couchdbkit.consumer.Consumer.wait()=couchdbkit.consumer.Consumer-class.html#wait,Method couchdbkit.consumer.base.ConsumerBase.wait()=couchdbkit.consumer.base.ConsumerBase-class.html#wait,Method couchdbkit.consumer.ceventlet.ChangeConsumer.wait()=couchdbkit.consumer.ceventlet.ChangeConsumer-class.html#wait,Method couchdbkit.consumer.ceventlet.EventletConsumer.wait()=couchdbkit.consumer.ceventlet.EventletConsumer-class.html#wait,Method couchdbkit.consumer.cgevent.GeventConsumer.wait()=couchdbkit.consumer.cgevent.GeventConsumer-class.html#wait,Method couchdbkit.consumer.sync.SyncConsumer.wait()=couchdbkit.consumer.sync.SyncConsumer-class.html#wait"><a title="couchdbkit.consumer.Consumer.wait
+couchdbkit.consumer.base.ConsumerBase.wait
+couchdbkit.consumer.ceventlet.ChangeConsumer.wait
+couchdbkit.consumer.ceventlet.EventletConsumer.wait
+couchdbkit.consumer.cgevent.GeventConsumer.wait
+couchdbkit.consumer.sync.SyncConsumer.wait" class="py-name" href="#" onclick="return doclink('link-13', 'wait', 'link-13');">wait</a></tt><tt class="py-op">(</tt><tt class="py-name">cb</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">params</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line"> </tt>
+<a name="Consumer.wait_once_async"></a><div id="Consumer.wait_once_async-def"><a name="L105"></a><tt class="py-lineno">105</tt> <a class="py-toggle" href="#" id="Consumer.wait_once_async-toggle" onclick="return toggle('Consumer.wait_once_async');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.consumer.Consumer-class.html#wait_once_async">wait_once_async</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">cb</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">params</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Consumer.wait_once_async-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Consumer.wait_once_async-expanded"><a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line">        <tt class="py-docstring">""" like wait_once but doesn't return anything. """</tt> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_consumer</tt><tt class="py-op">.</tt><tt id="link-14" class="py-name" targets="Method couchdbkit.consumer.Consumer.wait_once_async()=couchdbkit.consumer.Consumer-class.html#wait_once_async,Method couchdbkit.consumer.base.ConsumerBase.wait_once_async()=couchdbkit.consumer.base.ConsumerBase-class.html#wait_once_async,Method couchdbkit.consumer.ceventlet.EventletConsumer.wait_once_async()=couchdbkit.consumer.ceventlet.EventletConsumer-class.html#wait_once_async,Method couchdbkit.consumer.cgevent.GeventConsumer.wait_once_async()=couchdbkit.consumer.cgevent.GeventConsumer-class.html#wait_once_async"><a title="couchdbkit.consumer.Consumer.wait_once_async
+couchdbkit.consumer.base.ConsumerBase.wait_once_async
+couchdbkit.consumer.ceventlet.EventletConsumer.wait_once_async
+couchdbkit.consumer.cgevent.GeventConsumer.wait_once_async" class="py-name" href="#" onclick="return doclink('link-14', 'wait_once_async', 'link-14');">wait_once_async</a></tt><tt class="py-op">(</tt><tt class="py-name">cb</tt><tt class="py-op">=</tt><tt class="py-name">cb</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">params</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line"> </tt>
+<a name="Consumer.wait_async"></a><div id="Consumer.wait_async-def"><a name="L109"></a><tt class="py-lineno">109</tt> <a class="py-toggle" href="#" id="Consumer.wait_async-toggle" onclick="return toggle('Consumer.wait_async');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.consumer.Consumer-class.html#wait_async">wait_async</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">cb</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">params</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Consumer.wait_async-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Consumer.wait_async-expanded"><a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line">        <tt class="py-docstring">""" like wait but doesn't return anything. """</tt> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_consumer</tt><tt class="py-op">.</tt><tt id="link-15" class="py-name" targets="Method couchdbkit.consumer.Consumer.wait_async()=couchdbkit.consumer.Consumer-class.html#wait_async,Method couchdbkit.consumer.base.ConsumerBase.wait_async()=couchdbkit.consumer.base.ConsumerBase-class.html#wait_async,Method couchdbkit.consumer.ceventlet.ChangeConsumer.wait_async()=couchdbkit.consumer.ceventlet.ChangeConsumer-class.html#wait_async,Method couchdbkit.consumer.ceventlet.EventletConsumer.wait_async()=couchdbkit.consumer.ceventlet.EventletConsumer-class.html#wait_async,Method couchdbkit.consumer.cgevent.GeventConsumer.wait_async()=couchdbkit.consumer.cgevent.GeventConsumer-class.html#wait_async"><a title="couchdbkit.consumer.Consumer.wait_async
+couchdbkit.consumer.base.ConsumerBase.wait_async
+couchdbkit.consumer.ceventlet.ChangeConsumer.wait_async
+couchdbkit.consumer.ceventlet.EventletConsumer.wait_async
+couchdbkit.consumer.cgevent.GeventConsumer.wait_async" class="py-name" href="#" onclick="return doclink('link-15', 'wait_async', 'link-15');">wait_async</a></tt><tt class="py-op">(</tt><tt class="py-name">cb</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">params</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="couchdbkit-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Fri May  4 11:48:42 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

@@ -5,7 +5,10 @@
 #
 __author__ = 'benoitc@e-engura.com (Benoît Chesneau)'
 
-import unittest
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
 
 from restkit.errors import RequestFailed, RequestError
 from couchdbkit.resource import CouchdbResource
@@ -46,7 +49,7 @@ class ServerTestCase(unittest.TestCase):
 
     def testRequestFailed(self):
         bad = CouchdbResource('http://localhost:10000')
-        self.assertRaises(RequestFailed, bad.get)
+        self.assertRaises(RequestError, bad.get)
         
 if __name__ == '__main__':
     unittest.main()

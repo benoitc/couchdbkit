@@ -1,0 +1,23 @@
+title: Couchdbkit version 0.6.0 released 
+content_type: textile
+page_type: blog
+template: blog/post.html
+
+New release for "Couchdbkit":http://couchdbkit.org.  
+
+
+It's now based on latest "restkit":http://benoitc.github.com/restkit
+4.0x so make sure to upgrade it before upgrading. I
+Full changelog is also
+"here":https://github.com/benoitc/couchdbkit/compare/0.5.4...0.6.0
+
+h2. What's new ?
+
+* new <a href="http://couchdbkit.org/docs/changes.html">changes API</a>
+* based on unitests2
+* Fix django support
+* Lot of fixes
+
+
+You can download latest release on
+"Pypi":http://pypi.python.org/pypi/couchdbkit/0.6.0 or check "download page":../download.html for other ways.

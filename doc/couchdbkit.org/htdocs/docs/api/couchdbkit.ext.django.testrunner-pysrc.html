@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>couchdbkit.ext.django.testrunner</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="couchdbkit-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="couchdbkit-module.html">Package&nbsp;couchdbkit</a> ::
+        <a href="couchdbkit.ext-module.html">Package&nbsp;ext</a> ::
+        <a href="couchdbkit.ext.django-module.html">Package&nbsp;django</a> ::
+        Module&nbsp;testrunner
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="couchdbkit.ext.django.testrunner-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="couchdbkit.ext.django.testrunner-module.html">Module couchdbkit.ext.django.testrunner</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-comment"># -*- coding: utf-8 -</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-comment"># This file is part of couchdbkit released under the MIT license. </tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-comment"># See the NOTICE for more information.</tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package couchdbkit.ext.django=couchdbkit.ext.django-module.html"><a title="couchdbkit.ext.django" class="py-name" href="#" onclick="return doclink('link-0', 'django', 'link-0');">django</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Module couchdbkit.ext.pylons.test=couchdbkit.ext.pylons.test-module.html"><a title="couchdbkit.ext.pylons.test" class="py-name" href="#" onclick="return doclink('link-1', 'test', 'link-1');">test</a></tt><tt class="py-op">.</tt><tt class="py-name">simple</tt> <tt class="py-keyword">import</tt> <tt class="py-name">DjangoTestSuiteRunner</tt> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-2" class="py-name"><a title="couchdbkit.ext.django" class="py-name" href="#" onclick="return doclink('link-2', 'django', 'link-0');">django</a></tt><tt class="py-op">.</tt><tt class="py-name">conf</tt> <tt class="py-keyword">import</tt> <tt class="py-name">settings</tt> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-op">.</tt> <tt class="py-keyword">import</tt> <tt id="link-3" class="py-name" targets="Module couchdbkit.ext.django.loading=couchdbkit.ext.django.loading-module.html"><a title="couchdbkit.ext.django.loading" class="py-name" href="#" onclick="return doclink('link-3', 'loading', 'link-3');">loading</a></tt> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-op">.</tt><tt class="py-op">.</tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Module couchdbkit.exceptions=couchdbkit.exceptions-module.html"><a title="couchdbkit.exceptions" class="py-name" href="#" onclick="return doclink('link-4', 'exceptions', 'link-4');">exceptions</a></tt> <tt class="py-keyword">import</tt> <tt id="link-5" class="py-name" targets="Class couchdbkit.exceptions.ResourceNotFound=couchdbkit.exceptions.ResourceNotFound-class.html"><a title="couchdbkit.exceptions.ResourceNotFound" class="py-name" href="#" onclick="return doclink('link-5', 'ResourceNotFound', 'link-5');">ResourceNotFound</a></tt> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line"> </tt>
+<a name="CouchDbKitTestSuiteRunner"></a><div id="CouchDbKitTestSuiteRunner-def"><a name="L12"></a><tt class="py-lineno">12</tt> <a class="py-toggle" href="#" id="CouchDbKitTestSuiteRunner-toggle" onclick="return toggle('CouchDbKitTestSuiteRunner');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="couchdbkit.ext.django.testrunner.CouchDbKitTestSuiteRunner-class.html">CouchDbKitTestSuiteRunner</a><tt class="py-op">(</tt><tt class="py-base-class">DjangoTestSuiteRunner</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="CouchDbKitTestSuiteRunner-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="CouchDbKitTestSuiteRunner-expanded"><a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line"><tt class="py-docstring">    A test suite runner for couchdbkit.  This offers the exact same functionality</tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line"><tt class="py-docstring">    as the default django test suite runner, except that it connects all the couchdbkit</tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line"><tt class="py-docstring">    django-extended models to a test database.  The test database is deleted at the</tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line"><tt class="py-docstring">    end of the tests.  To use this, just add this file to your project and the following </tt> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line"><tt class="py-docstring">    line to your settings.py file:</tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line"><tt class="py-docstring">    TEST_RUNNER = 'myproject.testrunner.CouchDbKitTestSuiteRunner'</tt> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line">     </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line">    <tt id="link-6" class="py-name" targets="Variable couchdbkit.ext.django.testrunner.CouchDbKitTestSuiteRunner.dbs=couchdbkit.ext.django.testrunner.CouchDbKitTestSuiteRunner-class.html#dbs"><a title="couchdbkit.ext.django.testrunner.CouchDbKitTestSuiteRunner.dbs" class="py-name" href="#" onclick="return doclink('link-6', 'dbs', 'link-6');">dbs</a></tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line">     </tt>
+<a name="CouchDbKitTestSuiteRunner.get_test_db_name"></a><div id="CouchDbKitTestSuiteRunner.get_test_db_name-def"><a name="L25"></a><tt class="py-lineno">25</tt> <a class="py-toggle" href="#" id="CouchDbKitTestSuiteRunner.get_test_db_name-toggle" onclick="return toggle('CouchDbKitTestSuiteRunner.get_test_db_name');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.django.testrunner.CouchDbKitTestSuiteRunner-class.html#get_test_db_name">get_test_db_name</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">dbname</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="CouchDbKitTestSuiteRunner.get_test_db_name-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="CouchDbKitTestSuiteRunner.get_test_db_name-expanded"><a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-string">"%s_test"</tt> <tt class="py-op">%</tt> <tt class="py-name">dbname</tt> </tt>
+</div><a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line">         </tt>
+<a name="CouchDbKitTestSuiteRunner.setup_databases"></a><div id="CouchDbKitTestSuiteRunner.setup_databases-def"><a name="L28"></a><tt class="py-lineno">28</tt> <a class="py-toggle" href="#" id="CouchDbKitTestSuiteRunner.setup_databases-toggle" onclick="return toggle('CouchDbKitTestSuiteRunner.setup_databases');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.django.testrunner.CouchDbKitTestSuiteRunner-class.html#setup_databases">setup_databases</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="CouchDbKitTestSuiteRunner.setup_databases-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="CouchDbKitTestSuiteRunner.setup_databases-expanded"><a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-string">"overridding the couchdbkit database settings to use a test database!"</tt> </tt>
+<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line">                  </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line">        <tt class="py-comment"># first pass: just implement this as a monkey-patch to the loading module</tt> </tt>
+<a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line">        <tt class="py-comment"># overriding all the existing couchdb settings</tt> </tt>
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-7" class="py-name"><a title="couchdbkit.ext.django.testrunner.CouchDbKitTestSuiteRunner.dbs" class="py-name" href="#" onclick="return doclink('link-7', 'dbs', 'link-6');">dbs</a></tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">(</tt><tt class="py-name">app</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-8" class="py-name" targets="Method couchdbkit.ext.django.testrunner.CouchDbKitTestSuiteRunner.get_test_db_name()=couchdbkit.ext.django.testrunner.CouchDbKitTestSuiteRunner-class.html#get_test_db_name"><a title="couchdbkit.ext.django.testrunner.CouchDbKitTestSuiteRunner.get_test_db_name" class="py-name" href="#" onclick="return doclink('link-8', 'get_test_db_name', 'link-8');">get_test_db_name</a></tt><tt class="py-op">(</tt><tt class="py-name">url</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> <tt class="py-keyword">for</tt> <tt class="py-name">app</tt><tt class="py-op">,</tt> <tt class="py-name">url</tt> <tt class="py-keyword">in</tt> <tt class="py-name">getattr</tt><tt class="py-op">(</tt><tt class="py-name">settings</tt><tt class="py-op">,</tt> <tt class="py-string">"COUCHDB_DATABASES"</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">]</tt> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line">        <tt class="py-name">old_handler</tt> <tt class="py-op">=</tt> <tt id="link-9" class="py-name"><a title="couchdbkit.ext.django.loading" class="py-name" href="#" onclick="return doclink('link-9', 'loading', 'link-3');">loading</a></tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Variable couchdbkit.ext.django.loading.couchdbkit_handler=couchdbkit.ext.django.loading-module.html#couchdbkit_handler"><a title="couchdbkit.ext.django.loading.couchdbkit_handler" class="py-name" href="#" onclick="return doclink('link-10', 'couchdbkit_handler', 'link-10');">couchdbkit_handler</a></tt> </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line">        <tt id="link-11" class="py-name"><a title="couchdbkit.ext.django.loading.couchdbkit_handler" class="py-name" href="#" onclick="return doclink('link-11', 'couchdbkit_handler', 'link-10');">couchdbkit_handler</a></tt> <tt class="py-op">=</tt> <tt id="link-12" class="py-name"><a title="couchdbkit.ext.django.loading" class="py-name" href="#" onclick="return doclink('link-12', 'loading', 'link-3');">loading</a></tt><tt class="py-op">.</tt><tt id="link-13" class="py-name" targets="Class couchdbkit.ext.django.loading.CouchdbkitHandler=couchdbkit.ext.django.loading.CouchdbkitHandler-class.html"><a title="couchdbkit.ext.django.loading.CouchdbkitHandler" class="py-name" href="#" onclick="return doclink('link-13', 'CouchdbkitHandler', 'link-13');">CouchdbkitHandler</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-14" class="py-name"><a title="couchdbkit.ext.django.testrunner.CouchDbKitTestSuiteRunner.dbs" class="py-name" href="#" onclick="return doclink('link-14', 'dbs', 'link-6');">dbs</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line">        <tt id="link-15" class="py-name"><a title="couchdbkit.ext.django.loading" class="py-name" href="#" onclick="return doclink('link-15', 'loading', 'link-3');">loading</a></tt><tt class="py-op">.</tt><tt id="link-16" class="py-name"><a title="couchdbkit.ext.django.loading.couchdbkit_handler" class="py-name" href="#" onclick="return doclink('link-16', 'couchdbkit_handler', 'link-10');">couchdbkit_handler</a></tt> <tt class="py-op">=</tt> <tt id="link-17" class="py-name"><a title="couchdbkit.ext.django.loading.couchdbkit_handler" class="py-name" href="#" onclick="return doclink('link-17', 'couchdbkit_handler', 'link-10');">couchdbkit_handler</a></tt> </tt>
+<a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line">        <tt id="link-18" class="py-name"><a title="couchdbkit.ext.django.loading" class="py-name" href="#" onclick="return doclink('link-18', 'loading', 'link-3');">loading</a></tt><tt class="py-op">.</tt><tt id="link-19" class="py-name" targets="Method couchdbkit.ext.django.loading.CouchdbkitHandler.register_schema()=couchdbkit.ext.django.loading.CouchdbkitHandler-class.html#register_schema,Function couchdbkit.ext.django.loading.register_schema()=couchdbkit.ext.django.loading-module.html#register_schema"><a title="couchdbkit.ext.django.loading.CouchdbkitHandler.register_schema
+couchdbkit.ext.django.loading.register_schema" class="py-name" href="#" onclick="return doclink('link-19', 'register_schema', 'link-19');">register_schema</a></tt> <tt class="py-op">=</tt> <tt id="link-20" class="py-name"><a title="couchdbkit.ext.django.loading.couchdbkit_handler" class="py-name" href="#" onclick="return doclink('link-20', 'couchdbkit_handler', 'link-10');">couchdbkit_handler</a></tt><tt class="py-op">.</tt><tt id="link-21" class="py-name"><a title="couchdbkit.ext.django.loading.CouchdbkitHandler.register_schema
+couchdbkit.ext.django.loading.register_schema" class="py-name" href="#" onclick="return doclink('link-21', 'register_schema', 'link-19');">register_schema</a></tt> </tt>
+<a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line">        <tt id="link-22" class="py-name"><a title="couchdbkit.ext.django.loading" class="py-name" href="#" onclick="return doclink('link-22', 'loading', 'link-3');">loading</a></tt><tt class="py-op">.</tt><tt id="link-23" class="py-name" targets="Method couchdbkit.ext.django.loading.CouchdbkitHandler.get_schema()=couchdbkit.ext.django.loading.CouchdbkitHandler-class.html#get_schema,Function couchdbkit.ext.django.loading.get_schema()=couchdbkit.ext.django.loading-module.html#get_schema"><a title="couchdbkit.ext.django.loading.CouchdbkitHandler.get_schema
+couchdbkit.ext.django.loading.get_schema" class="py-name" href="#" onclick="return doclink('link-23', 'get_schema', 'link-23');">get_schema</a></tt> <tt class="py-op">=</tt> <tt id="link-24" class="py-name"><a title="couchdbkit.ext.django.loading.couchdbkit_handler" class="py-name" href="#" onclick="return doclink('link-24', 'couchdbkit_handler', 'link-10');">couchdbkit_handler</a></tt><tt class="py-op">.</tt><tt id="link-25" class="py-name"><a title="couchdbkit.ext.django.loading.CouchdbkitHandler.get_schema
+couchdbkit.ext.django.loading.get_schema" class="py-name" href="#" onclick="return doclink('link-25', 'get_schema', 'link-23');">get_schema</a></tt> </tt>
+<a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line">        <tt id="link-26" class="py-name"><a title="couchdbkit.ext.django.loading" class="py-name" href="#" onclick="return doclink('link-26', 'loading', 'link-3');">loading</a></tt><tt class="py-op">.</tt><tt id="link-27" class="py-name" targets="Method couchdbkit.client.Server.get_db()=couchdbkit.client.Server-class.html#get_db,Method couchdbkit.ext.django.loading.CouchdbkitHandler.get_db()=couchdbkit.ext.django.loading.CouchdbkitHandler-class.html#get_db,Function couchdbkit.ext.django.loading.get_db()=couchdbkit.ext.django.loading-module.html#get_db,Class Method couchdbkit.ext.django.schema.Document.get_db()=couchdbkit.ext.django.schema.Document-class.html#get_db,Class Method couchdbkit.schema.base.DocumentBase.get_db()=couchdbkit.schema.base.DocumentBase-class.html#get_db"><a title="couchdbkit.client.Server.get_db
+couchdbkit.ext.django.loading.CouchdbkitHandler.get_db
+couchdbkit.ext.django.loading.get_db
+couchdbkit.ext.django.schema.Document.get_db
+couchdbkit.schema.base.DocumentBase.get_db" class="py-name" href="#" onclick="return doclink('link-27', 'get_db', 'link-27');">get_db</a></tt> <tt class="py-op">=</tt> <tt id="link-28" class="py-name"><a title="couchdbkit.ext.django.loading.couchdbkit_handler" class="py-name" href="#" onclick="return doclink('link-28', 'couchdbkit_handler', 'link-10');">couchdbkit_handler</a></tt><tt class="py-op">.</tt><tt id="link-29" class="py-name"><a title="couchdbkit.client.Server.get_db
+couchdbkit.ext.django.loading.CouchdbkitHandler.get_db
+couchdbkit.ext.django.loading.get_db
+couchdbkit.ext.django.schema.Document.get_db
+couchdbkit.schema.base.DocumentBase.get_db" class="py-name" href="#" onclick="return doclink('link-29', 'get_db', 'link-27');">get_db</a></tt> </tt>
+<a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line">         </tt>
+<a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line">        <tt class="py-comment"># register our dbs with the extension document classes</tt> </tt>
+<a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">app</tt><tt class="py-op">,</tt> <tt class="py-name">value</tt> <tt class="py-keyword">in</tt> <tt class="py-name">old_handler</tt><tt class="py-op">.</tt><tt class="py-name">app_schema</tt><tt class="py-op">.</tt><tt id="link-30" class="py-name" targets="Method couchdbkit.schema.base.DocumentSchema.items()=couchdbkit.schema.base.DocumentSchema-class.html#items"><a title="couchdbkit.schema.base.DocumentSchema.items" class="py-name" href="#" onclick="return doclink('link-30', 'items', 'link-30');">items</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line">            <tt class="py-keyword">for</tt> <tt class="py-name">name</tt><tt class="py-op">,</tt> <tt class="py-name">cls</tt> <tt class="py-keyword">in</tt> <tt class="py-name">value</tt><tt class="py-op">.</tt><tt id="link-31" class="py-name"><a title="couchdbkit.schema.base.DocumentSchema.items" class="py-name" href="#" onclick="return doclink('link-31', 'items', 'link-30');">items</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line">                <tt class="py-name">cls</tt><tt class="py-op">.</tt><tt id="link-32" class="py-name" targets="Class Method couchdbkit.schema.base.DocumentBase.set_db()=couchdbkit.schema.base.DocumentBase-class.html#set_db"><a title="couchdbkit.schema.base.DocumentBase.set_db" class="py-name" href="#" onclick="return doclink('link-32', 'set_db', 'link-32');">set_db</a></tt><tt class="py-op">(</tt><tt id="link-33" class="py-name"><a title="couchdbkit.ext.django.loading" class="py-name" href="#" onclick="return doclink('link-33', 'loading', 'link-3');">loading</a></tt><tt class="py-op">.</tt><tt id="link-34" class="py-name"><a title="couchdbkit.client.Server.get_db
+couchdbkit.ext.django.loading.CouchdbkitHandler.get_db
+couchdbkit.ext.django.loading.get_db
+couchdbkit.ext.django.schema.Document.get_db
+couchdbkit.schema.base.DocumentBase.get_db" class="py-name" href="#" onclick="return doclink('link-34', 'get_db', 'link-27');">get_db</a></tt><tt class="py-op">(</tt><tt class="py-name">app</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L45"></a><tt class="py-lineno">45</tt>  <tt class="py-line">                                 </tt>
+<a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line">                 </tt>
+<a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">super</tt><tt class="py-op">(</tt><tt id="link-35" class="py-name" targets="Class couchdbkit.ext.django.testrunner.CouchDbKitTestSuiteRunner=couchdbkit.ext.django.testrunner.CouchDbKitTestSuiteRunner-class.html"><a title="couchdbkit.ext.django.testrunner.CouchDbKitTestSuiteRunner" class="py-name" href="#" onclick="return doclink('link-35', 'CouchDbKitTestSuiteRunner', 'link-35');">CouchDbKitTestSuiteRunner</a></tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-36" class="py-name" targets="Method couchdbkit.ext.django.testrunner.CouchDbKitTestSuiteRunner.setup_databases()=couchdbkit.ext.django.testrunner.CouchDbKitTestSuiteRunner-class.html#setup_databases"><a title="couchdbkit.ext.django.testrunner.CouchDbKitTestSuiteRunner.setup_databases" class="py-name" href="#" onclick="return doclink('link-36', 'setup_databases', 'link-36');">setup_databases</a></tt><tt class="py-op">(</tt><tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line">     </tt>
+<a name="CouchDbKitTestSuiteRunner.teardown_databases"></a><div id="CouchDbKitTestSuiteRunner.teardown_databases-def"><a name="L49"></a><tt class="py-lineno">49</tt> <a class="py-toggle" href="#" id="CouchDbKitTestSuiteRunner.teardown_databases-toggle" onclick="return toggle('CouchDbKitTestSuiteRunner.teardown_databases');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="couchdbkit.ext.django.testrunner.CouchDbKitTestSuiteRunner-class.html#teardown_databases">teardown_databases</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">old_config</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="CouchDbKitTestSuiteRunner.teardown_databases-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="CouchDbKitTestSuiteRunner.teardown_databases-expanded"><a name="L50"></a><tt class="py-lineno">50</tt>  <tt class="py-line">        <tt class="py-name">deleted_databases</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line">        <tt class="py-name">skipcount</tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> </tt>
+<a name="L52"></a><tt class="py-lineno">52</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">app</tt><tt class="py-op">,</tt> <tt class="py-name">item</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-37" class="py-name"><a title="couchdbkit.ext.django.testrunner.CouchDbKitTestSuiteRunner.dbs" class="py-name" href="#" onclick="return doclink('link-37', 'dbs', 'link-6');">dbs</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L53"></a><tt class="py-lineno">53</tt>  <tt class="py-line">            <tt class="py-name">app_label</tt> <tt class="py-op">=</tt> <tt class="py-name">app</tt><tt class="py-op">.</tt><tt class="py-name">split</tt><tt class="py-op">(</tt><tt class="py-string">'.'</tt><tt class="py-op">)</tt><tt class="py-op">[</tt><tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">]</tt> </tt>
+<a name="L54"></a><tt class="py-lineno">54</tt>  <tt class="py-line">            <tt id="link-38" class="py-name" targets="Module couchdbkit.ext.pylons.db=couchdbkit.ext.pylons.db-module.html"><a title="couchdbkit.ext.pylons.db" class="py-name" href="#" onclick="return doclink('link-38', 'db', 'link-38');">db</a></tt> <tt class="py-op">=</tt> <tt id="link-39" class="py-name"><a title="couchdbkit.ext.django.loading" class="py-name" href="#" onclick="return doclink('link-39', 'loading', 'link-3');">loading</a></tt><tt class="py-op">.</tt><tt id="link-40" class="py-name"><a title="couchdbkit.client.Server.get_db
+couchdbkit.ext.django.loading.CouchdbkitHandler.get_db
+couchdbkit.ext.django.loading.get_db
+couchdbkit.ext.django.schema.Document.get_db
+couchdbkit.schema.base.DocumentBase.get_db" class="py-name" href="#" onclick="return doclink('link-40', 'get_db', 'link-27');">get_db</a></tt><tt class="py-op">(</tt><tt class="py-name">app_label</tt><tt class="py-op">)</tt> </tt>
+<a name="L55"></a><tt class="py-lineno">55</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt id="link-41" class="py-name"><a title="couchdbkit.ext.pylons.db" class="py-name" href="#" onclick="return doclink('link-41', 'db', 'link-38');">db</a></tt><tt class="py-op">.</tt><tt class="py-name">dbname</tt> <tt class="py-keyword">in</tt> <tt class="py-name">deleted_databases</tt><tt class="py-op">:</tt>  </tt>
+<a name="L56"></a><tt class="py-lineno">56</tt>  <tt class="py-line">                <tt class="py-name">skipcount</tt> <tt class="py-op">+=</tt> <tt class="py-number">1</tt> </tt>
+<a name="L57"></a><tt class="py-lineno">57</tt>  <tt class="py-line">                <tt class="py-keyword">continue</tt> </tt>
+<a name="L58"></a><tt class="py-lineno">58</tt>  <tt class="py-line">            <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L59"></a><tt class="py-lineno">59</tt>  <tt class="py-line">                <tt id="link-42" class="py-name"><a title="couchdbkit.ext.pylons.db" class="py-name" href="#" onclick="return doclink('link-42', 'db', 'link-38');">db</a></tt><tt class="py-op">.</tt><tt class="py-name">server</tt><tt class="py-op">.</tt><tt id="link-43" class="py-name" targets="Method couchdbkit.client.Server.delete_db()=couchdbkit.client.Server-class.html#delete_db"><a title="couchdbkit.client.Server.delete_db" class="py-name" href="#" onclick="return doclink('link-43', 'delete_db', 'link-43');">delete_db</a></tt><tt class="py-op">(</tt><tt id="link-44" class="py-name"><a title="couchdbkit.ext.pylons.db" class="py-name" href="#" onclick="return doclink('link-44', 'db', 'link-38');">db</a></tt><tt class="py-op">.</tt><tt class="py-name">dbname</tt><tt class="py-op">)</tt> </tt>
+<a name="L60"></a><tt class="py-lineno">60</tt>  <tt class="py-line">                <tt class="py-name">deleted_databases</tt><tt class="py-op">.</tt><tt id="link-45" class="py-name" targets="Method couchdbkit.schema.properties.LazyList.append()=couchdbkit.schema.properties.LazyList-class.html#append,Method couchdbkit.schema.properties_proxy.LazySchemaList.append()=couchdbkit.schema.properties_proxy.LazySchemaList-class.html#append"><a title="couchdbkit.schema.properties.LazyList.append
+couchdbkit.schema.properties_proxy.LazySchemaList.append" class="py-name" href="#" onclick="return doclink('link-45', 'append', 'link-45');">append</a></tt><tt class="py-op">(</tt><tt id="link-46" class="py-name"><a title="couchdbkit.ext.pylons.db" class="py-name" href="#" onclick="return doclink('link-46', 'db', 'link-38');">db</a></tt><tt class="py-op">.</tt><tt class="py-name">dbname</tt><tt class="py-op">)</tt> </tt>
+<a name="L61"></a><tt class="py-lineno">61</tt>  <tt class="py-line">                <tt class="py-keyword">print</tt> <tt class="py-string">"deleted database %s for %s"</tt> <tt class="py-op">%</tt> <tt class="py-op">(</tt><tt id="link-47" class="py-name"><a title="couchdbkit.ext.pylons.db" class="py-name" href="#" onclick="return doclink('link-47', 'db', 'link-38');">db</a></tt><tt class="py-op">.</tt><tt class="py-name">dbname</tt><tt class="py-op">,</tt> <tt class="py-name">app_label</tt><tt class="py-op">)</tt> </tt>
+<a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line">            <tt class="py-keyword">except</tt> <tt id="link-48" class="py-name"><a title="couchdbkit.exceptions.ResourceNotFound" class="py-name" href="#" onclick="return doclink('link-48', 'ResourceNotFound', 'link-5');">ResourceNotFound</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L63"></a><tt class="py-lineno">63</tt>  <tt class="py-line">                <tt class="py-keyword">print</tt> <tt class="py-string">"database %s not found for %s! it was probably already deleted."</tt> <tt class="py-op">%</tt> <tt class="py-op">(</tt><tt id="link-49" class="py-name"><a title="couchdbkit.ext.pylons.db" class="py-name" href="#" onclick="return doclink('link-49', 'db', 'link-38');">db</a></tt><tt class="py-op">.</tt><tt class="py-name">dbname</tt><tt class="py-op">,</tt> <tt class="py-name">app_label</tt><tt class="py-op">)</tt> </tt>
+<a name="L64"></a><tt class="py-lineno">64</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">skipcount</tt><tt class="py-op">:</tt> </tt>
+<a name="L65"></a><tt class="py-lineno">65</tt>  <tt class="py-line">            <tt class="py-keyword">print</tt> <tt class="py-string">"skipped deleting %s app databases that were already deleted"</tt> <tt class="py-op">%</tt> <tt class="py-name">skipcount</tt> </tt>
+<a name="L66"></a><tt class="py-lineno">66</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">super</tt><tt class="py-op">(</tt><tt id="link-50" class="py-name"><a title="couchdbkit.ext.django.testrunner.CouchDbKitTestSuiteRunner" class="py-name" href="#" onclick="return doclink('link-50', 'CouchDbKitTestSuiteRunner', 'link-35');">CouchDbKitTestSuiteRunner</a></tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-51" class="py-name" targets="Method couchdbkit.ext.django.testrunner.CouchDbKitTestSuiteRunner.teardown_databases()=couchdbkit.ext.django.testrunner.CouchDbKitTestSuiteRunner-class.html#teardown_databases"><a title="couchdbkit.ext.django.testrunner.CouchDbKitTestSuiteRunner.teardown_databases" class="py-name" href="#" onclick="return doclink('link-51', 'teardown_databases', 'link-51');">teardown_databases</a></tt><tt class="py-op">(</tt><tt class="py-name">old_config</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L67"></a><tt class="py-lineno">67</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="couchdbkit-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Fri May  4 11:48:42 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

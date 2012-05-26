@@ -81,8 +81,9 @@
 	<p>If you have not installed couchdbkit yet, follow instructions on <a href="/download.html">download page</a> . Once you&#8217;ve done, you can write your first CouchDB document:</p>
 
 	<p><pre class="code prettyprint">
- import datetime
- from couchdbkit import *</p>
+ import datetime</p>
+
+ from couchdbkit import *
 
  class Greeting(Document):
       author = StringProperty()
@@ -94,9 +95,10 @@
 
 	<p>Here is the code to save a greet on `Greeting` database. We also see how to create a database.</p>
 
-	<p><pre class="code prettyprint">
+	<p><pre class="code prettyprint"></p>
+
  # server object
- server = Server()</p>
+ server = Server()
 
  # create database
  db = server.get_or_create_db(&#8220;greeting&#8221;)
@@ -115,7 +117,7 @@
  greet.save()
 </pre>
 
-	<p>Note: Here we use `contain` to associate the db to the <code>Greeting</code> object. This function could be use to associate myltiple dcouemnt objects to one db : <code>contain(db, Doc1, ...)</code> </p>
+	<p>Note: You can just use the <code>db.save</code> method to save any <code>Greeting</code> object.  </p>
 
 	<p>Your document `greet` is now in the `greetings` db. Each document is saved with a `doc_type` field that allow you to find easily each kind of document with the views. By default `doc_type` is the name of the class.</p>
 
@@ -167,10 +169,9 @@
 	<p>Then we use `FileSystemDocsLoader` object to send the design document to CouchDB:</p>
 
 	<p><pre class="code prettyprint">
- from couchdbkit.loaders import FileSystemDocsLoader</p>
+ from couchdbkit.designer import push</p>
 
- loader = FileSystemDocsLoader(&#8217;/path/to/example/_design&#8217;)
- loader.sync(db, verbose=True)
+ push(&#8217;/path/to/example/_design/greeting&#8217;, db)
 </pre>
 
 	<p>The design doc is now in the `greetings` database and you can get all greets :</p>
@@ -183,8 +184,9 @@
 
         
         <footer id="bottom">
-            <p class="copyright">2008-2009 &copy; <a href="http://benoitc.org">Benoît Chesneau</a> - Some rights reserved.</p>
+            <p class="copyright">2008-2012 &copy; <a href="http://benoitc.org">Benoît Chesneau</a> - Some rights reserved.</p>
             <div id="cc"><a rel="license" href="http://creativecommons.org/licenses/by/2.0/fr/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/2.0/fr/80x15.png" /></a> This <span xmlns:dc="http://purl.org/dc/elements/1.1/" href="http://purl.org/dc/dcmitype/InteractiveResource" rel="dc:type">website</span> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/2.0/fr/">Creative Commons Attribution 2.0 France License</a>.</div>
+            <p>Hosted on <a href="http://github.com/">GitHub</a></p>
         </footer>
         
     </div>

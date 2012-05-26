@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Class Hierarchy</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="couchdbkit-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th bgcolor="#70b0f0" class="navbar-select"
+          >&nbsp;&nbsp;&nbsp;Trees&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">&nbsp;</td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="class-tree.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<center><b>
+ [ <a href="module-tree.html">Module Hierarchy</a>
+ | <a href="class-tree.html">Class Hierarchy</a> ]
+</b></center><br />
+<h1 class="epydoc">Class Hierarchy</h1>
+<ul class="nomargin-top">
+    <li> <strong class="uidlink">object</strong>:
+      <em class="summary">The most base type</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.base.AttachmentMixin-class.html">couchdbkit.schema.base.AttachmentMixin</a></strong>:
+      <em class="summary">mixin to manage doc attachments.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.base.Document-class.html">couchdbkit.schema.base.Document</a></strong>:
+      <em class="summary">Full featured document object implementing the following :</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.schema.Document-class.html">couchdbkit.ext.django.schema.Document</a></strong>:
+      <em class="summary">Document object for django extension</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.base.StaticDocument-class.html">couchdbkit.schema.base.StaticDocument</a></strong>:
+      <em class="summary">Shorthand for a document that disallow dynamic properties.</em>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink">django.core.management.base.BaseCommand</strong>:
+      <em class="summary">The base class from which all management commands ultimately
+derive.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.management.commands.sync_finish_couchdb.Command-class.html">couchdbkit.ext.django.management.commands.sync_finish_couchdb.Command</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.management.commands.sync_prepare_couchdb.Command-class.html">couchdbkit.ext.django.management.commands.sync_prepare_couchdb.Command</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.management.commands.sync_couchdb.Command-class.html">couchdbkit.ext.django.management.commands.sync_couchdb.Command</a></strong>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.loaders.BaseDocsLoader-class.html">couchdbkit.loaders.BaseDocsLoader</a></strong>:
+      <em class="summary">Baseclass for all doc loaders.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.loaders.FileSystemDocLoader-class.html">couchdbkit.loaders.FileSystemDocLoader</a></strong>:
+      <em class="summary">Load only one design doc from a path on the filesystem.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.loaders.FileSystemDocsLoader-class.html">couchdbkit.loaders.FileSystemDocsLoader</a></strong>:
+      <em class="summary">Load docs from the filesystem.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.pylons.test.FixtureLoader-class.html">couchdbkit.ext.pylons.test.FixtureLoader</a></strong>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink">exceptions.BaseException</strong>:
+      <em class="summary">Common base class for all exceptions</em>
+    <ul>
+    <li> <strong class="uidlink">exceptions.Exception</strong>:
+      <em class="summary">Common base class for all non-exit exceptions.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="paste.script.command.BadCommand-class.html">paste.script.command.BadCommand</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.exceptions.BadValueError-class.html">couchdbkit.exceptions.BadValueError</a></strong>:
+      <em class="summary">exception raised when a value can't be validated or is required</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.exceptions.BulkSaveError-class.html">couchdbkit.exceptions.BulkSaveError</a></strong>:
+      <em class="summary">exception raised when bulk save contain errors.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.exceptions.DesignerError-class.html">couchdbkit.exceptions.DesignerError</a></strong>:
+      <em class="summary">unkown exception raised by the designer</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.exceptions.DocsPathNotFound-class.html">couchdbkit.exceptions.DocsPathNotFound</a></strong>:
+      <em class="summary">exception raised when path given for docs isn't found</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.exceptions.DuplicatePropertyError-class.html">couchdbkit.exceptions.DuplicatePropertyError</a></strong>:
+      <em class="summary">exception raised when there is a duplicate property in a model</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.exceptions.InvalidAttachment-class.html">couchdbkit.exceptions.InvalidAttachment</a></strong>:
+      <em class="summary">raised when an attachment is invalid</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.exceptions.MacroError-class.html">couchdbkit.exceptions.MacroError</a></strong>:
+      <em class="summary">exception raised when macro parsiing error in functions</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.exceptions.MultipleResultsFound-class.html">couchdbkit.exceptions.MultipleResultsFound</a></strong>:
+      <em class="summary">exception raised when more than one object is returned by the 
+        get_by method</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.exceptions.NoResultFound-class.html">couchdbkit.exceptions.NoResultFound</a></strong>:
+      <em class="summary">exception returned when no results are found</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.exceptions.ReservedWordError-class.html">couchdbkit.exceptions.ReservedWordError</a></strong>:
+      <em class="summary">exception raised when a reserved word is used in Document schema</em>
+    </li>
+    <li> <strong class="uidlink">restkit.errors.ResourceError</strong>:
+      <em class="summary">default error class</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.exceptions.PreconditionFailed-class.html">couchdbkit.exceptions.PreconditionFailed</a></strong>:
+      <em class="summary">Exception raised when 412 HTTP error is received in response to a 
+        request</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.exceptions.ResourceConflict-class.html">couchdbkit.exceptions.ResourceConflict</a></strong>:
+      <em class="summary">Exception raised when there is conflict while updating</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.exceptions.ResourceNotFound-class.html">couchdbkit.exceptions.ResourceNotFound</a></strong>:
+      <em class="summary">Exception raised when resource is not found</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink">exceptions.StandardError</strong>:
+      <em class="summary">Base class for all standard Python exceptions that do not represent
+        interpreter exiting.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="exceptions.AssertionError-class.html">exceptions.AssertionError</a></strong>:
+      <em class="summary">Assertion failed.</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.exceptions.ViewServerError-class.html">couchdbkit.exceptions.ViewServerError</a></strong>:
+      <em class="summary">exception raised by view server</em>
+    </li>
+    <li> <strong class="uidlink"><a href="greenlet.error-class.html">greenlet.error</a></strong>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="greenlet.GreenletExit-class.html">greenlet.GreenletExit</a></strong>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.consumer.ceventlet.ChangeConsumer-class.html">couchdbkit.consumer.ceventlet.ChangeConsumer</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.consumer.ceventlet.ContinuousChangeConsumer-class.html">couchdbkit.consumer.ceventlet.ContinuousChangeConsumer</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.consumer.ceventlet.LongPollChangeConsumer-class.html">couchdbkit.consumer.ceventlet.LongPollChangeConsumer</a></strong>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.changes.ChangesStream-class.html">couchdbkit.changes.ChangesStream</a></strong>:
+      <em class="summary">Change stream object.</em>
+    </li>
+    <li> <strong class="uidlink">paste.script.command.Command</strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.pylons.commands.SyncDbCommand-class.html">couchdbkit.ext.pylons.commands.SyncDbCommand</a></strong>:
+      <em class="summary">Syncs the CouchDB views on disk with the database.</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.consumer.Consumer-class.html">couchdbkit.consumer.Consumer</a></strong>:
+      <em class="summary">Database change consumer</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.consumer.base.ConsumerBase-class.html">couchdbkit.consumer.base.ConsumerBase</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.consumer.sync.SyncConsumer-class.html">couchdbkit.consumer.sync.SyncConsumer</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.consumer.ceventlet.EventletConsumer-class.html">couchdbkit.consumer.ceventlet.EventletConsumer</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.consumer.cgevent.GeventConsumer-class.html">couchdbkit.consumer.cgevent.GeventConsumer</a></strong>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink">_abcoll.Container</strong>
+    <ul>
+    <li> <strong class="uidlink">_abcoll.Set</strong>:
+      <em class="summary">A set is a finite, iterable container.</em>
+    <ul>
+    <li> <strong class="uidlink">_abcoll.MutableSet</strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties.LazySet-class.html" onclick="show_private();">couchdbkit.schema.properties.LazySet</a></strong>:
+      <em class="summary">Object to make sure that we keep set and _doc synchronized.</em>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.wsgi.proxy.CouchdbProxy-class.html">couchdbkit.wsgi.proxy.CouchdbProxy</a></strong>:
+      <em class="summary">WSGI application to proxy a couchdb server.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.loading.CouchdbkitHandler-class.html">couchdbkit.ext.django.loading.CouchdbkitHandler</a></strong>:
+      <em class="summary">The couchdbkit handler for django</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.client.Database-class.html">couchdbkit.client.Database</a></strong>:
+      <em class="summary">Object that abstract access to a CouchDB database A Database object
+        can act as a Dict object.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="decimal.Decimal-class.html">decimal.Decimal</a></strong>:
+      <em class="summary">Floating point class for decimal arithmetic.</em>
+    </li>
+    <li> <strong class="uidlink">django.test.simple.DjangoTestSuiteRunner</strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.testrunner.CouchDbKitTestSuiteRunner-class.html">couchdbkit.ext.django.testrunner.CouchDbKitTestSuiteRunner</a></strong>:
+      <em class="summary">A test suite runner for couchdbkit.</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.forms.DocumentFormOptions-class.html">couchdbkit.ext.django.forms.DocumentFormOptions</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.base.DocumentSchema-class.html">couchdbkit.schema.base.DocumentSchema</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.base.DocumentBase-class.html">couchdbkit.schema.base.DocumentBase</a></strong>:
+      <em class="summary">Base Document object that map a CouchDB Document.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.base.Document-class.html">couchdbkit.schema.base.Document</a></strong>:
+      <em class="summary">Full featured document object implementing the following :</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.schema.Document-class.html">couchdbkit.ext.django.schema.Document</a></strong>:
+      <em class="summary">Document object for django extension</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.base.StaticDocument-class.html">couchdbkit.schema.base.StaticDocument</a></strong>:
+      <em class="summary">Shorthand for a document that disallow dynamic properties.</em>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.external.External-class.html">couchdbkit.external.External</a></strong>:
+      <em class="summary">simple class to handle an external
+ans send the response.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.wsgi.handler.WSGIHandler-class.html">couchdbkit.wsgi.handler.WSGIHandler</a></strong>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.designer.fs.FSDoc-class.html">couchdbkit.designer.fs.FSDoc</a></strong>
+    </li>
+    <li> <strong class="uidlink">_abcoll.Iterable</strong>
+    <ul>
+    <li> <strong class="uidlink">_abcoll.Set</strong>:
+      <em class="summary">A set is a finite, iterable container.</em>
+    <ul>
+    <li> <strong class="uidlink">_abcoll.MutableSet</strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties.LazySet-class.html" onclick="show_private();">couchdbkit.schema.properties.LazySet</a></strong>:
+      <em class="summary">Object to make sure that we keep set and _doc synchronized.</em>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.schema.Options-class.html" onclick="show_private();">couchdbkit.ext.django.schema.Options</a></strong>:
+      <em class="summary">class based on django.db.models.options.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties.Property-class.html">couchdbkit.schema.properties.Property</a></strong>:
+      <em class="summary">Property base which all other properties inherit.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties.BooleanProperty-class.html">couchdbkit.schema.properties.BooleanProperty</a></strong>:
+      <em class="summary">Boolean property, map to python bool</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties.DateTimeProperty-class.html">couchdbkit.schema.properties.DateTimeProperty</a></strong>:
+      <em class="summary">DateTime property.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties.DateProperty-class.html">couchdbkit.schema.properties.DateProperty</a></strong>:
+      <em class="summary">Date property, like DateTime property but only for Date.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties.TimeProperty-class.html">couchdbkit.schema.properties.TimeProperty</a></strong>:
+      <em class="summary">Date property, like DateTime property but only for time.</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties.DecimalProperty-class.html">couchdbkit.schema.properties.DecimalProperty</a></strong>:
+      <em class="summary">Decimal property, map to Decimal python object</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties.DictProperty-class.html">couchdbkit.schema.properties.DictProperty</a></strong>:
+      <em class="summary">A property that stores a dict of things</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties.FloatProperty-class.html">couchdbkit.schema.properties.FloatProperty</a></strong>:
+      <em class="summary">Float property, map to python float</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties.IntegerProperty-class.html" onclick="show_private();">couchdbkit.schema.properties.IntegerProperty</a></strong>:
+      <em class="summary">Integer property.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties.ListProperty-class.html">couchdbkit.schema.properties.ListProperty</a></strong>:
+      <em class="summary">A property that stores a list of things.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties.StringListProperty-class.html">couchdbkit.schema.properties.StringListProperty</a></strong>:
+      <em class="summary">shorthand for list that should containe only unicode</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties_proxy.SchemaDictProperty-class.html">couchdbkit.schema.properties_proxy.SchemaDictProperty</a></strong>:
+      <em class="summary">A property that stores a dict of things.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties_proxy.SchemaListProperty-class.html">couchdbkit.schema.properties_proxy.SchemaListProperty</a></strong>:
+      <em class="summary">A property that stores a list of things.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties_proxy.SchemaProperty-class.html">couchdbkit.schema.properties_proxy.SchemaProperty</a></strong>:
+      <em class="summary">Schema property.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties.SetProperty-class.html">couchdbkit.schema.properties.SetProperty</a></strong>:
+      <em class="summary">A property that stores a Python set as a list of unique elements.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties.StringProperty-class.html">couchdbkit.schema.properties.StringProperty</a></strong>:
+      <em class="summary">string property str or unicode property</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.base.QueryMixin-class.html">couchdbkit.schema.base.QueryMixin</a></strong>:
+      <em class="summary">Mixin that add query methods</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.base.Document-class.html">couchdbkit.schema.base.Document</a></strong>:
+      <em class="summary">Full featured document object implementing the following :</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.schema.Document-class.html">couchdbkit.ext.django.schema.Document</a></strong>:
+      <em class="summary">Document object for django extension</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.base.StaticDocument-class.html">couchdbkit.schema.base.StaticDocument</a></strong>:
+      <em class="summary">Shorthand for a document that disallow dynamic properties.</em>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink">restkit.resource.Resource</strong>:
+      <em class="summary">A class that can be instantiated for access to a RESTful resource, 
+        including authentication.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.resource.CouchdbResource-class.html">couchdbkit.resource.CouchdbResource</a></strong>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="restkit.wrappers.Response-class.html">restkit.wrappers.Response</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.resource.CouchDBResponse-class.html">couchdbkit.resource.CouchDBResponse</a></strong>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.client.Server-class.html">couchdbkit.client.Server</a></strong>:
+      <em class="summary">Server object that allows you to access and manage a couchdb node.</em>
+    </li>
+    <li> <strong class="uidlink">_abcoll.Sized</strong>
+    <ul>
+    <li> <strong class="uidlink">_abcoll.Set</strong>:
+      <em class="summary">A set is a finite, iterable container.</em>
+    <ul>
+    <li> <strong class="uidlink">_abcoll.MutableSet</strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties.LazySet-class.html" onclick="show_private();">couchdbkit.schema.properties.LazySet</a></strong>:
+      <em class="summary">Object to make sure that we keep set and _doc synchronized.</em>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink">django.utils.encoding.StrAndUnicode</strong>:
+      <em class="summary">A class whose __str__ returns its __unicode__ as a UTF-8 
+        bytestring.</em>
+    <ul>
+    <li> <strong class="uidlink">django.forms.forms.BaseForm</strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.forms.BaseDocumentForm-class.html">couchdbkit.ext.django.forms.BaseDocumentForm</a></strong>:
+      <em class="summary">Base Document Form object</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.forms.DocumentForm-class.html">couchdbkit.ext.django.forms.DocumentForm</a></strong>:
+      <em class="summary">The document form object</em>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink">unittest.case.TestCase</strong>:
+      <em class="summary">A class whose instances are single test cases.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.pylons.test.TestCase-class.html">couchdbkit.ext.pylons.test.TestCase</a></strong>:
+      <em class="summary">Basic test class that will be default load all fixtures specified 
+        in the fixtures attribute.</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.client.ViewResults-class.html">couchdbkit.client.ViewResults</a></strong>:
+      <em class="summary">Object to retrieve view results.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.wsgi.handler.WSGIRequest-class.html">couchdbkit.wsgi.handler.WSGIRequest</a></strong>
+    </li>
+    <li> <strong class="uidlink">basestring</strong>:
+      <em class="summary">Type basestring cannot be instantiated; it is the base for str and 
+        unicode.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="unicode-class.html">unicode</a></strong>:
+      <em class="summary">unicode(string [, encoding[, errors]]) -&gt; object</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="datetime.date-class.html">datetime.date</a></strong>:
+      <em class="summary">date(year, month, day) --&gt; date object</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="datetime.datetime-class.html">datetime.datetime</a></strong>:
+      <em class="summary">datetime(year, month, day[, hour[, minute[, second[, 
+        microsecond[,tzinfo]]]]])</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="dict-class.html">dict</a></strong>:
+      <em class="summary">dict() -&gt; new empty dictionary
+dict(mapping) -&gt; new dictionary initialized from a mapping object's
+    (key, value) pairs
+dict(iterable) -&gt; new dictionary initialized as if via:
+    d = {}
+    for k, v in iterable:
+        d[k] = v
+dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
+    in the keyword argument list.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties.LazyDict-class.html">couchdbkit.schema.properties.LazyDict</a></strong>:
+      <em class="summary">object to make sure we keep updated of dict in _doc.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties_proxy.LazySchemaDict-class.html" onclick="show_private();">couchdbkit.schema.properties_proxy.LazySchemaDict</a></strong>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="float-class.html">float</a></strong>:
+      <em class="summary">float(x) -&gt; floating point number</em>
+    </li>
+    <li> <strong class="uidlink">greenlet.greenlet</strong>:
+      <em class="summary">greenlet(run=None, parent=None) -&gt; greenlet</em>
+    <ul>
+    <li> <strong class="uidlink">gevent.greenlet.Greenlet</strong>:
+      <em class="summary">A light-weight cooperatively-scheduled execution unit.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.consumer.cgevent.ChangeConsumer-class.html">couchdbkit.consumer.cgevent.ChangeConsumer</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.consumer.cgevent.ContinuousChangeConsumer-class.html">couchdbkit.consumer.cgevent.ContinuousChangeConsumer</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.consumer.cgevent.LongPollChangeConsumer-class.html">couchdbkit.consumer.cgevent.LongPollChangeConsumer</a></strong>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="int-class.html">int</a></strong>:
+      <em class="summary">int(x[, base]) -&gt; integer</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="bool-class.html">bool</a></strong>:
+      <em class="summary">bool(x) -&gt; bool</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="list-class.html">list</a></strong>:
+      <em class="summary">list() -&gt; new empty list list(iterable) -&gt; new list 
+        initialized from iterable's items</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties.LazyList-class.html">couchdbkit.schema.properties.LazyList</a></strong>:
+      <em class="summary">object to make sure we keep update of list in _doc.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.properties_proxy.LazySchemaList-class.html" onclick="show_private();">couchdbkit.schema.properties_proxy.LazySchemaList</a></strong>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="set-class.html">set</a></strong>:
+      <em class="summary">set() -&gt; new empty set object set(iterable) -&gt; new set object</em>
+    </li>
+    <li> <strong class="uidlink"><a href="datetime.time-class.html">datetime.time</a></strong>:
+      <em class="summary">time([hour[, minute[, second[, microsecond[, tzinfo]]]]]) --&gt; a 
+        time object</em>
+    </li>
+    <li> <strong class="uidlink">type</strong>:
+      <em class="summary">type(object) -&gt; the object's type type(name, bases, dict) -&gt; 
+        a new type</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="abc.ABCMeta-class.html">abc.ABCMeta</a></strong>:
+      <em class="summary">Metaclass for defining Abstract Base Classes (ABCs).</em>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.forms.DocumentFormMetaClass-class.html">couchdbkit.ext.django.forms.DocumentFormMetaClass</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="couchdbkit.schema.base.SchemaProperties-class.html">couchdbkit.schema.base.SchemaProperties</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="couchdbkit.ext.django.schema.DocumentMeta-class.html" onclick="show_private();">couchdbkit.ext.django.schema.DocumentMeta</a></strong>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+</ul>
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="couchdbkit-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th bgcolor="#70b0f0" class="navbar-select"
+          >&nbsp;&nbsp;&nbsp;Trees&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Fri May  4 11:48:40 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

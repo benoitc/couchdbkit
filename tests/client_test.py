@@ -6,12 +6,16 @@
 __author__ = 'benoitc@e-engura.com (Benoît Chesneau)'
 
 import copy
-import unittest
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
 
 from couchdbkit import ResourceNotFound, RequestFailed, \
 ResourceConflict
 
 from couchdbkit import *
+
 
 class ClientServerTestCase(unittest.TestCase):
     def setUp(self):
@@ -53,9 +57,14 @@ class ClientServerTestCase(unittest.TestCase):
         self.assert_(db.dbname == gocdb.dbname)
         self.Server.delete_db("get_or_create_db")
         
-    def testBadResourceClassType(self):
-        self.assertRaises(TypeError, Server, resource_class=None)
-        
+
+    def testCreateInvalidDbName(self):
+
+        def create_invalid():
+            res = self.Server.create_db('123ab')
+
+        self.assertRaises(ValueError, create_invalid) 
+    
     def testServerLen(self):
         res = self.Server.create_db('couchdbkit_test')
         self.assert_(len(self.Server) >= 1)
@@ -204,10 +213,10 @@ class ClientDatabaseTestCase(unittest.TestCase):
         self.assert_( "a/b" in db) 
         self.assert_( "http://a" in db)
         self.assert_( "_design/a" in db)
+
         def not_found():
             doc = db.get('http:%2F%2Fa')
         self.assertRaises(ResourceNotFound, not_found)
-        del self.Server['couchdbkit_test']
 
     def testFlush(self):
         db = self.Server.create_db('couchdbkit_test')
@@ -228,6 +237,7 @@ class ClientDatabaseTestCase(unittest.TestCase):
             }
         }
         db.save_doc(design_doc)
+        db.put_attachment(design_doc, 'test', 'test', 'test/plain')
         self.assert_(len(db) == 3)
         db.flush()
         self.assert_(len(db) == 1)
@@ -236,6 +246,7 @@ class ClientDatabaseTestCase(unittest.TestCase):
         self.assert_(db.doc_exist('_design/test'))
         ddoc = db.get("_design/test")
         self.assert_('all' in ddoc['views'])
+        self.assert_('test' in ddoc['_attachments'])
         del self.Server['couchdbkit_test']
     
     def testDbLen(self):
@@ -372,6 +383,17 @@ class ClientDatabaseTestCase(unittest.TestCase):
         db.put_attachment(doc, text_attachment, "test", "text/plain")
         self.assert_(old_rev != doc['_rev'])
         fetch_attachment = db.fetch_attachment(doc, "test")
+        self.assert_(text_attachment == fetch_attachment)
+        del self.Server['couchdbkit_test']
+        
+    def testFetchAttachmentStream(self):
+        db = self.Server.create_db('couchdbkit_test')
+        doc = { 'string': 'test', 'number': 4 }
+        db.save_doc(doc)        
+        text_attachment = u"a text attachment"
+        db.put_attachment(doc, text_attachment, "test", "text/plain")
+        stream = db.fetch_attachment(doc, "test", stream=True)
+        fetch_attachment = stream.read()
         self.assert_(text_attachment == fetch_attachment)
         del self.Server['couchdbkit_test']
    
@@ -770,6 +792,47 @@ class ClientViewTestCase(unittest.TestCase):
         del self.Server['couchdbkit_test']
 
         
+    def testMultiWrap(self):
+        """
+        Tests wrapping of view results to multiple
+        classes using the client
+        """
+
+        class A(Document):
+            pass
+        class B(Document):
+            pass
+
+        design_doc = {
+            '_id': '_design/test',
+            'language': 'javascript',
+            'views': {
+                'all': {
+                    "map": """function(doc) { emit(doc._id, doc); }"""
+                }
+            }
+        }
+        a = A()
+        a._id = "1"
+        b = B()
+        b._id = "2"
+        db = self.Server.create_db('couchdbkit_test')
+        A._db = db
+        B._db = db
+
+        a.save()
+        b.save()
+        db.save_doc(design_doc)
+        # provide classes as a list
+        results = list(db.view('test/all', schema=[A, B]))
+        self.assert_(results[0].__class__ == A)
+        self.assert_(results[1].__class__ == B)
+        # provide classes as a dict
+        results = list(db.view('test/all', schema={'A': A, 'B': B}))
+        self.assert_(results[0].__class__ == A)
+        self.assert_(results[1].__class__ == B)
+        self.Server.delete_db('couchdbkit_test')
+
 
 if __name__ == '__main__':
     unittest.main()
