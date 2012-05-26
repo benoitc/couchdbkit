@@ -1,8 +1,6 @@
-CHANGES.txt
 MANIFEST.in
-README.txt
+README
 development.ini
-production.ini
 setup.cfg
 setup.py
 pyramid_couchdb_example/__init__.py

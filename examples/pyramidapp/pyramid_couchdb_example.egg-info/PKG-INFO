@@ -6,13 +6,10 @@ Home-page: UNKNOWN
 Author: UNKNOWN
 Author-email: UNKNOWN
 License: UNKNOWN
-Description: pyramid_couchdb_example README
+Description: Example implementation for http://docs.pylonsproject.org/projects/pyramid_cookbook/en/latest/database/couchdb.html
         
-        
-        0.0
-        ---
-        
-        -  Initial version
+        $ python setup.py develop
+        $ pserve --reload development.ini
         
 Keywords: web pyramid pylons
 Platform: UNKNOWN
