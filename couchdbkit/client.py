@@ -1023,7 +1023,7 @@ class ViewResults(object):
         else:
             params['key'] = key
 
-        return ViewResults(self._fetch, self._arg, wrapper=wrapper, params=params)
+        return ViewResults(self._fetch, self._arg, wrapper=self.wrapper, params=params, schema=None)
 
     def __iter__(self):
         return self.iterator()
