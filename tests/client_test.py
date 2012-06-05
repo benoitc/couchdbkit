@@ -627,6 +627,13 @@ class ClientViewTestCase(unittest.TestCase):
         self.assert_(len(results) == 2)
         del self.Server['couchdbkit_test']
 
+    def test_view_indexing(self):
+        db = self.Server.create_db('couchdbkit_test')
+        viewres = db.view('test/test')
+        assert 'limit' not in viewres.params
+        limited = viewres[1:2]
+
+
     def testAllDocs(self):
         db = self.Server.create_db('couchdbkit_test')
         # save 2 docs 
