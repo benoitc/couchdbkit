@@ -7,8 +7,8 @@ from imp import load_source
 import os
 import sys
 
-if not hasattr(sys, 'version_info') or sys.version_info < (2, 5, 0, 'final'):
-    raise SystemExit("couchdbkit requires Python 2.5 or later.")
+if not hasattr(sys, 'version_info') or sys.version_info < (2, 6, 0, 'final'):
+    raise SystemExit("couchdbkit requires Python 2.6 or later.")
 
 from setuptools import setup, find_packages
 
@@ -52,7 +52,7 @@ setup(
     zip_safe = False,
 
     install_requires = [
-        'restkit>=3.3',
+        'restkit>=4.1.3',
         'nose'
     ],
 
