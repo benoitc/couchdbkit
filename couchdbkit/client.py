@@ -279,6 +279,13 @@ class Database(object):
         """
         return self.res.get().json_body
 
+    def set_security(self, secobj):
+        """ set database securrity object """
+        return self.res.put("/_security", payload=secobj).json_body
+
+    def get_security(self):
+        """ get database secuirity object """
+        return self.res.get("/_security").json_body
 
     def compact(self, dname=None):
         """ compact database
@@ -718,7 +725,7 @@ class Database(object):
         """ Search. Return results from search. Use couchdb-lucene
         with its default settings by default."""
         return ViewResults(self, self.raw_view,
-                    "/%s/%s" % (handler, view_name), 
+                    "/%s/%s" % (handler, view_name),
                     wrapper=wrapper, schema=schema, params=params)
 
     def documents(self, schema=None, wrapper=None, **params):
