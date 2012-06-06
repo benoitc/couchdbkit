@@ -80,12 +80,12 @@ class ClientServerTestCase(unittest.TestCase):
             self.db.save_doc(doc)
 
         self.db.ensure_full_commit()
-        time.sleep(1.0)
+        time.sleep(0.3)
         self.assert_(len(lines) == 5)
         self.assert_(lines[4]["id"] == "test4")
         doc = {"_id": "test5"}
         self.db.save_doc(doc)
-        time.sleep(1.0)
+        time.sleep(0.3)
         self.assert_(len(lines) == 6)
         self.assert_(lines[5]["id"] == "test5")
 
