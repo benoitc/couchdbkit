@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -
 #
-# This file is part of couchdbkit released under the MIT license. 
+# This file is part of couchdbkit released under the MIT license.
 # See the NOTICE for more information.
 
 import traceback
@@ -76,7 +76,7 @@ class LongPollChangeConsumer(ChangeConsumer):
             try:
                 change = json.loads(change)
             except ValueError:
-                pass 
+                pass
             self.process_change(change)
             self.stop_event.send(True)
 
@@ -94,7 +94,7 @@ class EventletConsumer(SyncConsumer):
         if cb is None:
             return super(EventletConsumer, self).wait_once(**params)
         eventlet.spawn_n(self._fetch, cb, **params)
-        
+
     def wait_once(self, cb=None, **params):
         if cb is None:
             return super(EventletConsumer, self).wait_once(**params)
@@ -107,7 +107,7 @@ class EventletConsumer(SyncConsumer):
 
     def wait(self, cb, **params):
         params.update({"feed": "continuous"})
-        consumer = ContinuousChangeConsumer(self.db, callback=cb, 
+        consumer = ContinuousChangeConsumer(self.db, callback=cb,
                 **params)
         consumer.wait()
 
@@ -121,7 +121,7 @@ class EventletConsumer(SyncConsumer):
     def wait_async(self, cb, **params):
         check_callable(cb)
         params.update({"feed": "continuous"})
-        consumer = ContinuousChangeConsumer(self.db, callback=cb, 
+        consumer = ContinuousChangeConsumer(self.db, callback=cb,
                 **params)
         return consumer.wait_async()
 

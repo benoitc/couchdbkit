@@ -1,23 +1,35 @@
 # -*- coding: utf-8 -
 #
-# This file is part of couchdbkit released under the MIT license. 
+# This file is part of couchdbkit released under the MIT license.
 # See the NOTICE for more information.
 
 import traceback
 
 import gevent
-from gevent import monkey 
+from gevent import event
+from gevent import monkey
 
 from .base import check_callable
 from .sync import SyncConsumer
 from ..utils import json
 
-class ChangeConsumer(gevent.Greenlet):
-    def __init__(self, db, callback=None, **params):
-        gevent.Greenlet.__init__(self)
+
+class ChangeConsumer(object):
+    def __init__(self, db, callback, **params):
         self.process_change = callback
         self.params = params
         self.db = db
+        self.stop_event = event.Event()
+
+    def stop(self):
+        self.stop_event.set()
+
+    def wait(self):
+        gevent.spawn(self._run)
+        self.stop_event.wait()
+
+    def wait_async(self):
+        gevent.spawn(self._run)
 
     def _run(self):
         while True:
@@ -26,9 +38,12 @@ class ChangeConsumer(gevent.Greenlet):
                 return self.consume(resp)
             except (SystemExit, KeyboardInterrupt):
                 gevent.sleep(5)
+                break
             except:
                 traceback.print_exc()
                 gevent.sleep(5)
+                break
+        self.stop_event.set()
 
     def consume(self, resp):
         raise NotImplementedError
@@ -63,7 +78,7 @@ class LongPollChangeConsumer(ChangeConsumer):
             try:
                 change = json.loads(change)
             except ValueError:
-                pass 
+                pass
             self.process_change(change)
 
 
@@ -80,30 +95,34 @@ class GeventConsumer(SyncConsumer):
         if cb is None:
             return super(GeventConsumer, self).wait_once(**params)
         return gevent.spawn(self._fetch, cb, **params)
-        
+
     def wait_once(self, cb=None, **params):
         if cb is None:
             return super(GeventConsumer, self).wait_once(**params)
 
         check_callable(cb)
         params.update({"feed": "longpoll"})
-        LongPollChangeConsumer.spawn(self.db, callback=cb,
-                **params).join()
+        consumer = LongPollChangeConsumer(self.db, callback=cb,
+                **params)
+        consumer.wait()
 
     def wait(self, cb, **params):
         check_callable(cb)
         params.update({"feed": "continuous"})
-        ContinuousChangeConsumer.spawn(self.db, callback=cb, 
-                **params).join()
+        consumer = ContinuousChangeConsumer(self.db, callback=cb,
+                **params)
+        consumer.wait()
 
     def wait_once_async(self, cb, **params):
         check_callable(cb)
         params.update({"feed": "longpoll"})
-        return LongPollChangeConsumer.spawn(self.db, callback=cb,
+        consumer = LongPollChangeConsumer(self.db, callback=cb,
                 **params)
-        
+        return consumer.wait_async()
+
     def wait_async(self, cb, **params):
         check_callable(cb)
         params.update({"feed": "continuous"})
-        return ContinuousChangeConsumer.spawn(self.db, callback=cb, 
+        consumer = ContinuousChangeConsumer(self.db, callback=cb,
                 **params)
+        return consumer.wait_async()
