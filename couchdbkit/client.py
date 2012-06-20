@@ -1047,6 +1047,14 @@ class ViewResults(object):
 
         return ViewResults(self._fetch, self._arg, wrapper=self.wrapper, params=params, schema=None)
 
+    def __call__(self, **newparams):
+        return ViewResults(
+            self._fetch, self._arg,
+            wrapper=self.wrapper,
+            params=dict(self.params, **newparams),
+            schema=None,
+        )
+
     def __iter__(self):
         return self.iterator()
 

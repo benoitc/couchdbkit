@@ -646,6 +646,12 @@ class ClientViewTestCase(unittest.TestCase):
         assert 'limit' not in viewres.params
         limited = viewres[1:2]
 
+    def test_view_subview(self):
+        db = self.Server.create_db('couchdbkit_test')
+        viewres = db.view('test/test')
+        assert not viewres.params
+        subviewres = viewres(key='a')
+        self.assert_(subviewres.params)
 
     def testAllDocs(self):
         db = self.Server.create_db('couchdbkit_test')
