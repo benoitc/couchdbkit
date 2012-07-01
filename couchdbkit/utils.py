@@ -20,18 +20,23 @@ import urllib
 
 
 try:
-    import simplejson as json
+    import ujson as json
+
 except ImportError:
+
     try:
-        import json 
+        import simplejson as json
     except ImportError:
-        raise ImportError("""simplejson isn't installed
+        try:
+            import json
+        except ImportError:
+            raise ImportError("""simplejson isn't installed
 
-Install it with the command:
+    Install it with the command:
 
-    pip install simplejson
-""")
- 
+        pip install simplejson
+    """)
+
 
 # backport relpath from python2.6
 if not hasattr(os.path, 'relpath'):
