@@ -307,25 +307,40 @@ class Database(object):
     def flush(self):
         """ Remove all docs from a database
         except design docs."""
+
         # save ddocs
         all_ddocs = self.all_docs(startkey="_design",
                             endkey="_design/"+u"\u9999",
                             include_docs=True)
         ddocs = []
         for ddoc in all_ddocs:
-            attachments = ddoc['doc'].get('_attachments', {})
-            for name, info in attachments.items():
-                info['data'] = self.fetch_attachment(ddoc['doc'], name)
-                del info['stub']
+            doc = ddoc['doc']
+            old_atts = doc.get('_attachments', {})
+            atts = {}
+            for name, info in old_atts.items():
+                att = {}
+                att['content_type'] = info['content_type']
+                att['data'] = self.fetch_attachment(ddoc['doc'], name)
+                atts[name] = att
 
-            ddoc['doc'].pop('_rev')
-            ddocs.append(ddoc['doc'])
+            # create a fresh doc
+            doc.pop('_rev')
+            doc['_attachments'] = resource.encode_attachments(atts)
+
+            ddocs.append(doc)
 
         # delete db
         self.server.delete_db(self.dbname)
 
         # we let a chance to the system to sync
-        time.sleep(0.2)
+        times = 0
+        while times < 10:
+            try:
+                self.server.res.head('/%s/' % self.dbname)
+            except ResourceNotFound:
+                break
+            time.sleep(0.2)
+            times += 1
 
         # recreate db + ddocs
         self.server.create_db(self.dbname)
