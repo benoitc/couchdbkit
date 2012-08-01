@@ -5,5 +5,5 @@ python:
     - "2.7"
 before_script:
     - pip install unittest2
-install: python setup.py develop
+install: python setup.py install
 script: python setup.py test
