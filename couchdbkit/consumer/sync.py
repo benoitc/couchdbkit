@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -
 #
-# This file is part of couchdbkit released under the MIT license. 
+# This file is part of couchdbkit released under the MIT license.
 # See the NOTICE for more information.
 
 from __future__ import with_statement
@@ -22,17 +22,17 @@ class SyncConsumer(ConsumerBase):
         with resp.body_stream() as body:
             while True:
                 data = body.read()
-                if not data: 
+                if not data:
                     break
                 buf += data
-            
+
             ret = json.loads(buf)
             if cb is not None:
                 cb(ret)
                 return
 
             return ret
-        
+
     def wait(self, cb, **params):
         check_callable(cb)
         params.update({"feed": "continuous"})
