@@ -33,7 +33,7 @@ __all__ = ['ALLOWED_PROPERTY_TYPES', 'Property', 'StringProperty',
         'value_to_property', 'LazyDict', 'LazyList']
 
 if support_setproperty:
-    __all__ += ['SetProperty', 'LasySet']
+    __all__ += ['SetProperty', 'LazySet']
 
 ALLOWED_PROPERTY_TYPES = set([
     basestring,
