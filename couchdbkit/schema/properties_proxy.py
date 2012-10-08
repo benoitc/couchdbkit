@@ -100,11 +100,6 @@ class SchemaProperty(Property):
         return value
 
     def to_python(self, value):
-        if not self._use_instance: 
-            schema = self._schema()
-        else:
-            schema = self._schema.clone()
-
         if not self._use_instance:
             schema = self._schema
         else:
