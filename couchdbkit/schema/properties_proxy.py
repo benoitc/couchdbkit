@@ -4,7 +4,6 @@
 # See the NOTICE for more information.
 
 """ Meta properties """
-import random
 
 from ..exceptions import BadValueError
 
