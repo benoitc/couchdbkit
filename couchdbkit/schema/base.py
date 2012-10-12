@@ -99,7 +99,7 @@ class DocumentSchema(object):
 
         if _d is not None:
             if not isinstance(_d, dict):
-                raise TypeError('d should be a dict')
+                raise TypeError('_d should be a dict')
             properties.update(_d)
 
         doc_type = getattr(self, '_doc_type', self.__class__.__name__)
@@ -404,7 +404,7 @@ class DocumentBase(DocumentSchema):
         docid = kwargs.pop('_id', _d.pop("_id", ""))
         docrev = kwargs.pop('_rev', _d.pop("_rev", ""))
 
-        DocumentSchema.__init__(self, _d, **kwargs)
+        super(DocumentBase, self).__init__(_d, **kwargs)
 
         if docid: self._doc['_id'] = valid_id(docid)
         if docrev: self._doc['_rev'] = docrev
