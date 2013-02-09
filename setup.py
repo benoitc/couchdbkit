@@ -52,7 +52,7 @@ setup(
     zip_safe = False,
 
     install_requires = [
-        'restkit>=4.1.3',
+        'restkit>=4.2.1',
         'nose'
     ],
 
