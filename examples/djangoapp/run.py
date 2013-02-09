@@ -15,7 +15,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from couchdbkit.contrib import WSGIHandler
+from couchdbkit.wsgi.handler import WSGIHandler
 import os
 import sys
 
