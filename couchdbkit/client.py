@@ -739,7 +739,7 @@ class Database(object):
     def search( self, view_name, handler='_fti/_design', wrapper=None, schema=None, **params):
         """ Search. Return results from search. Use couchdb-lucene
         with its default settings by default."""
-        return ViewResults(self, self.raw_view,
+        return ViewResults(self.raw_view,
                     "/%s/%s" % (handler, view_name),
                     wrapper=wrapper, schema=schema, params=params)
 
