@@ -6,7 +6,7 @@
 """
 All exceptions used in couchdbkit.
 """
-from restkit.errors import ResourceError
+from restkit.errors import ResourceError, RequestFailed
 
 class InvalidAttachment(Exception):
     """ raised when an attachment is invalid """
