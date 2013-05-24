@@ -248,8 +248,8 @@ class Database(object):
         @param server: Server instance
 
         """
-        self.uri = uri
-        self.server_uri, self.dbname = uri.rsplit("/", 1)
+        self.uri = uri.rstrip('/')
+        self.server_uri, self.dbname = self.uri.rsplit("/", 1)
 
         if server is not None:
             if not hasattr(server, 'next_uuid'):
