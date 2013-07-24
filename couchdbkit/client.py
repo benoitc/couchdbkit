@@ -999,6 +999,9 @@ class ViewResults(object):
         self._dynamic_keys = []
 
         self._result_cache = self.fetch_raw().json_body
+        assert isinstance(self._result_cache, dict), 'received an invalid ' \
+            'response of type %s: %s' % \
+            (type(self._result_cache), repr(self._result_cache))
         self._total_rows = self._result_cache.get('total_rows')
         self._offset = self._result_cache.get('offset', 0)
 
