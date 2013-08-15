@@ -26,7 +26,7 @@ from .schema import (
     DocumentSchema, DocumentBase, Document, StaticDocument, contain,
     QueryMixin, AttachmentMixin,
     SchemaProperty, SchemaListProperty, SchemaDictProperty,
-    ListProperty, DictProperty, StringListProperty, SetProperty
+    ListProperty, DictProperty, StringDictProperty, StringListProperty, SetProperty
 )
 
 import logging

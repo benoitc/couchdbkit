@@ -37,8 +37,8 @@ __all__ = ['Property', 'StringProperty', 'IntegerProperty',
             'value_to_python', 'dict_to_python', 'list_to_python',
             'convert_property', 'DocumentSchema', 'Document',
             'SchemaProperty', 'SchemaListProperty', 'ListProperty',
-            'DictProperty', 'StringListProperty', 'SchemaDictProperty',
-            'SetProperty',]
+            'DictProperty', 'StringDictProperty', 'StringListProperty',
+            'SchemaDictProperty', 'SetProperty',]
 
 
 DEFAULT_NAMES = ('verbose_name', 'db_table', 'ordering',
@@ -169,6 +169,7 @@ SchemaProperty = schema.SchemaProperty
 SchemaListProperty = schema.SchemaListProperty
 ListProperty = schema.ListProperty
 DictProperty = schema.DictProperty
+StringDictProperty = schema.StringDictProperty
 StringListProperty = schema.StringListProperty
 SchemaDictProperty = schema.SchemaDictProperty
 SetProperty = schema.SetProperty
