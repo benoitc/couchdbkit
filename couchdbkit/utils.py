@@ -206,3 +206,13 @@ def read_json(filename, use_environment=False):
     return data
 
 
+import jsonobject.base
+
+
+class ProxyDict(jsonobject.base.SimpleDict):
+    def __init__(self, parent, *args, **kwargs):
+        super(ProxyDict, self).__init__(*args, **kwargs)
+        self.parent = parent
+
+    def __setitem__(self, key, value):
+        self.parent[key] = value

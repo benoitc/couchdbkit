@@ -15,7 +15,6 @@ except ImportError:
 from couchdbkit import *
 
 
-
 class DocumentTestCase(unittest.TestCase):
     def setUp(self):
         self.server = Server()
@@ -124,9 +123,9 @@ class DocumentTestCase(unittest.TestCase):
             string2 = StringProperty()
 
         doc = Test()
-        self.assert_(len(doc) == 3)
+        self.assert_(len(doc) == 6)
         doc.string3 = "4"
-        self.assert_(len(doc) == 4) 
+        self.assert_(len(doc) == 7)
         
     def testStore(self):
         db = self.server.create_db('couchdbkit_test')
