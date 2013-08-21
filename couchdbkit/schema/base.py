@@ -61,9 +61,6 @@ class DocumentSchema(jsonobject.JsonObject):
         from jsonobject.base import get_dynamic_properties
         return get_dynamic_properties(self)
 
-    def clone(self, **kwargs):
-        cls = self.__class__
-
     def __delitem__(self, key):
         try:
             super(DocumentSchema, self).__delitem__(key)

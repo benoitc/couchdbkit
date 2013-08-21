@@ -312,23 +312,6 @@ class DocumentTestCase(unittest.TestCase):
 
         self.assert_(len(doc2._dynamic_properties) == 1)
 
-    def testClone(self):
-        class A(DocumentSchema):
-            s = StringProperty()
-
-        class B(Document):
-            a = SchemaProperty(A)
-            s1 = StringProperty()
-
-        b = B()
-        b.s1 = "test1"
-        b.a.s = "test"
-        b1 = b.clone()
-
-        self.assert_(b1.s1 == "test1")
-        self.assert_('s' in b1._doc['a'])
-        self.assert_(b1.a.s == "test")
-
     def testView(self):
         class TestDoc(Document):
             field1 = StringProperty()
