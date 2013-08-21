@@ -458,7 +458,7 @@ class Database(object):
         if '_attachments' in doc1 and encode_attachments:
             doc1['_attachments'] = resource.encode_attachments(doc['_attachments'])
 
-        if '_id' in doc:
+        if '_id' in doc1:
             docid = doc1['_id']
             docid1 = resource.escape_docid(doc1['_id'])
             try:
@@ -484,9 +484,8 @@ class Database(object):
         else:
             doc1.update({'_id': res['id'], '_rev': res['rev']})
 
-
         if schema:
-            doc._doc = doc1
+            doc.update(doc.__class__.wrap(doc1))
         else:
             doc.update(doc1)
         return res
