@@ -79,18 +79,11 @@ class DocumentSchema(jsonobject.JsonObject):
 
 class DocumentBase(DocumentSchema):
 
-    _id = jsonobject.StringProperty()
-    _rev = jsonobject.StringProperty()
-    _attachments = jsonobject.DictProperty()
+    _id = jsonobject.StringProperty(exclude_if_none=True)
+    _rev = jsonobject.StringProperty(exclude_if_none=True)
+    _attachments = jsonobject.DictProperty(exclude_if_none=True)
 
     _db = None
-
-    def to_json(self):
-        doc = copy.copy(super(DocumentBase, self).to_json())
-        for special in ('_id', '_rev', '_attachments'):
-            if not doc[special]:
-                del doc[special]
-        return doc
 
     # The rest of this class is mostly copied from couchdbkit 0.5.7
 
