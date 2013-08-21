@@ -7,6 +7,7 @@
 All exceptions used in couchdbkit.
 """
 from restkit.errors import ResourceError
+import jsonobject.exceptions
 
 class InvalidAttachment(Exception):
     """ raised when an attachment is invalid """
@@ -15,9 +16,7 @@ class DuplicatePropertyError(Exception):
     """ exception raised when there is a duplicate 
     property in a model """
 
-class BadValueError(Exception):
-    """ exception raised when a value can't be validated 
-    or is required """
+BadValueError = jsonobject.exceptions.BadValueError
 
 class MultipleResultsFound(Exception):
     """ exception raised when more than one object is
