@@ -44,9 +44,12 @@ class SchemaProperties(jsonobject.JsonObjectMeta):
         cls._doc_type = doc_type
         return cls
 
+
 class DocumentSchema(jsonobject.JsonObject):
 
     __metaclass__ = SchemaProperties
+
+    _validate_lazily = True
 
     @jsonobject.StringProperty
     def doc_type(self):
