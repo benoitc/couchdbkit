@@ -1312,9 +1312,9 @@ class PropertyTestCase(unittest.TestCase):
         class A2(Document):
             l = ListProperty()
             
-        a2 = A2()            
-        self.assertTrue(a2.validate(required=False))
-        self.assertTrue(a2.validate())
+        a2 = A2()
+        self.assertIsNone(a2.validate(required=False))
+        self.assertIsNone(a2.validate())
 
 
     def testListPropertyWithType(self):
@@ -1329,9 +1329,9 @@ class PropertyTestCase(unittest.TestCase):
             ls = StringListProperty()
         b = B()
         b.ls.append(u"test")
-        self.assertTrue(b.validate())
         b.ls.append(datetime.utcnow())
         self.assertRaises(BadValueError, b.validate)
+        self.assertIsNone(b.validate())
         
         b1  = B()
         b1.ls = [u'hello', u'123']
@@ -1531,9 +1531,9 @@ class PropertyTestCase(unittest.TestCase):
         class A2(Document):
             d = DictProperty()
         a2 = A2()            
-        # self.assertTrue(a2.validate(required=False))
+        self.assertIsNone(a2.validate(required=False))
         self.assertIsNone(a2.validate())
-        
+
     def testDynamicDictProperty(self):
         from datetime import datetime
         class A(Document):
