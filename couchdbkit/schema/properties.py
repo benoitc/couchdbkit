@@ -11,9 +11,6 @@ SchemaListProperty = ListProperty
 StringListProperty = functools.partial(ListProperty, unicode)
 SchemaDictProperty = DictProperty
 
-DecimalProperty = None
-TimeProperty = None
-
 dict_to_json = None
 list_to_json = None
 value_to_json = None
