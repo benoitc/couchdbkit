@@ -49,7 +49,7 @@ class DocumentSchema(jsonobject.JsonObject):
 
     __metaclass__ = SchemaProperties
 
-    _validate_lazily = True
+    _validate_required_lazily = True
 
     @jsonobject.StringProperty
     def doc_type(self):
