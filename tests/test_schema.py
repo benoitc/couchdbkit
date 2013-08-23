@@ -839,35 +839,12 @@ class PropertyTestCase(unittest.TestCase):
         self.assert_(b.s is None)
         self.assert_(b._doc['s'] is None)
 
-    def testSchemaBuild(self):
-        schema = DocumentSchema(i = IntegerProperty())
-        C = DocumentSchema.build(**schema._dynamic_properties)
-        self.assert_('i' in C._properties)
-        self.assert_(isinstance(C.i, IntegerProperty))
-
-        c = C()
-        self.assert_(c._doc_type == 'AnonymousSchema')
-        self.assert_(c._doc == {'doc_type': 'AnonymousSchema', 'i':
-            None})
-
-
-        schema2 = DocumentSchema(i = IntegerProperty(default=-1))
-        C3 = DocumentSchema.build(**schema2._dynamic_properties)
-        c3 = C3()
-
-        self.assert_(c3._doc == {'doc_type': 'AnonymousSchema', 'i':
-            -1})
-        self.assert_(c3.i == -1)
-
-        def bad_value():
-            c3.i = "test"
-
-        self.assertRaises(BadValueError, bad_value)
-        self.assert_(c3.i == -1)
-
     def testSchemaPropertyValidation2(self):
+        class Bar(DocumentSchema):
+            foo = IntegerProperty()
+
         class Foo( Document ):
-            bar = SchemaProperty(DocumentSchema(foo=IntegerProperty()))
+            bar = SchemaProperty(Bar)
 
         doc = Foo()
         def bad_value():
