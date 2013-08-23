@@ -1076,7 +1076,7 @@ class PropertyTestCase(unittest.TestCase):
         self.assertEqual(b.slm.index(a1, 1, -2), 2)
         with self.assertRaises(ValueError) as cm:
             b.slm.index(a3)
-        self.assertEqual(str(cm.exception), 'list.index(x): x not in list')
+        self.assertEqual(str(cm.exception), '{0} is not in list'.format(a3))
 
 
     def testSchemaListPropertyInsert(self):
@@ -1168,7 +1168,7 @@ class PropertyTestCase(unittest.TestCase):
         })
         with self.assertRaises(ValueError) as cm:
             b.slm.remove(a1)
-        self.assertEqual(str(cm.exception), 'list.remove(x): x not in list')
+        self.assertEqual(str(cm.exception), '{0} is not in list'.format(a1))
 
 
     def testSchemaListPropertyReverse(self):
