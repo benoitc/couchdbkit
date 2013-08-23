@@ -805,11 +805,11 @@ class PropertyTestCase(unittest.TestCase):
 
         class DocTwo(Document):
             name = StringProperty()
-            one = SchemaProperty(DocOne())
+            one = SchemaProperty(DocOne)
 
         class DocThree(Document):
             name = StringProperty()
-            two = SchemaProperty(DocTwo())
+            two = SchemaProperty(DocTwo)
 
         one = DocOne(name='one')
         two = DocTwo(name='two', one=one)
