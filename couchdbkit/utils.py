@@ -215,4 +215,4 @@ class ProxyDict(jsonobject.base.SimpleDict):
         self.parent = parent
 
     def __setitem__(self, key, value):
-        self.parent[key] = value
+        self.parent.set_raw_value(key, value)
