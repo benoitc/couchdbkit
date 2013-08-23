@@ -13,7 +13,6 @@ SchemaDictProperty = DictProperty
 
 DecimalProperty = None
 TimeProperty = None
-SetProperty = None
 
 dict_to_json = None
 list_to_json = None
