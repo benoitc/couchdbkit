@@ -1321,17 +1321,17 @@ class PropertyTestCase(unittest.TestCase):
         from datetime import datetime
         class A(Document):
             l = ListProperty(item_type=datetime)
-        a = A()    
-        a.l.append("test")
-        self.assertRaises(BadValueError, a.validate)
+        a = A()
+        with self.assertRaises(BadValueError):
+            a.l.append("test")
         
         class B(Document):
             ls = StringListProperty()
         b = B()
         b.ls.append(u"test")
-        b.ls.append(datetime.utcnow())
-        self.assertRaises(BadValueError, b.validate)
         self.assertIsNone(b.validate())
+        with self.assertRaises(BadValueError):
+            b.ls.append(datetime.utcnow())
         
         b1  = B()
         b1.ls = [u'hello', u'123']
