@@ -105,15 +105,15 @@ class DocumentBase(DocumentSchema):
 
         @params db: couchdbkit.core.Database instance
         """
-        # self.validate()
+        self.validate()
         db = self.get_db()
 
         doc = self.to_json()
         db.save_doc(doc, **params)
         if '_id' in doc and '_rev' in doc:
-            self.update(doc)
+            self._doc.update(doc)
         elif '_id' in doc:
-            self.update({'_id': doc['_id']})
+            self._doc.update({'_id': doc['_id']})
 
     store = save
 
