@@ -1284,7 +1284,7 @@ class PropertyTestCase(unittest.TestCase):
         a.save()
 
         b = A.get(a._id)
-        self.assert_(len(b.l) == 2)
+        self.assert_(len(b.l) == 1)
         self.assert_(b.l[0] == datetime(2009, 4, 13, 22, 56, 10))
         self.assert_(b._doc['l'] == ['2009-04-13T22:56:10Z'])
 
