@@ -76,6 +76,12 @@ class DocumentSchema(jsonobject.JsonObject):
         except DeleteNotAllowed:
             setattr(self, name, None)
 
+    def __getitem__(self, item):
+        try:
+            return super(DocumentSchema, self).__getitem__(item)
+        except KeyError as e:
+            raise AttributeError(e)
+
 
 class DocumentBase(DocumentSchema):
 
