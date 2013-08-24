@@ -4,6 +4,7 @@
 # See the NOTICE for more information.
 import functools
 from jsonobject.properties import *
+from jsonobject.convert import ALLOWED_PROPERTY_TYPES
 
 Property = JsonProperty
 SchemaProperty = ObjectProperty
