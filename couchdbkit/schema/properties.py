@@ -20,6 +20,7 @@ dict_to_python = None
 list_to_python = None
 convert_property = None
 value_to_property = None
-LazyDict = None
-LazyList = None
-LazySet = None
+
+LazyDict = JsonDict
+LazyList = JsonArray
+LazySet = JsonSet
