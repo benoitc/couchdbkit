@@ -90,7 +90,7 @@ class DocumentBase(DocumentSchema):
 
     _id = jsonobject.StringProperty(exclude_if_none=True)
     _rev = jsonobject.StringProperty(exclude_if_none=True)
-    _attachments = jsonobject.DictProperty(exclude_if_none=True)
+    _attachments = jsonobject.DictProperty(exclude_if_none=True, default=None)
 
     _db = None
 
