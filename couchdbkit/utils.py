@@ -216,6 +216,8 @@ class ProxyDict(jsonobject.base.SimpleDict):
 
     def __setitem__(self, key, value):
         self.parent.set_raw_value(key, value)
+        super(ProxyDict, self).__setitem__(key, value)
 
-    def __delattr__(self, key):
+    def __delitem__(self, key):
         del self.parent[key]
+        super(ProxyDict, self).__delitem__(key)
