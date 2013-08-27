@@ -221,3 +221,6 @@ class ProxyDict(jsonobject.base.SimpleDict):
     def __delitem__(self, key):
         del self.parent[key]
         super(ProxyDict, self).__delitem__(key)
+
+    def __copy__(self):
+        return self.copy()
