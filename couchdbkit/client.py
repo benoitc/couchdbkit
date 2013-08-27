@@ -485,7 +485,8 @@ class Database(object):
             doc1.update({'_id': res['id'], '_rev': res['rev']})
 
         if schema:
-            doc.update(doc.__class__.wrap(doc1))
+            for key, value in doc.__class__.wrap(doc1).iteritems():
+                doc[key] = value
         else:
             doc.update(doc1)
         return res
