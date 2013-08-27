@@ -4,13 +4,34 @@
 # See the NOTICE for more information.
 import functools
 from jsonobject.properties import *
+from jsonobject.base import DefaultProperty
 from jsonobject.convert import ALLOWED_PROPERTY_TYPES
 
-Property = JsonProperty
 SchemaProperty = ObjectProperty
 SchemaListProperty = ListProperty
 StringListProperty = functools.partial(ListProperty, unicode)
 SchemaDictProperty = DictProperty
+
+
+class Property(DefaultProperty):
+    def wrap(self, obj):
+        try:
+            return self.to_python(obj)
+        except NotImplementedError:
+            return super(Property, self).wrap(obj)
+
+    def unwrap(self, obj):
+        try:
+            return obj, self.to_json(obj)
+        except NotImplementedError:
+            return super(Property, self).unwrap(obj)
+
+    def to_python(self, value):
+        raise NotImplementedError()
+
+    def to_json(self, value):
+        raise NotImplementedError()
+
 
 dict_to_json = None
 list_to_json = None
