@@ -53,6 +53,7 @@ setup(
 
     install_requires = [
         'restkit>=3.3',
+        'jsonobject>=0.2.0',
     ],
     
     entry_points="""
