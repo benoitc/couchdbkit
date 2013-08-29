@@ -58,10 +58,10 @@ class CouchdbkitHandler(object):
         for app_name, app_setting in databases.iteritems():
             uri = app_setting['URL']
 
-            # Blank credentials are valid for the admin party
-            user = app_setting.get('USER', '')
-            password = app_setting.get('PASSWORD', '')
-            auth = BasicAuth(user, password)
+            # Do not send credentials when they are both None as admin party will give a 401
+            user = app_setting.get('USER')
+            password = app_setting.get('PASSWORD')
+            filters = [BasicAuth(user, password)] if (user or password) is not None else []
 
             try:
                 if isinstance(uri, (list, tuple)):
@@ -75,7 +75,7 @@ class CouchdbkitHandler(object):
                 raise ValueError("couchdb uri [%s:%s] invalid" % (
                     app_name, uri))
 
-            res = CouchdbResource(server_uri, timeout=COUCHDB_TIMEOUT, filters=[auth])
+            res = CouchdbResource(server_uri, timeout=COUCHDB_TIMEOUT, filters=filters)
 
             server = Server(server_uri, resource_instance=res)
             app_label = app_name.split('.')[-1]
