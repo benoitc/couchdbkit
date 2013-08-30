@@ -1,3 +1,1 @@
-unittest2
-nose
 restkit>=4.2.2
