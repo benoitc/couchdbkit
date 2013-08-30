@@ -25,8 +25,8 @@ from couchdbkit.exceptions import BadValueError
 __all__ = ['ALLOWED_PROPERTY_TYPES', 'Property', 'StringProperty',
         'IntegerProperty', 'DecimalProperty', 'BooleanProperty',
         'FloatProperty', 'DateTimeProperty', 'DateProperty',
-        'TimeProperty', 'DictProperty', 'ListProperty',
-        'StringListProperty',
+        'TimeProperty', 'DictProperty', 'StringDictProperty',
+        'ListProperty', 'StringListProperty',
         'dict_to_json', 'list_to_json',
         'value_to_json', 'MAP_TYPES_PROPERTIES', 'value_to_python',
         'dict_to_python', 'list_to_python', 'convert_property',
@@ -449,6 +449,22 @@ class DictProperty(Property):
 
     def to_json(self, value):
         return value_to_json(value)
+
+
+
+class StringDictProperty(DictProperty):
+
+    def to_python(self, value):
+        return LazyDict(value, item_type=basestring)
+
+    def validate_dict_contents(self, value):
+        try:
+            value = validate_dict_content(value, basestring)
+        except BadValueError:
+            raise BadValueError(
+                'Items of %s dict must all be in %s' %
+                    (self.name, basestring))
+        return value
 
 
 

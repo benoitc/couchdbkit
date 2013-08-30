@@ -168,6 +168,7 @@ from .properties import (
         DateProperty,
         TimeProperty,
         DictProperty,
+        StringDictProperty,
         ListProperty,
         StringListProperty,
         SetProperty,
