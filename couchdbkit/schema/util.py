@@ -1,3 +1,4 @@
+from couchdbkit.exceptions import DocTypeError
 
 
 def schema_map(schema, dynamic_properties):
@@ -26,7 +27,15 @@ def get_multi_wrapper(classes):
 
     def wrap(doc):
         doc_type = doc.get(doctype_attr)
-        cls = classes[doc_type]
+        try:
+            cls = classes[doc_type]
+        except KeyError:
+            raise DocTypeError(
+                "the document being wrapped has doc type {0!r}. "
+                "To wrap it anyway, you must explicitly pass in "
+                "classes={{{0!r}: <document class>}} to your view. "
+                "This behavior is new starting in 0.6.2.".format(doc_type)
+            )
         return cls.wrap(doc)
 
     return wrap

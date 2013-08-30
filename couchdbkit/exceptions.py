@@ -59,3 +59,8 @@ class ResourceConflict(ResourceError):
 class PreconditionFailed(ResourceError):
     """ Exception raised when 412 HTTP error is received in response
     to a request """
+
+class DocTypeError(Exception):
+    """ Exception raised when doc type of json to be wrapped
+    does not match the doc type of the matching class
+    """

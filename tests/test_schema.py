@@ -444,6 +444,30 @@ class DocumentTestCase(unittest.TestCase):
         self.assert_(isinstance(results2.first(), TestDoc) == True)
         self.server.delete_db('couchdbkit_test')
 
+    def test_wrong_doc_type(self):
+        db = self.server.create_db('couchdbkit_test')
+        try:
+            class Foo(Document):
+                _db = db
+                pass
+
+            class Bar(Foo):
+                pass
+
+            Bar().save()
+
+            result = Bar.view('_all_docs', include_docs=True)
+            self.assertEqual(len(result), 1)
+            bar, = result.all()
+            self.assertIsInstance(bar, Bar)
+
+            result = Foo.view('_all_docs', include_docs=True)
+            self.assertEqual(len(result), 1)
+            from couchdbkit.exceptions import DocTypeError
+            with self.assertRaises(DocTypeError):
+                result.all()
+        finally:
+            self.server.delete_db('couchdbkit_test')
 
     def testOne(self):
         class TestDoc(Document):
