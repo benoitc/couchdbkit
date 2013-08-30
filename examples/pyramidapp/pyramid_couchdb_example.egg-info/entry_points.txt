@@ -1,3 +1,0 @@
-      [paste.app_factory]
-      main = pyramid_couchdb_example:main
-      

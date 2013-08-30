@@ -1,27 +1,17 @@
 from pyramid.config import Configurator
-from pyramid.events import subscriber, NewRequest, ApplicationCreated
+from pyramid.events import subscriber, ApplicationCreated
 from couchdbkit import *
 
 import logging
 log = logging.getLogger(__name__)
 
-@subscriber(NewRequest)
-def add_couchdb_to_request(event):
-    request = event.request
-    settings = request.registry.settings
-    db = settings['couchdb.server'].get_or_create_db(settings['couchdb.db'])
-    event.request.db = db
-
 @subscriber(ApplicationCreated)
 def application_created_subscriber(event):
-    settings = event.app.registry.settings
-    db = settings['couchdb.server'].get_or_create_db(settings['couchdb.db'])
+    registry = event.app.registry
+    db = registry.db.get_or_create_db(registry.settings['couchdb.db'])
 
-    try:
-        """Test to see if our view exists.
-        """
-        db.view('lists/pages')
-    except ResourceNotFound:
+    pages_view_exists = db.doc_exist('lists/pages')
+    if pages_view_exists == False:
         design_doc = {
             '_id': '_design/lists',
             'language': 'javascript',
@@ -43,9 +33,14 @@ def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
     config = Configurator(settings=settings)
-    """ Register server instance globally
-    """
-    config.registry.settings['couchdb.server'] = Server(uri=settings['couchdb.uri'])
+    config.registry.db = Server(uri=settings['couchdb.uri'])
+
+    def add_couchdb(request):
+        db = config.registry.db.get_db(settings['couchdb.db'])
+        return db
+
+    config.add_request_method(add_couchdb, 'db', reify=True)
+
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_route('home', '/')
     config.scan()

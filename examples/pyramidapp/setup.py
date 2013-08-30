@@ -9,6 +9,7 @@ requires = [
     'pyramid',
     'pyramid_debugtoolbar',
     'waitress',
+    'couchdbkit',
     ]
 
 setup(name='pyramid_couchdb_example',
@@ -17,7 +18,7 @@ setup(name='pyramid_couchdb_example',
       long_description=README,
       classifiers=[
         "Programming Language :: Python",
-        "Framework :: Pylons",
+        "Framework :: Pyramid",
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
         ],
