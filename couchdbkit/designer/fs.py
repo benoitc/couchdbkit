@@ -429,7 +429,7 @@ def pushapps(path, dbs, atomic=True, export=False, couchapprc=False):
                     docs1 = []
                     for doc in e.errors:
                         try:
-                            doc['_rev'] = db.last_rev(doc['_id'])
+                            doc['_rev'] = db.get_rev(doc['_id'])
                             docs1.append(doc)
                         except ResourceNotFound:
                             pass
@@ -483,7 +483,7 @@ def pushdocs(path, dbs, atomic=True, export=False):
                     else:
                         newdoc = doc.copy()
                         try:
-                            rev = db.last_rev(doc['_id'])
+                            rev = db.get_rev(doc['_id'])
                             newdoc.update({'_rev': rev})
                         except ResourceNotFound:
                             pass
@@ -495,7 +495,7 @@ def pushdocs(path, dbs, atomic=True, export=False):
                     docs1 = []
                     for doc in e.errors:
                         try:
-                            doc['_rev'] = db.last_rev(doc['_id'])
+                            doc['_rev'] = db.get_rev(doc['_id'])
                             docs1.append(doc)
                         except ResourceNotFound:
                             pass
