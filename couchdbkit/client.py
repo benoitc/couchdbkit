@@ -903,7 +903,11 @@ class ViewResults(object):
         """
         Constructor of ViewResults object
 
-        @param view: Object inherited from :mod:`couchdbkit.client.view.ViewInterface
+        @param fetch: function (view_path, params) -> restkit.Response
+        @param arg: view path to use when fetching view
+        @param wrapper: function to wrap rows with
+        @param schema: schema or doc_type -> schema map to wrap rows with
+        (only one of wrapper, schema must be set)
         @param params: params to apply when fetching view.
 
         """
