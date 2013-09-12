@@ -442,6 +442,10 @@ class DocumentTestCase(unittest.TestCase):
         results2 = TestDoc.view('test/all', include_docs=True)
         self.assert_(len(results2) == 2)
         self.assert_(isinstance(results2.first(), TestDoc) == True)
+        results3 = TestDoc.view('test/all', include_docs=True,
+                                wrapper=lambda row: row['doc']['field1'])
+        self.assert_(len(results3) == 2)
+        self.assert_(isinstance(results3.first(), unicode) == True)
         self.server.delete_db('couchdbkit_test')
 
     def test_wrong_doc_type(self):

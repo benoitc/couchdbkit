@@ -583,9 +583,13 @@ class QueryMixin(object):
         results are wrapped to current document instance.
         """
         db = cls.get_db()
+
+        if not classes and not wrapper:
+            classes = cls
+
         return db.view(view_name,
             dynamic_properties=dynamic_properties, wrap_doc=wrap_doc,
-            wrapper=wrapper, schema=classes or cls, **params)
+            wrapper=wrapper, schema=classes, **params)
 
     @classmethod
     def temp_view(cls, design, wrapper=None, dynamic_properties=None,
