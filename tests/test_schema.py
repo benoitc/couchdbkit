@@ -467,7 +467,12 @@ class DocumentTestCase(unittest.TestCase):
 
             result = Foo.view('_all_docs', include_docs=True)
             self.assertEqual(len(result), 1)
+            result.all()
+
             from couchdbkit.exceptions import DocTypeError
+            result = Foo.view('_all_docs', include_docs=True, classes={
+                'Foo': Foo,
+            })
             with self.assertRaises(DocTypeError):
                 result.all()
         finally:

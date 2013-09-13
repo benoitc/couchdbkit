@@ -914,7 +914,7 @@ class ViewResults(object):
         assert not (wrapper and schema)
         wrap_doc = params.get('wrap_doc', schema is not None)
         if schema:
-            schema = maybe_schema_wrapper(None, schema, params)
+            schema = maybe_schema_wrapper(schema, params)
             def row_wrapper(row):
                 data = row.get('value')
                 docid = row.get('id')
