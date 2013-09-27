@@ -914,13 +914,13 @@ class ViewResults(object):
         assert not (wrapper and schema)
         wrap_doc = params.get('wrap_doc', schema is not None)
         if schema:
-            schema = maybe_schema_wrapper(None, schema, params)
+            schema_wrapper = maybe_schema_wrapper(schema, params)
             def row_wrapper(row):
                 data = row.get('value')
                 docid = row.get('id')
                 doc = row.get('doc')
                 if doc is not None and wrap_doc:
-                    return schema(doc)
+                    return schema_wrapper(doc)
                 elif not data or data is None:
                     return row
                 elif not isinstance(data, dict) or not docid:
@@ -929,7 +929,7 @@ class ViewResults(object):
                     data['_id'] = docid
                     if 'rev' in data:
                         data['_rev'] = data.pop('rev')
-                    return schema(data)
+                    return schema_wrapper(data)
         else:
             def row_wrapper(row):
                 return row
