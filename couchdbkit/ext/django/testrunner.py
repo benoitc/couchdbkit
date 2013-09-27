@@ -21,16 +21,30 @@ class CouchDbKitTestSuiteRunner(DjangoTestSuiteRunner):
     """
     
     dbs = []
-    
-    def get_test_db_name(self, dbname):
-        return "%s_test" % dbname
-        
+
+    def get_test_db(self, db):
+        # not copying DB would modify the db dict and add multiple "_test"
+        test_db = db.copy()
+        test_db['URL'] = '%s_test' % test_db['URL']
+        return test_db
+
     def setup_databases(self, **kwargs):
         print "overridding the couchdbkit database settings to use a test database!"
                  
         # first pass: just implement this as a monkey-patch to the loading module
         # overriding all the existing couchdb settings
-        self.dbs = [(app, self.get_test_db_name(url)) for app, url in getattr(settings, "COUCHDB_DATABASES", [])]
+        databases = getattr(settings, "COUCHDB_DATABASES", [])
+
+        # Convert old style to new style
+        if isinstance(databases, (list, tuple)):
+            databases = dict(
+                (app_name, {'URL': uri}) for app_name, uri in databases
+            )
+
+        self.dbs = dict(
+            (app, self.get_test_db(db)) for app, db in databases.items()
+        )
+
         old_handler = loading.couchdbkit_handler
         couchdbkit_handler = loading.CouchdbkitHandler(self.dbs)
         loading.couchdbkit_handler = couchdbkit_handler
@@ -49,7 +63,7 @@ class CouchDbKitTestSuiteRunner(DjangoTestSuiteRunner):
     def teardown_databases(self, old_config, **kwargs):
         deleted_databases = []
         skipcount = 0
-        for app, item in self.dbs:
+        for app in self.dbs:
             app_label = app.split('.')[-1]
             db = loading.get_db(app_label)
             if db.dbname in deleted_databases: 
