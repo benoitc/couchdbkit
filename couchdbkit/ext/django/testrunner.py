@@ -22,10 +22,13 @@ class CouchDbKitTestSuiteRunner(DjangoTestSuiteRunner):
     
     dbs = []
 
+    def get_test_db_name(self, dbname):
+        return "%s_test" % dbname
+
     def get_test_db(self, db):
         # not copying DB would modify the db dict and add multiple "_test"
         test_db = db.copy()
-        test_db['URL'] = '%s_test' % test_db['URL']
+        test_db['URL'] = self.get_test_db_name(test_db['URL'])
         return test_db
 
     def setup_databases(self, **kwargs):
