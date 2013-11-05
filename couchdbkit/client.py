@@ -519,7 +519,7 @@ class Database(object):
             doc.update(doc1)
         return res
 
-    def save_docs(self, docs, use_uuids=True, all_or_nothing=False,
+    def save_docs(self, docs, use_uuids=True, all_or_nothing=False, new_edits=None,
             **params):
         """ bulk save. Modify Multiple Documents With a Single Request
 
@@ -528,6 +528,9 @@ class Database(object):
         @param all_or_nothing: In the case of a power failure, when the database
         restarts either all the changes will have been saved or none of them.
         However, it does not do conflict checking, so the documents will
+        @param new_edits: When False, this saves existing revisions instead of
+        creating new ones. Used in the replication Algorithm. Each document
+        should have a _revisions property that lists its revision history.
 
         .. seealso:: `HTTP Bulk Document API <http://wiki.apache.org/couchdb/HTTP_Bulk_Document_API>`
 
@@ -558,6 +561,8 @@ class Database(object):
         payload = { "docs": docs1 }
         if all_or_nothing:
             payload["all_or_nothing"] = True
+        if new_edits is not None:
+            payload["new_edits"] = new_edits
 
         # update docs
         results = self.res.post('/_bulk_docs',
