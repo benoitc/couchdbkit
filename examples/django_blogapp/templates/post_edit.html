@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+	<h2>Editing Post {{ post.title }}</h2>
+    <form method="post">
+        <table>
+        {{ form.as_table }}
+        </table>
+        {% csrf_token %}
+        <input type="submit" id="submit" value="submit">
+    </form>
+{% endblock content %}

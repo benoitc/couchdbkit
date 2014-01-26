@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+	<h2>Create new Post</h2>
+    <form method="post">
+        <table>
+        {{ form.as_table }}
+        </table>
+        {% csrf_token %}
+        <input type="submit" id="submit" value="submit">
+    </form>
+    
+    {% if post %}
+    {{ post.get_id }} was added
+    {% endif %}
+    <hr />
+    <h2>Posts</h2>
+    <table>
+    {% for p in posts %}
+        <tr>
+            <td>{{ p.date|timesince }} ago.</td>
+            <td> by {{ p.author }} </td>
+            <td><a href="{% url 'django_blogapp.blog_app.views.view_post' p.get_id %}">{{ p.title }}</a></td>
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock content %}
