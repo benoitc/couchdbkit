@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+	<h2>{{ post.title }}</h2>
+	<h4>by {{ post.author }}</h4>
+	<p>{{ post.content }}</p>
+	<br />
+	<p>Posted {{ post.date|timesince }} ago.</p>
+	
+    <hr />
+    
+    <h3><a href="{% url 'django_blogapp.blog_app.views.edit_post' post.get_id %}">Edit Post</a></h3>
+    
+    <hr />
+
+    <h3>Comments</h3>
+
+    <table>
+    {% for c in comments %}
+        <tr>
+            <td>{{ c.author }}: </td>
+            <td>{{ c.content }}</td>
+            <td> {{ c.date|timesince }} ago.</td>
+        </tr>
+    {% endfor %}
+    </table>
+
+	<h4>Leave a comment!</h4>
+    <form method="post">
+        <table>
+        {{ form.as_table }}
+        </table>
+        {% csrf_token %}
+        <input type="submit" id="submit" value="submit">
+    </form>
+    
+{% endblock content %}
