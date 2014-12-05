@@ -20,8 +20,12 @@ add possibility to a document to register itself in CouchdbkitHandler
 import re
 import sys
 
+try:
+    from django.db.models.options import get_verbose_name
+except ImportError:
+    from django.utils.text import camel_case_to_spaces as get_verbose_name
+
 from django.conf import settings
-from django.db.models.options import get_verbose_name
 from django.utils.translation import activate, deactivate_all, get_language, \
 string_concat
 from django.utils.encoding import smart_str, force_unicode
